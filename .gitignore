@@ -1,0 +1,9 @@
+node_modules
+dist/js
+src/**/*.js
+src/**/*.map
+test/**/*.js
+test/**/*.map
+coverage
+.nyc_output
+dist/css

@@ -1,0 +1,324 @@
+import v4 = require("uuid/v4");
+import Deck from "./Deck";
+import {Socket} from "socket.io";
+import Game from "./Game";
+import createPlayerData from "../createPlayerData";
+import Copper from "../cards/base/Copper";
+import Estate from "../cards/base/Estate";
+import {Decision, DecisionResponseType, DecisionValidators} from "./Decision";
+import {format} from "util";
+import {StructError} from "superstruct";
+import {GainRestrictions} from "./GainRestrictions";
+import Card from "../cards/Card";
+import {Texts} from "./Texts";
+import CardRegistry from "../cards/CardRegistry";
+
+export default class Player {
+    id = v4();
+    deck = new Deck();
+    private _currentSocket: Socket | null = null;
+    username = '';
+    private waitingForResponse = false;
+    data = createPlayerData();
+    private decisionCallbacks: {
+        [key: string]: Array<(response: any) => any> | undefined
+    } = {};
+    private pendingDecisions: Array<Decision> = [];
+    turnNumber = 0;
+    phase = 'cleanup';
+    game: Game;
+    private _nextDecisionId = 0;
+    get nextDecisionId(): string {
+        return "" + this._nextDecisionId++;
+    }
+    constructor(game: Game) {
+        this.game = game;
+        this.deck.discard = [
+            new Copper(this.game),
+            new Copper(this.game),
+            new Copper(this.game),
+            new Copper(this.game),
+            new Copper(this.game),
+            new Copper(this.game),
+            new Copper(this.game),
+            new Estate(this.game),
+            new Estate(this.game),
+            new Estate(this.game)
+        ];
+        this.draw(5)
+    }
+    draw(amount = 1) {
+        for (let i = 0; i < amount; i++) {
+            const card = this.deck.draw();
+            if (card) {
+                this.data.hand.push(card);
+            }
+            else {
+                break;
+            }
+        }
+    }
+    get allCards() {
+        return [...this.deck.deckAndDiscard, ...this.data.hand, ...this.data.playArea];
+    }
+    get currentSocket() {
+        return this._currentSocket;
+    }
+    syncHalted = false;
+    actions: any[] = [];
+    async haltSync(exec: () => Promise<any>) {
+        this.syncHalted = true;
+        await exec();
+        this.syncHalted = false;
+    }
+    set currentSocket(socket: Socket | null) {
+        this._currentSocket = socket;
+        if (socket == null) {
+            return;
+        }
+        socket.emit('playerState', this.data.getState());
+        this.data.onAction((action) => {
+            socket.emit('playerStateUpdate', action);
+            return true;
+        });
+        this.game.supply.data.onAction((action) => {
+            socket.emit('supplyUpdate', action);
+            return true;
+        });
+        socket.on('fetchSupply', (returnTo) => {
+            socket.emit(returnTo, this.game.supply.data.getState());
+        });
+        socket.on('decisionResponse', (decisionId, response) => {
+            const decision = this.pendingDecisions.find((a) => a.id === decisionId);
+            if (!decision) {
+                console.log('Attempt to respond to a undefined decision, return');
+                return;
+            }
+            let r;
+            try {
+                r = DecisionValidators[decision.decision](this.game, decision, response);
+            }
+            catch (e) {
+                if (e.errors) {
+                    console.error(`Error validating ${JSON.stringify(response)}: ${e.errors[0].message}`);
+                }
+                // We have a problem with the response, reemit the decision for another try
+                this.emitNextDecision();
+                return;
+            }
+            const callbacks = this.decisionCallbacks[decisionId];
+            if (callbacks) {
+                callbacks.forEach((a) => {
+                    try {
+                        a(r);
+                    }
+                    catch (e) {
+                        console.error("An error was thrown during execution of a decision callback:");
+                        console.error(e);
+                    }
+                });
+            }
+            // Prevent duplicate decisionResponse
+            delete this.decisionCallbacks[decisionId];
+            this.waitingForResponse = false;
+            this.pendingDecisions.shift();
+            if (this.pendingDecisions.length) {
+                this.emitNextDecision();
+            }
+        });
+        socket.on('startGame', () => {
+            this.game.start();
+        });
+        if (this.pendingDecisions.length) {
+            this.emitNextDecision();
+        }
+    }
+    makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T['decision']]> {
+        return new Promise((f,r) => {
+            this.pendingDecisions.push(decision);
+            const toPush = this.decisionCallbacks[decision.id] || [];
+            toPush.push(f);
+            this.decisionCallbacks[decision.id] = toPush;
+            if (!this.waitingForResponse && this.currentSocket && this.currentSocket.connected) {
+                this.emitNextDecision();
+            }
+        });
+    }
+    emitNextDecision() {
+        if (this.pendingDecisions.length && this.currentSocket && this.currentSocket.connected) {
+            this.currentSocket.emit('decision', this.pendingDecisions[0]);
+            this.waitingForResponse = true;
+        }
+    }
+    sendLog(logMsg: string) {
+        if (this.currentSocket && this.currentSocket.connected) {
+            this.currentSocket.emit('log', logMsg);
+        }
+    }
+    async chooseUsername() {
+        this.username = await this.makeDecision({
+            decision: "chooseUsername",
+            id: this.nextDecisionId,
+            helperText: Texts.chooseUsername
+        });
+    }
+    notifyPlayerCount() {
+        this.currentSocket && this.currentSocket.emit('playerCount', this.game.players.length);
+    }
+    lm(msg: string, ...params: any[]) {
+        const nMsg = msg.replace(/%p/g, this.username);
+        this.game.lm(this, nMsg, ...params);
+    }
+    async chooseCardOrBuy() {
+        return await this.makeDecision({
+            decision: 'chooseCardOrBuy',
+            id: v4(),
+            source: this.data.hand,
+            gainRestrictions: GainRestrictions.instance().setMaxCoinCost(this.data.money).build(this.game),
+            helperText: Texts.chooseCardOrBuy
+        });
+    }
+    async chooseBuy() {
+        return await this.makeDecision({
+            decision: 'buy',
+            id: v4(),
+            gainRestrictions: GainRestrictions.instance().setMaxCoinCost(this.data.money).build(this.game),
+            helperText: Texts.buy
+        });
+    }
+    async playTurn() {
+        this.turnNumber++;
+        this.data.buys = 1;
+        this.data.money = 0;
+        this.data.actions = 1;
+        this.lm("%p's turn %s", this.turnNumber);
+        this.data.isMyTurn = true;
+        await this.actionPhase();
+        await this.buyPhase();
+        await this.cleanup();
+        this.data.isMyTurn = false;
+    }
+    async cleanup() {
+        await this.data.haltNotifications(async () => {
+            for (let i = 0; i < this.data.playArea.length; i++) {
+                let card = this.data.playArea[i];
+                if (card.shouldDiscardFromPlay()) {
+                    this.data.playArea.splice(i, 1)[0];
+                    await card.onDiscardFromPlay(this   );
+                    i--;
+                    await this.discard(card);
+                }
+            }
+            const hand = [...this.data.hand];
+            this.data.hand = [];
+            for (const card of hand) {
+                await this.discard(card);
+            }
+            await this.draw(5);
+        });
+    }
+    async actionPhase() {
+        while (this.data.actions > 0 && this.data.hand.filter((a) => a.types.includes('action')).length > 0) {
+            const card = await this.chooseCardFromHand(Texts.chooseActionToPlay, true, (card) => card.types.includes("action"));
+            if (card) {
+                this.data.actions--;
+                this.data.playArea.push(card);
+                await this.playActionCard(card);
+            }
+            else {
+                break;
+            }
+        }
+    }
+
+    /**
+     * This function already expects the given card to be in the playArea
+     * (Note that this is not necessarily true, for example, if Feast trashes itself during a Throne Room, this will be called,
+     * but the card will be in the trash.
+     * @param card
+     */
+    async playActionCard(card: Card) {
+        this.lm('%p plays a %s.', card.name);
+        await card.onAction(this);
+    }
+    async buyPhase() {
+        while (this.data.buys > 0 && this.data.hand.filter((a) => a.types.includes('treasure')).length > 0) {
+            const choice = await this.chooseCardOrBuy();
+            if (choice.choice.name === 'End Turn') return;
+            if (choice.responseType === "playCard") {
+                const handIndex = this.data.hand.findIndex((a) => a.id === choice.choice.id);
+                if (handIndex !== -1) {
+                    if (this.data.hand[handIndex].types.indexOf("treasure") === -1) {
+                        continue;
+                    }
+                    const c = this.data.hand.splice(handIndex, 1)[0];
+                    this.data.playArea.push(c);
+                    this.lm('%p plays a %s.', c.name);
+                    this.playTreasure(c);
+                }
+            }
+            else {
+                await this.buy(choice.choice.name);
+            }
+        }
+        while (this.data.buys > 0) {
+            const choice = await this.chooseBuy();
+            if (choice.choice.name === 'End Turn') return;
+            await this.buy(choice.choice.name);
+        }
+    }
+    async buy(cardName: string) {
+        this.data.money -= this.game.getCostOfCard(cardName).coin;
+        this.data.buys--;
+        this.lm('%p buys a %s.', cardName);
+        await this.game.emit('buy', this, cardName);
+        if (!await this.gain(cardName)) {
+            this.lm('%p fails to gain the %s after on-buy effects.', cardName);
+        }
+    }
+    async gain(cardName: string): Promise<boolean> {
+        const c = this.game.grabNameFromSupply(cardName);
+        if (c) {
+            await this.discard(c);
+            await this.game.emit('gain', this, c);
+            return true;
+        }
+        return false;
+    }
+    async playTreasure(card: Card) {
+        await card.doTreasure(this);
+    }
+    async discard(card: Card) {
+        this.deck.discard.push(card);
+    }
+    score() {
+        const score: {[cardName: string]: number} = {};
+        this.game.selectedCards.forEach((cardName) => {
+            score[cardName.split(" ").map((a) => a.slice(0,1).toUpperCase() + a.slice(1)).join(" ")] = CardRegistry.getInstance().getCard(cardName).onScore(this);
+        });
+        return score;
+    }
+    async chooseCardFromHand(helperText: string, optional = false, filter?: (card: Card) => boolean): Promise<Card | null> {
+        const optionalSource: Card[] = optional ? [{name: 'No Card', id: 'nocard'}] as Card[] : [];
+        let result;
+        let foundCard;
+        if (filter && this.data.hand.filter(filter).length === 0) {
+            // No choices, return
+            return null;
+        }
+        while ((result = await this.makeDecision({
+            decision: 'chooseCard',
+            source: [...this.data.hand, ...optionalSource],
+            id: v4(),
+            helperText
+        })) != null && ((foundCard = this.data.hand.find((a) => a.id === result.id && a.name == result.name)) != null) && (filter && !filter(foundCard))) {
+            console.log("Filter unsatisfied");
+        }
+        if (result.name === "No Card") {
+            // Make it very simple to have an out
+            return null;
+        }
+        const handIndex = this.data.hand.findIndex((a) => a.id === result.id);
+        return this.game.grabCard(result.id, "activeHand", true);
+    }
+}

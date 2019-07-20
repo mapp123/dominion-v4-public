@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": false,
+    "target": "esnext",
+    "sourceMap": true,
+    "jsx": "react",
+    "module": "commonjs"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

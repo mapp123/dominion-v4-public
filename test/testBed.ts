@@ -53,6 +53,12 @@ class TestPlayer extends Player {
             response: (decision) => decision.source.find((a) => a.name === card) as any
         });
     }
+    testReveal(card: string, shouldReveal = true) {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'confirm' && decision.helperText === Texts.doYouWantToReveal('moat'),
+            response: () => shouldReveal
+        });
+    }
     onBuyPhaseStart(cb: () => any) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
@@ -69,6 +75,21 @@ class TestPlayer extends Player {
         });
     }
 }
+class DrawAttack extends Card {
+    randomizable = false;
+    cardText = "";
+    cost = {
+        coin: 0
+    };
+    types = ["action", "attack"] as const;
+    name = "attack";
+    supplyCount = 10;
+    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+        await player.attackOthersInOrder(exemptPlayers, async (player) => {
+            player.draw(1);
+        });
+    }
+}
 class TestGame extends Game {
     done = false;
     private doneFn: (error?) => any = null as any;
@@ -81,6 +102,13 @@ class TestGame extends Game {
     }
     gameEnded(): boolean {
         return this.done;
+    }
+    injectTestAttack() {
+        CardRegistry.getInstance().injectCard(DrawAttack as any);
+    }
+
+    determineTurnOrder() {
+        // Retain default ordering
     }
 }
 export default function makeTestGame({
@@ -96,6 +124,9 @@ export default function makeTestGame({
         const player = new TestPlayer(game);
         let deck = [] as Card[];
         for (const cardName of decks[i]) {
+            if (cardName === "attack") {
+                game.injectTestAttack();
+            }
             deck.push(
                 new (CardRegistry.getInstance().getCard(cardName))(game)
             )

@@ -25,11 +25,9 @@ export default class Game {
     name?: string;
     host?: Player;
     started = false;
-    trash: CardInstance[] = [];
+    trash: Card[] = [];
     supply = new Supply();
-    cardGlobalData: {[key: string]: any} = {};
     selectedCards: string[] = [];
-    accountability: AccountabilityRunner = null as any;
     ended = false;
     lastPlayer: Player | null = null;
     repeatLastPlayer = false;
@@ -134,7 +132,7 @@ export default class Game {
             player.data.gameStarted = true;
             await player.chooseUsername();
         });
-        shuffle(this.players);
+        this.determineTurnOrder();
         this.lmg('Play order has been determined: %s.',
             this.players.length === 1 ?
                 this.players[0].username :
@@ -145,6 +143,9 @@ export default class Game {
             this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         }
         this.endOfGame();
+    }
+    determineTurnOrder() {
+        shuffle(this.players);
     }
     endOfGame() {
         const scores = this.players.map((player) => {
@@ -260,7 +261,8 @@ export default class Game {
     runAccountability() {
         const newIds = [
             ...this.supply.data.piles.reduce((arr, pile) => [...arr, ...pile.pile.map((card) => card.id)], [] as string[]),
-            ...this.players.reduce((arr, player) => [...arr, ...player.allCards.map((a) => a.id)], [] as string[])
+            ...this.players.reduce((arr, player) => [...arr, ...player.allCards.map((a) => a.id)], [] as string[]),
+            ...this.trash.map((a) => a.id)
         ];
         const missing = this.cardIds.filter((a) => !newIds.includes(a));
         const extra = [...newIds.filter((a) => !this.cardIds.includes(a)), ...newIds.filter((a, i) => newIds.indexOf(a) !== i)];

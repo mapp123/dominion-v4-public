@@ -72,4 +72,16 @@ export default class CardRegistry {
     public getCard(card: string): typeof CardDef {
         return this.allCards()[card];
     }
+    public injectCard(card: typeof CardDef) {
+        this.cardLocations[card.cardName] = "";
+        if (!this.cardCache) {
+            this.cardsBySet();
+        }
+        this.cardCache!.injected = this.cardCache!.injected || {};
+        this.cardCache!.injected[card.cardName] = card;
+        if (!this.allCardsCache) {
+            this.allCards();
+        }
+        this.allCardsCache![card.cardName] = card;
+    }
 }

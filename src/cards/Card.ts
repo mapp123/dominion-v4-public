@@ -98,8 +98,11 @@ export default abstract class Card {
     public async onDiscardFromPlay(player: Player) {
 
     }
-    public async onAction(player: Player) {
+    public async onAction(player: Player, exemptPlayers: Player[]) {
         throw new Error("onAction not implemented");
+    }
+    public async onAttackInHand(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {
+        return false;
     }
     protected async onTreasure(player: Player) {
         throw new Error("onTreasure not implemented");

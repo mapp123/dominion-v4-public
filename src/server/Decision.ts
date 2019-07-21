@@ -3,7 +3,7 @@ import {Struct, struct} from "superstruct";
 import Game from "./Game";
 import {GainRestrictions, GainRestrictionsJSON} from "./GainRestrictions";
 
-export type Decision = ChooseUsernameDecision | ChooseCardOrBuyDecision | BuyDecision | ChooseCardDecision;
+export type Decision = ChooseUsernameDecision | ChooseCardOrBuyDecision | BuyDecision | ChooseCardDecision | ConfirmDecision;
 
 type AllDecisionHaveHelperText = Decision['helperText'];
 
@@ -32,6 +32,12 @@ interface ChooseCardDecision {
     decision: 'chooseCard';
     id: string;
     source: Card[];
+    helperText: string;
+}
+
+interface ConfirmDecision {
+    decision: 'confirm';
+    id: string;
     helperText: string;
 }
 
@@ -106,11 +112,14 @@ const chooseCardValidator = (game: Game, decision: Decision, response: any) => {
     return r;
 };
 
+const ConfirmResponse = struct.scalar('boolean');
+
 export const DecisionValidators = {
     chooseUsername: wrapStruct(struct.scalar('string')),
     chooseCardOrBuy: chooseCardOrBuyValidator,
     buy: buyValidator,
-    chooseCard: chooseCardValidator
+    chooseCard: chooseCardValidator,
+    confirm: wrapStruct(ConfirmResponse)
 };
 
 export type DecisionResponseType = {
@@ -168,7 +177,8 @@ export const DecisionDefaults = {
     chooseUsername: (decision: Decision) => null,
     chooseCardOrBuy: chooseCardOrBuyDefault,
     buy: buyDefault,
-    chooseCard: chooseCardDefault
+    chooseCard: chooseCardDefault,
+    confirm: (decision: Decision) => null
 };
 
 type AllDecisionHaveDefaults = typeof DecisionDefaults[Decision['decision']];

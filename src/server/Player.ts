@@ -239,7 +239,23 @@ export default class Player {
      */
     async playActionCard(card: Card) {
         this.lm('%p plays a %s.', card.name);
-        await card.onAction(this);
+        let exemptPlayers = [] as Player[];
+        if (card.types.includes("attack")) {
+            let playersToCheck = this.game.players.filter((a) => a != this);
+            for (let player of playersToCheck) {
+                if (await player.onAttack(this, card)) {
+                    exemptPlayers.push(player);
+                }
+            }
+        }
+        await card.onAction(this, exemptPlayers);
+    }
+    async onAttack(attacker: Player, attackingCard: Card): Promise<boolean> {
+        let exempt = false;
+        for (let card of this.data.hand) {
+            exempt = (await card.onAttackInHand(this, attacker, attackingCard, exempt)) || exempt;
+        }
+        return exempt;
     }
     async buyPhase() {
         while (this.data.buys > 0 && this.data.hand.filter((a) => a.types.includes('treasure')).length > 0) {
@@ -320,5 +336,28 @@ export default class Player {
         }
         const handIndex = this.data.hand.findIndex((a) => a.id === result.id);
         return this.game.grabCard(result.id, "activeHand", true);
+    }
+    async confirmAction(helperText: string): Promise<boolean> {
+        return this.makeDecision({
+            decision: 'confirm',
+            id: v4(),
+            helperText
+        });
+    }
+    async attackOthersInOrder(exemptPlayers: Player[], cb: (player: Player) => Promise<any>) {
+        let currentPlayerIndex = this.game.players.indexOf(this) + 1;
+        currentPlayerIndex %= this.game.players.length;
+        let currentPlayer: Player;
+        while ((currentPlayer = this.game.players[currentPlayerIndex]) != this) {
+            if (exemptPlayers.indexOf(currentPlayer) === -1) {
+                await cb(currentPlayer);
+            }
+            currentPlayerIndex++;
+            currentPlayerIndex %= this.game.players.length;
+        }
+    }
+    async trash(card: Card) {
+        this.lm('%p trashes a %s.', card.name);
+        this.game.trash.push(card);
     }
 }

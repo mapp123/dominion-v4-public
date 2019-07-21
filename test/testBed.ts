@@ -36,7 +36,8 @@ class TestPlayer extends Player {
         const rIndex = this.decisionResponses.findIndex((a) => a.matcher(decision));
         if (rIndex !== -1) {
             const response = this.decisionResponses.splice(rIndex, 1)[0];
-            return response.response(decision) as any;
+            const r = response.response(decision) as any;
+            return r;
         }
         // @ts-ignore
         this.game.doneFn(new Error(`Failed to find a response for ${JSON.stringify(decision)}`));
@@ -53,7 +54,8 @@ class TestPlayer extends Player {
                     // @ts-ignore
                     this.game.doneFn(e);
                 }
-                return this.decisionResponses[this.decisionResponses.indexOf(response) + 1].response(decision);
+                const r = this.decisionResponses.splice(this.decisionResponses.indexOf(response) + 1, 1)[0];
+                return r.response(decision);
             }
         };
         this.decisionResponses.push(response);
@@ -100,6 +102,12 @@ class TestPlayer extends Player {
             }
         });
     }
+    testPlayTreasure(card: string) {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'chooseCardOrBuy',
+            response: (decision) => ({responseType: 'playCard', choice: decision.source.find((a) => a.name === card)})
+        });
+    }
     onBuyPhaseStart(cb: () => any) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
@@ -111,7 +119,7 @@ class TestPlayer extends Player {
                     // @ts-ignore
                     this.game.doneFn(e);
                 }
-                return {decisionType: 'buy', choice: {name: 'End Turn', id: ''}};
+                return {responseType: 'playCard', choice: {name: 'End Turn', id: ''}};
             }
         });
     }
@@ -137,6 +145,9 @@ class TestGame extends Game {
     setDone(done: (error?) => any) {
         this.doneFn = (error?) => {
             this.done = true;
+            if ((this.players as TestPlayer[]).filter((a) => a.decisionResponses.length).length) {
+                done(new Error("Player had decisions left when game ended"));
+            }
             done(error);
         };
         return this.doneFn;
@@ -157,25 +168,39 @@ class TestGame extends Game {
 }
 export default function makeTestGame({
     players = 1,
-    decks = [['copper']],
+    decks = [[]] as string[][],
+    discards = [[]] as string[][],
     d = () => {}
                                      }): [TestGame, TestPlayer[], () => any] {
     const game = new TestGame(makeFakeIo((msg) => {
         console.log(msg)
     }) as any);
-    game.setCards(null as any, decks.reduce((full, deck) => [...full, ...deck], []).filter((a, i, arr) => arr.indexOf(a) === i));
+    game.setCards(null as any, [
+        ...decks.reduce((full, deck) => [...full, ...deck], []),
+        ...discards.reduce((full, discard) => [...full, ...discard], [])
+    ].filter((a, i, arr) => arr.indexOf(a) === i));
     for (let i = 0; i < players; i++) {
         const player = new TestPlayer(game);
         let deck = [] as Card[];
-        for (const cardName of decks[i]) {
+        for (const cardName of (decks[i] || [])) {
             if (cardName === "attack") {
                 game.injectTestAttack();
             }
             deck.push(
                 new (CardRegistry.getInstance().getCard(cardName))(game)
-            )
+            );
         }
         player.deck.setCards(deck);
+        let discard = [] as Card[];
+        for (const cardName of (discards[i] || [])) {
+            if (cardName === "attack") {
+                game.injectTestAttack();
+            }
+            discard.push(
+                new (CardRegistry.getInstance().getCard(cardName))(game)
+            );
+        }
+        player.deck.discard = discard;
         player.data.hand = [];
         player.draw(5);
         game.players.push(player);

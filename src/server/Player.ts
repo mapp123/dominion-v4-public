@@ -12,6 +12,7 @@ import {GainRestrictions} from "./GainRestrictions";
 import Card from "../cards/Card";
 import {Texts} from "./Texts";
 import CardRegistry from "../cards/CardRegistry";
+import {PlayerEvents} from "./Events";
 
 export default class Player {
     id = v4();
@@ -27,6 +28,7 @@ export default class Player {
     turnNumber = 0;
     phase = 'cleanup';
     game: Game;
+    events: PlayerEvents = new PlayerEvents();
     private _nextDecisionId = 0;
     get nextDecisionId(): string {
         return "" + this._nextDecisionId++;
@@ -271,6 +273,7 @@ export default class Player {
                     this.data.playArea.push(c);
                     this.lm('%p plays a %s.', c.name);
                     this.playTreasure(c);
+                    await this.events.emit('treasureCardPlayed', this, c);
                 }
             }
             else {
@@ -378,5 +381,36 @@ export default class Player {
         else {
             return null;
         }
+    }
+    async chooseCardFromDiscard(helperText: string, optional: boolean, filter?: (card: Card) => boolean): Promise<Card | null> {
+        const optionalSource: Card[] = optional ? [{name: 'No Card', id: 'nocard'}] as Card[] : [];
+        let result;
+        let foundCard;
+        if (filter && this.deck.discard.filter(filter).length === 0) {
+            // No choices, return
+            return null;
+        }
+        if (this.deck.discard.length === 0) {
+            return null;
+        }
+        let discardNames = this.deck.discard.map((a) => a.name);
+        let chooseFrom = this.deck.discard.filter((a, i) => discardNames.indexOf(a.name) === i);
+        while ((result = await this.makeDecision({
+            decision: 'chooseCard',
+            source: [...chooseFrom, ...optionalSource],
+            id: v4(),
+            helperText
+        })) != null && ((foundCard = this.deck.discard.find((a) => a.id === result.id && a.name == result.name)) != null) && (filter && !filter(foundCard))) {
+            console.log("Filter unsatisfied");
+        }
+        if (result.name === "No Card") {
+            // Make it very simple to have an out
+            return null;
+        }
+        const discardIndex = this.deck.discard.findIndex((a) => a.id === result.id);
+        if (discardIndex !== -1) {
+            return this.deck.discard.splice(discardIndex, 1)[0];
+        }
+        return null;
     }
 }

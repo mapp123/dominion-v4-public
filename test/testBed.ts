@@ -108,6 +108,12 @@ class TestPlayer extends Player {
             response: (decision) => ({responseType: 'playCard', choice: decision.source.find((a) => a.name === card)})
         });
     }
+    endTurn() {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
+            response: () => ({responseType: 'playCard', choice: {name: 'End Turn', id: ''}})
+        });
+    }
     onBuyPhaseStart(cb: () => any) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',

@@ -13,6 +13,7 @@ describe('CELLAR', () => {
         player.testChooseCard(Texts.chooseCardToDiscardFor('cellar'), 'No Card');
         player.onBuyPhaseStart(() => {
             expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'silver']);
+            expect(player.data.actions).to.equal(1);
             done();
         });
         game.start();
@@ -30,6 +31,7 @@ describe('CELLAR', () => {
         player.testChooseCard(Texts.chooseCardToDiscardFor('cellar'), 'No Card');
         player.onBuyPhaseStart(() => {
             expect(player.hand).to.have.members(['copper', 'silver', 'silver']);
+            expect(player.data.actions).to.equal(2);
             done();
         });
         game.start();

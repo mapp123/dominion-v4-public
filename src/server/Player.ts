@@ -238,9 +238,12 @@ export default class Player {
      * (Note that this is not necessarily true, for example, if Feast trashes itself during a Throne Room, this will be called,
      * but the card will be in the trash.
      * @param card
+     * @param log
      */
-    async playActionCard(card: Card) {
-        this.lm('%p plays a %s.', card.name);
+    async playActionCard(card: Card, log = true) {
+        if (log) {
+            this.lm('%p plays a %s.', card.name);
+        }
         let exemptPlayers = [] as Player[];
         if (card.types.includes("attack")) {
             let playersToCheck = this.game.players.filter((a) => a != this);

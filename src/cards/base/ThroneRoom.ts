@@ -26,7 +26,8 @@ export default class ThroneRoom extends Card {
             if (typeof (this._duplicateCard as any)._isUnderThroneRoom !== "undefined") {
                 (this._duplicateCard as any)._isUnderThroneRoom = true;
             }
-            await player.playActionCard(this._duplicateCard);
+            player.lm('%p replays the %s.', card.name);
+            await player.playActionCard(this._duplicateCard, false);
         }
     }
     shouldDiscardFromPlay(): boolean {

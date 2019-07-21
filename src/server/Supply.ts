@@ -1,6 +1,7 @@
 import Card from "../cards/Card";
 import CardRegistry from "../cards/CardRegistry";
 import createSupplyData from "../createSupplyData";
+import cardSorter from "./cardSorter";
 
 export default class Supply {
     data = createSupplyData();
@@ -15,7 +16,7 @@ export default class Supply {
     setup(activeCards: string[], playerCount: number, game) {
         const cardDefs = CardRegistry.getInstance().allCards();
         const locations = CardRegistry.getInstance().allCardLocations();
-        activeCards.forEach((card) => {
+        activeCards.sort((a, b) => cardSorter(cardDefs[a], cardDefs[b])).forEach((card) => {
             this.data.piles.push(...cardDefs[card].createSupplyPiles(playerCount, game));
             this.data.locations[card] = locations[card];
         });

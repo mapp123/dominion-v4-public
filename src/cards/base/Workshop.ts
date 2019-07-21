@@ -1,0 +1,17 @@
+import Card from "../Card";
+import Player from "../../server/Player";
+import {GainRestrictions} from "../../server/GainRestrictions";
+import {Texts} from "../../server/Texts";
+
+export default class Workshop extends Card {
+    types = ["action"] as const;
+    name = "workshop";
+    cost = {
+        coin: 3
+    };
+    cardText = "Gain a card costing up to 4 Money.";
+    supplyCount = 10;
+    async onAction(player: Player): Promise<void> {
+        await player.chooseGain(Texts.chooseCardToGainFor('workshop'), false, GainRestrictions.instance().setMaxCoinCost(4));
+    }
+}

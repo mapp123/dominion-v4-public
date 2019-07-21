@@ -3,7 +3,7 @@ import {Struct, struct} from "superstruct";
 import Game from "./Game";
 import {GainRestrictions, GainRestrictionsJSON} from "./GainRestrictions";
 
-export type Decision = ChooseUsernameDecision | ChooseCardOrBuyDecision | BuyDecision | ChooseCardDecision | ConfirmDecision;
+export type Decision = ChooseUsernameDecision | ChooseCardOrBuyDecision | BuyDecision | ChooseCardDecision | ConfirmDecision | GainDecision;
 
 type AllDecisionHaveHelperText = Decision['helperText'];
 
@@ -38,6 +38,14 @@ interface ChooseCardDecision {
 interface ConfirmDecision {
     decision: 'confirm';
     id: string;
+    helperText: string;
+}
+
+interface GainDecision {
+    decision: 'gain';
+    id: string;
+    gainRestrictions: GainRestrictionsJSON;
+    optional: boolean;
     helperText: string;
 }
 
@@ -114,12 +122,32 @@ const chooseCardValidator = (game: Game, decision: Decision, response: any) => {
 
 const ConfirmResponse = struct.scalar('boolean');
 
+const GainResponse = struct({
+    id: "string",
+    name: "string"
+});
+
+const gainValidator = (game: Game, decision: Decision, response: any) => {
+    const r = GainResponse(response);
+    if (decision.decision !== 'gain') {
+        throw new Error("Wrong validator");
+    }
+    if (r.name === 'Gain Nothing' && (decision.gainRestrictions.allowedCards.length === 0 || decision.optional)) {
+        return r;
+    }
+    if (!GainRestrictions.fromJSON(decision.gainRestrictions).validateCard(r.name)) {
+        throw new Error("Choice is invalid")
+    }
+    return r;
+};
+
 export const DecisionValidators = {
     chooseUsername: wrapStruct(struct.scalar('string')),
     chooseCardOrBuy: chooseCardOrBuyValidator,
     buy: buyValidator,
     chooseCard: chooseCardValidator,
-    confirm: wrapStruct(ConfirmResponse)
+    confirm: wrapStruct(ConfirmResponse),
+    gain: gainValidator
 };
 
 export type DecisionResponseType = {
@@ -173,12 +201,26 @@ const chooseCardDefault = (decision: Decision) => {
     return null;
 };
 
+const gainDefault = (decision: Decision) => {
+    if (decision.decision !== 'gain') {
+        throw new Error("Wrong defaulter");
+    }
+    if (decision.gainRestrictions.allowedCards.length === 0) {
+        return {
+            name: 'Gain Nothing',
+            id: ''
+        };
+    }
+    return null;
+};
+
 export const DecisionDefaults = {
     chooseUsername: (decision: Decision) => null,
     chooseCardOrBuy: chooseCardOrBuyDefault,
     buy: buyDefault,
     chooseCard: chooseCardDefault,
-    confirm: (decision: Decision) => null
+    confirm: (decision: Decision) => null,
+    gain: gainDefault
 };
 
 type AllDecisionHaveDefaults = typeof DecisionDefaults[Decision['decision']];

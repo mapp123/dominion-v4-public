@@ -4,6 +4,8 @@ import Card from "../src/cards/Card";
 import CardRegistry from "../src/cards/CardRegistry";
 import {Decision, DecisionResponseType} from "../src/server/Decision";
 import {Texts} from "../src/server/Texts";
+import * as ts from "typescript/lib/tsserverlibrary";
+import convertFormatOptions = ts.server.convertFormatOptions;
 function makeFakeIo(onLog?: (msg: string) => any) {
     return {
         on: (msg, cb) => {
@@ -27,6 +29,9 @@ class TestPlayer extends Player {
     decisionResponses: Array<DecisionResponse> = [];
     get hand() {
         return this.data.hand.map((a) => a.name);
+    }
+    get discardPile() {
+        return this.deck.discard.map((a) => a.name);
     }
     async makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T["decision"]]> {
         if (decision.decision === 'chooseUsername') {
@@ -57,6 +62,18 @@ class TestPlayer extends Player {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'confirm' && decision.helperText === Texts.doYouWantToReveal('moat'),
             response: () => shouldReveal
+        });
+    }
+    testGain(forCard: string, gainCard: string) {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'gain' && decision.helperText === Texts.chooseCardToGainFor(forCard),
+            response: () => {
+                const pile = this.game.supply.data.piles.find((a) => a.pile[a.pile.length - 1].name === gainCard);
+                if (!pile) {
+                    throw new Error("Asked to find non-existent pile")
+                }
+                return pile.pile[pile.pile.length - 1];
+            }
         });
     }
     onBuyPhaseStart(cb: () => any) {

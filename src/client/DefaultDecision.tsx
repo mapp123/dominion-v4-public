@@ -38,6 +38,19 @@ export default class DefaultDecision extends React.Component<{decision: Decision
                 };
                 confirm = true;
                 break;
+            case "gain":
+                if (this.props.decision.optional) {
+                    text = "Gain Nothing";
+                    className = "info";
+                    decision = {
+                        name: 'Gain Nothing',
+                        id: ''
+                    };
+                }
+                else {
+                    return null;
+                }
+                break;
             default:
                 return null;
         }

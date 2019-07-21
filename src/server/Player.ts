@@ -360,4 +360,23 @@ export default class Player {
         this.lm('%p trashes a %s.', card.name);
         this.game.trash.push(card);
     }
+    async chooseGain(helperText: string, optional: boolean, gainRestrictions: GainRestrictions, destination: 'discard' | 'hand' | 'deck' = 'discard'): Promise<Card | null> {
+        const cardToGain = await this.makeDecision({
+            decision: 'gain',
+            helperText,
+            id: v4(),
+            gainRestrictions: gainRestrictions.build(this.game),
+            optional
+        });
+        if (cardToGain.name === 'Gain Nothing') {
+            return null;
+        }
+        if (this.gain(cardToGain.name)) {
+            this.lm('%p gains a %s.', cardToGain.name);
+            return this.deck.discard[this.deck.discard.length - 1].name === cardToGain.name ? this.deck.discard[this.deck.discard.length - 1] : null;
+        }
+        else {
+            return null;
+        }
+    }
 }

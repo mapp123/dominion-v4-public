@@ -13,4 +13,7 @@ export class Texts {
     static chooseCardToTrashFor(card) {
         return `Please choose a card to trash for ${card}...`;
     }
+    static chooseCardToGainFor(card) {
+        return `Please choose a card to gain for ${card}...`;
+    }
 }

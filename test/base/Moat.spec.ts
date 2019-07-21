@@ -64,4 +64,22 @@ describe('MOAT', () => {
         });
         game.start();
     });
+    it('only asks once for two moats', (d) => {
+        const [game, [p, q], done] = makeTestGame({
+            players: 2,
+            decks: [
+                ['attack', 'copper', 'copper', 'copper', 'copper'],
+                ['moat', 'moat', 'copper', 'copper', 'copper', 'silver']
+            ],
+            d
+        });
+        p.testPlayAction('attack');
+        q.testReveal('moat');
+        p.onBuyPhaseStart(() => {
+            expect(p.hand).to.have.members(['copper', 'copper', 'copper', 'copper']);
+            expect(q.hand).to.have.members(['moat', 'moat', 'copper', 'copper', 'copper']);
+            done();
+        });
+        game.start();
+    });
 });

@@ -4,13 +4,9 @@ import Card from "../src/cards/Card";
 import CardRegistry from "../src/cards/CardRegistry";
 import {Decision, DecisionResponseType} from "../src/server/Decision";
 import {Texts} from "../src/server/Texts";
-import * as ts from "typescript/lib/tsserverlibrary";
-import convertFormatOptions = ts.server.convertFormatOptions;
 function makeFakeIo(onLog?: (msg: string) => any) {
     return {
-        on: (msg, cb) => {
-
-        },
+        on: () => {},
         emit: (msg, ...args) => {
             if (msg === 'log' && onLog) {
                 onLog(args[0]);
@@ -46,6 +42,22 @@ class TestPlayer extends Player {
         this.game.doneFn(new Error(`Failed to find a response for ${JSON.stringify(decision)}`));
         throw new Error("Failed to find a response.");
     }
+    testHookNextDecision(cb: () => any) {
+        const response = {
+            matcher: (decision) => this.decisionResponses[this.decisionResponses.indexOf(response) + 1].matcher(decision),
+            response: (decision) => {
+                try {
+                    cb();
+                }
+                catch (e) {
+                    // @ts-ignore
+                    this.game.doneFn(e);
+                }
+                return this.decisionResponses[this.decisionResponses.indexOf(response) + 1].response(decision);
+            }
+        };
+        this.decisionResponses.push(response);
+    }
     testPlayAction(actionName: string) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCard' && decision.helperText === Texts.chooseActionToPlay,
@@ -62,6 +74,12 @@ class TestPlayer extends Player {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'confirm' && decision.helperText === Texts.doYouWantToReveal('moat'),
             response: () => shouldReveal
+        });
+    }
+    testConfirm(text: string, confirm: boolean) {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'confirm' && decision.helperText === text,
+            response: () => confirm
         });
     }
     testGain(forCard: string, gainCard: string) {
@@ -127,11 +145,14 @@ class TestGame extends Game {
     determineTurnOrder() {
         // Retain default ordering
     }
+    onAccountabilityFailure(missingIds: string[], extraIds: string[]) {
+        this.doneFn(new Error(`The following ids were missing: ${missingIds.join(", ")}\nThe following ids were created or duplicated: ${extraIds.join(", ")}`));
+    }
 }
 export default function makeTestGame({
     players = 1,
     decks = [['copper']],
-    d = (error?) => {}
+    d = () => {}
                                      }): [TestGame, TestPlayer[], () => any] {
     const game = new TestGame(makeFakeIo((msg) => {
         console.log(msg)

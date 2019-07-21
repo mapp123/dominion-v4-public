@@ -1,7 +1,6 @@
 import {Namespace, Server, Socket} from "socket.io";
 import {v4} from "uuid";
 import {struct} from 'superstruct';
-import {CardInstance} from "./CardInstance";
 import Player from "./Player";
 import Rules from "./Rules";
 import shuffle from "./util/shuffle";
@@ -9,9 +8,6 @@ import {format} from "util";
 import Supply from "./Supply";
 import CardRegistry from "../cards/CardRegistry";
 import Card from "../cards/Card";
-import List = Mocha.reporters.List;
-// TODO: Remove stub
-type AccountabilityRunner = {};
 interface Events {
     buy: [Player, string];
     gain: [Player, Card];
@@ -155,7 +151,7 @@ export default class Game {
         }).sort((a, b) => {
             return a[2] - b[2];
         });
-        scores.forEach(([player, scoreTable, total]) => {
+        scores.forEach(([player, scoreTable]) => {
             this.lmg('%s: Score Breakdown:', player.username);
             Object.entries(scoreTable).forEach(([name, score]) => {
                 if (score > 0) {
@@ -163,7 +159,7 @@ export default class Game {
                 }
             });
         });
-        scores.forEach(([player, _, total]) => {
+        scores.forEach(([player, , total]) => {
             this.lmg('%s scored %s points.', player.username, total);
         });
         this.lmg('%s wins!', scores[0][0].username);
@@ -266,11 +262,16 @@ export default class Game {
         ];
         const missing = this.cardIds.filter((a) => !newIds.includes(a));
         const extra = [...newIds.filter((a) => !this.cardIds.includes(a)), ...newIds.filter((a, i) => newIds.indexOf(a) !== i)];
-        if (missing.length) {
-            console.error("The following cards went missing: " + missing.join(", "));
+        if (missing.length || extra.length) {
+            this.onAccountabilityFailure(missing, extra);
         }
-        if (extra.length) {
-            console.error("The following cards were created or duplicated: " + extra.join(", "));
+    }
+    onAccountabilityFailure(missingIds: string[], extraIds: string[]) {
+        if (missingIds.length) {
+            console.error("The following cards went missing: " + missingIds.join(", "));
+        }
+        if (extraIds.length) {
+            console.error("The following cards were created or duplicated: " + extraIds.join(", "));
         }
     }
 }

@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "main": "src/server/app.js",
     "test": "nyc mocha",
     "buildClientW": "webpack --mode=development --watch",
-    "buildClient": "webpack --mode=production"
+    "buildClient": "webpack --mode=production",
+    "buildServer": "tsc",
+    "heroku-postbuild": "npm run buildClient && npm run buildServer"
   },
   "keywords": [],
   "author": "",

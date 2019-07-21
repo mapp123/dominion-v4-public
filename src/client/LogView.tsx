@@ -7,7 +7,7 @@ interface IState {
     logs: string[];
 }
 export default class LogView extends React.Component<IProps, IState> {
-    shouldScroll = false;
+    shouldScroll = true;
     constructor(props) {
         super(props);
         this.state = {
@@ -24,13 +24,13 @@ export default class LogView extends React.Component<IProps, IState> {
         });
     }
     componentWillUpdate() {
-        let node = ReactDOM.findDOMNode(this) as HTMLDivElement;
+        let node = ReactDOM.findDOMNode(this)!.parentNode as HTMLDivElement;
         this.shouldScroll = Math.abs(node.scrollTop + node.offsetHeight - node.scrollHeight) < 2;
     }
     componentDidUpdate() {
         if(this.shouldScroll) {
-            let node = ReactDOM.findDOMNode(this) as HTMLDivElement;
-            node.scrollTop = node.scrollHeight
+            let node = ReactDOM.findDOMNode(this)!.parentNode as HTMLDivElement;
+            node.scrollTop = node.scrollHeight;
         }
     }
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {

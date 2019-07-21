@@ -70,6 +70,12 @@ class TestPlayer extends Player {
             response: (decision) => decision.source.find((a) => a.name === card) as any
         });
     }
+    throneRoomTarget(card: string) {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'chooseCard' && decision.helperText === Texts.chooseCardToPlayTwice,
+            response: (decision) => decision.source.find((a) => a.name === card)
+        });
+    }
     testReveal(card: string, shouldReveal = true) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'confirm' && decision.helperText === Texts.doYouWantToReveal('moat'),

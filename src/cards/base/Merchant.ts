@@ -12,6 +12,7 @@ export default class Merchant extends Card {
         "+1 Action\n" +
         "The first time you play a Silver this turn, +$1.";
     supplyCount = 10;
+    cardArt = "/img/card-img/MerchantArt.jpg";
     cb: ((player: Player, card: Card) => boolean | Promise<boolean>) | null = null;
     async onAction(player: Player): Promise<void> {
         player.draw(1);

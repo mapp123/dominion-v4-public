@@ -5,6 +5,7 @@ import {BrowserRouter as Router, Route} from "react-router-dom";
 import Home from "./Home";
 import GameView from "./GameView";
 import CreateGameView from "./CreateGameView";
+import GenPage from "./CardGenerator/GenPage";
 class Application extends React.Component<{}, {}> {
     socket = io();
     constructor(props: {}) {
@@ -23,6 +24,7 @@ class Application extends React.Component<{}, {}> {
                     <Route path="/" exact component={Home} />
                     <Route path="/createGame/:gameId" component={CreateGameView} />
                     <Route path="/game/:gameId" component={GameView} />
+                    <Route path="/cardgen" component={GenPage} />
                 </div>
             </Router>
         );

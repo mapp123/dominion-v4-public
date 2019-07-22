@@ -9,6 +9,7 @@ export default class Duchy extends Card {
     };
     cardText = "3 VP";
     randomizable = false;
+    cardArt = "/img/card-img/DuchyArt.jpg";
     supplyCount = (players) => players < 3 ? 8 : 12;
     static onScore(player: Player): number {
         return player.allCards.filter((a) => a.name === "duchy").length * 3;

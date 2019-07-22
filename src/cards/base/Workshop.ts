@@ -9,8 +9,9 @@ export default class Workshop extends Card {
     cost = {
         coin: 3
     };
-    cardText = "Gain a card costing up to 4 Money.";
+    cardText = "Gain a card costing up to $4.";
     supplyCount = 10;
+    cardArt = "/img/card-img/WorkshopArt.jpg";
     async onAction(player: Player): Promise<void> {
         await player.chooseGain(Texts.chooseCardToGainFor('workshop'), false, GainRestrictions.instance().setMaxCoinCost(4));
     }

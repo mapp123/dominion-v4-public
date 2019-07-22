@@ -11,6 +11,7 @@ export default class Chancellor extends Card {
     cardText = "+$2\n" +
         "You may immediately put your deck into your discard pile.";
     supplyCount = 10;
+    cardArt = "/img/card-img/ChancellorArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.data.money += 2;
         if (await player.confirmAction(Texts.placeDeckIntoDiscard)) {

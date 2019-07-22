@@ -11,6 +11,7 @@ export default class Woodcutter extends Card {
     cardText = "+1 Buy\n" +
         "+$2";
     supplyCount = 10;
+    cardArt = "/img/card-img/WoodcutterArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.data.buys++;
         player.data.money += 2;

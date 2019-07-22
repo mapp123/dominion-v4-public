@@ -4,6 +4,7 @@ interface IProps {
     cardName: string;
     cardTypes: ReadonlyArray<string>;
     onClick: (cardName: string) => any;
+    onHover: () => any;
     cardText: string;
     cost: {
         coin: number;
@@ -49,8 +50,8 @@ export default class SupplyButton extends React.Component<IProps, {}> {
             <button
                 className={"btn btn-"+getColorForButton(this.props.cardTypes)}
                 onClick={() => this.props.onClick(this.props.cardName)}
+                onMouseEnter={this.props.onHover}
                 disabled={this.props.disabled}
-                title={this.props.cardText}
                 style={{fontFamily:"TrajanPro-Bold",fontSize:'24px', padding: `4px 12px 4px 6px`}}>
                 <div style={{display:"inline",marginRight:"6px"}}>{SupplyButton.genCoinIcon(this.props.cost.coin)}</div>
                 {this.props.cardName} {this.props.supplyAmount != null ? `(${this.props.supplyAmount})` : ''} {embargoImg}

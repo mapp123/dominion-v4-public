@@ -7,6 +7,8 @@ import {Decision, DecisionResponseType} from "../server/Decision";
 import LogView from "./LogView";
 import HandView from "./HandView";
 import DefaultDecision from "./DefaultDecision";
+import CardGenerator from "./CardGenerator/CardGenerator";
+import {CardDef} from "../cards/CardDef";
 interface Params {
     gameId: string;
 }
@@ -14,6 +16,7 @@ interface IState {
     playersJoined: number;
     playerData: ReturnType<ReturnType<typeof createPlayerData>['getState']>;
     decision: Decision | null;
+    hoveredCard: typeof CardDef | null;
 }
 export default class GameView extends React.Component<RouteComponentProps<Params>, IState> {
     socket: SocketIOClient.Socket;
@@ -75,7 +78,8 @@ export default class GameView extends React.Component<RouteComponentProps<Params
         this.state = {
             playersJoined: 0,
             playerData: this.playerData.getState(),
-            decision: null
+            decision: null,
+            hoveredCard: null
         }
     }
 
@@ -96,8 +100,8 @@ export default class GameView extends React.Component<RouteComponentProps<Params
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-sm-10">
-                        <SupplyView socket={this.socket} decision={this.state.decision} gameView={this}/>
+                    <div className="col-sm-10" style={{height: "calc(100vh - 20px)"}}>
+                        <SupplyView socket={this.socket} decision={this.state.decision} gameView={this} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
                         {this.state.playersJoined > 0 && !this.state.playerData.gameStarted &&
                         <><button className="btn btn-primary dominion-font" onClick={this.startGame.bind(this)}>Start Game</button><br /></>}
                         {this.state.playersJoined > 0 && !this.state.playerData.gameStarted &&
@@ -121,6 +125,9 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                                     <br />
                                 </span>
                             </div>
+                        </div>
+                        <div id="cardId" style={{height: "50%", position: "absolute", bottom: 0, right: 0}}>
+                            {this.state.hoveredCard && <CardGenerator cardArtUrl={this.state.hoveredCard.cardArt} cardName={this.state.hoveredCard.cardName} cardTypes={this.state.hoveredCard.types} costs={this.state.hoveredCard.cost} description={this.state.hoveredCard.cardText} />}
                         </div>
                     </div>
                     <div className="col-sm-2" style={{height:"calc(100vh - 7px)",overflowY:"scroll"}}>

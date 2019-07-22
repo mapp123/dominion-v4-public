@@ -8,9 +8,10 @@ export default class Silver extends Card {
     cost = {
         coin: 3
     };
-    cardText = "+2 Money";
+    cardText = "+$2";
     randomizable = false;
     supplyCount = 40;
+    cardArt = "/img/card-img/SilverArt.jpg";
     protected async onTreasure(player: Player) {
         player.data.money += 2;
     }

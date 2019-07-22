@@ -7,10 +7,12 @@ import ClientCardRegistry from "./ClientCardRegisitry";
 import {Decision} from "../server/Decision";
 import GameView from "./GameView";
 import {GainRestrictions} from "../server/GainRestrictions";
+import Card from "../cards/Card";
 interface IProps {
     socket: SocketIOClient.Socket;
     decision: Decision | null;
     gameView: GameView;
+    setHoveredCard: (card: typeof CardDef | null) => any;
 }
 interface IState {
     data: ReturnType<ReturnType<typeof createSupplyData>['getState']>;
@@ -118,11 +120,11 @@ export default class SupplyView extends React.Component<IProps, IState> {
             }
             const disabled = restrictions ? !restrictions.validateCard(cardName) : true;
             return (
-                <SupplyButton key={pile.identifier} cardName={cardName} cardTypes={def.types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={def.cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined}/>
+                <SupplyButton onHover={() => this.props.setHoveredCard(def)} key={pile.identifier} cardName={cardName} cardTypes={def.types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={def.cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined}/>
             )
         });
         return (
-            <div className="btn-group" style={{flexWrap: "wrap"}}>
+            <div className="btn-group" style={{flexWrap: "wrap", paddingBottom: "10px"}} onMouseLeave={() => this.props.setHoveredCard(null)}>
                 {buttons}
             </div>
         )

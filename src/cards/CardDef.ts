@@ -6,4 +6,5 @@ export class CardDef extends Card {
     name = "";
     types = [];
     supplyCount = 0;
+    cardArt = "";
 }

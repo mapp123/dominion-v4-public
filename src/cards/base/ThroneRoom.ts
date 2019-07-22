@@ -10,6 +10,7 @@ export default class ThroneRoom extends Card {
     };
     cardText = "You may play an Action card from your hand twice.";
     supplyCount = 10;
+    cardArt = "/img/card-img/Throne_RoomArt.jpg";
     private _duplicateCard: Card | null = null;
     private _isUnderThroneRoom: boolean = false;
     async onAction(player: Player): Promise<void> {

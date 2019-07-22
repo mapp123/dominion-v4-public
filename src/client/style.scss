@@ -75,3 +75,6 @@
   display: flex;
   margin: 5px 0;
 }
+.force-image::after {
+  content: url("/img/CoinHighRes.png");
+}

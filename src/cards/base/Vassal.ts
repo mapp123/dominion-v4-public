@@ -11,6 +11,7 @@ export default class Vassal extends Card {
     cardText = "+$2\n" +
         "Discard the top card of your deck. If it is an Action card, you may play it.";
     supplyCount = 10;
+    cardArt = "/img/card-img/VassalArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.data.money += 2;
         const card = player.deck.pop();

@@ -12,6 +12,7 @@ export default class Harbinger extends Card {
         "+1 Action\n" +
         "Look through your discard pile. You may put a card from it onto your deck.";
     supplyCount = 10;
+    cardArt = "/img/card-img/HarbingerArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.draw(1);
         player.data.actions++;

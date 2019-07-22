@@ -10,6 +10,7 @@ export default class Chapel extends Card {
     };
     cardText = "Trash up to 4 cards from your hand.";
     supplyCount = 10;
+    cardArt = "/img/card-img/ChapelArt.jpg";
     async onAction(player: Player): Promise<void> {
         let cardsToTrash = 4;
         let card: Card | null = null;

@@ -56,6 +56,11 @@ export default abstract class Card {
         // @ts-ignore
         return new this().supplyCount;
     }
+    abstract cardArt: string;
+    public static get cardArt() {
+        // @ts-ignore
+        return new this().cardArt;
+    }
     public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Array<Card>; identity: Card; displayCount: boolean;}> {
         let pile: Card[] = [];
         const supplyCount = typeof this.supplyCount === 'function' ? this.supplyCount(playerCount) : this.supplyCount;

@@ -139,6 +139,7 @@ class DrawAttack extends Card {
     types = ["action", "attack"] as const;
     name = "attack";
     supplyCount = 10;
+    cardArt = "";
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.attackOthersInOrder(exemptPlayers, async (player) => {
             player.draw(1);

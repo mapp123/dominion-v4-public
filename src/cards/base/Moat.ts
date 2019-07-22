@@ -11,6 +11,7 @@ export default class Moat extends Card {
     cardText = "+2 Cards\n" +
         "When another player plays an Attack card, you may first reveal this from your hand, to be unaffected by it.";
     supplyCount = 10;
+    cardArt = "/img/card-img/MoatArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.draw(2);
     }

@@ -96,6 +96,7 @@ async function parsePage(p: string) {
     }
 }
 function infoToTemplate(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
+    let cardText = info.text.replace(/<img [^>]*?alt="(\$\d*?)"[^>]*?>/g, (match, money) => money).replace(/"/g, '\\"').split('\n').map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"").join(" +\n") + ";";
     return (
 `import Card from "../Card";
 import Player from "../../server/Player";
@@ -107,7 +108,7 @@ export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase
     cost = {
         coin: ${info.cost.coin}
     };
-    cardText = ${info.text.replace(/"/g, '\\"').split('\n').map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"").join(" +\n") + ";"}
+    cardText = ${cardText}
     supplyCount = 10;
     cardArt = "${info.artwork}";
     async onAction(player: Player${info.types.includes("attack") ? ", exemptPlayers: Player[]" : ""}): Promise<void> {

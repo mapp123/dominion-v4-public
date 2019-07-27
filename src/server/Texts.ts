@@ -5,6 +5,9 @@ export class Texts {
     static buy = "Please buy a card...";
     static chooseCardToPlayTwice = "Please choose a card to play twice...";
     static placeDeckIntoDiscard = "Would you like to place your deck into your discard?";
+    static chooseAnAToTrashForB(a, b) {
+        return `Please choose an ${a} to trash for ${b}...`;
+    }
     static chooseVictoryToTopDeckFor(card) {
         return `Please choose a victory to place on top of your deck for ${card}...`;
     }

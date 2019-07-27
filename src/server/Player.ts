@@ -353,9 +353,17 @@ export default class Player {
             helperText
         });
     }
+    async affectOthersInOrder(cb: (player: Player) => Promise<any>) {
+        let currentPlayerIndex = this.game.players.indexOf(this);
+        let players = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
+        for (let player of players) {
+            await cb(player);
+        }
+    }
     async attackOthers(exemptPlayers: Player[], cb: (player: Player) => Promise<any>) {
         let currentPlayerIndex = this.game.players.indexOf(this);
         let attacked = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
+        attacked.filter((a) => !exemptPlayers.includes(a));
         await Promise.all(attacked.map((a) => cb(a)));
     }
     async attackOthersInOrder(exemptPlayers: Player[], cb: (player: Player) => Promise<any>) {

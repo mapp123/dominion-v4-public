@@ -20,6 +20,12 @@ export default class Deck {
         }
         return this.cards.shift()
     }
+    peek(): Card | undefined {
+        if (this.cards.length === 0) {
+            this.shuffle();
+        }
+        return this.cards[0];
+    }
 
     getBottomCard() {
         if (this.cards.length === 0) {

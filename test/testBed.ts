@@ -23,6 +23,7 @@ type DecisionResponse = {
 let testPlayerIndex = 1;
 class TestPlayer extends Player {
     decisionResponses: Array<DecisionResponse> = [];
+    username = `Test Player ${testPlayerIndex++}`;
     get hand() {
         return this.data.hand.map((a) => a.name);
     }
@@ -31,7 +32,7 @@ class TestPlayer extends Player {
     }
     async makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T["decision"]]> {
         if (decision.decision === 'chooseUsername') {
-            return `Test Player ${testPlayerIndex++}` as any;
+            return this.username as any;
         }
         const rIndex = this.decisionResponses.findIndex((a) => a.matcher(decision));
         if (rIndex !== -1) {

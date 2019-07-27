@@ -29,7 +29,7 @@ export default class Spy extends Card {
         player.draw();
         player.data.actions += 1;
         await this.affectPlayer(player, player);
-        await player.affectOthersInOrder(async (p) => {
+        await player.attackOthersInOrder(exemptPlayers, async (p) => {
             await this.affectPlayer(player, p);
         });
     }

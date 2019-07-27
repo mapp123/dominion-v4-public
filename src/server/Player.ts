@@ -353,6 +353,11 @@ export default class Player {
             helperText
         });
     }
+    async attackOthers(exemptPlayers: Player[], cb: (player: Player) => Promise<any>) {
+        let currentPlayerIndex = this.game.players.indexOf(this);
+        let attacked = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
+        await Promise.all(attacked.map((a) => cb(a)));
+    }
     async attackOthersInOrder(exemptPlayers: Player[], cb: (player: Player) => Promise<any>) {
         let currentPlayerIndex = this.game.players.indexOf(this) + 1;
         currentPlayerIndex %= this.game.players.length;

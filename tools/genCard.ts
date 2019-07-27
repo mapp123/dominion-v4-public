@@ -107,7 +107,7 @@ export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase
     cost = {
         coin: ${info.cost.coin}
     };
-    cardText = ${info.text.split('\n').map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"").join(" +\n") + ";"}
+    cardText = ${info.text.replace(/"/g, '\\"').split('\n').map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"").join(" +\n") + ";"}
     supplyCount = 10;
     cardArt = "${info.artwork}";
     async onAction(player: Player${info.types.includes("attack") ? ", exemptPlayers: Player[]" : ""}): Promise<void> {

@@ -67,7 +67,6 @@ export default class Player {
         return this._currentSocket;
     }
     syncHalted = false;
-    actions: any[] = [];
     async haltSync(exec: () => Promise<any>) {
         this.syncHalted = true;
         await exec();

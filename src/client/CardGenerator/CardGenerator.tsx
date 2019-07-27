@@ -124,7 +124,7 @@ class Description extends React.Component<{description: string;heirloomPresent: 
         return (
             <foreignObject x={140} y={1140} width={1130} height={this.props.heirloomPresent ? 620 : 700}>
                 <div style={{display: "table", position: "absolute", top: 0, left: 0, height: "100%", width: "100%"}}>
-                    <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: "64pt", display: "table-cell", verticalAlign: "middle"}}>
+                    <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: "64pt", display: "table-cell", verticalAlign: "middle", padding: "0 75pt"}}>
                     {this.props.description.split("\n").map((text) => {
                         let extraStyle = {};
                         if (/\+\d (Action|Card|Buy)s?/.test(text)) {

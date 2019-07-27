@@ -341,7 +341,10 @@ export default class Player {
             return null;
         }
         const handIndex = this.data.hand.findIndex((a) => a.id === result.id);
-        return this.game.grabCard(result.id, "activeHand", true);
+        if (handIndex === -1) {
+            return null;
+        }
+        return this.data.hand.splice(handIndex, 1)[0] || null;
     }
     async confirmAction(helperText: string): Promise<boolean> {
         return this.makeDecision({

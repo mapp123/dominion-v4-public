@@ -96,7 +96,7 @@ async function parsePage(p: string) {
     }
 }
 function infoToTemplate(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
-    let cardText = info.text.replace(/<img [^>]*?alt="(\$\d*?)"[^>]*?>/g, (match, money) => money).replace(/"/g, '\\"').split('\n').map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"").join(" +\n") + ";";
+    let cardText = info.text.replace(/<img [^>]*?alt="(\$\d*?)"[^>]*?>/g, (match, money) => money).replace(/"/g, '\\"').split('\n').map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"").join(" +\n        ") + ";";
     return (
 `import Card from "../Card";
 import Player from "../../server/Player";

@@ -132,7 +132,7 @@ export default class Game {
         this.lmg('Play order has been determined: %s.',
             this.players.length === 1 ?
                 this.players[0].username :
-                this.players.slice(0, -1).map((p) => p.username).join(", ") + "and " + this.players.slice(-1)[0].username);
+                this.players.slice(0, -1).map((p) => p.username).join(", ") + " and " + this.players.slice(-1)[0].username);
         while (!this.gameEnded()) {
             await this.players[this.currentPlayerIndex].playTurn();
             this.runAccountability();

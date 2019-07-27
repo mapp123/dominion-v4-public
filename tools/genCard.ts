@@ -168,6 +168,9 @@ function htmlToString(node: HTMLElement): string {
         if ((a as HTMLElement).tagName === 'br') {
             text += '\n';
         }
+        else if ((a as HTMLElement).childNodes.length === 1 && a.childNodes[0].nodeType === 3) {
+            return;
+        }
         else {
             text += ((a as HTMLElement).innerHTML || a.rawText).replace(/\n/g, '').split(' ').filter((a) => a !== '').join(' ');
         }

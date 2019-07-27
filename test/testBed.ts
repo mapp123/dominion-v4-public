@@ -108,6 +108,15 @@ class TestPlayer extends Player {
             response: (decision) => ({responseType: 'playCard', choice: decision.source.find((a) => a.name === card)})
         });
     }
+    testEndGame() {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
+            response: () => {
+                (this.game as TestGame).done = true;
+                return ({responseType: 'playCard', choice: {name: 'End Turn', id: ''}});
+            }
+        });
+    }
     endTurn() {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
@@ -128,6 +137,24 @@ class TestPlayer extends Player {
                 return {responseType: 'playCard', choice: {name: 'End Turn', id: ''}};
             }
         });
+    }
+    private onScoreCb: null | ((score: number) => any) = null;
+    onScore(cb: (score: number) => any) {
+        this.onScoreCb = cb;
+    }
+    score(): { [p: string]: number } {
+        const b = super.score();
+        if (this.onScoreCb) {
+            try {
+                this.onScoreCb(Object.values(b).reduce((total, val) => total + val, 0));
+            }
+            catch (e) {
+                // @ts-ignore
+                this.game.doneFn(e);
+            }
+            this.onScoreCb = null;
+        }
+        return b;
     }
 }
 class DrawAttack extends Card {

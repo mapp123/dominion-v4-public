@@ -298,8 +298,8 @@ export default class Player {
             this.lm('%p fails to gain the %s after on-buy effects.', cardName);
         }
     }
-    async gain(cardName: string): Promise<boolean> {
-        const c = this.game.grabNameFromSupply(cardName);
+    async gain(cardName: string, realCard?: Card): Promise<boolean> {
+        const c = realCard ? realCard : this.game.grabNameFromSupply(cardName);
         if (c) {
             await this.discard(c);
             await this.game.emit('gain', this, c);
@@ -310,8 +310,13 @@ export default class Player {
     async playTreasure(card: Card) {
         await card.doTreasure(this);
     }
-    async discard(card: Card) {
-        this.deck.discard.push(card);
+    async discard(card: Card | Card[]) {
+        if (Array.isArray(card)) {
+            this.deck.discard.push(...card);
+        }
+        else {
+            this.deck.discard.push(card);
+        }
     }
     score() {
         const score: {[cardName: string]: number} = {};
@@ -320,27 +325,35 @@ export default class Player {
         });
         return score;
     }
-    async chooseCardFromHand(helperText: string, optional = false, filter?: (card: Card) => boolean): Promise<Card | null> {
+    async chooseCard(helperText: string, source: Card[], optional = false, filter?: (card: Card) => boolean): Promise<Card | null> {
         const optionalSource: Card[] = optional ? [{name: 'No Card', id: 'nocard'}] as Card[] : [];
         let result;
         let foundCard;
-        if (filter && this.data.hand.filter(filter).length === 0) {
-            // No choices, return
+        if ((filter && source.filter(filter).length === 0) || source.length === 0) {
             return null;
         }
-        while ((result = await this.makeDecision({
+        if (((filter && source.filter(filter).length === 1) || source.length === 1) && !optional) {
+            return filter ? source.filter(filter)[0] : source[0];
+        }
+        while((result = await this.makeDecision({
             decision: 'chooseCard',
-            source: [...this.data.hand, ...optionalSource],
+            source: [...source, ...optionalSource],
             id: v4(),
             helperText
-        })) != null && ((foundCard = this.data.hand.find((a) => a.id === result.id && a.name == result.name)) != null) && (filter && !filter(foundCard))) {
-            console.log("Filter unsatisfied");
+        })) != null && ((foundCard = source.find((a) => a.id === result.id && a.name === result.name)) != null) && (filter && !filter(foundCard))) {
+
         }
         if (result.name === "No Card") {
-            // Make it very simple to have an out
             return null;
         }
-        const handIndex = this.data.hand.findIndex((a) => a.id === result.id);
+        return foundCard;
+    }
+    async chooseCardFromHand(helperText: string, optional = false, filter?: (card: Card) => boolean): Promise<Card | null> {
+        const foundCard = await this.chooseCard(helperText, this.data.hand, optional, filter);
+        if (foundCard == null) {
+            return null;
+        }
+        const handIndex = this.data.hand.findIndex((a) => a.id === foundCard.id);
         if (handIndex === -1) {
             return null;
         }

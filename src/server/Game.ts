@@ -207,7 +207,7 @@ export default class Game {
      * @param hint
      * @param hintMandatory - Should other places be checked after the hint?
      */
-    grabCard(cardId: string, hint?: 'supply' | 'activeHand', hintMandatory = false): Card | null {
+    grabCard(cardId: string, hint?: 'supply' | 'activeHand' | 'trash', hintMandatory = false): Card | null {
         if (hint === 'supply') {
             const card = this.trySupply(cardId, true);
             if (card) {
@@ -220,6 +220,12 @@ export default class Game {
                 return card;
             }
         }
+        else if (hint === 'trash') {
+            const card = this.tryTrash(cardId, true);
+            if (card) {
+                return card;
+            }
+        }
         if (hintMandatory) {
             return null;
         }
@@ -227,6 +233,16 @@ export default class Game {
         if (card) return card;
         card = this.trySupply(cardId, true);
         if (card) return card;
+        return null;
+    }
+    private tryTrash(cardId: string, remove: boolean) {
+        const trashIndex = this.trash.findIndex((a) => a.id === cardId);
+        if (trashIndex > -1 && remove) {
+            return this.trash.splice(trashIndex, 1)[0];
+        }
+        else if (trashIndex > -1) {
+            return this.trash[trashIndex];
+        }
         return null;
     }
     private tryActiveHand(cardId: string, remove: boolean) {

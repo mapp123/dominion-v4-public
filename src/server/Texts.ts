@@ -5,6 +5,10 @@ export class Texts {
     static buy = "Please buy a card...";
     static chooseCardToPlayTwice = "Please choose a card to play twice...";
     static placeDeckIntoDiscard = "Would you like to place your deck into your discard?";
+    static chooseCardToGainFromTrashed = "Please choose any number of cards to gain from the trashed cards...";
+    static chooseATreasureToTrashFor(player) {
+        return `Choose a treasure to trash for ${player}...`;
+    }
     static shouldADiscardTheBOnTopOfTheirDeck(a, b) {
         return `Should ${a} discard the ${b} on top of their deck?`;
     }

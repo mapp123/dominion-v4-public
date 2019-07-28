@@ -7,6 +7,7 @@ export class Texts {
     static placeDeckIntoDiscard = "Would you like to place your deck into your discard?";
     static chooseCardToGainFromTrashed = "Please choose any number of cards to gain from the trashed cards...";
     static chooseOrderOfCards = 'Please reorder the cards:';
+    static chooseCardToPutOnDeck = 'Please choose a card to put on top of your deck...';
     static whatToDoWith(card) {
        return `What would you like to do with the ${card}?`;
     }

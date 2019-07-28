@@ -405,6 +405,29 @@ export default class Player {
         this.lm('%p trashes a %s.', card.name);
         this.game.trash.push(card);
     }
+    async chooseOption<T extends ReadonlyArray<string>>(helperText: string, options: T): Promise<T[number]> {
+        const {choice} = await this.makeDecision({
+            decision: "chooseOption",
+            id: v4(),
+            options: options as any as string[],
+            helperText
+        });
+        return choice;
+    }
+    async chooseOrder(helperText: string, cards: Card[], topText: string, bottomText: string): Promise<Card[]> {
+        if (cards.length < 2) {
+            return cards;
+        }
+        const {order} = await this.makeDecision({
+            decision: 'reorder',
+            id: v4(),
+            helperText,
+            bottomString: bottomText,
+            topString: topText,
+            cards
+        });
+        return order.map((a) => cards.find((b) => b.id === a.id)).filter((a) => a) as Card[];
+    }
     async chooseGain(helperText: string, optional: boolean, gainRestrictions: GainRestrictions, destination: 'discard' | 'hand' | 'deck' = 'discard'): Promise<Card | null> {
         const cardToGain = await this.makeDecision({
             decision: 'gain',

@@ -40,7 +40,7 @@ export class GainRestrictions {
     }
     private isCardAllowed(game: Game, card: string) {
         return (!this.inSupply || game.nameAvailableInSupply(card))
-            && game.getCostOfCard(card).coin <= this.maxCoinCost && this.mustHaveTypes.reduce((last, type) => last && CardRegistry.getInstance().getCard(card).types.includes(type as any), true);
+            && game.getCostOfCard(card).coin <= this.maxCoinCost && this.mustHaveTypes.reduce((last, type) => last && game.getTypesOfCard(card).includes(type as any), true);
     }
     toJSON(game: Game): GainRestrictionsJSON {
         this.allowedCards = [];

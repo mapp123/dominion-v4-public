@@ -109,6 +109,26 @@ class TestPlayer extends Player {
             response: (decision) => ({responseType: 'playCard', choice: decision.source.find((a) => a.name === card)})
         });
     }
+    testOption(text: string, option: string | number) {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'chooseOption' && decision.helperText === text,
+            response: (decision) => {
+                return {
+                    choice: decision.options.find((a, i) => a === option || i === option)
+                }
+            }
+        });
+    }
+    testReorderSame(text: string) {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'reorder' && decision.helperText === text,
+            response: (decision) => {
+                return {
+                    order: decision.cards
+                }
+            }
+        });
+    }
     testEndGame() {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',

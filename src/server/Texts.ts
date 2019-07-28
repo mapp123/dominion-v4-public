@@ -6,6 +6,10 @@ export class Texts {
     static chooseCardToPlayTwice = "Please choose a card to play twice...";
     static placeDeckIntoDiscard = "Would you like to place your deck into your discard?";
     static chooseCardToGainFromTrashed = "Please choose any number of cards to gain from the trashed cards...";
+    static chooseOrderOfCards = 'Please reorder the cards:';
+    static whatToDoWith(card) {
+       return `What would you like to do with the ${card}?`;
+    }
     static wantToDraw(card) {
         return `Do you want to draw the ${card}?`;
     }

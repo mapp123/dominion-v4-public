@@ -83,6 +83,9 @@ export default class Game {
     getCostOfCard(card: string) {
         return CardRegistry.getInstance().getCard(card).cost;
     }
+    getTypesOfCard(card: string) {
+        return CardRegistry.getInstance().getCard(card).types;
+    }
     lmg(msg: string, ...params: any[]) {
         this.lm(null, msg,...params);
     }

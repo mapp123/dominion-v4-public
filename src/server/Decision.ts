@@ -3,7 +3,7 @@ import {Struct, struct} from "superstruct";
 import Game from "./Game";
 import {GainRestrictions, GainRestrictionsJSON} from "./GainRestrictions";
 
-export type Decision = ChooseUsernameDecision | ChooseCardOrBuyDecision | BuyDecision | ChooseCardDecision | ConfirmDecision | GainDecision;
+export type Decision = ChooseUsernameDecision | ChooseCardOrBuyDecision | BuyDecision | ChooseCardDecision | ConfirmDecision | GainDecision | OptionDecision | ReorderDecision;
 
 type AllDecisionHaveHelperText = Decision['helperText'];
 
@@ -47,6 +47,22 @@ interface GainDecision {
     gainRestrictions: GainRestrictionsJSON;
     optional: boolean;
     helperText: string;
+}
+
+interface OptionDecision {
+    decision: 'chooseOption';
+    id: string;
+    options: string[];
+    helperText: string;
+}
+
+interface ReorderDecision {
+    decision: 'reorder';
+    topString: string;
+    bottomString: string;
+    cards: Card[];
+    helperText: string;
+    id: string;
 }
 
 const wrapStruct = <T>(struct: Struct<T>) => (game, decision, response) => struct(response);
@@ -141,13 +157,51 @@ const gainValidator = (game: Game, decision: Decision, response: any) => {
     return r;
 };
 
+const OptionResponse = struct({
+    choice: "string"
+});
+
+const optionValidator = (game: Game, decision: Decision, response: any) => {
+    const r = OptionResponse(response);
+    if (decision.decision !== 'chooseOption') {
+        throw new Error("Wrong validator")
+    }
+    if (!decision.options.includes(r.choice)) {
+        throw new Error("Invalid choice");
+    }
+    return r;
+};
+
+const ReorderResponse = struct({
+    order: [{
+        id: "string",
+        name: "string"
+    }]
+});
+
+const reorderValidator = (game: Game, decision: Decision, response: any) => {
+    const r = ReorderResponse(response);
+    if (decision.decision !== 'reorder') {
+        throw new Error("Wrong validator");
+    }
+    const extraInR = r.order.filter((a) => decision.cards.find((b) => a.id === b.id) == null).length !== 0;
+    const extraInD = decision.cards.filter((a) => r.order.find((b) => b.id === a.id) == null).length !== 0;
+    const lengthMatch = decision.cards.length !== r.order.length;
+    if (extraInD || extraInR || lengthMatch) {
+        throw new Error("Invalid order");
+    }
+    return r;
+};
+
 export const DecisionValidators = {
     chooseUsername: wrapStruct(struct.scalar('string')),
     chooseCardOrBuy: chooseCardOrBuyValidator,
     buy: buyValidator,
     chooseCard: chooseCardValidator,
     confirm: wrapStruct(ConfirmResponse),
-    gain: gainValidator
+    gain: gainValidator,
+    chooseOption: optionValidator,
+    reorder: reorderValidator
 };
 
 export type DecisionResponseType = {
@@ -214,13 +268,27 @@ const gainDefault = (decision: Decision) => {
     return null;
 };
 
+const reorderDefault = (decision: Decision) => {
+    if (decision.decision !== 'reorder') {
+        throw new Error("Wrong defaulter");
+    }
+    if (decision.cards.length < 2) {
+        return {
+            order: decision.cards
+        }
+    }
+    return null;
+};
+
 export const DecisionDefaults = {
     chooseUsername: (decision: Decision) => null,
     chooseCardOrBuy: chooseCardOrBuyDefault,
     buy: buyDefault,
     chooseCard: chooseCardDefault,
     confirm: (decision: Decision) => null,
-    gain: gainDefault
+    gain: gainDefault,
+    chooseOption: (decision: Decision) => null,
+    reorder: reorderDefault
 };
 
 type AllDecisionHaveDefaults = typeof DecisionDefaults[Decision['decision']];

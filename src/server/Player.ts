@@ -293,18 +293,29 @@ export default class Player {
         this.data.buys--;
         this.lm('%p buys a %s.', cardName);
         await this.game.emit('buy', this, cardName);
-        if (!await this.gain(cardName)) {
+        if (await this.gain(cardName) == null) {
             this.lm('%p fails to gain the %s after on-buy effects.', cardName);
         }
     }
-    async gain(cardName: string, realCard?: Card): Promise<boolean> {
+    async gain(cardName: string, realCard?: Card, destination: 'discard' | 'hand' | 'deck' = 'discard'): Promise<Card | null> {
         const c = realCard ? realCard : this.game.grabNameFromSupply(cardName);
         if (c) {
-            await this.discard(c);
+            switch (destination) {
+                case 'discard':
+                    // Per http://wiki.dominionstrategy.com/index.php/Discard, you do not discard a card when you gain it.
+                    await this.deck.discardCard(c);
+                    break;
+                case 'hand':
+                    this.data.hand.push(c);
+                    break;
+                case 'deck':
+                    this.deck.cards.unshift(c);
+                    break;
+            }
             await this.game.emit('gain', this, c);
-            return true;
+            return c;
         }
-        return false;
+        return null;
     }
     async playTreasure(card: Card) {
         await card.doTreasure(this);
@@ -405,9 +416,10 @@ export default class Player {
         if (cardToGain.name === 'Gain Nothing') {
             return null;
         }
-        if (this.gain(cardToGain.name)) {
-            this.lm('%p gains a %s.', cardToGain.name);
-            return this.deck.discard[this.deck.discard.length - 1].name === cardToGain.name ? this.deck.discard[this.deck.discard.length - 1] : null;
+        let gained = await this.gain(cardToGain.name, undefined, destination);
+        if (gained != null) {
+            this.lm('%p gains a %s.', gained.name);
+            return gained;
         }
         else {
             return null;

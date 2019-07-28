@@ -1,5 +1,6 @@
 import Game from "./Game";
 import Card from "../cards/Card";
+import CardRegistry from "../cards/CardRegistry";
 
 interface CostRestriction {
     type: 'cost';
@@ -19,6 +20,7 @@ export class GainRestrictions {
     maxCoinCost: number = Infinity;
     inSupply = true;
     allowedCards: string[] | null = null;
+    mustHaveTypes: string[] = [];
     private constructor() {
 
     }
@@ -38,7 +40,7 @@ export class GainRestrictions {
     }
     private isCardAllowed(game: Game, card: string) {
         return (!this.inSupply || game.nameAvailableInSupply(card))
-            && game.getCostOfCard(card).coin <= this.maxCoinCost;
+            && game.getCostOfCard(card).coin <= this.maxCoinCost && this.mustHaveTypes.reduce((last, type) => last && CardRegistry.getInstance().getCard(card).types.includes(type as any), true);
     }
     toJSON(game: Game): GainRestrictionsJSON {
         this.allowedCards = [];
@@ -66,6 +68,10 @@ export class GainRestrictions {
     }
     setMaxCoinCost(coinCost: number) {
         this.maxCoinCost = coinCost;
+        return this;
+    }
+    setMustIncludeType(type: string) {
+        this.mustHaveTypes.push(type);
         return this;
     }
     setInSupply(inSupply: boolean) {

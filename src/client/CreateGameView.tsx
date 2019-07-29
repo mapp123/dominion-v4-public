@@ -53,6 +53,9 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
     }
     submit() {
         this.socket.emit('setCards', this.state.cards);
+        if (this.state.shortcut) {
+            this.globalSocket.emit('setShortcut', this.props.match.params.gameId, this.state.shortcut);
+        }
         this.props.history.push({
             pathname: `/game/${this.props.match.params.gameId}`
         });

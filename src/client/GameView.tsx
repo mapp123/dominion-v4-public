@@ -22,6 +22,9 @@ export default class GameView extends React.Component<RouteComponentProps<Params
     socket: SocketIOClient.Socket;
     playerData = createPlayerData();
     decisionTimeout: any = null;
+    private outOfTurnDecision = new Audio('/audio/outOfTurnDecision.mp3');
+    private turnNotification = new Audio('/audio/turnNotification.mp3');
+    private firstTurnPlayed = false;
     constructor(props) {
         super(props);
         this.socket = SocketManager.getSocket(this.props.match.params.gameId);
@@ -53,6 +56,9 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                 const username = prompt("What would you like your username to be?") || "PICK_A_USERNAME_COWARD";
                 this.respondToDecision(username, decision);
             }
+            if (!this.state.decision && !this.playerData.isMyTurn && this.firstTurnPlayed) {
+                this.outOfTurnDecision.play();
+            }
             this.setState({
                 decision
             })
@@ -69,6 +75,10 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                 decisionSet = {
                     decision: null
                 }
+            }
+            else if (this.playerData.isMyTurn && !this.state.playerData.isMyTurn) {
+                this.turnNotification.play();
+                this.firstTurnPlayed = true;
             }
             this.setState({
                 playerData: this.playerData.getState(),

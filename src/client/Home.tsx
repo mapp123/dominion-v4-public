@@ -1,9 +1,25 @@
 import * as React from 'react';
 import * as io from "socket.io-client";
-import { RouteComponentProps } from 'react-router-dom';
+import {Link, RouteComponentProps} from 'react-router-dom';
 import SocketManager from "./SocketManager";
-export default class Home extends React.Component<RouteComponentProps, {}> {
+export default class Home extends React.Component<RouteComponentProps, {shortcuts: Array<[string, string]>}> {
     socket = SocketManager.getGlobalSocket();
+    constructor(props) {
+        super(props);
+        this.state = {
+            shortcuts: []
+        };
+        this.socket.emit('listenForShortcuts', 'onShortcut');
+        this.socket.on('onShortcut', (shortcuts) => {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    shortcuts: [...state.shortcuts, ...shortcuts]
+                }
+            });
+        });
+    }
+
     createGame() {
         this.socket.emit('createGame', 'onGameCreate');
         this.socket.once('onGameCreate', (gameId) => {
@@ -25,7 +41,12 @@ export default class Home extends React.Component<RouteComponentProps, {}> {
     render() {
         return (
             <div className="container-fluid">
-                <button className="btn btn-success" onClick={this.createGame.bind(this)}>Create Game</button>
+                <button className="btn btn-success" onClick={this.createGame.bind(this)}>Create Game</button><br />
+                {this.state.shortcuts.map(([shortcut, gameId]) => {
+                    return (
+                        <><Link to={`/game/${gameId}`}>{shortcut}</Link><br /></>
+                    )
+                })}
             </div>
         );
     }

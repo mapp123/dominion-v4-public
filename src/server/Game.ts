@@ -165,7 +165,7 @@ export default class Game {
         scores.forEach(([player, , total]) => {
             this.lmg('%s scored %s points.', player.username, total);
         });
-        this.lmg('%s wins!', scores[0][0].username);
+        this.lmg('%s wins!', scores[scores.length - 1][0].username);
     }
     private listeners: {[T in keyof Events]: Array<Listener<T>>} = {
         buy: [],

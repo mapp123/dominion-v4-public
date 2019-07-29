@@ -11,7 +11,7 @@ export default class Curse extends Card {
     randomizable = false;
     cardArt = "/img/curse.png";
     supplyCount = (players) => (players - 1) * 10;
-    onScore(player: Player): number {
+    static onScore(player: Player): number {
         return -player.allCards.filter((a) => a.name === "curse").length;
     }
 }

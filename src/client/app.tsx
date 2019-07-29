@@ -5,7 +5,6 @@ import {BrowserRouter as Router, Route} from "react-router-dom";
 import Home from "./Home";
 import GameView from "./GameView";
 import CreateGameView from "./CreateGameView";
-import GenPage from "./CardGenerator/GenPage";
 class Application extends React.Component<{}, {}> {
     socket = io();
     constructor(props: {}) {
@@ -14,7 +13,7 @@ class Application extends React.Component<{}, {}> {
         window.socket = this.socket;
         this.state = {
             creatingGame: false
-        }
+        };
     }
 
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
@@ -24,10 +23,9 @@ class Application extends React.Component<{}, {}> {
                     <Route path="/" exact component={Home} />
                     <Route path="/createGame/:gameId" component={CreateGameView} />
                     <Route path="/game/:gameId" component={GameView} />
-                    <Route path="/cardgen" component={GenPage} />
                 </div>
             </Router>
         );
     }
 }
-ReactDOM.render(<Application/>, document.getElementById('app'));
+ReactDOM.render(<Application />, document.getElementById('app'));

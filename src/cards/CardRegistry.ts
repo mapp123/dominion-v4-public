@@ -29,7 +29,7 @@ export default class CardRegistry {
                 return null;
             }
             return [a.name, ...readdirSync(resolve(__dirname, a.name)).filter((a) => cardMatcher.test(a))];
-        }).filter((a) => a != null) as Array<string[]>;
+        }).filter((a) => a != null) as string[][];
         this.cardCache = cardsInSet.reduce((sets, [setName, ...cards]) => {
             const set: { [key: string]: typeof CardDef } = {};
             cards.forEach((card) => {
@@ -43,7 +43,7 @@ export default class CardRegistry {
             return {
                 ...sets,
                 [setName]: set
-            }
+            };
         }, {});
         return this.cardCache;
     }
@@ -66,7 +66,7 @@ export default class CardRegistry {
             return {
                 ...sets,
                 [setName]: Object.keys(set).filter((a) => set[a].randomizable)
-            }
+            };
         }, {});
     }
     public getCard(card: string): typeof CardDef {

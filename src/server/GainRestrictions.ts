@@ -1,18 +1,6 @@
 import Game from "./Game";
 import Card from "../cards/Card";
-import CardRegistry from "../cards/CardRegistry";
 
-interface CostRestriction {
-    type: 'cost';
-    value: {
-        coin: number
-    }
-}
-interface SupplyRestriction {
-    type: 'inSupply';
-    value: boolean;
-}
-type Restriction = CostRestriction | SupplyRestriction;
 export type GainRestrictionsJSON = {
     allowedCards: string[];
 }
@@ -61,7 +49,7 @@ export class GainRestrictions {
         });
         return {
             allowedCards: this.allowedCards
-        }
+        };
     }
     build(game: Game) {
         return this.toJSON(game);
@@ -74,6 +62,7 @@ export class GainRestrictions {
         this.mustHaveTypes.push(type);
         return this;
     }
+    // noinspection JSUnusedGlobalSymbols
     setInSupply(inSupply: boolean) {
         this.inSupply = inSupply;
     }

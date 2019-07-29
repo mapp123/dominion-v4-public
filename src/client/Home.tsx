@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as io from "socket.io-client";
 import {Link, RouteComponentProps} from 'react-router-dom';
 import SocketManager from "./SocketManager";
 export default class Home extends React.Component<RouteComponentProps, {shortcuts: Array<[string, string]>}> {
@@ -15,7 +14,7 @@ export default class Home extends React.Component<RouteComponentProps, {shortcut
                 return {
                     ...state,
                     shortcuts: [...state.shortcuts, ...shortcuts]
-                }
+                };
             });
         });
     }
@@ -45,7 +44,7 @@ export default class Home extends React.Component<RouteComponentProps, {shortcut
                 {this.state.shortcuts.map(([shortcut, gameId]) => {
                     return (
                         <><Link to={`/game/${gameId}`}>{shortcut}</Link><br /></>
-                    )
+                    );
                 })}
             </div>
         );

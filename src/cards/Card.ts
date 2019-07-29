@@ -1,4 +1,4 @@
-import {Decision, isDecision} from "../server/Decision";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import v4 = require("uuid/v4");
 import Player from "../server/Player";
 import Game from "../server/Game";
@@ -35,7 +35,7 @@ export default abstract class Card {
         // @ts-ignore
         return new this().cost;
     }
-    abstract types: ReadonlyArray<ValidCardTypes>;
+    abstract types: readonly ValidCardTypes[];
     static get types(): Card['types'] {
         if (this === Card) {
             throw new Error("types are only available on implemented cards.");
@@ -61,7 +61,7 @@ export default abstract class Card {
         // @ts-ignore
         return new this().cardArt;
     }
-    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Array<Card>; identity: Card; displayCount: boolean;}> {
+    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean}> {
         let pile: Card[] = [];
         const supplyCount = typeof this.supplyCount === 'function' ? this.supplyCount(playerCount) : this.supplyCount;
         for (let i = 0; i < supplyCount; i++) {
@@ -112,6 +112,7 @@ export default abstract class Card {
     protected async onTreasure(player: Player) {
         throw new Error("onTreasure not implemented");
     }
+    // noinspection JSUnusedGlobalSymbols
     toJSON() {
         let {id, name} = this;
         return {id, name};

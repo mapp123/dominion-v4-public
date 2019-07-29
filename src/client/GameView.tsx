@@ -57,11 +57,11 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                 this.respondToDecision(username, decision);
             }
             if (!this.state.decision && !this.playerData.isMyTurn && this.firstTurnPlayed) {
-                this.outOfTurnDecision.play();
+                this.outOfTurnDecision.play().catch(() => console.log("on mobile"));
             }
             this.setState({
                 decision
-            })
+            });
         });
         this.socket.on('playerStateUpdate', (action) => {
             this.playerData.dispatch(action);
@@ -74,10 +74,10 @@ export default class GameView extends React.Component<RouteComponentProps<Params
             if (!this.playerData.isMyTurn && this.state.playerData.isMyTurn) {
                 decisionSet = {
                     decision: null
-                }
+                };
             }
             else if (this.playerData.isMyTurn && !this.state.playerData.isMyTurn) {
-                this.turnNotification.play();
+                this.turnNotification.play().catch(() => console.log("on mobile"));
                 this.firstTurnPlayed = true;
             }
             this.setState({
@@ -90,7 +90,7 @@ export default class GameView extends React.Component<RouteComponentProps<Params
             playerData: this.playerData.getState(),
             decision: null,
             hoveredCard: null
-        }
+        };
     }
 
     startGame() {

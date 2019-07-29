@@ -16,7 +16,7 @@ export default function HandButton(props: IProps) {
     else {
         cardDef = {
             types: []
-        }
+        };
     }
     return (
         <button

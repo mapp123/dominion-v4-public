@@ -5,7 +5,7 @@ import cardSorter from "./cardSorter";
 
 export default class Supply {
     data = createSupplyData();
-    public getPile(identifier: string): Array<Card> | null {
+    public getPile(identifier: string): Card[] | null {
         const pile = this.data.piles.find((a) => a.identifier === identifier);
         if (!pile) return null;
         return pile.pile;

@@ -1,4 +1,5 @@
 import {CardDef} from "../cards/CardDef";
+// eslint-disable-next-line @typescript-eslint/camelcase
 import {unstable_createResource} from "@luontola/react-cache";
 // @ts-ignore
 const context: (module: string) => Promise<{default: typeof CardDef}> = require.context(
@@ -21,7 +22,7 @@ export default class ClientCardRegistry {
                     a = [];
                     this.awaitingLocations[cardName] = a;
                 }
-                await new Promise((f, r) => {a!.push(f)});
+                await new Promise((f) => {a!.push(f);});
                 console.log("done waiting");
             }
             else if (!this.locations[cardName]) {

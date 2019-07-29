@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Decision} from "../server/Decision";
 export default class DefaultDecision extends React.Component<{decision: Decision | null; respondToDecision: (response: any) => any}, {}> {
-    onClick(confirm, decision, e) {
+    onClick(confirm, decision) {
         if (!confirm || window.confirm("Are you sure?")) {
             this.props.respondToDecision(decision);
         }

@@ -20,15 +20,17 @@ export default class LogView extends React.Component<IProps, IState> {
         this.setState((state) => {
             return {
                 logs: state.logs.concat([msg])
-            }
+            };
         });
     }
     componentWillUpdate() {
+        // eslint-disable-next-line react/no-find-dom-node
         let node = ReactDOM.findDOMNode(this)!.parentNode as HTMLDivElement;
         this.shouldScroll = Math.abs(node.scrollTop + node.offsetHeight - node.scrollHeight) < 2;
     }
     componentDidUpdate() {
         if(this.shouldScroll) {
+            // eslint-disable-next-line react/no-find-dom-node
             let node = ReactDOM.findDOMNode(this)!.parentNode as HTMLDivElement;
             node.scrollTop = node.scrollHeight;
         }
@@ -41,9 +43,9 @@ export default class LogView extends React.Component<IProps, IState> {
                         <div key={i}>
                             {msg}
                         </div>
-                    )
+                    );
                 })}
             </div>
-        )
+        );
     }
 }

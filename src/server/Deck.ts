@@ -1,5 +1,4 @@
 import shuffle from "./util/shuffle";
-import {CardInstance} from "./CardInstance";
 import Card from "../cards/Card";
 
 export default class Deck {
@@ -7,7 +6,7 @@ export default class Deck {
     discard: Card[] = [];
 
     get deckAndDiscard() {
-        return [...this.cards, ...this.discard]
+        return [...this.cards, ...this.discard];
     }
 
     setCards(cards: Card[]) {
@@ -18,20 +17,13 @@ export default class Deck {
         if (this.cards.length === 0) {
             this.shuffle();
         }
-        return this.cards.shift()
+        return this.cards.shift();
     }
     peek(): Card | undefined {
         if (this.cards.length === 0) {
             this.shuffle();
         }
         return this.cards[0];
-    }
-
-    getBottomCard() {
-        if (this.cards.length === 0) {
-            this.shuffle();
-        }
-        return this.cards.pop();
     }
 
     shuffle() {
@@ -41,9 +33,9 @@ export default class Deck {
 
     discardCard(card: Card) {
         if (Array.isArray(card)) {
-            this.discard = [...this.discard, ...card]
+            this.discard = [...this.discard, ...card];
         } else {
-            this.discard.push(card)
+            this.discard.push(card);
         }
     }
 
@@ -51,6 +43,6 @@ export default class Deck {
         if (this.cards.length === 0) {
             this.shuffle();
         }
-        return this.cards.shift()
+        return this.cards.shift();
     }
 }

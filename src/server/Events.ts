@@ -1,7 +1,7 @@
 import Card from "../cards/Card";
 import Player from "./Player";
 
-type BaseEvents = {[event: string]: Array<any>};
+type BaseEvents = {[event: string]: any[]};
 type Cbs<A extends BaseEvents> = {
     [P in keyof A]: Array<(...args: A[P]) => boolean | Promise<boolean>> | undefined;
 }
@@ -41,5 +41,7 @@ type PlayerEvent = {
     treasureCardPlayed: [Player, Card];
 }
 export class PlayerEvents extends Events<PlayerEvent> {}
-type GameEvent = {};
+type GameEvent = {
+    gameEnd: [];
+};
 export class GameEvents extends Events<GameEvent> {}

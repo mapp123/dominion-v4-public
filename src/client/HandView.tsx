@@ -9,14 +9,11 @@ interface IProps {
     decision: Decision | null;
     gameView: GameView;
 }
-interface IState {
-
-}
-export default class HandView extends React.Component<IProps, IState> {
-    list: Array<Card> = [];
+export default class HandView extends React.Component<IProps, {}> {
+    list: Card[] = [];
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
     }
 
     onClick(name: string, id: string) {
@@ -62,14 +59,14 @@ export default class HandView extends React.Component<IProps, IState> {
                     <button onClick={() => this.confirmDecision(true)} className="btn btn-info dominion-font" style={{margin: "4px"}}>Yes</button>
                     <button onClick={() => this.confirmDecision(false)} className="btn btn-info dominion-font" style={{margin: "4px"}}>No</button>
                 </>
-            )
+            );
         }
         if (this.props.decision && this.props.decision.decision === 'chooseOption') {
-            return this.props.decision.options.map((a) => {
+            return this.props.decision.options.map((a, i) => {
                 return (
-                    <button onClick={() => this.chooseOption(a)} className="btn btn-info dominion-font" style={{margin: "4px"}}>{a}</button>
-                )
-            })
+                    <button key={i} onClick={() => this.chooseOption(a)} className="btn btn-info dominion-font" style={{margin: "4px"}}>{a}</button>
+                );
+            });
         }
         if (this.props.decision && this.props.decision.decision === 'reorder') {
             return (
@@ -86,7 +83,7 @@ export default class HandView extends React.Component<IProps, IState> {
                                     onClick: null,
                                     id: card.id,
                                     name: card.name
-                                }
+                                };
                             })}
                             callback={(a,b,c,d,reorderedArray) => {
                                 this.list = reorderedArray;
@@ -97,12 +94,12 @@ export default class HandView extends React.Component<IProps, IState> {
                     <button className="btn btn-info dominion-font" style={{margin: "4px 0"}}>{this.props.decision.bottomString}</button>
                     <button className="btn btn-success dominion-font" style={{margin: "4px 0"}} onClick={this.submitReorder.bind(this)}>Done</button>
                 </>
-            )
+            );
         }
         return (
             <React.Suspense fallback={<div>Loading...</div>}>
                 {this.props.cards.map((card) => <HandButton key={card.id} cardName={card.name} onClick={this.onClick.bind(this, card.name, card.id)}/>)}
             </React.Suspense>
-        )
+        );
     }
 }

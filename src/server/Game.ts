@@ -8,12 +8,7 @@ import {format} from "util";
 import Supply from "./Supply";
 import CardRegistry from "../cards/CardRegistry";
 import Card from "../cards/Card";
-interface Events {
-    buy: [Player, string];
-    gain: [Player, Card];
-    turnStart: [Player];
-}
-type Listener<T extends keyof Events> = (...args: Events[T]) => Promise<boolean> | boolean;
+import {GameEvents} from "./Events";
 export default class Game {
     players: Player[] = [];
     io: Namespace;
@@ -25,8 +20,7 @@ export default class Game {
     supply = new Supply();
     selectedCards: string[] = [];
     ended = false;
-    lastPlayer: Player | null = null;
-    repeatLastPlayer = false;
+    events = new GameEvents();
     currentPlayerIndex = 0;
     constructor(io: Server) {
         this.io = io.of('/' + this.id);
@@ -119,6 +113,8 @@ export default class Game {
         }
     }
     start() {
+        this.started = true;
+        // noinspection JSIgnoredPromiseFromCall
         this.gameLoop();
     }
     gameEnded() {
@@ -166,30 +162,7 @@ export default class Game {
             this.lmg('%s scored %s points.', player.username, total);
         });
         this.lmg('%s wins!', scores[scores.length - 1][0].username);
-    }
-    private listeners: {[T in keyof Events]: Array<Listener<T>>} = {
-        buy: [],
-        gain: [],
-        turnStart: []
-    };
-    async emit<T extends keyof Events>(eventName: T, ...args: Events[T]) {
-        const l: Array<Listener<T>> = this.listeners[eventName] as any;
-        const rem: number[] = [];
-        for (let i = 0; i < l.length; i++) {
-            if (!await l[i](...args)) {
-                rem.push(i);
-            }
-        }
-        this.listeners[eventName] = l.filter((a, i) => !rem.includes(i)) as any;
-    }
-    on<T extends keyof Events>(eventName: T, listener: Listener<T>) {
-        this.listeners[eventName].push(listener as any);
-        return listener;
-    }
-    off<T extends keyof Events>(eventName: T, listener: Listener<T>) {
-        if (this.listeners[eventName].includes(listener as any)) {
-            this.listeners[eventName].splice(this.listeners[eventName].indexOf(listener as any), 1);
-        }
+        this.ended = true;
     }
 
     nameAvailableInSupply(cardName: string) {

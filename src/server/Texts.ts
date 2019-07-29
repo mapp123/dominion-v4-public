@@ -9,7 +9,7 @@ export class Texts {
     static chooseOrderOfCards = 'Please reorder the cards:';
     static chooseCardToPutOnDeck = 'Please choose a card to put on top of your deck...';
     static whatToDoWith(card) {
-       return `What would you like to do with the ${card}?`;
+        return `What would you like to do with the ${card}?`;
     }
     static wantToDraw(card) {
         return `Do you want to draw the ${card}?`;
@@ -36,7 +36,7 @@ export class Texts {
         return `Do you want to reveal your ${card}?`;
     }
     static chooseCardToDiscardFor(card) {
-        return `Please choose a card to discard for ${card}...`
+        return `Please choose a card to discard for ${card}...`;
     }
     static chooseCardToTrashFor(card) {
         return `Please choose a card to trash for ${card}...`;

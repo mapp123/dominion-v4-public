@@ -1,10 +1,8 @@
 import * as program from 'commander';
-import {get, request} from "http";
-import {createWriteStream, readFileSync, writeFileSync} from "fs";
+import {get} from "http";
+import {createWriteStream, writeFileSync} from "fs";
 import {basename, resolve} from "path";
 import {HTMLElement, Node, parse} from "node-html-parser";
-import HTML = Mocha.reporters.HTML;
-import html = Mocha.reporters.html;
 program.version('1.0.0');
 program.option('-c, --card <card>', 'what card to fetch');
 program.parse(process.argv);
@@ -13,7 +11,7 @@ if (typeof program.card === 'undefined') {
     process.exit(1);
 }
 async function fetchPage(page: string): Promise<string> {
-    return new Promise((f, r) => {
+    return new Promise((f) => {
         get('http://wiki.dominionstrategy.com' + page, (res) => {
             let data = '';
             res.on('data', d => data += d);
@@ -24,7 +22,7 @@ async function fetchPage(page: string): Promise<string> {
     });
 }
 async function downloadToPath(page: string, absPath: string): Promise<void> {
-    return new Promise((f, r) => {
+    return new Promise((f) => {
         const w = createWriteStream(absPath);
         get('http://wiki.dominionstrategy.com' + page, (res) => {
             res.on('data', d => w.write(d));
@@ -33,7 +31,7 @@ async function downloadToPath(page: string, absPath: string): Promise<void> {
                 f();
             });
         });
-    })
+    });
 }
 async function parsePage(p: string) {
     const page = parse(p);
@@ -98,6 +96,7 @@ async function parsePage(p: string) {
 function infoToTemplate(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
     let cardText = info.text.replace(/<img [^>]*?alt="(\$\d*?)"[^>]*?>/g, (match, money) => money).replace(/"/g, '\\"').split('\n').map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"").join(" +\n        ") + ";";
     return (
+        // eslint-disable-next-line @typescript-eslint/indent
 `import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
@@ -116,10 +115,12 @@ export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase
     }
 }
 `
+    // eslint-disable-next-line @typescript-eslint/indent
 );
 }
 function infoToTest(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
     return (
+        // eslint-disable-next-line @typescript-eslint/indent
 `import makeTestGame from "../testBed";
 import { expect } from 'chai';
 import {Texts} from "../../src/server/Texts";
@@ -159,7 +160,7 @@ function flattenChildren(children: Node[]): Node[] {
 function onlyHTMLNode(children: Node[], tagName?): HTMLElement[] {
     return children.filter((a) => {
         return (a as any).tagName && (typeof tagName === 'undefined' || (a as any).tagName === tagName);
-    }) as HTMLElement[];
+    }) as any as HTMLElement[];
 }
 function htmlToString(node: HTMLElement): string {
     const nodes = flattenChildren(node.childNodes);
@@ -186,5 +187,5 @@ fetchPage(`/index.php/${program.card.split(' ').map((a) => a.slice(0, 1).toUpper
             const test = infoToTest(a);
             writeFileSync(resolve(__dirname, "..", "test", a.set, filename + ".spec.ts"), test);
         }
-    })
+    });
 });

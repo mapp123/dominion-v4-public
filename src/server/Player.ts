@@ -6,8 +6,6 @@ import createPlayerData from "../createPlayerData";
 import Copper from "../cards/base/Copper";
 import Estate from "../cards/base/Estate";
 import {Decision, DecisionResponseType, DecisionValidators} from "./Decision";
-import {format} from "util";
-import {StructError} from "superstruct";
 import {GainRestrictions} from "./GainRestrictions";
 import Card from "../cards/Card";
 import {Texts} from "./Texts";
@@ -22,11 +20,10 @@ export default class Player {
     private waitingForResponse = false;
     data = createPlayerData();
     private decisionCallbacks: {
-        [key: string]: Array<(response: any) => any> | undefined
+        [key: string]: Array<(response: any) => any> | undefined;
     } = {};
-    private pendingDecisions: Array<Decision> = [];
+    private pendingDecisions: Decision[] = [];
     turnNumber = 0;
-    phase = 'cleanup';
     game: Game;
     events: PlayerEvents = new PlayerEvents();
     private _nextDecisionId = 0;
@@ -47,7 +44,7 @@ export default class Player {
             new Estate(this.game),
             new Estate(this.game)
         ];
-        this.draw(5)
+        this.draw(5);
     }
     draw(amount = 1) {
         for (let i = 0; i < amount; i++) {
@@ -65,12 +62,6 @@ export default class Player {
     }
     get currentSocket() {
         return this._currentSocket;
-    }
-    syncHalted = false;
-    async haltSync(exec: () => Promise<any>) {
-        this.syncHalted = true;
-        await exec();
-        this.syncHalted = false;
     }
     set currentSocket(socket: Socket | null) {
         this._currentSocket = socket;
@@ -103,7 +94,7 @@ export default class Player {
                 if (e.errors) {
                     console.error(`Error validating ${JSON.stringify(response)}: ${e.errors[0].message}`);
                 }
-                // We have a problem with the response, reemit the decision for another try
+                // We have a problem with the response, re-emit the decision for another try
                 this.emitNextDecision();
                 return;
             }
@@ -135,7 +126,7 @@ export default class Player {
         }
     }
     makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T['decision']]> {
-        return new Promise((f,r) => {
+        return new Promise((f) => {
             this.pendingDecisions.push(decision);
             const toPush = this.decisionCallbacks[decision.id] || [];
             toPush.push(f);
@@ -204,8 +195,8 @@ export default class Player {
             for (let i = 0; i < this.data.playArea.length; i++) {
                 let card = this.data.playArea[i];
                 if (card.shouldDiscardFromPlay()) {
-                    this.data.playArea.splice(i, 1)[0];
-                    await card.onDiscardFromPlay(this   );
+                    this.data.playArea.splice(i, 1);
+                    await card.onDiscardFromPlay(this);
                     i--;
                     await this.discard(card);
                 }
@@ -292,7 +283,6 @@ export default class Player {
         this.data.money -= this.game.getCostOfCard(cardName).coin;
         this.data.buys--;
         this.lm('%p buys a %s.', cardName);
-        await this.game.emit('buy', this, cardName);
         if (await this.gain(cardName) == null) {
             this.lm('%p fails to gain the %s after on-buy effects.', cardName);
         }
@@ -312,7 +302,6 @@ export default class Player {
                     this.deck.cards.unshift(c);
                     break;
             }
-            await this.game.emit('gain', this, c);
             return c;
         }
         return null;
@@ -351,7 +340,7 @@ export default class Player {
             id: v4(),
             helperText
         })) != null && ((foundCard = source.find((a) => a.id === result.id && a.name === result.name)) != null) && (filter && !filter(foundCard))) {
-
+            console.log("Failed tests");
         }
         if (result.name === "No Card") {
             return null;
@@ -405,7 +394,7 @@ export default class Player {
         this.lm('%p trashes a %s.', card.name);
         this.game.trash.push(card);
     }
-    async chooseOption<T extends ReadonlyArray<string>>(helperText: string, options: T): Promise<T[number]> {
+    async chooseOption<T extends readonly string[]>(helperText: string, options: T): Promise<T[number]> {
         const {choice} = await this.makeDecision({
             decision: "chooseOption",
             id: v4(),

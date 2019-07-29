@@ -1,6 +1,6 @@
 import * as io from 'socket.io-client';
 export default class SocketManager {
-    private static sockets: Map<String, SocketIOClient.Socket> = new Map();
+    private static sockets: Map<string, SocketIOClient.Socket> = new Map();
     private static socket: SocketIOClient.Socket;
     static getSocket(id: string) {
         if (!this.sockets.has(id)) {

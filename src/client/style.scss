@@ -38,6 +38,7 @@
     background-image: linear-gradient($color1,$color2);
     color: transparent !important;
     -webkit-background-clip: text;
+    //noinspection CssInvalidPropertyValue
     background-clip: text;
   }
 }
@@ -59,6 +60,8 @@
 .btn:disabled {
   opacity: 0.4;
 }
+
+//noinspection CssInvalidPropertyValue
 .middle-align-text {
   vertical-align: middle;
   vertical-align: -webkit-baseline-middle;

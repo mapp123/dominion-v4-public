@@ -1,6 +1,5 @@
 import Card from "../Card";
 import Player from "../../server/Player";
-import {Texts} from "../../server/Texts";
 
 export default class Festival extends Card {
     types = ["action"] as const;

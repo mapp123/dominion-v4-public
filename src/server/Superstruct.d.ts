@@ -61,11 +61,12 @@ declare module 'superstruct' {
         validate(obj: any): [StructError, null] | [undefined, T extends ValidTypes ? GetType<T> : T];
     }
     export const struct: struct;
+    // eslint-disable-next-line @typescript-eslint/class-name-casing
     export interface struct {
         <T extends StructDef>(def: T): Struct<T>;
-        interface<T extends StructDef>(def: T): Struct<T> & {[key: string]: any, [key: number]: any};
-        list<T extends ReadonlyArray<ValidTypes>>(def: T): Struct<Array<T[0]>>;
-        enum<T extends ReadonlyArray<any>>(def: T): Struct<T[number]>;
+        interface<T extends StructDef>(def: T): Struct<T> & {[key: string]: any; [key: number]: any};
+        list<T extends readonly ValidTypes[]>(def: T): Struct<Array<T[0]>>;
+        enum<T extends readonly any[]>(def: T): Struct<T[number]>;
         dict<K extends keyof Types>(def: ['string', K]): Struct<{[key: string]: Types[K]}>;
         dict<K extends keyof Types>(def: ['number', K]): Struct<{[key: number]: Types[K]}>;
         tuple<T extends ReadonlyArray<keyof Types>>(def: T): Struct<ArrayStructForm<T>>;

@@ -22,14 +22,6 @@ const genericCustomAccentColors = [
     [0, 0, 0, 0, 0, 0, 1, 1, 1, 1.2, 0.8, 0.5],
     [0, 0, 0, 0, 0, 0, 0.9, 0.8, 0.7, 0.9, 0.8, 0.7]
 ];
-const icons = {//the names should match the image filenames (plus a .png extension).
-    "@": ["Debt", "white", "Treasure"],
-    "\\^": ["Potion", "white", "Treasure"],
-    "%": ["VP", "white", "Victory"],
-    "#": ["VP-Token", "white", "Victory"], //German VP Token (not a nice decision of ASS Altenburger, but maybe nice to have to keep the cards consistent)
-    "\\$": ["Coin", "black", "Treasure"],
-    "§": ["Custom Icon", "white", "Treasure"]
-};
 interface IProps {
     cardArtUrl: string;
     heirloomLine?: string;
@@ -99,10 +91,10 @@ class RecolorFilter extends React.Component<{factors: number[]; name: string; of
         return (
             <filter id={this.props.name}>
                 <feColorMatrix in="SourceGraphic"
-                               type="matrix"
-                               values={`${factors[0]} 0 0 0 ${factors[3]}\n0 ${factors[1]} 0 0 ${factors[4]}\n0 0 ${factors[2]} 0 ${factors[5]}\n0 0 0 1 0`} />
+                    type="matrix"
+                    values={`${factors[0]} 0 0 0 ${factors[3]}\n0 ${factors[1]} 0 0 ${factors[4]}\n0 0 ${factors[2]} 0 ${factors[5]}\n0 0 0 1 0`} />
             </filter>
-        )
+        );
     }
 }
 class SingleTextLine extends React.Component<{line: string; x: number; y: number; maxWidth: number; initialSize?: number; family?: string; style?: string}, {}> {
@@ -110,9 +102,9 @@ class SingleTextLine extends React.Component<{line: string; x: number; y: number
         const family = this.props.family || "TrajanPro-Bold";
         const size = (this.props.initialSize || 85) + 2;
         return <text x={this.props.x}
-                     y={this.props.y}
-                     style={{fontFamily: family, fontSize: size + "pt", fontStyle: this.props.style || "unset"}}
-                     textAnchor="middle">{this.props.line}</text>
+            y={this.props.y}
+            style={{fontFamily: family, fontSize: size + "pt", fontStyle: this.props.style || "unset"}}
+            textAnchor="middle">{this.props.line}</text>;
     }
 }
 class Description extends React.Component<{description: string;heirloomPresent: boolean}, {}> {
@@ -125,21 +117,21 @@ class Description extends React.Component<{description: string;heirloomPresent: 
             <foreignObject x={140} y={1140} width={1130} height={this.props.heirloomPresent ? 620 : 700}>
                 <div style={{display: "table", position: "absolute", top: 0, left: 0, height: "100%", width: "100%"}}>
                     <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: "64pt", display: "table-cell", verticalAlign: "middle", padding: "0 75pt"}}>
-                    {this.props.description.split("\n").map((text) => {
-                        let extraStyle = {};
-                        if (/\+\d (Action|Card|Buy)s?/.test(text)) {
-                            extraStyle = {
-                                fontWeight: "bold",
-                                fontSize: "64pt"
+                        {this.props.description.split("\n").map((text) => {
+                            let extraStyle = {};
+                            if (/\+\d (Action|Card|Buy)s?/.test(text)) {
+                                extraStyle = {
+                                    fontWeight: "bold",
+                                    fontSize: "64pt"
+                                };
                             }
-                        }
-                        if (/^\+\$\d/.test(text)) {
-                            const num = text.slice(2,3);
-                            extraStyle = {
-                                fontWeight: "bold",
-                                fontSize: "64pt"
-                            };
-                            return (
+                            if (/^\+\$\d/.test(text)) {
+                                const num = text.slice(2,3);
+                                extraStyle = {
+                                    fontWeight: "bold",
+                                    fontSize: "64pt"
+                                };
+                                return (
                                 <>
                                     <span style={{...textStyle, ...extraStyle}}>
                                         +
@@ -150,9 +142,9 @@ class Description extends React.Component<{description: string;heirloomPresent: 
                                     </span>
                                     <br />
                                 </>
-                            )
-                        }
-                        return (
+                                );
+                            }
+                            return (
                             <>
                                 <span style={{...textStyle, ...extraStyle}}>{text.split("$").map((item, i) => {
                                     if (i % 2 === 0) {
@@ -171,11 +163,11 @@ class Description extends React.Component<{description: string;heirloomPresent: 
                                 })}</span>
                                 <br />
                             </>
-                        );
-                    })}
+                            );
+                        })}
                     </div>
                 </div>
             </foreignObject>
-        )
+        );
     }
 }

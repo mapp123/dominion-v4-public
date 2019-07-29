@@ -23,7 +23,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
             if (e === 'Invalid namespace') {
                 this.props.history.push({
                     pathname: '/'
-                })
+                });
             }
         });
         this.globalSocket.emit('getRandomizable', 'randomizable');
@@ -43,7 +43,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
                     top[key] = [...top[key]];
                 }
                 else {
-                    top[key] = {...top[key]}
+                    top[key] = {...top[key]};
                 }
                 top = top[key];
             });
@@ -70,7 +70,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
         shuffle(pool);
         this.setState({
             cards: pool.slice(0, 10)
-        })
+        });
     }
     createTextInput(friendlyName, path) {
         return (
@@ -78,7 +78,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
                 <label>{friendlyName}</label>
                 <input className="form-control" value={path.reduce((top, key) => top[key], this.state)} onChange={this.updateState.bind(this, path)} />
             </div>
-        )
+        );
     }
     createCheckboxInput(friendlyName, path) {
         return (
@@ -86,7 +86,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
                 <input type="checkbox" className="form-check-input" value={path.reduce((top, key) => top[key], this.state)} onChange={this.updateState.bind(this, path)} />
                 <label className="form-check-label">{friendlyName}</label>
             </div>
-        )
+        );
     }
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         return (

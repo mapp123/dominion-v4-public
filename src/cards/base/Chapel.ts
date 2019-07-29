@@ -13,7 +13,7 @@ export default class Chapel extends Card {
     cardArt = "/img/card-img/ChapelArt.jpg";
     async onAction(player: Player): Promise<void> {
         let cardsToTrash = 4;
-        let card: Card | null = null;
+        let card: Card | null;
         while (cardsToTrash > 0 && (card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('chapel'), true)) != null) {
             await player.trash(card);
             cardsToTrash--;

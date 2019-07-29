@@ -5,6 +5,7 @@ import {GainRestrictions, GainRestrictionsJSON} from "./GainRestrictions";
 
 export type Decision = ChooseUsernameDecision | ChooseCardOrBuyDecision | BuyDecision | ChooseCardDecision | ConfirmDecision | GainDecision | OptionDecision | ReorderDecision;
 
+// noinspection JSUnusedLocalSymbols
 type AllDecisionHaveHelperText = Decision['helperText'];
 
 interface ChooseUsernameDecision {
@@ -152,7 +153,7 @@ const gainValidator = (game: Game, decision: Decision, response: any) => {
         return r;
     }
     if (!GainRestrictions.fromJSON(decision.gainRestrictions).validateCard(r.name)) {
-        throw new Error("Choice is invalid")
+        throw new Error("Choice is invalid");
     }
     return r;
 };
@@ -164,7 +165,7 @@ const OptionResponse = struct({
 const optionValidator = (game: Game, decision: Decision, response: any) => {
     const r = OptionResponse(response);
     if (decision.decision !== 'chooseOption') {
-        throw new Error("Wrong validator")
+        throw new Error("Wrong validator");
     }
     if (!decision.options.includes(r.choice)) {
         throw new Error("Invalid choice");
@@ -219,14 +220,14 @@ const chooseCardOrBuyDefault = (decision: Decision) => {
                 name: 'End Turn',
                 id: ''
             }
-        }
+        };
     }
     return null;
 };
 
 const buyDefault = (decision: Decision) => {
     if (decision.decision !== 'buy') {
-        throw new Error("Wrong defaulter")
+        throw new Error("Wrong defaulter");
     }
     if (decision.gainRestrictions.allowedCards.length === 0) {
         return {
@@ -247,7 +248,7 @@ const chooseCardDefault = (decision: Decision) => {
         return {
             name: 'No Card',
             id: 'nocard'
-        }
+        };
     }
     if (decision.source.length === 1) {
         return decision.source[0];
@@ -275,11 +276,12 @@ const reorderDefault = (decision: Decision) => {
     if (decision.cards.length < 2) {
         return {
             order: decision.cards
-        }
+        };
     }
     return null;
 };
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// noinspection JSUnusedLocalSymbols
 export const DecisionDefaults = {
     chooseUsername: (decision: Decision) => null,
     chooseCardOrBuy: chooseCardOrBuyDefault,
@@ -290,18 +292,10 @@ export const DecisionDefaults = {
     chooseOption: (decision: Decision) => null,
     reorder: reorderDefault
 };
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
+// noinspection JSUnusedLocalSymbols
 type AllDecisionHaveDefaults = typeof DecisionDefaults[Decision['decision']];
-
-interface Decision2 {
-    // TODO: Change to strict string match
-    decision: string;
-    source: Card[];
-    helperText: string;
-    validateSource?: boolean;
-    validateGain?: boolean;
-    restrictions?: any[];
-}
 export function isDecision(toTest: any): toTest is Decision {
     // noinspection SuspiciousTypeOfGuard
     return typeof toTest === 'object' &&

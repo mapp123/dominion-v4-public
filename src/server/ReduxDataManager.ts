@@ -7,7 +7,6 @@ import {
     StoreEnhancer,
     StoreEnhancerStoreCreator
 } from "redux";
-import {unstable_renderSubtreeIntoContainer} from "react-dom";
 import Card from "../cards/Card";
 
 type Action = SetAction | ReplaceAction | DeepSetAction | SpliceAction;
@@ -26,7 +25,7 @@ interface DeepSetAction {
     value: any;
 }
 interface SpliceAction {
-    type: 'DEEP_SPLICE',
+    type: 'DEEP_SPLICE';
     keyMap: Array<string | number | symbol>;
     start: number;
     deleteCount: number;
@@ -103,7 +102,7 @@ function fakeSplice(dispatch: (a: Action) => any, target: any, keyMap: Array<str
 }
 function createDeepObjectInspection<T extends object>(dispatch: (a: Action) => any, currentKeyMap: Array<string | number | symbol>, object: T, store: any): T {
     return new Proxy(object, {
-        get(target: T, p: string | number | symbol, receiver: any): any {
+        get(target: T, p: string | number | symbol): any {
             if (p === '__isProxy') {
                 return true;
             }
@@ -118,7 +117,7 @@ function createDeepObjectInspection<T extends object>(dispatch: (a: Action) => a
             }
             return target[p];
         },
-        set(target: T, p: string | number | symbol, value: any, receiver: any): boolean {
+        set(target: T, p: string | number | symbol, value: any): boolean {
             if (p === "length" && target[p] < value) {
                 // Don't serialize useless length values across the network.
                 return true;
@@ -143,72 +142,72 @@ function makeEnhancer<T extends StructDef>(keys: T): StoreEnhancer<StructForm<T>
     let subscribers: SubscribeFunction[] = [];
     let halted = false;
     return compose((creator: StoreEnhancerStoreCreator) => {
-            return (reducer, preloadedState) => {
-                let store = creator(reducer, preloadedState);
-                Object.keys(keys).forEach((key) => {
-                    Object.defineProperty(store, key, {
-                        get() {
-                            let k = this.getState()[key];
-                            if (k != null && !(k instanceof Card) && typeof k === 'object') {
-                                return createDeepObjectInspection(this.dispatch, [key], k, store);
-                            }
-                            return k;
-                        },
-                        set(value) {
-                            return this.dispatch({
-                                type: 'ACTION_SET',
-                                key,
-                                value
-                            });
-                        }
-                    });
-                });
-                Object.defineProperty(store, 'state', {
+        return (reducer, preloadedState) => {
+            let store = creator(reducer, preloadedState);
+            Object.keys(keys).forEach((key) => {
+                Object.defineProperty(store, key, {
                     get() {
-                        return this.getState();
+                        let k = this.getState()[key];
+                        if (k != null && !(k instanceof Card) && typeof k === 'object') {
+                            return createDeepObjectInspection(this.dispatch, [key], k, store);
+                        }
+                        return k;
                     },
                     set(value) {
                         return this.dispatch({
-                            type: 'STATE_REPLACE',
+                            type: 'ACTION_SET',
+                            key,
                             value
                         });
                     }
                 });
-                Object.defineProperty(store, 'onAction', {
-                    get() {
-                        return (f) => {
-                            subscribers.push(f);
-                        };
-                    }
-                });
-                Object.defineProperty(store, 'haltNotifications', {
-                    get() {
-                        return async (haltFunction: () => Promise<any>) => {
-                            halted = true;
-                            await haltFunction();
-                            halted = false;
-                            // TODO: Optimize to just changed keys
-                            this.dispatch({
-                                type: 'STATE_REPLACE',
-                                value: this.getState()
-                            });
-                        }
-                    }
-                });
-                return store as any;
-            };
-        },
-        applyMiddleware(({getState}) => next => action => {
-            const returnValue = next(action);
-            if (!halted) {
-                subscribers = subscribers.filter((a) => a(action));
-            }
-            else {
-                // @ts-ignore
-                subscribers.filter((a) => a.__ignoreHalt).forEach((a) => a(action));
-            }
-            return returnValue;
-        })
+            });
+            Object.defineProperty(store, 'state', {
+                get() {
+                    return this.getState();
+                },
+                set(value) {
+                    return this.dispatch({
+                        type: 'STATE_REPLACE',
+                        value
+                    });
+                }
+            });
+            Object.defineProperty(store, 'onAction', {
+                get() {
+                    return (f) => {
+                        subscribers.push(f);
+                    };
+                }
+            });
+            Object.defineProperty(store, 'haltNotifications', {
+                get() {
+                    return async (haltFunction: () => Promise<any>) => {
+                        halted = true;
+                        await haltFunction();
+                        halted = false;
+                        // TODO: Optimize to just changed keys
+                        this.dispatch({
+                            type: 'STATE_REPLACE',
+                            value: this.getState()
+                        });
+                    };
+                }
+            });
+            return store as any;
+        };
+    },
+    applyMiddleware(() => next => action => {
+        const returnValue = next(action);
+        if (!halted) {
+            subscribers = subscribers.filter((a) => a(action));
+        }
+        else {
+            // @ts-ignore
+            subscribers.filter((a) => a.__ignoreHalt).forEach((a) => a(action));
+        }
+        return returnValue;
+    })
     );
 }
 function logger({ getState }) {
@@ -225,8 +224,8 @@ function logger({ getState }) {
 
         // This will likely be the action itself, unless
         // a middleware further in chain changed it.
-        return returnValue
-    }
+        return returnValue;
+    };
 }
 export default function ReduxDataManager<T extends StructDef>(keys: T, defaults: StructForm<T>): Store<StructForm<T>, Action> & StructForm<T> & ReplaceState<StructForm<T>> & Subscribe & HaltNotifications {
     // Must be typed this way to avoid blowing up the stack

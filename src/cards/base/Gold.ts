@@ -1,6 +1,5 @@
 import Card from "../Card";
 import Player from "../../server/Player";
-import {Decision} from "../../server/Decision";
 
 export default class Gold extends Card {
     types = ["treasure"] as const;

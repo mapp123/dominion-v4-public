@@ -318,7 +318,9 @@ export default class Player {
         }
     }
     score() {
-        const score: {[cardName: string]: number} = {};
+        const score: {[cardName: string]: number} = {
+            'VP Tokens': this.data.vp
+        };
         this.game.selectedCards.forEach((cardName) => {
             score[cardName.split(" ").map((a) => a.slice(0,1).toUpperCase() + a.slice(1)).join(" ")] = CardRegistry.getInstance().getCard(cardName).onScore(this);
         });

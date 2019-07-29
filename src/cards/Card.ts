@@ -10,6 +10,7 @@ type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | '
 export default abstract class Card {
     id: string;
     game: Game;
+    features: ReadonlyArray<'vp'> = [];
     constructor(game: Game | null) {
         this.id = v4();
         this.game = game as Game;

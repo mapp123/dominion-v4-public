@@ -48,6 +48,7 @@ module.exports = {
         "@typescript-eslint/prefer-interface": "off",
         "@typescript-eslint/array-type": ["error", "array-simple"],
         "@typescript-eslint/interface-name-prefix": "off",
-        "no-case-declarations": "off"
+        "no-case-declarations": "off",
+        "no-vp-without-feature": ["error"]
     }
 };

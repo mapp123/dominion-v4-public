@@ -31,11 +31,11 @@ interface SpliceAction {
     deleteCount: number;
     addToArray: any[];
 }
-function dataManagerReducer<T extends StructDef>(state: StructForm<T> | undefined, action: Action): StructForm<T> {
+function dataManagerReducer<T extends StructDef<{}>>(state: StructForm<{}, T> | undefined, action: Action): StructForm<{}, T> {
     if (state === undefined) {
         // I don't care about this test, it is an impossible case as far as I'm aware.
         // istanbul ignore next
-        return {} as any as StructForm<T>;
+        return {} as any as StructForm<{}, T>;
     }
     switch (action.type) {
         case "ACTION_SET":
@@ -138,7 +138,7 @@ type ReplaceState<T> = {state: T};
 type SubscribeFunction = (action: Action) => boolean;
 type Subscribe = {onAction: (f: SubscribeFunction) => void};
 type HaltNotifications = {haltNotifications: (f: () => Promise<any>) => Promise<any>};
-function makeEnhancer<T extends StructDef>(keys: T): StoreEnhancer<StructForm<T> & ReplaceState<StructForm<T>> & Subscribe & HaltNotifications, {}> {
+function makeEnhancer<T extends StructDef<{}>>(keys: T): StoreEnhancer<StructForm<{}, T> & ReplaceState<StructForm<{}, T>> & Subscribe & HaltNotifications, {}> {
     let subscribers: SubscribeFunction[] = [];
     let halted = false;
     return compose((creator: StoreEnhancerStoreCreator) => {
@@ -227,7 +227,7 @@ function logger({ getState }) {
         return returnValue;
     };
 }
-export default function ReduxDataManager<T extends StructDef>(keys: T, defaults: StructForm<T>): Store<StructForm<T>, Action> & StructForm<T> & ReplaceState<StructForm<T>> & Subscribe & HaltNotifications {
+export default function ReduxDataManager<T extends StructDef<{}>>(keys: T, defaults: StructForm<{}, T>): Store<StructForm<{}, T>, Action> & StructForm<{}, T> & ReplaceState<StructForm<{}, T>> & Subscribe & HaltNotifications {
     // Must be typed this way to avoid blowing up the stack
     return createStore<any, any, any, any>(
         dataManagerReducer,

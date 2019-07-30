@@ -43,36 +43,51 @@ declare module 'superstruct' {
         'weakset': WeakSet<any>;
         'weakset?'?: WeakSet<any>;
     }
-    type ValidTypes = (keyof Types) | StructDef | ReadonlyArray<keyof Types | StructDef | Struct<any>> | Struct<any>;
-    export type StructDef = {
-        [key: string]: ValidTypes;
+    type UnionToIntersection<U> =
+        (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
+    type ValidTypes<ExtraTypes> = (keyof (ExtraTypes & Types)) | StructDef<ExtraTypes> | ValidTypeArray<ExtraTypes> | Struct<any> | string;
+    export type StructDef<ExtraTypes> = {
+        [key: string]: ValidTypes<ExtraTypes>;
     }
-    type ArrayStructForm<T extends ReadonlyArray<(keyof Types) | StructDef | Struct<any>>> = {
-        -readonly [P in keyof T]: T[P] extends (keyof Types) | StructDef | Struct<any> ? GetType<T[P]> : never;
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface ValidTypeArray<ExtraTypes> extends ReadonlyArray<ValidTypes<ExtraTypes>> {}
+    type ArrayStructForm<ExtraTypes, Def extends ValidTypeArray<ExtraTypes>> = {
+        -readonly [P in keyof Def]: Def[P] extends ValidTypes<ExtraTypes> ? GetType<ExtraTypes, Def[P]> : never;
     }
-    type GetType<T extends ValidTypes> = T extends Struct<any> ? ReturnType<T> : T extends StructDef ? StructForm<T> : T extends ReadonlyArray<(keyof Types) | StructDef | Struct<any>> ? ArrayStructForm<T> : T extends (keyof Types) ? Types[T] : never;
-    export type StructForm<T extends StructDef> = {
-        [P in keyof T]: GetType<T[P]>;
+    type GetType<ExtraTypes, Def extends ValidTypes<ExtraTypes>> = Def extends Struct<any> ? ReturnType<Def> : Def extends StructDef<ExtraTypes> ? StructForm<ExtraTypes, Def> : Def extends ValidTypeArray<ExtraTypes> ? ArrayStructForm<ExtraTypes, Def> : Def extends (keyof (Types & ExtraTypes)) ? (Types & ExtraTypes)[Def] : any;
+    export type StructForm<ExtraTypes, Def extends StructDef<ExtraTypes>> = {
+        [P in keyof Def]: GetType<ExtraTypes, Def[P]>;
     }
-    interface Struct<T> {
-        (obj: any): T extends ValidTypes ? GetType<T> : T;
-        assert(obj: any): T extends ValidTypes ? GetType<T> : T;
+    interface Struct<ExtraTypes> {
+        (obj: any): ExtraTypes;
+        assert(obj: any): ExtraTypes;
         test(obj: any): boolean;
-        validate(obj: any): [StructError, null] | [undefined, T extends ValidTypes ? GetType<T> : T];
+        validate(obj: any): [StructError, null] | [undefined, ExtraTypes];
     }
-    export const struct: struct;
+    export const struct: struct<{}>;
+    export function superstruct<ExtraTypes extends object>(options: object): struct<ExtraTypes>;
+    type Literals = string | number | boolean | bigint | symbol;
     // eslint-disable-next-line @typescript-eslint/class-name-casing
-    export interface struct {
-        <T extends StructDef>(def: T): Struct<T>;
-        interface<T extends StructDef>(def: T): Struct<T> & {[key: string]: any; [key: number]: any};
-        list<T extends readonly ValidTypes[]>(def: T): Struct<Array<T[0]>>;
-        enum<T extends readonly any[]>(def: T): Struct<T[number]>;
-        dict<K extends keyof Types>(def: ['string', K]): Struct<{[key: string]: Types[K]}>;
-        dict<K extends keyof Types>(def: ['number', K]): Struct<{[key: number]: Types[K]}>;
-        tuple<T extends ReadonlyArray<keyof Types>>(def: T): Struct<ArrayStructForm<T>>;
-        instance<T>(constructorType: Function & {prototype: T}): Struct<T>;
-        scalar<T extends keyof Types>(type: T): Struct<GetType<T>>;
-        literal<T extends string | number>(literal: T): Struct<T>;
+    export interface struct<ExtraTypes> {
+        <K extends ValidTypes<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K>>;
+        any<K extends ValidTypes<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K>>;
+        dict<K extends ValidTypes<ExtraTypes>>(def: ['string', K]): Struct<{[key: string]: GetType<ExtraTypes, K>}>;
+        dict<K extends ValidTypes<ExtraTypes>>(def: ['number', K]): Struct<{[key: number]: GetType<ExtraTypes, K>}>;
+        enum<K extends readonly Literals[]>(def: K): Struct<K[number]>;
+        function<T>(test: (value: any) => boolean): Struct<T>;
+        instance<K>(constructorType: Function & {prototype: K}): Struct<K>;
+        interface<K extends StructDef<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K>> & {[key: string]: any; [key: number]: any};
+        intersection<K extends ValidTypeArray<ExtraTypes>>(def: K): Struct<UnionToIntersection<GetType<ExtraTypes, K[number]>>>;
+        lazy<K extends Struct<any>>(resolver: () => K): Struct<ReturnType<K>>;
+        dynamic<K extends Struct<any>>(resolver: (value: any, parent: any) => K): Struct<ReturnType<K>>;
+        list<K extends ReadonlyArray<ValidTypes<ExtraTypes>>>(def: ExtraTypes): Struct<Array<GetType<ExtraTypes, K[0]>>>;
+        literal<K extends Literals>(literal: K): Struct<K>;
+        object<K extends StructDef<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K>>;
+        optional<K extends ValidTypes<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K> | undefined>;
+        partial<K extends StructDef<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K>>;
+        scalar<K extends keyof Types>(type: K): Struct<GetType<ExtraTypes, K>>;
+        tuple<K extends ReadonlyArray<ValidTypes<ExtraTypes>>>(def: K): Struct<GetType<ExtraTypes, K>>;
+        union<K extends ValidTypeArray<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K[number]>>;
     }
     export class StructError extends Error {
         data: any;

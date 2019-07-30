@@ -2,19 +2,20 @@ import * as React from 'react';
 import SupplyView from "./SupplyView";
 import {RouteComponentProps} from "react-router";
 import SocketManager from "./SocketManager";
-import createPlayerData from "../createPlayerData";
+import createPlayerData, {PlayerData} from "../createPlayerData";
 import {Decision, DecisionResponseType} from "../server/Decision";
 import LogView from "./LogView";
 import HandView from "./HandView";
 import DefaultDecision from "./DefaultDecision";
 import CardGenerator from "./CardGenerator/CardGenerator";
 import {CardDef} from "../cards/CardDef";
+import DataViews from "./DataViews";
 interface Params {
     gameId: string;
 }
 interface IState {
     playersJoined: number;
-    playerData: ReturnType<ReturnType<typeof createPlayerData>['getState']>;
+    playerData: PlayerData;
     decision: Decision | null;
     hoveredCard: typeof CardDef | null;
 }
@@ -124,6 +125,7 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                                 </svg>
                             </div><br />
                         </span>
+                        <DataViews playerData={this.state.playerData} />
                         <span style={{fontFamily:"TrajanPro-Bold"}}>{this.state.decision ? this.state.decision.helperText:'Please wait...'}<br /></span>
                         <div>
                             <div style={{display: "inline-block", width: "250px"}}>

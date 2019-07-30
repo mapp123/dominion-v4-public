@@ -11,7 +11,8 @@ export default function createPlayerData() {
         playArea: [struct.instance(Card)],
         hand: [struct.instance(Card)],
         isMyTurn: 'boolean',
-        gameStarted: 'boolean'
+        gameStarted: 'boolean',
+        dataViews: struct.list(['string'])
     }, {
         actions: 0,
         buys: 0,
@@ -20,6 +21,9 @@ export default function createPlayerData() {
         playArea: [],
         hand: [],
         isMyTurn: false,
-        gameStarted: false
+        gameStarted: false,
+        dataViews: []
     });
 }
+
+export type PlayerData = ReturnType<ReturnType<typeof createPlayerData>['getState']>;

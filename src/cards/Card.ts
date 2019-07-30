@@ -11,6 +11,10 @@ export default abstract class Card {
     id: string;
     game: Game;
     features: ReadonlyArray<'vp'> = [];
+    static get features(): typeof Card['features'] {
+        // @ts-ignore
+        return new this().features;
+    }
     constructor(game: Game | null) {
         this.id = v4();
         this.game = game as Game;

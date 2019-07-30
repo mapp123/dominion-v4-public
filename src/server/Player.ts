@@ -45,6 +45,9 @@ export default class Player {
             new Estate(this.game)
         ];
         this.draw(5);
+        if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('vp'))) {
+            this.data.dataViews.push('vp');
+        }
     }
     draw(amount = 1) {
         for (let i = 0; i < amount; i++) {

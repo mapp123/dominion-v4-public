@@ -1,4 +1,5 @@
 import {ESLintUtils, TSESTree} from '@typescript-eslint/experimental-utils';
+import {relative, resolve} from "path";
 const creator = ESLintUtils.RuleCreator((name) => `http://github.com/${name}`);
 function getFullPropertyPath(node: TSESTree.MemberExpression | TSESTree.Identifier): string {
     if (node.type === 'MemberExpression') {
@@ -37,6 +38,11 @@ module.exports = creator({
                     if (node.object.type === 'MemberExpression' || node.object.type === 'Identifier') {
                         const path = getFullPropertyPath(node);
                         if (path.split(".").slice(1).join(".") === 'data.vp' && path.slice(0, 4) !== 'this') {
+                            const sourceFile = relative(resolve(__dirname, ".."), context.getFilename());
+                            if (sourceFile.slice(0, 9) !== 'src/cards') {
+                                // We don't care
+                                return;
+                            }
                             let klass = node.parent;
                             while (klass && klass.type !== 'ClassDeclaration' && klass.type !== 'Program') {
                                 klass = klass.parent;

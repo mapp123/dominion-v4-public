@@ -4,6 +4,7 @@ import Card from "../src/cards/Card";
 import CardRegistry from "../src/cards/CardRegistry";
 import {Decision, DecisionResponseType} from "../src/server/Decision";
 import {Texts} from "../src/server/Texts";
+
 function makeFakeIo(onLog?: (msg: string) => any) {
     return {
         on: () => {},
@@ -37,8 +38,7 @@ class TestPlayer extends Player {
         const rIndex = this.decisionResponses.findIndex((a) => a.matcher(decision));
         if (rIndex !== -1) {
             const response = this.decisionResponses.splice(rIndex, 1)[0];
-            const r = response.response(decision) as any;
-            return r;
+            return response.response(decision) as any;
         }
         // @ts-ignore
         this.game.doneFn(new Error(`Failed to find a response for ${JSON.stringify(decision)}`));
@@ -64,7 +64,7 @@ class TestPlayer extends Player {
     testPlayAction(actionName: string) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCard' && decision.helperText === Texts.chooseActionToPlay,
-            response: () => this.data.hand.find((a) => a.name === actionName) as any
+            response: (decision) => decision.source.find((a) => a.name === actionName) as any
         })
     }
     testChooseCard(text: string, card: string) {
@@ -234,13 +234,16 @@ export default function makeTestGame({
         ...decks.reduce((full, deck) => [...full, ...deck], []),
         ...discards.reduce((full, discard) => [...full, ...discard], [])
     ].filter((a, i, arr) => arr.indexOf(a) === i));
+    if (decks.some((a) => a.includes("attack"))) {
+        game.injectTestAttack();
+    }
+    if (discards.some((a) => a.includes("attack"))) {
+        game.injectTestAttack();
+    }
     for (let i = 0; i < players; i++) {
         const player = new TestPlayer(game);
         let deck = [] as Card[];
         for (const cardName of (decks[i] || [])) {
-            if (cardName === "attack") {
-                game.injectTestAttack();
-            }
             deck.push(
                 new (CardRegistry.getInstance().getCard(cardName))(game)
             );
@@ -248,9 +251,6 @@ export default function makeTestGame({
         player.deck.setCards(deck);
         let discard = [] as Card[];
         for (const cardName of (discards[i] || [])) {
-            if (cardName === "attack") {
-                game.injectTestAttack();
-            }
             discard.push(
                 new (CardRegistry.getInstance().getCard(cardName))(game)
             );

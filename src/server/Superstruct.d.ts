@@ -56,7 +56,7 @@ declare module 'superstruct' {
     }
     type GetType<ExtraTypes, Def extends ValidTypes<ExtraTypes>> = Def extends Struct<any> ? ReturnType<Def> : Def extends StructDef<ExtraTypes> ? StructForm<ExtraTypes, Def> : Def extends ValidTypeArray<ExtraTypes> ? ArrayStructForm<ExtraTypes, Def> : Def extends (keyof (Types & ExtraTypes)) ? (Types & ExtraTypes)[Def] : any;
     export type StructForm<ExtraTypes, Def extends StructDef<ExtraTypes>> = {
-        [P in keyof Def]: GetType<ExtraTypes, Def[P]>;
+        -readonly [P in keyof Def]: GetType<ExtraTypes, Def[P]>;
     }
     interface Struct<ExtraTypes> {
         (obj: any): ExtraTypes;

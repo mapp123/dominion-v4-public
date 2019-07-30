@@ -268,7 +268,7 @@ export default class Player {
                     const c = this.data.hand.splice(handIndex, 1)[0];
                     this.data.playArea.push(c);
                     this.lm('%p plays a %s.', c.name);
-                    this.playTreasure(c);
+                    await this.playTreasure(c);
                     await this.events.emit('treasureCardPlayed', this, c);
                 }
             }
@@ -395,8 +395,8 @@ export default class Player {
             currentPlayerIndex %= this.game.players.length;
         }
     }
-    async trash(card: Card) {
-        this.lm('%p trashes a %s.', card.name);
+    async trash(card: Card, log = true) {
+        if (log) this.lm('%p trashes a %s.', card.name);
         this.game.trash.push(card);
     }
     async chooseOption<T extends readonly string[]>(helperText: string, options: T): Promise<T[number]> {

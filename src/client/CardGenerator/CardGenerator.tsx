@@ -32,6 +32,7 @@ interface IProps {
         debt?: number;
         potion?: number;
     };
+    smallDescription: boolean;
     description: string;
 }
 function pickTypesFromTypeArray(types: readonly string[]): [string, string | undefined] {
@@ -67,7 +68,7 @@ export default class CardGenerator extends React.Component<IProps, {}> {
                 <SingleTextLine line={this.props.cardTypes.join(" - ")} x={750} y={1950} maxWidth={890} initialSize={64} />
                 <image href="/img/CoinHighRes.png" x={129} y={1850} width={150} height={145} />
                 <text x={205} y={1965} textAnchor="middle" style={{fontSize: "86pt", fontFamily: "TrajanPro-Bold"}}>{this.props.costs.coin}</text>
-                <Description description={this.props.description} heirloomPresent={!!this.props.heirloomLine}/>
+                <Description description={this.props.description} heirloomPresent={!!this.props.heirloomLine} smallDescription={this.props.smallDescription}/>
             </svg>
         );
     }
@@ -107,29 +108,29 @@ class SingleTextLine extends React.Component<{line: string; x: number; y: number
             textAnchor="middle">{this.props.line}</text>;
     }
 }
-class Description extends React.Component<{description: string;heirloomPresent: boolean}, {}> {
+class Description extends React.Component<{description: string;heirloomPresent: boolean; smallDescription: boolean;}, {}> {
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         const textStyle = {
-            fontSize: "60pt",
+            fontSize: this.props.smallDescription ? "45pt" : "60pt",
             fontFamily: "Times New Roman"
         } as const;
         return (
             <foreignObject x={140} y={1140} width={1130} height={this.props.heirloomPresent ? 620 : 700}>
                 <div style={{display: "table", position: "absolute", top: 0, left: 0, height: "100%", width: "100%"}}>
-                    <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: "64pt", display: "table-cell", verticalAlign: "middle", padding: "0 75pt"}}>
+                    <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: this.props.smallDescription ? "48pt" : "64pt", display: "table-cell", verticalAlign: "middle", padding: "0 75pt"}}>
                         {this.props.description.split("\n").map((text) => {
                             let extraStyle = {};
                             if (/\+\d (Action|Card|Buy)s?/.test(text)) {
                                 extraStyle = {
                                     fontWeight: "bold",
-                                    fontSize: "64pt"
+                                    fontSize: this.props.smallDescription ? "48pt" : "64pt"
                                 };
                             }
                             if (/^\+\$\d/.test(text)) {
                                 const num = text.slice(2,3);
                                 extraStyle = {
                                     fontWeight: "bold",
-                                    fontSize: "64pt"
+                                    fontSize: this.props.smallDescription ? "48pt" : "64pt"
                                 };
                                 return (
                                 <>

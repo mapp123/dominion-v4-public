@@ -293,6 +293,13 @@ export default class Player {
     async gain(cardName: string, realCard?: Card, destination: 'discard' | 'hand' | 'deck' = 'discard'): Promise<Card | null> {
         const c = realCard ? realCard : this.game.grabNameFromSupply(cardName);
         if (c) {
+            const hasTrack = {hasTrack: true};
+            await this.game.events.emit('gain', this, c, hasTrack, () => {
+                hasTrack.hasTrack = false;
+            });
+            if (!hasTrack.hasTrack) {
+                return c;
+            }
             switch (destination) {
                 case 'discard':
                     // Per http://wiki.dominionstrategy.com/index.php/Discard, you do not discard a card when you gain it.

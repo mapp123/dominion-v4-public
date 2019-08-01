@@ -10,9 +10,14 @@ export default function createSupplyData() {
             identity: struct.instance(Card),
             displayCount: 'boolean'
         }],
-        locations: struct.dict(['string', 'string'])
+        locations: struct.dict(['string', 'string']),
+        activatedCards: ["string"],
+        globalCardData: struct.dict(['string', 'any'])
     }, {
         piles: [],
-        locations: {}
+        locations: {},
+        activatedCards: [],
+        globalCardData: {}
     });
 }
+export type SupplyData = ReturnType<ReturnType<typeof createSupplyData>['getState']>;

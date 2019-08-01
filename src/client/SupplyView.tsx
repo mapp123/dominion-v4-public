@@ -21,6 +21,7 @@ export default class SupplyView extends React.Component<IProps, IState> {
     supplyData = createSupplyData();
     unsubscribe: Unsubscribe;
     mounted = false;
+    cardsToMarker: string[] | null = null;
     constructor(props) {
         super(props);
         this.state = {
@@ -29,6 +30,9 @@ export default class SupplyView extends React.Component<IProps, IState> {
         };
         this.unsubscribe = this.supplyData.subscribe(() => {
             const newState = this.supplyData.getState();
+            if (this.state.data.activatedCards !== newState.activatedCards) {
+                this.cardsToMarker = newState.activatedCards;
+            }
             if (this.state.data.locations != newState.locations) {
                 const lookedUp = Object.keys(this.state.data.locations);
                 const needLookUp = Object.entries(newState.locations).filter(([key]) => !lookedUp.includes(key));
@@ -95,10 +99,44 @@ export default class SupplyView extends React.Component<IProps, IState> {
             });
         }
     }
+    mergeMarkers(old: {[card: string]: string[]}, newDefs: {[card: string]: string[]}) {
+        for (const card in newDefs) {
+            if (!Array.isArray(newDefs[card])) {
+                console.error(`${card} did not produce array-like markers!!!`);
+                console.error(newDefs);
+                throw new Error(`${card} did not produce array-like markers!!!`);
+            }
+            if (card in old) {
+                old[card] = [...old[card], ...newDefs[card]];
+            }
+            else {
+                old[card] = newDefs[card];
+            }
+        }
+        return old;
+    }
 
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         const restrictions = (!this.props.decision || (this.props.decision.decision !== 'chooseCardOrBuy' && this.props.decision.decision !== 'buy' && this.props.decision.decision !== 'gain')) ?
             null : GainRestrictions.fromJSON(this.props.decision.gainRestrictions);
+        let cardsToRemove: string[] = [];
+        const markers = (this.cardsToMarker || []).reduce((old, card) => {
+            const cardDef = this.state.cardDefs[card];
+            if (!cardDef) {
+                return old;
+            }
+            const markers = cardDef.getSupplyMarkers(this.state.data.globalCardData[card], this.state.data.piles);
+            if (!markers) {
+                cardsToRemove.push(card);
+            }
+            else {
+                return this.mergeMarkers(old, markers);
+            }
+            return old;
+        }, {});
+        if (this.cardsToMarker) {
+            this.cardsToMarker = this.cardsToMarker.filter((a) => !cardsToRemove.includes(a));
+        }
         const buttons = this.supplyData.piles.map((pile) => {
             let cardName: string;
             let cardId: string;
@@ -119,7 +157,7 @@ export default class SupplyView extends React.Component<IProps, IState> {
             }
             const disabled = restrictions ? !restrictions.validateCard(cardName) : true;
             return (
-                <SupplyButton onHover={() => this.props.setHoveredCard(def)} key={pile.identifier} cardName={cardName} cardTypes={def.types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={def.cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined}/>
+                <SupplyButton markers={markers[cardName] || []} onHover={() => this.props.setHoveredCard(def)} key={pile.identifier} cardName={cardName} cardTypes={def.types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={def.cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined}/>
             );
         });
         return (

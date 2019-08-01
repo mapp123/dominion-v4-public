@@ -106,19 +106,27 @@ function createDeepObjectInspection<T extends object>(dispatch: (a: Action) => a
             if (p === '__isProxy') {
                 return true;
             }
+            let currentTarget = store.getState();
+            currentKeyMap.forEach((a) => {
+                currentTarget = currentTarget[a];
+            });
             if (p === '__underlyingValue') {
-                return target;
+                return currentTarget;
             }
-            if (target[p] != null && !(target[p] instanceof Card) && typeof target[p] === 'object') {
-                return createDeepObjectInspection(dispatch, [...currentKeyMap, p], target[p], store);
+            if (currentTarget[p] != null && !(currentTarget[p] instanceof Card) && typeof currentTarget[p] === 'object') {
+                return createDeepObjectInspection(dispatch, [...currentKeyMap, p], currentTarget[p], store);
             }
             if (p === 'splice') {
-                return fakeSplice.bind(target, dispatch, target, currentKeyMap);
+                return fakeSplice.bind(currentTarget, dispatch, currentTarget, currentKeyMap);
             }
-            return target[p];
+            return currentTarget[p];
         },
         set(target: T, p: string | number | symbol, value: any): boolean {
-            if (p === "length" && target[p] < value) {
+            let currentTarget = store.getState();
+            currentKeyMap.forEach((a) => {
+                currentTarget = currentTarget[a];
+            });
+            if (p === "length" && currentTarget[p] < value) {
                 // Don't serialize useless length values across the network.
                 return true;
             }

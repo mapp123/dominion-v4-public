@@ -2,6 +2,7 @@
 import v4 = require("uuid/v4");
 import Player from "../server/Player";
 import Game from "../server/Game";
+import {SupplyData} from "../createSupplyData";
 
 export interface Cost {
     coin: number;
@@ -11,6 +12,7 @@ export default abstract class Card {
     id: string;
     game: Game;
     features: ReadonlyArray<'vp'> = [];
+    static smallText = false;
     static get features(): typeof Card['features'] {
         // @ts-ignore
         return new this().features;
@@ -82,6 +84,10 @@ export default abstract class Card {
         }];
     }
 
+    public static setup(globalCardData: any, game: Game) {
+
+    }
+
     /**
      * Use this function to determine your dependant piles. For example, you might add 'ruins' here, but not 'ruined library'.
      * This has a default implementation to use if, for example, you have the type of 'looter', so make sure to call `super.onChosen()`.
@@ -95,6 +101,9 @@ export default abstract class Card {
      */
     public registerOtherCards() {
 
+    }
+    public static getSupplyMarkers(cardData: any, piles: SupplyData['piles']): {[card: string]: string[]} | null {
+        return null;
     }
     public async doTreasure(player: Player) {
         return await this.onTreasure(player);
@@ -116,6 +125,9 @@ export default abstract class Card {
     }
     protected async onTreasure(player: Player) {
         throw new Error("onTreasure not implemented");
+    }
+    protected getGlobalData() {
+        return (this.game || {supply: {data: {globalCardData: {[this.name]: {}}}}}).supply.data.globalCardData[this.name];
     }
     // noinspection JSUnusedGlobalSymbols
     toJSON() {

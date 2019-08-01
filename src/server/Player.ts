@@ -286,13 +286,16 @@ export default class Player {
         this.data.money -= this.game.getCostOfCard(cardName).coin;
         this.data.buys--;
         this.lm('%p buys a %s.', cardName);
-        if (await this.gain(cardName) == null) {
+        if (await this.gain(cardName, undefined, false) == null) {
             this.lm('%p fails to gain the %s after on-buy effects.', cardName);
         }
     }
-    async gain(cardName: string, realCard?: Card, destination: 'discard' | 'hand' | 'deck' = 'discard'): Promise<Card | null> {
+    async gain(cardName: string, realCard?: Card, log: boolean = true, destination: "discard" | "hand" | "deck" = 'discard'): Promise<Card | null> {
         const c = realCard ? realCard : this.game.grabNameFromSupply(cardName);
         if (c) {
+            if (log) {
+                this.lm('%p gains a %s.', c.name);
+            }
             const hasTrack = {hasTrack: true};
             await this.game.events.emit('gain', this, c, hasTrack, () => {
                 hasTrack.hasTrack = false;
@@ -440,7 +443,7 @@ export default class Player {
         if (cardToGain.name === 'Gain Nothing') {
             return null;
         }
-        let gained = await this.gain(cardToGain.name, undefined, destination);
+        let gained = await this.gain(cardToGain.name, undefined, true, destination);
         if (gained != null) {
             this.lm('%p gains a %s.', gained.name);
             return gained;

@@ -12,7 +12,6 @@ export default class Bandit extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/BanditArt.jpg";
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
-        player.lm('%p gains a gold.');
         await player.gain('gold');
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             const topCards: Card[] = [p.deck.pop(), p.deck.pop()].filter((a) => a) as Card[];

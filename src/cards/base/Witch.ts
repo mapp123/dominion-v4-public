@@ -14,11 +14,7 @@ export default class Witch extends Card {
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.draw(2);
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
-            const c = await p.gain('curse');
-            if (c) {
-                p.lm('%p gains a curse.');
-            }
-            else {
+            if (!await p.gain('curse')) {
                 p.lm('%p does not gain a curse.');
             }
         });

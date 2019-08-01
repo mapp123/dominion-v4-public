@@ -37,7 +37,7 @@ export default class Thief extends Card {
             if (!grabbed) {
                 break;
             }
-            await player.gain('', grabbed);
+            await player.gain('', grabbed, false);
             chosenCards.splice(chosenCards.indexOf(chosen), 1);
         }
     }

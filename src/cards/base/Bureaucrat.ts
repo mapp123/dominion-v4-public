@@ -12,9 +12,7 @@ export default class Bureaucrat extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/BureaucratArt.jpg";
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
-        if (await player.gain('silver', undefined, 'deck')) {
-            player.lm('%p gains a silver.');
-        }
+        await player.gain('silver', undefined, true, 'deck');
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             const card = await p.chooseCardFromHand(Texts.chooseVictoryToTopDeckFor('bureaucrat'), false, (card) => card.types.includes("victory"));
             if (card) {

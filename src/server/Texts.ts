@@ -11,6 +11,9 @@ export class Texts {
     static whatToDoWith(card) {
         return `What would you like to do with the ${card}?`;
     }
+    static whatToDoWithTheGainedAForB(a, b) {
+        return Texts.whatToDoWith(`the gained ${a} for ${b}`);
+    }
     static wantToDraw(card) {
         return `Do you want to draw the ${card}?`;
     }

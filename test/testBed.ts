@@ -200,6 +200,24 @@ class DrawAttack extends Card {
         });
     }
 }
+let emptyNameId = 0;
+function createEmptySupplyPileCard() {
+    let name = `Empty${emptyNameId}`;
+    return class extends Card {
+        randomizable = false;
+        cardText = "";
+        cost = {
+            coin: 0
+        };
+        types = ["action"] as const;
+        name = name;
+        supplyCount = 0;
+        cardArt = "";
+        async onAction(): Promise<void> {
+
+        }
+    }
+}
 class TestGame extends Game {
     done = false;
     private doneFn: (error?) => any = null as any;
@@ -219,6 +237,12 @@ class TestGame extends Game {
     injectTestAttack() {
         CardRegistry.getInstance().injectCard(DrawAttack as any);
         this.selectedCards.push('attack');
+    }
+
+    injectEmptySupplyPile() {
+        const card = createEmptySupplyPileCard() as any;
+        CardRegistry.getInstance().injectCard(card);
+        this.selectedCards.push(card.cardName);
     }
 
     determineTurnOrder() {

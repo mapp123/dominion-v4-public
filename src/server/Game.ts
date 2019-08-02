@@ -46,6 +46,7 @@ export default class Game {
     setCards(socket: Socket, ...args: any[]) {
         this.selectedCards = this.cardsValidator(args[0]);
         this.selectedCards = Rules.chooseBasicCards(this.selectedCards);
+        this.checkForCostModifier = this.selectedCards;
     }
     private registerValidator = struct.scalar('string');
     registerAsPlayer(socket: Socket, ...args: any[]) {
@@ -72,10 +73,41 @@ export default class Game {
         }
         socket.emit(returnTo, player.id);
     }
-    // This method could currently be static, but with cost modifiers in the future it can't be.
-    // noinspection JSMethodCanBeStatic
+    getCard(card: string) {
+        return CardRegistry.getInstance().getCard(card);
+    }
+    private checkForCostModifier: string[] = [];
+    updateCostModifiers() {
+        const mods = {};
+        this.checkForCostModifier = this.checkForCostModifier.filter((a) => {
+            const modifiers = CardRegistry.getInstance().getCard(a).getCostModifier(this.supply.data.globalCardData[a], this, this.selectedCards);
+            if (modifiers) {
+                Object.keys(modifiers).forEach((card) => {
+                    if (mods[card]) {
+                        const localModifier = modifiers[card];
+                        Object.keys(localModifier).forEach((mod) => {
+                            mods[card][mod] += localModifier[mod];
+                        });
+                    }
+                    else {
+                        mods[card] = modifiers[card];
+                    }
+                });
+                return true;
+            }
+            return false;
+        });
+        this.supply.data.costModifiers = mods;
+    }
     getCostOfCard(card: string) {
-        return CardRegistry.getInstance().getCard(card).cost;
+        const cost = {...CardRegistry.getInstance().getCard(card).cost};
+        Object.entries(this.supply.data.costModifiers[card] || {}).forEach(([key, value]) => {
+            cost[key] += value;
+        });
+        Object.entries(cost).forEach(([key, value]) => {
+            cost[key] = Math.max(0, value);
+        });
+        return cost;
     }
     getTypesOfCard(card: string) {
         return CardRegistry.getInstance().getCard(card).types;

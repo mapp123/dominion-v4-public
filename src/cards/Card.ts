@@ -102,6 +102,11 @@ export default abstract class Card {
     public registerOtherCards() {
 
     }
+
+    public static getCostModifier(cardData: any, game: Game, activatedCards: string[]): {[card: string]: Cost} | null {
+        return null;
+    }
+
     public static getSupplyMarkers(cardData: any, piles: SupplyData['piles']): {[card: string]: string[]} | null {
         return null;
     }

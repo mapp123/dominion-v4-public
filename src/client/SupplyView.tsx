@@ -155,9 +155,16 @@ export default class SupplyView extends React.Component<IProps, IState> {
             if (!def) {
                 return null;
             }
+            const cost = {...def.cost};
+            Object.entries(this.supplyData.costModifiers[def.cardName] || {}).forEach(([key, value]) => {
+                cost[key] += value;
+            });
+            Object.entries(cost).forEach(([key, value]) => {
+                cost[key] = Math.max(0, value);
+            });
             const disabled = restrictions ? !restrictions.validateCard(cardName) : true;
             return (
-                <SupplyButton markers={markers[cardName] || []} onHover={() => this.props.setHoveredCard(def)} key={pile.identifier} cardName={cardName} cardTypes={def.types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={def.cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined}/>
+                <SupplyButton markers={markers[cardName] || []} onHover={() => this.props.setHoveredCard(def)} key={pile.identifier} cardName={cardName} cardTypes={def.types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined}/>
             );
         });
         return (

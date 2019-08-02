@@ -12,12 +12,14 @@ export default function createSupplyData() {
         }],
         locations: struct.dict(['string', 'string']),
         activatedCards: ["string"],
-        globalCardData: struct.dict(['string', 'any'])
+        globalCardData: struct.dict(['string', 'any']),
+        costModifiers: struct.dict(['string', struct({cost: 'number'})])
     }, {
         piles: [],
         locations: {},
         activatedCards: [],
-        globalCardData: {}
+        globalCardData: {},
+        costModifiers: {}
     });
 }
 export type SupplyData = ReturnType<ReturnType<typeof createSupplyData>['getState']>;

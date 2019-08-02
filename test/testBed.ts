@@ -188,7 +188,7 @@ class DrawAttack extends Card {
     randomizable = false;
     cardText = "";
     cost = {
-        coin: 0
+        coin: 5
     };
     types = ["action", "attack"] as const;
     name = "attack";
@@ -218,6 +218,7 @@ class TestGame extends Game {
     }
     injectTestAttack() {
         CardRegistry.getInstance().injectCard(DrawAttack as any);
+        this.selectedCards.push('attack');
     }
 
     determineTurnOrder() {

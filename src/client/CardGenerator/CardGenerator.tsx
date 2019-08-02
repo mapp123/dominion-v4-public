@@ -108,7 +108,7 @@ class SingleTextLine extends React.Component<{line: string; x: number; y: number
             textAnchor="middle">{this.props.line}</text>;
     }
 }
-class Description extends React.Component<{description: string;heirloomPresent: boolean; smallDescription: boolean;}, {}> {
+class Description extends React.Component<{description: string;heirloomPresent: boolean; smallDescription: boolean}, {}> {
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         const textStyle = {
             fontSize: this.props.smallDescription ? "45pt" : "60pt",

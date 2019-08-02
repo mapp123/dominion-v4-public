@@ -2,7 +2,6 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Game from "../../server/Game";
-import {SupplyData} from "../../createSupplyData";
 
 export default class TradeRoute extends Card {
     types = ["action"] as const;
@@ -44,8 +43,10 @@ export default class TradeRoute extends Card {
         return Object.entries(cardData.tokens).filter(([,value]) => value).reduce((obj, [card]) => {
             return {
                 ...obj,
-                [card]: ['Trade Route']
+                [card]: ['Trade Route Token']
             };
-        }, {});
+        }, {
+            "trade route": [`Value: ${cardData.coins || 0}`]
+        });
     }
 }

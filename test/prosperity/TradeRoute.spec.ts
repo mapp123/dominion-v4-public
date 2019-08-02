@@ -63,9 +63,10 @@ describe('TRADE ROUTE', () => {
         player.testChooseCard(Texts.chooseCardToTrashFor('trade route'), 'copper');
         player.onBuyPhaseStart(() => {
             expect(CardRegistry.getInstance().getCard('trade route').getSupplyMarkers(game.supply.data.globalCardData['trade route'], [])).to.deep.equal({
-                'estate': ['Trade Route'],
-                'duchy': ['Trade Route'],
-                'province': ['Trade Route']
+                'estate': ['Trade Route Token'],
+                'duchy': ['Trade Route Token'],
+                'province': ['Trade Route Token'],
+                'trade route': ['Value: 0']
             });
             done();
         });

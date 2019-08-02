@@ -286,6 +286,7 @@ export default class Player {
         this.data.money -= this.game.getCostOfCard(cardName).coin;
         this.data.buys--;
         this.lm('%p buys a %s.', cardName);
+        await this.game.events.emit('buy', this, cardName);
         if (await this.gain(cardName, undefined, false) == null) {
             this.lm('%p fails to gain the %s after on-buy effects.', cardName);
         }

@@ -44,5 +44,6 @@ export class PlayerEvents extends Events<PlayerEvent> {}
 type GameEvent = {
     gameEnd: [];
     gain: [Player, Card, {hasTrack: boolean}, () => any];
+    buy: [Player, string];
 };
 export class GameEvents extends Events<GameEvent> {}

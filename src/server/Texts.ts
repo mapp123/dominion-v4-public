@@ -8,6 +8,9 @@ export class Texts {
     static chooseCardToGainFromTrashed = "Please choose any number of cards to gain from the trashed cards...";
     static chooseOrderOfCards = 'Please reorder the cards:';
     static chooseCardToPutOnDeck = 'Please choose a card to put on top of your deck...';
+    static chooseACardThatACannotBuyThisTurn(a) {
+        return `Please choose a card that ${a} cannot buy this turn...`;
+    }
     static whatToDoWith(card) {
         return `What would you like to do with the ${card}?`;
     }

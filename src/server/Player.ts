@@ -169,7 +169,7 @@ export default class Player {
             decision: 'chooseCardOrBuy',
             id: v4(),
             source: this.data.hand,
-            gainRestrictions: GainRestrictions.instance().setMaxCoinCost(this.data.money).build(this.game),
+            gainRestrictions: this.game.addAdditionalBuyRestrictions(this, GainRestrictions.instance().setMaxCoinCost(this.data.money)).build(this.game),
             helperText: Texts.chooseCardOrBuy
         });
     }
@@ -177,7 +177,7 @@ export default class Player {
         return await this.makeDecision({
             decision: 'buy',
             id: v4(),
-            gainRestrictions: GainRestrictions.instance().setMaxCoinCost(this.data.money).build(this.game),
+            gainRestrictions: this.game.addAdditionalBuyRestrictions(this, GainRestrictions.instance().setMaxCoinCost(this.data.money)).build(this.game),
             helperText: Texts.buy
         });
     }
@@ -433,7 +433,7 @@ export default class Player {
         });
         return order.map((a) => cards.find((b) => b.id === a.id)).filter((a) => a) as Card[];
     }
-    async chooseGain(helperText: string, optional: boolean, gainRestrictions: GainRestrictions, destination: 'discard' | 'hand' | 'deck' = 'discard'): Promise<Card | null> {
+    async chooseGain(helperText: string, optional: boolean, gainRestrictions: GainRestrictions, destination: 'discard' | 'hand' | 'deck' | 'none' = 'discard'): Promise<Card | null> {
         const cardToGain = await this.makeDecision({
             decision: 'gain',
             helperText,
@@ -443,6 +443,9 @@ export default class Player {
         });
         if (cardToGain.name === 'Gain Nothing') {
             return null;
+        }
+        if (destination === 'none') {
+            return this.game.findCard(cardToGain.id, 'supply', true);
         }
         let gained = await this.gain(cardToGain.name, undefined, true, destination);
         if (gained != null) {

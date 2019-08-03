@@ -45,5 +45,7 @@ type GameEvent = {
     gameEnd: [];
     gain: [Player, Card, {hasTrack: boolean}, () => any];
     buy: [Player, string];
+    turnStart: [Player];
+    turnEnd: [Player];
 };
 export class GameEvents extends Events<GameEvent> {}

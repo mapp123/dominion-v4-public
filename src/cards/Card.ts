@@ -3,6 +3,7 @@ import v4 = require("uuid/v4");
 import Player from "../server/Player";
 import Game from "../server/Game";
 import {SupplyData} from "../createSupplyData";
+import {GainRestrictions} from "../server/GainRestrictions";
 
 export interface Cost {
     coin: number;
@@ -101,6 +102,10 @@ export default abstract class Card {
      */
     public registerOtherCards() {
 
+    }
+
+    public static getExtraRestrictions(cardData: any, player: Player, restrictions: GainRestrictions): GainRestrictions {
+        throw new Error("Not implemented");
     }
 
     public static getCostModifier(cardData: any, game: Game, activatedCards: string[]): {[card: string]: Cost} | null {

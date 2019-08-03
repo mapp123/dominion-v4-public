@@ -44,12 +44,12 @@ class TestPlayer extends Player {
         this.game.doneFn(new Error(`Failed to find a response for ${JSON.stringify(decision)}`));
         throw new Error("Failed to find a response.");
     }
-    testHookNextDecision(cb: () => any) {
+    testHookNextDecision(cb: (decision: Decision) => any) {
         const response = {
             matcher: (decision) => this.decisionResponses[this.decisionResponses.indexOf(response) + 1].matcher(decision),
             response: (decision) => {
                 try {
-                    cb();
+                    cb(decision);
                 }
                 catch (e) {
                     // @ts-ignore
@@ -93,7 +93,7 @@ class TestPlayer extends Player {
     }
     testGain(forCard: string, gainCard: string) {
         this.decisionResponses.push({
-            matcher: (decision) => decision.decision === 'gain' && decision.helperText === Texts.chooseCardToGainFor(forCard),
+            matcher: (decision) => decision.decision === 'gain' && (decision.helperText === Texts.chooseCardToGainFor(forCard) || decision.helperText === forCard),
             response: () => {
                 const pile = this.game.supply.data.piles.find((a) => a.pile[a.pile.length - 1].name === gainCard);
                 if (!pile) {
@@ -112,7 +112,7 @@ class TestPlayer extends Player {
     testBuy(card: string) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
-            response: () => ({responseType: 'buy', choice: {name: card, id: this.game.supply.data.piles.find((a) => a.pile.length > 0 && a.pile[0].name === card)!.pile[0].id}})
+            response: (decision) => ({responseType: 'buy', choice: {name: card, id: this.game.supply.data.piles.find((a) => a.pile.length > 0 && a.pile[0].name === card)!.pile[0].id}})
         });
     }
     testOption(text: string, option: string | number) {

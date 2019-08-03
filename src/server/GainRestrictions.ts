@@ -9,6 +9,7 @@ export class GainRestrictions {
     inSupply = true;
     allowedCards: string[] | null = null;
     mustHaveTypes: string[] = [];
+    banned: string[] = [];
     private constructor() {
 
     }
@@ -28,7 +29,9 @@ export class GainRestrictions {
     }
     private isCardAllowed(game: Game, card: string) {
         return (!this.inSupply || game.nameAvailableInSupply(card))
-            && game.getCostOfCard(card).coin <= this.maxCoinCost && this.mustHaveTypes.reduce((last, type) => last && game.getTypesOfCard(card).includes(type as any), true);
+            && game.getCostOfCard(card).coin <= this.maxCoinCost
+            && this.mustHaveTypes.reduce((last, type) => last && game.getTypesOfCard(card).includes(type as any), true)
+            && !this.banned.includes(card);
     }
     toJSON(game: Game): GainRestrictionsJSON {
         this.allowedCards = [];
@@ -65,5 +68,10 @@ export class GainRestrictions {
     // noinspection JSUnusedGlobalSymbols
     setInSupply(inSupply: boolean) {
         this.inSupply = inSupply;
+        return this;
+    }
+    addBannedCard(card: string) {
+        this.banned.push(card);
+        return this;
     }
 }

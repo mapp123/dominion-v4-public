@@ -9,6 +9,7 @@ import Supply from "./Supply";
 import CardRegistry from "../cards/CardRegistry";
 import Card from "../cards/Card";
 import {GameEvents} from "./Events";
+import {GainRestrictions} from "./GainRestrictions";
 export default class Game {
     players: Player[] = [];
     io: Namespace;
@@ -47,6 +48,7 @@ export default class Game {
         this.selectedCards = this.cardsValidator(args[0]);
         this.selectedCards = Rules.chooseBasicCards(this.selectedCards);
         this.checkForCostModifier = this.selectedCards;
+        this.checkForRestrictionModifier = this.selectedCards;
     }
     private registerValidator = struct.scalar('string');
     registerAsPlayer(socket: Socket, ...args: any[]) {
@@ -75,6 +77,19 @@ export default class Game {
     }
     getCard(card: string) {
         return CardRegistry.getInstance().getCard(card);
+    }
+    private checkForRestrictionModifier: string[] = [];
+    addAdditionalBuyRestrictions(player: Player, restrictions: GainRestrictions): GainRestrictions {
+        this.checkForRestrictionModifier = this.checkForRestrictionModifier.filter((card) => {
+            try {
+                restrictions = CardRegistry.getInstance().getCard(card).getExtraRestrictions(this.supply.data.globalCardData[card], player, restrictions);
+                return true;
+            }
+            catch (e) {
+                return false;
+            }
+        });
+        return restrictions;
     }
     private checkForCostModifier: string[] = [];
     updateCostModifiers() {
@@ -165,7 +180,9 @@ export default class Game {
                 this.players[0].username :
                 this.players.slice(0, -1).map((p) => p.username).join(", ") + " and " + this.players.slice(-1)[0].username);
         while (!this.gameEnded()) {
+            await this.events.emit('turnStart', this.players[this.currentPlayerIndex]);
             await this.players[this.currentPlayerIndex].playTurn();
+            await this.events.emit('turnEnd', this.players[this.currentPlayerIndex]);
             this.runAccountability();
             this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         }
@@ -240,6 +257,36 @@ export default class Game {
         let card = this.tryActiveHand(cardId, true);
         if (card) return card;
         card = this.trySupply(cardId, true);
+        if (card) return card;
+        return null;
+    }
+    findCard(cardId: string, hint?: 'supply' | 'activeHand' | 'trash', hintMandatory = false): Card | null {
+        if (hint === 'supply') {
+            const card = this.trySupply(cardId, false);
+            if (card) {
+                return card;
+            }
+        }
+        else if (hint === 'trash') {
+            const card = this.tryTrash(cardId, false);
+            if (card) {
+                return card;
+            }
+        }
+        else if (hint === 'activeHand') {
+            const card = this.tryActiveHand(cardId, false);
+            if (card) {
+                return card;
+            }
+        }
+        if (hintMandatory) {
+            return null;
+        }
+        let card = this.trySupply(cardId, false);
+        if (card) return card;
+        card = this.tryTrash(cardId, false);
+        if (card) return card;
+        card = this.tryActiveHand(cardId, false);
         if (card) return card;
         return null;
     }

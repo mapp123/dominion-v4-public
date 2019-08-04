@@ -51,15 +51,9 @@ export default class Player {
         }
     }
     draw(amount = 1) {
-        for (let i = 0; i < amount; i++) {
-            const card = this.deck.draw();
-            if (card) {
-                this.data.hand.push(card);
-            }
-            else {
-                break;
-            }
-        }
+        const cards = new Array(amount).fill(undefined).map(() => this.deck.pop()).filter((a) => a != null) as Card[];
+        this.lm(`%p draws %h[${amount === 1 ? 'a' : Util.numeral(amount)} card${amount === 1 ? '' : 's'}].`, Util.formatCardList(cards.map((a) => a.name)));
+        this.data.hand.push(...cards);
     }
     get allCards() {
         return [...this.deck.deckAndDiscard, ...this.data.hand, ...this.data.playArea];
@@ -324,7 +318,10 @@ export default class Player {
     async playTreasure(card: Card) {
         await card.doTreasure(this);
     }
-    async discard(card: Card | Card[]) {
+    async discard(card: Card | Card[], log = false) {
+        if (log) {
+            this.lm('%p discards %s.', Util.formatCardList((Array.isArray(card) ? card : [card]).map((a) => a.name)));
+        }
         if (Array.isArray(card)) {
             this.deck.discard.push(...card);
         }

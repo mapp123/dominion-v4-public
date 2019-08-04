@@ -1,3 +1,5 @@
+import Util from "../Util";
+
 export class Texts {
     static chooseUsername = "What would you like your username to be?";
     static chooseCardOrBuy = "Please play a treasure or buy a card...";
@@ -9,6 +11,9 @@ export class Texts {
     static chooseOrderOfCards = 'Please reorder the cards:';
     static chooseCardToPutOnDeck = 'Please choose a card to put on top of your deck...';
     static chooseCardToTakeFromDiscard = 'Please choose a card to take out of your discard pile...';
+    static discardForBenefit(benefit: string, number = 1) {
+        return `Choose ${number === 1 ? "a" : Util.numeral(number)} card${number > 1 ? "s" : ""} to discard. You'll get ${benefit} if you do.`;
+    }
     static doYouWantToDiscardAnAForB(a, b) {
         return `Do you want to discard a ${a} for ${b}?`;
     }

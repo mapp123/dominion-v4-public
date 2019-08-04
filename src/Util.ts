@@ -25,14 +25,14 @@ export default class Util {
     private static articleCache: {[word: string]: string | undefined} = {};
     static article(card: string): string {
         if (!this.articleCache[card]) {
-            this.articleCache[card] = nlp('the ' + card).nouns().list[0].article().trim();
+            this.articleCache[card] = nlp('the nice ' + card).tag('Noun').nouns().list[0].article().trim();
         }
         return this.articleCache[card]!;
     }
     private static pluralCache: {[word: string]: string | undefined} = {};
     static plural(card: string): string {
         if (!this.pluralCache[card]) {
-            this.pluralCache[card] = nlp('the ' + card).nouns().list[0].toPlural().out('text').trim();
+            this.pluralCache[card] = nlp(card).tag('Noun').nouns().list[0].toPlural().out('text').trim();
         }
         return this.pluralCache[card]!;
     }

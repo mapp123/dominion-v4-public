@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Library extends Card {
     types = ["action"] as const;
@@ -17,7 +18,7 @@ export default class Library extends Card {
         while (player.data.hand.length < 7 && (nextCard = player.deck.pop()) != null) {
             if (nextCard.types.includes("action") && !await player.confirmAction(Texts.wantToDraw(nextCard.name))) {
                 setAside.push(nextCard);
-                player.lm('%p sets aside a %s.', nextCard.name);
+                player.lm('%p sets aside %s.', Util.formatCardList([nextCard.name]));
             }
             else {
                 player.data.hand.push(nextCard);

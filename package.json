@@ -32,6 +32,7 @@
     "@types/webpack": "^4.32.0",
     "awesome-typescript-loader": "^5.2.1",
     "clean-webpack-plugin": "^3.0.0",
+    "compromise": "^11.14.2",
     "css-loader": "^3.1.0",
     "express": "^4.17.1",
     "html-webpack-plugin": "^3.2.0",

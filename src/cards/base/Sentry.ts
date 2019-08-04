@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Sentry extends Card {
     types = ["action"] as const;
@@ -18,8 +19,7 @@ export default class Sentry extends Card {
         player.data.actions++;
         const cards = [player.deck.pop(), player.deck.pop()].filter((a) => a) as Card[];
         if (cards.length) {
-            const s = cards.length === 1 ? `a ${cards[0].name}` : `a ${cards[0].name} and a ${cards[1].name}`;
-            player.lm('%p reveals %s.', s);
+            player.lm('%p reveals %s.', Util.formatCardList(cards.map((a) => a.name)));
         }
         let keptCards: Card[] = [];
         for (let card of cards) {

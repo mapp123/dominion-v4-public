@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Thief extends Card {
     types = ["action", "attack"] as const;
@@ -16,8 +17,7 @@ export default class Thief extends Card {
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             const topCards: Card[] = [p.deck.pop(), p.deck.pop()].filter((a) => a != null) as Card[];
             if (topCards.length) {
-                const s = topCards.length === 1 ? `a ${topCards[0].name}` : `a ${topCards[0].name} and a ${topCards[1].name}`;
-                p.lm('%p reveals %s.', s);
+                p.lm('%p reveals %s.', Util.formatCardList(topCards.map((a) => a.name)));
             }
             let chosen = await player.chooseCard(Texts.chooseATreasureToTrashFor(p.username), topCards, false, (card) => card.types.includes("treasure"));
             if (chosen) {

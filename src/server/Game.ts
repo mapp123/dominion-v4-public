@@ -132,6 +132,7 @@ export default class Game {
     }
     lm(subject: Player | null, msg: string, ...params: any[]) {
         msg = msg.split("%c").join('%h[card]');
+        msg = msg.split("%ac").join("%h[a card]");
         const unformattedPrivateMsg = msg.replace(/%h\[.*?]/g, '%s');
         // Count the number of private arguments
         const argsCount = unformattedPrivateMsg.split("%").length - (unformattedPrivateMsg.split("%%").length * 2);

@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Bureaucrat extends Card {
     types = ["action","attack"] as const;
@@ -16,7 +17,7 @@ export default class Bureaucrat extends Card {
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             const card = await p.chooseCardFromHand(Texts.chooseVictoryToTopDeckFor('bureaucrat'), false, (card) => card.types.includes("victory"));
             if (card) {
-                p.lm('%p puts a %c on top of their deck.', card.name);
+                p.lm('%p puts %ac on top of their deck.', Util.formatCardList([card.name]));
                 p.deck.cards.unshift(card);
             }
         });

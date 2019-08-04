@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Loan extends Card {
     types = ["treasure"] as const;
@@ -17,7 +18,7 @@ export default class Loan extends Card {
         let revealedCard: Card | undefined;
         let revealedCards: Card[] = [];
         while ((revealedCard = player.deck.pop()) != null && !revealedCard.types.includes("treasure")) {
-            player.lm('%p reveals a %s.', revealedCard.name);
+            player.lm('%p reveals %s.', Util.formatCardList([revealedCard.name]));
             revealedCards.push(revealedCard);
         }
         if (revealedCard) {

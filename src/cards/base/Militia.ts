@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Militia extends Card {
     types = ["action","attack"] as const;
@@ -18,7 +19,7 @@ export default class Militia extends Card {
             while (p.data.hand.length > 3) {
                 const card = await p.chooseCardFromHand(Texts.chooseCardToDiscardFor('militia'));
                 if (card) {
-                    p.lm('%p discards a %s.', card.name);
+                    p.lm('%p discards %s.', Util.formatCardList([card.name]));
                     await p.discard(card);
                 }
             }

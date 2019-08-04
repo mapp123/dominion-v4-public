@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Cellar extends Card {
     types = ["action"] as const;
@@ -17,7 +18,7 @@ export default class Cellar extends Card {
         let card;
         let cardsToDraw = 0;
         while ((card = await player.chooseCardFromHand(Texts.chooseCardToDiscardFor('cellar'), true)) != null) {
-            player.lm('%p discards a %s.', card.name);
+            player.lm('%p discards %s.', Util.formatCardList([card.name]));
             await player.discard(card);
             cardsToDraw++;
         }

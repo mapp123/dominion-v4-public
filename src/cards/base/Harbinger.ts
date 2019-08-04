@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Harbinger extends Card {
     types = ["action"] as const;
@@ -18,7 +19,7 @@ export default class Harbinger extends Card {
         player.data.actions++;
         const card = await player.chooseCardFromDiscard(Texts.chooseCardToMoveFromDiscardToDeck('harbinger'), true);
         if (card) {
-            player.lm('%p puts a %c on top of their deck.', card.name);
+            player.lm('%p puts %ac on top of their deck.', Util.formatCardList([card.name]));
             player.deck.cards.unshift(card);
         }
     }

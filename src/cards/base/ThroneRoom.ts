@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class ThroneRoom extends Card {
     types = ["action"] as const;
@@ -16,7 +17,7 @@ export default class ThroneRoom extends Card {
     async onAction(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseCardToPlayTwice, true, (card) => card.types.includes('action'));
         if (card) {
-            player.lm('%p chooses a %s.', card.name);
+            player.lm('%p chooses %s.', Util.formatCardList([card.name]));
             player.data.playArea.push(card);
             await player.playActionCard(card);
             // We create a duplicate card with the same ID, and call it's play function. This way, it can find itself,

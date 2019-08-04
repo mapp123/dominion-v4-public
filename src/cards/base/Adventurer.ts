@@ -1,5 +1,6 @@
 import Card from "../Card";
 import Player from "../../server/Player";
+import Util from "../../Util";
 
 export default class Adventurer extends Card {
     types = ["action"] as const;
@@ -15,7 +16,7 @@ export default class Adventurer extends Card {
         let revealedCard: Card | undefined;
         while (revealed.filter((a) => a.types.includes("treasure")).length < 2 && (revealedCard = player.deck.pop()) != null) {
             revealed.push(revealedCard);
-            player.lm('%p reveals a %s.', revealedCard.name);
+            player.lm('%p reveals %s.', Util.formatCardList([revealedCard.name]));
         }
         player.lm('%p puts the revealed treasures into their hand, and discards the rest.');
         player.data.hand.push(...revealed.filter((a) => a.types.includes("treasure")));

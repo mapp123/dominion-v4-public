@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Vassal extends Card {
     types = ["action"] as const;
@@ -16,7 +17,7 @@ export default class Vassal extends Card {
         player.data.money += 2;
         const card = player.deck.pop();
         if (card) {
-            player.lm('%p discards a %s.', card.name);
+            player.lm('%p discards %s.', Util.formatCardList([card.name]));
             await player.discard(card);
             if (player.deck.discard[player.deck.discard.length - 1] === card
                 && card.types.includes("action")

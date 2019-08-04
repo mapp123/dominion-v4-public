@@ -391,7 +391,7 @@ export default class Player {
     async attackOthers(exemptPlayers: Player[], cb: (player: Player) => Promise<any>) {
         let currentPlayerIndex = this.game.players.indexOf(this);
         let attacked = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
-        attacked.filter((a) => !exemptPlayers.includes(a));
+        attacked = attacked.filter((a) => !exemptPlayers.includes(a));
         await Promise.all(attacked.map((a) => cb(a)));
     }
     async attackOthersInOrder(exemptPlayers: Player[], cb: (player: Player) => Promise<any>) {
@@ -405,6 +405,23 @@ export default class Player {
             currentPlayerIndex++;
             currentPlayerIndex %= this.game.players.length;
         }
+    }
+    async attackOthersInSteps<T>(exemptPlayers: Player[], steps: [(player: Player) => Promise<T>, (player: Player, result: T) => Promise<any>]): Promise<void> {
+        let currentPlayerIndex = this.game.players.indexOf(this);
+        let attacked = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
+        attacked = attacked.filter((a) => !exemptPlayers.includes(a));
+        let fastStep = attacked.map((a) => steps[0](a));
+        if (fastStep.length === 0) {
+            return Promise.resolve();
+        }
+        async function cbNext(index, result) {
+            await steps[1](attacked[index], result);
+            if (index + 1 === fastStep.length) {
+                return;
+            }
+            return fastStep[index + 1].then(cbNext.bind(null, index + 1));
+        }
+        return fastStep[0].then(cbNext.bind(null, 0));
     }
     async trash(card: Card, log = true) {
         if (log) this.lm('%p trashes a %s.', card.name);

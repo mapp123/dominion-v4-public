@@ -9,6 +9,9 @@ export class Texts {
     static chooseOrderOfCards = 'Please reorder the cards:';
     static chooseCardToPutOnDeck = 'Please choose a card to put on top of your deck...';
     static chooseCardToTakeFromDiscard = 'Please choose a card to take out of your discard pile...';
+    static doYouWantToDiscardAnAForB(a, b) {
+        return `Do you want to discard a ${a} for ${b}?`;
+    }
     static chooseAToDuplicateWithB(a, b) {
         return `Please choose a ${a} to duplicate with ${b}...`;
     }

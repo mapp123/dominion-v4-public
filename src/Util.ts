@@ -44,4 +44,3 @@ export default class Util {
         return this.numberCache[number]!;
     }
 }
-console.log(JSON.stringify(Util.plural('estate')));

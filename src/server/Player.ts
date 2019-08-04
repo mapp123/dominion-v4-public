@@ -11,6 +11,7 @@ import Card from "../cards/Card";
 import {Texts} from "./Texts";
 import CardRegistry from "../cards/CardRegistry";
 import {PlayerEvents} from "./Events";
+import Util from "../Util";
 
 export default class Player {
     id = v4();
@@ -235,7 +236,7 @@ export default class Player {
      */
     async playActionCard(card: Card, log = true) {
         if (log) {
-            this.lm('%p plays a %s.', card.name);
+            this.lm('%p plays %s.', Util.formatCardList([card.name]));
         }
         let exemptPlayers = [] as Player[];
         if (card.types.includes("attack")) {
@@ -267,7 +268,7 @@ export default class Player {
                     }
                     const c = this.data.hand.splice(handIndex, 1)[0];
                     this.data.playArea.push(c);
-                    this.lm('%p plays a %s.', c.name);
+                    this.lm('%p plays %s.', Util.formatCardList([c.name]));
                     await this.playTreasure(c);
                     await this.events.emit('treasureCardPlayed', this, c);
                 }
@@ -285,7 +286,7 @@ export default class Player {
     async buy(cardName: string) {
         this.data.money -= this.game.getCostOfCard(cardName).coin;
         this.data.buys--;
-        this.lm('%p buys a %s.', cardName);
+        this.lm('%p buys %s.', Util.formatCardList([cardName]));
         await this.game.events.emit('buy', this, cardName);
         if (await this.gain(cardName, undefined, false) == null) {
             this.lm('%p fails to gain the %s after on-buy effects.', cardName);
@@ -295,7 +296,7 @@ export default class Player {
         const c = realCard ? realCard : this.game.grabNameFromSupply(cardName);
         if (c) {
             if (log) {
-                this.lm('%p gains a %s.', c.name);
+                this.lm('%p gains %s.', Util.formatCardList([c.name]));
             }
             const hasTrack = {hasTrack: true};
             await this.game.events.emit('gain', this, c, hasTrack, () => {
@@ -424,7 +425,7 @@ export default class Player {
         return fastStep[0].then(cbNext.bind(null, 0));
     }
     async trash(card: Card, log = true) {
-        if (log) this.lm('%p trashes a %s.', card.name);
+        if (log) this.lm('%p trashes %s.', Util.formatCardList([card.name]));
         this.game.trash.push(card);
     }
     async chooseOption<T extends readonly string[]>(helperText: string, options: T): Promise<T[number]> {
@@ -466,7 +467,7 @@ export default class Player {
         }
         let gained = await this.gain(cardToGain.name, undefined, true, destination);
         if (gained != null) {
-            this.lm('%p gains a %s.', gained.name);
+            this.lm('%p gains %s.', Util.formatCardList([gained.name]));
             return gained;
         }
         else {

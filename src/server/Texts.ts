@@ -12,6 +12,12 @@ export class Texts {
     static chooseOrderOfCards = 'Please reorder the cards:';
     static chooseCardToPutOnDeck = 'Please choose a card to put on top of your deck...';
     static chooseCardToTakeFromDiscard = 'Please choose a card to take out of your discard pile...';
+    static buyingWillUseCoffers(card: string, amountOver: number) {
+        return `Buying the ${card} will use ${amountOver} coffers. Are you sure?`;
+    }
+    static playActionWillUseVillagers(card: string) {
+        return `Playing the ${card} will use a villager. Continue?`;
+    }
     static chooseCardToTrashForge(money) {
         return `Please choose a card to trash for forge. You are currently at ${money} Money.`;
     }

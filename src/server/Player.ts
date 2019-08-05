@@ -49,6 +49,12 @@ export default class Player {
         if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('vp'))) {
             this.data.dataViews.push('vp');
         }
+        if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('coffers'))) {
+            this.data.dataViews.push('coffers');
+        }
+        if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('villagers'))) {
+            this.data.dataViews.push('villagers');
+        }
     }
     draw(amount = 1) {
         const cards = new Array(amount).fill(undefined).map(() => this.deck.pop()).filter((a) => a != null) as Card[];
@@ -164,22 +170,48 @@ export default class Player {
         const nMsg = msg.replace(/%p/g, this.username);
         this.game.lm(this, nMsg, ...params);
     }
-    async chooseCardOrBuy() {
-        return await this.makeDecision({
+    private getBuyRestrictions() {
+        return this.game.addAdditionalBuyRestrictions(
+            this,
+            GainRestrictions.instance()
+                .setMaxCoinCost(this.data.money + this.data.coffers)
+        ).build(this.game);
+    }
+    private async confirmBuyIfCoffers(response: DecisionResponseType["chooseCardOrBuy"] | DecisionResponseType["buy"]): Promise<boolean> {
+        let cost = this.game.getCostOfCard(response.choice.name).coin;
+        if (cost > this.data.money) {
+            return await this.confirmAction(Texts.buyingWillUseCoffers(response.choice.name, cost - this.data.money));
+        }
+        return true;
+    }
+    async chooseCardOrBuy(): Promise<DecisionResponseType["chooseCardOrBuy"]> {
+        let response = await this.makeDecision({
             decision: 'chooseCardOrBuy',
             id: v4(),
             source: this.data.hand,
-            gainRestrictions: this.game.addAdditionalBuyRestrictions(this, GainRestrictions.instance().setMaxCoinCost(this.data.money)).build(this.game),
+            gainRestrictions: this.getBuyRestrictions(),
             helperText: Texts.chooseCardOrBuy
         });
+        if (!this.confirmBuyIfCoffers(response)) {
+            return this.chooseCardOrBuy();
+        }
+        else {
+            return response;
+        }
     }
-    async chooseBuy() {
-        return await this.makeDecision({
+    async chooseBuy(): Promise<DecisionResponseType["buy"]> {
+        let response = await this.makeDecision({
             decision: 'buy',
             id: v4(),
-            gainRestrictions: this.game.addAdditionalBuyRestrictions(this, GainRestrictions.instance().setMaxCoinCost(this.data.money)).build(this.game),
+            gainRestrictions: this.getBuyRestrictions(),
             helperText: Texts.buy
         });
+        if (!this.confirmBuyIfCoffers(response)) {
+            return this.chooseCardOrBuy();
+        }
+        else {
+            return response;
+        }
     }
     async playTurn() {
         this.turnNumber++;
@@ -213,10 +245,19 @@ export default class Player {
         });
     }
     async actionPhase() {
-        while (this.data.actions > 0 && this.data.hand.filter((a) => a.types.includes('action')).length > 0) {
+        while ((this.data.actions + this.data.villagers) > 0 && this.data.hand.filter((a) => a.types.includes('action')).length > 0) {
             const card = await this.chooseCardFromHand(Texts.chooseActionToPlay, true, (card) => card.types.includes("action"));
             if (card) {
-                this.data.actions--;
+                if (this.data.actions === 0 && !await this.confirmAction(Texts.playActionWillUseVillagers(card.name))) {
+                    this.data.hand.push(card);
+                    continue;
+                }
+                else if (this.data.actions === 0) {
+                    this.data.villagers--;
+                }
+                else {
+                    this.data.actions--;
+                }
                 this.data.playArea.push(card);
                 await this.playActionCard(card);
             }
@@ -284,7 +325,15 @@ export default class Player {
         }
     }
     async buy(cardName: string) {
-        this.data.money -= this.game.getCostOfCard(cardName).coin;
+        let cofferAmount = this.game.getCostOfCard(cardName).coin - this.data.money;
+        if (cofferAmount > 0) {
+            this.lm('%p uses %s coffers.', cofferAmount);
+            this.data.coffers -= cofferAmount;
+        }
+        else {
+            cofferAmount = 0;
+        }
+        this.data.money -= this.game.getCostOfCard(cardName).coin - cofferAmount;
         this.data.buys--;
         this.lm('%p buys %s.', Util.formatCardList([cardName]));
         await this.game.events.emit('buy', this, cardName);

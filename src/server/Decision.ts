@@ -70,20 +70,20 @@ const wrapStruct = <T>(struct: Struct<T>) => (game, decision, response) => struc
 
 const ChooseCardOrBuyResponse = struct({
     responseType: struct.enum(['buy', 'playCard'] as const),
-    choice: struct.interface({
+    choice: struct.partial({
         id: "string",
         name: "string"
     })
 });
 
-const BuyResponse = struct.interface({
-    choice: struct.interface({
+const BuyResponse = struct.partial({
+    choice: struct.partial({
         id: "string",
         name: "string"
     })
 });
 
-const ChooseCardResponse = struct.interface({
+const ChooseCardResponse = struct.partial({
     id: "string",
     name: "string"
 });
@@ -139,7 +139,7 @@ const chooseCardValidator = (game: Game, decision: Decision, response: any) => {
 
 const ConfirmResponse = struct.scalar('boolean');
 
-const GainResponse = struct.interface({
+const GainResponse = struct.partial({
     id: "string",
     name: "string"
 });
@@ -174,7 +174,7 @@ const optionValidator = (game: Game, decision: Decision, response: any) => {
 };
 
 const ReorderResponse = struct({
-    order: [struct.interface({
+    order: [struct.partial({
         id: "string",
         name: "string"
     })]

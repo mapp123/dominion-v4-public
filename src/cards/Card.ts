@@ -8,7 +8,7 @@ import {GainRestrictions} from "../server/GainRestrictions";
 export interface Cost {
     coin: number;
 }
-type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie';
+type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project';
 export default abstract class Card {
     id: string;
     game: Game;
@@ -132,6 +132,9 @@ export default abstract class Card {
     }
     public async onAttackInHand(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {
         return false;
+    }
+    public static async onBuy(player: Player): Promise<Card | null> {
+        return await player.gain(this.cardName, undefined, true);
     }
     protected async onTreasure(player: Player) {
         throw new Error("onTreasure not implemented");

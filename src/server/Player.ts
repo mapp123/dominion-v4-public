@@ -192,7 +192,7 @@ export default class Player {
             gainRestrictions: this.getBuyRestrictions(),
             helperText: Texts.chooseCardOrBuy
         });
-        if (!this.confirmBuyIfCoffers(response)) {
+        if (response.responseType === 'buy' && !this.confirmBuyIfCoffers(response)) {
             return this.chooseCardOrBuy();
         }
         else {
@@ -337,9 +337,7 @@ export default class Player {
         this.data.buys--;
         this.lm('%p buys %s.', Util.formatCardList([cardName]));
         await this.game.events.emit('buy', this, cardName);
-        if (await this.gain(cardName, undefined, false) == null) {
-            this.lm('%p fails to gain the %s after on-buy effects.', cardName);
-        }
+        await CardRegistry.getInstance().getCard(cardName).onBuy(this);
     }
     async gain(cardName: string, realCard?: Card, log: boolean = true, destination: "discard" | "hand" | "deck" = 'discard'): Promise<Card | null> {
         const c = realCard ? realCard : this.game.grabNameFromSupply(cardName);

@@ -166,7 +166,7 @@ export default class Game {
         this.gameLoop();
     }
     gameEnded() {
-        return this.supply.getPile('province')!.length === 0 || this.supply.pilesEmpty >= (this.players.length < 5 ? 3 : 4);
+        return this.supply.getPile('province')!.length === 0 || this.supply.pilesEmpty >= (this.players.length < 5 ? 3 : 4) || (this.supply.getPile('colony') && this.supply.getPile('colony')!.length === 0);
     }
     async gameLoop() {
         this.supply.setup(this.selectedCards, this.players.length, this);

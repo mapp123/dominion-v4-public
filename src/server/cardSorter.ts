@@ -4,9 +4,11 @@ const CardOrder = [
     "copper",
     "silver",
     "gold",
+    "platinum",
     "estate",
     "duchy",
     "province",
+    "colony",
     "curse"
 ];
 export default function cardSorter(cardA: typeof CardDef, cardB: typeof CardDef) {

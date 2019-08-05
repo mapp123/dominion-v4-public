@@ -76,12 +76,11 @@ const ChooseCardOrBuyResponse = struct({
     })
 });
 
-const BuyResponse = struct({
+const BuyResponse = struct.interface({
     choice: struct.interface({
         id: "string",
         name: "string"
-    }),
-    responseType: 'string?'
+    })
 });
 
 const ChooseCardResponse = struct.interface({

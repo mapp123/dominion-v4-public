@@ -52,8 +52,13 @@ export default class Player {
     }
     draw(amount = 1) {
         const cards = new Array(amount).fill(undefined).map(() => this.deck.pop()).filter((a) => a != null) as Card[];
-        this.lm(`%p draws %h[${amount === 1 ? 'a' : Util.numeral(amount)} card${amount === 1 ? '' : 's'}].`, Util.formatCardList(cards.map((a) => a.name)));
-        this.data.hand.push(...cards);
+        if (cards.length) {
+            this.lm(`%p draws %h[${amount === 1 ? 'a' : Util.numeral(amount)} card${amount === 1 ? '' : 's'}].`, Util.formatCardList(cards.map((a) => a.name)));
+            this.data.hand.push(...cards);
+        }
+        else {
+            this.lm('There are no more cards for %p to draw!');
+        }
     }
     get allCards() {
         return [...this.deck.deckAndDiscard, ...this.data.hand, ...this.data.playArea];

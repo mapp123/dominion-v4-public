@@ -11,7 +11,7 @@
     "buildServer": "tsc",
     "heroku-postbuild": "npm run buildClient && npm run buildServer",
     "genCard": "node tools/genCard.js",
-    "lint": "npm run lintFile src/**/*.ts src/**/*.tsx",
+    "lint": "npm run lintFile \"src/**/*.ts\" \"src/**/*.tsx\"",
     "lintFile": "eslint --rulesdir lint"
   },
   "keywords": [],

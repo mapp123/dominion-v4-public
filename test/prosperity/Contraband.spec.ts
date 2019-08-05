@@ -14,10 +14,10 @@ describe('CONTRABAND', () => {
         q.testGain(Texts.chooseACardThatACannotBuyThisTurn(player.username), 'silver');
         player.testHookNextDecision((decision) => {
             expect(decision.decision).to.equal('buy');
-            expect((decision as any).gainRestrictions.allowedCards).to.not.have.members(['silver']);
+            expect((decision as any).gainRestrictions.allowedCards).to.not.contain('silver');
         });
-        player.testBuy('silver');
         player.onBuyPhaseStart(() => {
+            expect(player.data.money).to.equal(3);
             done();
         });
         game.start();

@@ -6,6 +6,7 @@ export type GainRestrictionsJSON = {
 }
 export class GainRestrictions {
     maxCoinCost: number = Infinity;
+    exactCoinCost: number | null = null;
     inSupply = true;
     allowedCards: string[] | null = null;
     mustHaveTypes: string[] = [];
@@ -30,6 +31,7 @@ export class GainRestrictions {
     private isCardAllowed(game: Game, card: string) {
         return (!this.inSupply || game.nameAvailableInSupply(card))
             && game.getCostOfCard(card).coin <= this.maxCoinCost
+            && ((this.exactCoinCost == null) || game.getCostOfCard(card).coin === this.exactCoinCost)
             && this.mustHaveTypes.reduce((last, type) => last && game.getTypesOfCard(card).includes(type as any), true)
             && !this.banned.includes(card);
     }
@@ -59,6 +61,10 @@ export class GainRestrictions {
     }
     setMaxCoinCost(coinCost: number) {
         this.maxCoinCost = coinCost;
+        return this;
+    }
+    setExactCoinCost(coinCost: number) {
+        this.exactCoinCost = coinCost;
         return this;
     }
     setMustIncludeType(type: string) {

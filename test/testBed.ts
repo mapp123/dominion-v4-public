@@ -2,7 +2,7 @@ import Game from "../src/server/Game";
 import Player from "../src/server/Player";
 import Card from "../src/cards/Card";
 import CardRegistry from "../src/cards/CardRegistry";
-import {Decision, DecisionResponseType} from "../src/server/Decision";
+import {Decision, DecisionDefaults, DecisionResponseType, DecisionValidators} from "../src/server/Decision";
 import {Texts} from "../src/server/Texts";
 
 function makeFakeIo(onLog?: (msg: string) => any) {
@@ -35,10 +35,25 @@ class TestPlayer extends Player {
         if (decision.decision === 'chooseUsername') {
             return this.username as any;
         }
+        const d = DecisionDefaults[decision.decision](decision);
+        if (d != null) {
+            // We've hit a default situation
+            console.log(`Using default response for ${decision.decision}: ${JSON.stringify(d)}`);
+            return d as any;
+        }
         const rIndex = this.decisionResponses.findIndex((a) => a.matcher(decision));
         if (rIndex !== -1) {
-            const response = this.decisionResponses.splice(rIndex, 1)[0];
-            return response.response(decision) as any;
+            const responder = this.decisionResponses.splice(rIndex, 1)[0];
+            const response = responder.response(decision);
+            try {
+                DecisionValidators[decision.decision](this.game, decision, response);
+            }
+            catch (e) {
+                // @ts-ignore
+                this.game.doneFn(e);
+                throw e;
+            }
+            return response as any;
         }
         // @ts-ignore
         this.game.doneFn(new Error(`Failed to find a response for ${JSON.stringify(decision)}`));
@@ -112,7 +127,7 @@ class TestPlayer extends Player {
     testBuy(card: string) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
-            response: (decision) => ({responseType: 'buy', choice: {name: card, id: this.game.supply.data.piles.find((a) => a.pile.length > 0 && a.pile[0].name === card)!.pile[0].id}})
+            response: () => ({responseType: 'buy', choice: {name: card, id: this.game.supply.data.piles.find((a) => a.pile.length > 0 && a.pile[0].name === card)!.pile[0].id}})
         });
     }
     testOption(text: string, option: string | number) {
@@ -140,14 +155,14 @@ class TestPlayer extends Player {
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
             response: () => {
                 (this.game as TestGame).done = true;
-                return ({responseType: 'playCard', choice: {name: 'End Turn', id: ''}});
+                return ({responseType: 'buy', choice: {name: 'End Turn', id: ''}});
             }
         });
     }
     endTurn() {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
-            response: () => ({responseType: 'playCard', choice: {name: 'End Turn', id: ''}})
+            response: () => ({responseType: 'buy', choice: {name: 'End Turn', id: ''}})
         });
     }
     onBuyPhaseStart(cb: () => any) {
@@ -161,7 +176,7 @@ class TestPlayer extends Player {
                     // @ts-ignore
                     this.game.doneFn(e);
                 }
-                return {responseType: 'playCard', choice: {name: 'End Turn', id: ''}};
+                return {responseType: 'buy', choice: {name: 'End Turn', id: ''}};
             }
         });
     }

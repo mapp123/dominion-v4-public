@@ -47,8 +47,8 @@ export default class Game {
     setCards(socket: Socket, ...args: any[]) {
         this.selectedCards = this.cardsValidator(args[0]);
         this.selectedCards = Rules.chooseBasicCards(this.selectedCards);
-        this.checkForCostModifier = this.selectedCards;
-        this.checkForRestrictionModifier = this.selectedCards;
+        this.checkForCostModifier = [...this.selectedCards];
+        this.checkForRestrictionModifier = [...this.selectedCards];
     }
     private registerValidator = struct.scalar('string');
     registerAsPlayer(socket: Socket, ...args: any[]) {

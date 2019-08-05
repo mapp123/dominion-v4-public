@@ -11,6 +11,9 @@ export class Texts {
     static chooseOrderOfCards = 'Please reorder the cards:';
     static chooseCardToPutOnDeck = 'Please choose a card to put on top of your deck...';
     static chooseCardToTakeFromDiscard = 'Please choose a card to take out of your discard pile...';
+    static chooseCardToTrashForge(money) {
+        return `Please choose a card to trash for forge. You are currently at ${money} Money.`;
+    }
     static discardForBenefit(benefit: string, number = 1) {
         return `Choose ${number === 1 ? "a" : Util.numeral(number)} card${number > 1 ? "s" : ""} to discard. You'll get ${benefit} if you do.`;
     }

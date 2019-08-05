@@ -462,7 +462,7 @@ export default class Player {
         if (destination === 'none') {
             return this.game.findCard(cardToGain.id, 'supply', true);
         }
-        let gained = await this.gain(cardToGain.name, undefined, true, destination);
+        let gained = await this.gain(cardToGain.name, undefined, false, destination);
         if (gained != null) {
             this.lm('%p gains %s.', Util.formatCardList([gained.name]));
             return gained;

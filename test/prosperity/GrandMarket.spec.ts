@@ -36,11 +36,16 @@ describe('GRAND MARKET', () => {
     });
     it('blocks copper', (d) => {
         const [game, [player], done] = makeTestGame({
-            decks: [['gold', 'gold']],
+            decks: [['gold', 'gold', 'copper'], ['grand market']],
             d
         });
         player.testPlayTreasure('gold');
         player.testPlayTreasure('gold');
+        player.testHookNextDecision((decision) => {
+            expect(decision.decision).to.equal('chooseCardOrBuy');
+            expect((decision as any).gainRestrictions.allowedCards).to.contain('grand market');
+        });
+        player.testPlayTreasure('copper');
         player.testHookNextDecision((decision) => {
             expect(decision.decision).to.equal('buy');
             expect((decision as any).gainRestrictions.allowedCards).to.not.contain('grand market');

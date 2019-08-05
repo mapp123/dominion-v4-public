@@ -247,6 +247,7 @@ export default class Player {
             }
         }
         await card.onAction(this, exemptPlayers);
+        await this.game.events.emit('actionCardPlayed', this, card);
     }
     async onAttack(attacker: Player, attackingCard: Card): Promise<boolean> {
         let exempt = false;

@@ -11,3 +11,4 @@ lint/*.map
 coverage
 .nyc_output
 dist/css
+test-results.xml

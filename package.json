@@ -12,7 +12,8 @@
     "heroku-postbuild": "npm run buildClient && npm run buildServer",
     "genCard": "node tools/genCard.js",
     "lint": "npm run lintFile \"src/**/*.ts\" \"src/**/*.tsx\"",
-    "lintFile": "eslint --rulesdir lint"
+    "lintFile": "eslint --rulesdir lint",
+    "test-azure": "nyc --reporter=cobertura mocha --reporter mocha-junit-reporter"
   },
   "keywords": [],
   "author": "",
@@ -38,6 +39,7 @@
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.7.0",
     "minimatch": "^3.0.4",
+    "mocha-junit-reporter": "^1.23.1",
     "node-sass": "^4.12.0",
     "nyc": "^14.1.1",
     "react": "^16.8.6",

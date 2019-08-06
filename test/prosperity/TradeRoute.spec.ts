@@ -66,6 +66,7 @@ describe('TRADE ROUTE', () => {
                 'estate': ['Trade Route Token'],
                 'duchy': ['Trade Route Token'],
                 'province': ['Trade Route Token'],
+                'colony': ['Trade Route Token'],
                 'trade route': ['Value: 0']
             });
             done();

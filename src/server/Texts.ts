@@ -12,6 +12,9 @@ export class Texts {
     static chooseOrderOfCards = 'Please reorder the cards:';
     static chooseCardToPutOnDeck = 'Please choose a card to put on top of your deck...';
     static chooseCardToTakeFromDiscard = 'Please choose a card to take out of your discard pile...';
+    static areYouSureYouWantToTrash(a) {
+        return `Are you sure you want to trash the ${a}?`;
+    }
     static buyingWillUseCoffers(card: string, amountOver: number) {
         return `Buying the ${card} will use ${amountOver} coffers. Are you sure?`;
     }

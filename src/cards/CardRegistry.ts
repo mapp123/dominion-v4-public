@@ -65,7 +65,8 @@ export default class CardRegistry {
         return Object.entries(sets).reduce((sets, [setName, set]) => {
             return {
                 ...sets,
-                [setName]: Object.keys(set).filter((a) => set[a].randomizable)
+                [setName]: Object.keys(set).filter((a) => set[a].randomizable),
+                [setName + "_SUBSET_projects"]: Object.keys(set).filter((a) => set[a].types.includes("project"))
             };
         }, {});
     }

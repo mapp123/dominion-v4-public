@@ -6,12 +6,14 @@ import {GainRestrictions} from "../server/GainRestrictions";
 export default abstract class Project extends Card {
     types = ["project"] as const;
     randomizable = false;
+    supplyCount = 0;
     abstract onPlayerJoinProject(player: Player): Promise<any>;
     private playersJoined: Player[] = [];
     public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean}> {
         return [{
             identifier: this.cardName,
-            pile: [],
+            // @ts-ignore
+            pile: [new this(game)],
             // @ts-ignore
             identity: new this(game),
             displayCount: false

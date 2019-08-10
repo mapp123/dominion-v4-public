@@ -4,9 +4,12 @@ import { RouteComponentProps } from 'react-router';
 import shuffle from "../server/util/shuffle";
 interface IState {
     cards: string[];
+    projects: string[];
     shortcut: string;
+    subsets: {[subset: string]: string[]};
     randomizable: {[set: string]: string[]};
     randomizerSetsChosen: {[set: string]: boolean};
+    subsetsChosen: {[subset: string]: boolean};
 }
 export default class CreateGameView extends React.Component<RouteComponentProps<{gameId: string}>, IState> {
     socket = SocketManager.getSocket(this.props.match.params.gameId);
@@ -15,9 +18,12 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
         super(props);
         this.state = {
             cards: Array(10).fill(""),
+            projects: Array(2).fill(""),
             shortcut: "",
             randomizable: {},
-            randomizerSetsChosen: {}
+            randomizerSetsChosen: {},
+            subsetsChosen: {},
+            subsets: {}
         };
         this.socket.on('error', (e) => {
             if (e === 'Invalid namespace') {
@@ -30,7 +36,8 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
         this.globalSocket.once('randomizable', (randomizable) => {
             this.setState({
                 randomizable,
-                randomizerSetsChosen: Object.keys(randomizable).reduce((sets, key) => ({...sets, [key]: false}), {})
+                randomizerSetsChosen: Object.keys(randomizable).filter((a) => !a.includes("_SUBSET_")).reduce((sets, key) => ({...sets, [key]: false}), {}),
+                subsetsChosen: Object.keys(randomizable).filter((a) => a.includes("_SUBSET_")).map((a) => /.*?_SUBSET_(.*)/.exec(a)![1]).filter((a, i, arr) => arr.indexOf(a) === i).reduce((sets, key) => ({...sets, [key]: false}), {})
             });
         });
     }
@@ -52,7 +59,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
         });
     }
     submit() {
-        this.socket.emit('setCards', this.state.cards);
+        this.socket.emit('setCards', [...this.state.cards, ...Object.values(this.state.subsets).reduce((last, a) => [...last, ...a], [] as string[])]);
         if (this.state.shortcut) {
             this.globalSocket.emit('setShortcut', this.props.match.params.gameId, this.state.shortcut);
         }
@@ -68,8 +75,20 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
             }
         });
         shuffle(pool);
+        const subsets: IState['subsets'] = {};
+        Object.keys(this.state.subsetsChosen).forEach((subset) => {
+            if (this.state.subsetsChosen[subset]) {
+                const subsetValues = Object.keys(this.state.randomizerSetsChosen)
+                    .filter((a) => this.state.randomizerSetsChosen[a])
+                    .map((a) => `${a}_SUBSET_${subset}`)
+                    .reduce((last, a) => [...last, ...this.state.randomizable[a]], [] as string[]);
+                shuffle(subsetValues);
+                subsets[subset] = subsetValues.slice(0, 2);
+            }
+        });
         this.setState({
-            cards: pool.slice(0, 10)
+            cards: pool.slice(0, 10),
+            subsets
         });
     }
     createTextInput(friendlyName, path) {
@@ -101,6 +120,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
                         <div className="row">
                             <div className="col-xs-12 col-sm-9">
                                 {this.state.cards.map((card, i) => this.createTextInput(`Card ${i+1}`, ['cards', i]))}
+                                {Object.keys(this.state.subsets).map((subset) => this.state.subsets[subset].map((card, i) => this.createTextInput(`${subset.split(" ").map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join(" ")} ${i + 1}`, ['subsets', subset, i])))}
                             </div>
                             <div className="col-xs-12 col-sm-3">
                                 <div>
@@ -109,6 +129,10 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
                                 {Object.keys(this.state.randomizerSetsChosen).map((set) =>
                                     this.createCheckboxInput(set.slice(0, 1).toUpperCase() + set.slice(1), ['randomizerSetsChosen', set])
                                 )}
+                                <hr style={{borderTopColor: "#696969"}} />
+                                {Object.keys(this.state.subsetsChosen).map((subset) => {
+                                    return this.createCheckboxInput(`Include ${subset.split(" ").map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join(" ")}`, ['subsetsChosen', subset]);
+                                })}
                                 <button className="btn btn-success" onClick={this.randomize.bind(this)}>Randomize</button>
                             </div>
                         </div>

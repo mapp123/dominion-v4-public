@@ -85,8 +85,10 @@ class TestPlayer extends Player {
     testChooseCard(text: string, card: string) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCard' && decision.helperText === text,
-            response: (decision) => decision.source.find((a) => a.name === card) as any
-        });
+            response: (decision) => decision.source.find((a) => a.name === card) as any,
+            extra: text,
+            card
+        } as any);
     }
     throneRoomTarget(card: string) {
         this.decisionResponses.push({
@@ -271,6 +273,7 @@ export default function makeTestGame({
     players = 1,
     decks = [[]] as string[][],
     discards = [[]] as string[][],
+    activateCards = [] as string[],
     d = () => {}
                                      }): [TestGame, TestPlayer[], () => any] {
     const game = new TestGame(makeFakeIo((msg) => {
@@ -278,7 +281,8 @@ export default function makeTestGame({
     }) as any);
     game.setCards(null as any, [
         ...decks.reduce((full, deck) => [...full, ...deck], []),
-        ...discards.reduce((full, discard) => [...full, ...discard], [])
+        ...discards.reduce((full, discard) => [...full, ...discard], []),
+        ...activateCards
     ].filter((a, i, arr) => arr.indexOf(a) === i));
     if (decks.some((a) => a.includes("attack"))) {
         game.injectTestAttack();

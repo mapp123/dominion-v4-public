@@ -16,7 +16,7 @@ const colorFactorLists = {
     "hex": [0.75, 0.6, 2.1, 0, 0, 0, 0.8, 0.8, 0.8, 1.0, 0.75, 2.1],
     "state": [1.1, 1.3, 1.3, 0.6, 0.15, 0, 1.55, 1.15, 1.05, 1.4, 0.65, 0.45],
     "artifact": [1.15, 1, 0.75, 0.3, 0.15, 0.05],
-    "project": [1.15, 0.95, 0.9, 0.4, 0.2, 0.15]
+    "project": [1.9, 0.6, 0.8, 0.4, 0.2, 0.15]
 };
 const genericCustomAccentColors = [
     [0, 0, 0, 0, 0, 0, 1, 1, 1, 1.2, 0.8, 0.5],
@@ -49,6 +49,41 @@ function pickTypesFromTypeArray(types: readonly string[]): [string, string | und
 }
 export default class CardGenerator extends React.Component<IProps, {}> {
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
+        if (this.props.cardTypes.includes("project")) {
+            return this.renderLandscape();
+        }
+        else {
+            return this.renderPortrait();
+        }
+    }
+
+    renderLandscape() {
+        return (
+            <svg viewBox={'0 0 1887 730'} style={{height: "100%"}}>
+                <image href={this.props.cardArtUrl} x={455} y={112} width={980} height={382} preserveAspectRatio="xMidYMin slice"/>
+                <RecolorFilter factors={colorFactorLists['project']} name={'color0'} />
+                <image href="/img/card-resources/EventColorOne.png" x={0} y={0} width={1887} height={730} filter="url(#color0)" />
+                <image href="/img/card-resources/EventBrown.png" x={0} y={0} width={1887} height={730} />
+                <image href="/img/card-resources/EventBrown2.png" x={0} y={0} width={1887} height={730} />
+                <foreignObject x={720} y={55} width={450} height={50} fontSize={42}>
+                    <div style={{height: "100%", width: "100%", textAlign: "center", lineHeight: "1em"}}>
+                        <span style={{fontFamily: "TrajanPro-Bold"}}>{this.props.cardName}</span>
+                    </div>
+                </foreignObject>
+                <foreignObject x={975} y={-902} width={175} height={50} fontSize={35} transform="rotate(45)">
+                    <div style={{height: "100%", width: "100%", textAlign: "center", lineHeight: "1em"}}>
+                        <span style={{fontFamily: "TrajanPro-Bold"}}>{this.props.cardTypes[0]}</span>
+                    </div>
+                </foreignObject>
+                <foreignObject x={460} y={500} width={965} height={155}>
+                    <div style={{height: "100%", width: "100%", textAlign: "center", padding: "15px"}}>
+                        <DescriptionText description={this.props.description} smallDescription={this.props.smallDescription} defaultSize={24}/>
+                    </div>
+                </foreignObject>
+            </svg>
+        );
+    }
+    renderPortrait(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         const [type, secondaryType] = pickTypesFromTypeArray(this.props.cardTypes);
         return (
             <svg viewBox={`0 0 1403 2151`} style={{height: "100%"}}>
@@ -106,6 +141,62 @@ class SingleTextLine extends React.Component<{line: string; x: number; y: number
             y={this.props.y}
             style={{fontFamily: family, fontSize: size + "pt", fontStyle: this.props.style || "unset"}}
             textAnchor="middle">{this.props.line}</text>;
+    }
+}
+class DescriptionText extends React.Component<{description: string; smallDescription: boolean; defaultSize: number}, {}> {
+    render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
+        const textStyle = {
+            fontSize: this.props.smallDescription ? ((this.props.defaultSize * (3/4)) + "pt") : `${this.props.defaultSize}pt`,
+            fontFamily: "Times New Roman"
+        } as const;
+        return this.props.description.split("\n").map((text) => {
+            let extraStyle = {};
+            if (/\+\d (Action|Card|Buy)s?/.test(text)) {
+                extraStyle = {
+                    fontWeight: "bold",
+                    fontSize: this.props.smallDescription ? `${(this.props.defaultSize + 4) * (3/4)}pt` : `${this.props.defaultSize + 4}pt`
+                };
+            }
+            if (/^\+\$\d/.test(text)) {
+                const num = text.slice(2,3);
+                extraStyle = {
+                    fontWeight: "bold",
+                    fontSize: this.props.smallDescription ? `${(this.props.defaultSize + 4) * (3/4)}pt` : `${this.props.defaultSize + 4}pt`
+                };
+                return (
+                    <>
+                            <span style={{...textStyle, ...extraStyle}}>
+                                +
+                                <svg height="1.5em" width="1.5em" viewBox="0 0 100 100" style={{verticalAlign: 'middle'}}>
+                                    <image xlinkHref="/img/CoinHighRes.png" x="0" y="0" height="100" width="100"/>
+                                    <text x={("" + num).length > 1 ? "14":"28.5"} y="75" fontSize="70" letterSpacing="-12" style={{fontWeight: "normal", fontFamily: "TrajanPro-Bold"}}>{num}</text>
+                                </svg>
+                            </span>
+                        <br />
+                    </>
+                );
+            }
+            return (
+                <>
+                        <span style={{...textStyle, ...extraStyle}}>{text.split("$").map((item, i) => {
+                            if (i % 2 === 0) {
+                                return item;
+                            }
+                            const [, num, rest] = (/^(\d*)(.*)/.exec(item) || [null, "", ""]);
+                            return (
+                                <>
+                                    <svg height="1.2em" width="1.2em" viewBox="0 0 100 100" style={{verticalAlign: 'middle'}}>
+                                        <image xlinkHref="/img/CoinHighRes.png" x="0" y="0" height="100" width="100"/>
+                                        <text x={("" + num).length > 1 ? "14":"28.5"} y="75" fontSize="70" letterSpacing="-12" style={{fontWeight: "normal", fontFamily: "TrajanPro-Bold"}}>{num}</text>
+                                    </svg>
+                                    <span>{rest}</span>
+                                </>
+                            );
+                        })}</span>
+                    <br />
+                </>
+            );
+        });
     }
 }
 class Description extends React.Component<{description: string;heirloomPresent: boolean; smallDescription: boolean}, {}> {

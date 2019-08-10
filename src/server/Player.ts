@@ -220,6 +220,7 @@ export default class Player {
         this.data.actions = 1;
         this.lm("%p's turn %s", this.turnNumber);
         this.data.isMyTurn = true;
+        await this.events.emit('turnStart');
         await this.actionPhase();
         await this.buyPhase();
         await this.cleanup();

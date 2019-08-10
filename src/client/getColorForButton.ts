@@ -7,7 +7,8 @@ let typeClasses = {
     duration:"dark duration-button-override",
     actionVictory:"secondary action-victory-button-override",
     night:'dark',
-    nightDuration:'dark duration-night-button-override'
+    nightDuration:'dark duration-night-button-override',
+    project: 'dark project-button-override'
 };
 export default function getColorForButton(types: readonly string[]) {
     if(types.length === 0) return "info";

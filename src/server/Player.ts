@@ -232,9 +232,13 @@ export default class Player {
                 let card = this.data.playArea[i];
                 if (card.shouldDiscardFromPlay()) {
                     this.data.playArea.splice(i, 1);
-                    await card.onDiscardFromPlay(this);
+                    const hasTrack = {hasTrack: true};
+                    const loseTrack = () => hasTrack.hasTrack = false;
+                    await card.onDiscardFromPlay(this, hasTrack, loseTrack);
                     i--;
-                    await this.discard(card);
+                    if (hasTrack.hasTrack) {
+                        await this.discard(card);
+                    }
                 }
             }
             const hand = [...this.data.hand];
@@ -373,7 +377,7 @@ export default class Player {
         await card.doTreasure(this);
     }
     async discard(card: Card | Card[], log = false) {
-        if (log) {
+        if (log && (!Array.isArray(card) || card.length > 0)) {
             this.lm('%p discards %s.', Util.formatCardList((Array.isArray(card) ? card : [card]).map((a) => a.name)));
         }
         if (Array.isArray(card)) {

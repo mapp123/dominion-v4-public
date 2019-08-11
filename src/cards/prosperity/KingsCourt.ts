@@ -50,10 +50,11 @@ export default class KingsCourt extends Card {
         }
         return true;
     }
-    async onDiscardFromPlay(player: Player): Promise<any> {
+
+    async onDiscardFromPlay(player: Player, hasTrack: { hasTrack: boolean }, loseTrack: () => {}): Promise<any> {
         this._isUnderThroneRoom = false;
         if (this._duplicateCard1) {
-            await this._duplicateCard1.onDiscardFromPlay(player);
+            await this._duplicateCard1.onDiscardFromPlay(player, hasTrack, loseTrack);
         }
         this._duplicateCard1 = null;
     }

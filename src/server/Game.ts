@@ -10,6 +10,7 @@ import CardRegistry from "../cards/CardRegistry";
 import Card, {Cost} from "../cards/Card";
 import {GameEvents} from "./Events";
 import {GainRestrictions} from "./GainRestrictions";
+import Artifact from "../cards/Artifact";
 export default class Game {
     players: Player[] = [];
     io: Namespace;
@@ -47,8 +48,30 @@ export default class Game {
     setCards(socket: Socket, ...args: any[]) {
         this.selectedCards = this.cardsValidator(args[0]);
         this.selectedCards = Rules.chooseBasicCards(this.selectedCards);
+        for (let i = 0; i < this.selectedCards.length; i++) {
+            let extras = CardRegistry.getInstance().getCard(this.selectedCards[i]).onChosen();
+            extras.forEach((extra) => {
+                if (!this.selectedCards.includes(extra)) {
+                    this.selectedCards.push(extra);
+                }
+            });
+        }
+        for (let i = 0; i < this.selectedCards.length; i++) {
+            let extras = CardRegistry.getInstance().getCard(this.selectedCards[i]).registerOtherCards();
+            extras.forEach((extra) => {
+                if (!this.selectedCards.includes(extra)) {
+                    this.selectedCards.push(extra);
+                }
+            });
+        }
         this.checkForCostModifier = [...this.selectedCards];
         this.checkForRestrictionModifier = [...this.selectedCards];
+    }
+    giveArtifactTo(artifact: string, player: Player) {
+        return (CardRegistry.getInstance().getCard(artifact) as any as typeof Artifact).giveTo(player);
+    }
+    getArtifact(card: string): Artifact {
+        return (CardRegistry.getInstance().getCard(card) as any as typeof Artifact).getI(this);
     }
     private registerValidator = struct.scalar('string');
     registerAsPlayer(socket: Socket, ...args: any[]) {
@@ -167,8 +190,7 @@ export default class Game {
     }
     start() {
         this.started = true;
-        // noinspection JSIgnoredPromiseFromCall
-        this.gameLoop();
+        return this.gameLoop();
     }
     gameEnded() {
         return this.supply.getPile('province')!.length === 0 || this.supply.pilesEmpty >= (this.players.length < 5 ? 3 : 4) || (this.supply.getPile('colony') && this.supply.getPile('colony')!.length === 0);

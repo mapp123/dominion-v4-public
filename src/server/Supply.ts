@@ -4,6 +4,8 @@ import createSupplyData from "../createSupplyData";
 import cardSorter from "./cardSorter";
 import Game from "./Game";
 
+export const UNCOUNTED_EMPTY_SUPPLY_PILE = [];
+
 export default class Supply {
     data = createSupplyData();
     public getPile(identifier: string): Card[] | null {
@@ -19,7 +21,7 @@ export default class Supply {
         const locations = CardRegistry.getInstance().allCardLocations();
         this.data.activatedCards = activeCards;
         activeCards.sort((a, b) => cardSorter(cardDefs[a], cardDefs[b])).forEach((card) => {
-            this.data.piles.push(...cardDefs[card].createSupplyPiles(playerCount, game));
+            this.data.piles.push(...cardDefs[card].createSupplyPiles(playerCount, game) as any);
             this.data.locations[card] = locations[card];
         });
         activeCards.forEach((card) => {
@@ -28,6 +30,6 @@ export default class Supply {
         });
     }
     get pilesEmpty() {
-        return this.data.piles.filter((a) => a.pile.length === 0).length;
+        return this.data.piles.filter((a) => a.pile.length === 0 && (a.pile as any).__underlyingValue !== UNCOUNTED_EMPTY_SUPPLY_PILE).length;
     }
 }

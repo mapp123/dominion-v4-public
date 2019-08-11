@@ -6,10 +6,11 @@ export default function createSupplyData() {
     return ReduxDataManager({
         piles: [{
             identifier: 'string',
-            pile: [struct.instance(Card)],
+            pile: struct.list([struct.instance(Card)]),
             identity: struct.instance(Card),
-            displayCount: 'boolean'
-        }],
+            displayCount: 'boolean',
+            hideCost: 'boolean?'
+        } as const],
         locations: struct.dict(['string', 'string']),
         activatedCards: ["string"],
         globalCardData: struct.dict(['string', 'any']),

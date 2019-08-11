@@ -10,6 +10,7 @@ interface IProps {
         coin: number;
     };
     supplyAmount?: number;
+    hideCost?: boolean;
     disabled: boolean;
     embargoAmount?: number;
     markers: string[];
@@ -51,11 +52,11 @@ export default class SupplyButton extends React.Component<IProps, {}> {
         return (
             <button
                 className={"btn btn-"+getColorForButton(this.props.cardTypes)}
-                onClick={() => this.props.onClick(this.props.cardName)}
+                onClick={() => !this.props.cardTypes.includes("artifact") && this.props.onClick(this.props.cardName)}
                 onMouseEnter={this.props.onHover}
-                disabled={this.props.disabled}
+                disabled={!this.props.cardTypes.includes("artifact") && this.props.disabled}
                 style={{fontFamily:"TrajanPro-Bold",fontSize:'24px', padding: `4px 12px ${padding}px 6px`}}>
-                <div style={{display:"inline",marginRight:"6px"}}>{SupplyButton.genCoinIcon(this.props.cost.coin)}</div>
+                {!this.props.hideCost && <div style={{display:"inline",marginRight:"6px"}}>{SupplyButton.genCoinIcon(this.props.cost.coin)}</div>}
                 {this.props.cardName} {this.props.supplyAmount != null ? `(${this.props.supplyAmount})` : ''} {embargoImg}
                 {this.props.markers.map((marker, i) => <span key={i} style={{fontFamily: "TrajanPro-Bold", fontSize: "10px", position: "absolute", bottom: 0, left: "50%", transform: "translate(-50%, 0)"}}>{marker}</span>)}
             </button>

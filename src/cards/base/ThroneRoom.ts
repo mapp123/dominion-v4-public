@@ -41,10 +41,11 @@ export default class ThroneRoom extends Card {
         }
         return true;
     }
-    async onDiscardFromPlay(player: Player): Promise<any> {
+
+    async onDiscardFromPlay(player: Player, hasTrack: { hasTrack: boolean }, loseTrack: () => {}): Promise<any> {
         this._isUnderThroneRoom = false;
         if (this._duplicateCard) {
-            await this._duplicateCard.onDiscardFromPlay(player);
+            await this._duplicateCard.onDiscardFromPlay(player, hasTrack, loseTrack);
         }
         this._duplicateCard = null;
     }

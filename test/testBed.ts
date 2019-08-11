@@ -22,6 +22,7 @@ type DecisionResponse = {
     response: (decision) => DecisionResponseType[Decision["decision"]];
 }
 let testPlayerIndex = 1;
+const WELL_KNOWN_STOP_ERROR = 'WELL_KNOWN_STOP_ERROR';
 class TestPlayer extends Player {
     decisionResponses: Array<DecisionResponse> = [];
     username = `Test Player ${testPlayerIndex++}`;
@@ -161,6 +162,14 @@ class TestPlayer extends Player {
             }
         });
     }
+    testEndGameNow() {
+        this.decisionResponses.push({
+            matcher: () => true,
+            response: () => {
+                throw new Error(WELL_KNOWN_STOP_ERROR);
+            }
+        })
+    }
     endTurn() {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
@@ -238,11 +247,23 @@ function createEmptySupplyPileCard() {
 class TestGame extends Game {
     done = false;
     private doneFn: (error?) => any = null as any;
+    private resolvePromise!: () => any;
+    private rejectPromise!: (err) => any;
+    private donePromise = new Promise<void>((f, r) => {
+        this.resolvePromise = f;
+        this.rejectPromise = r;
+    });
     setDone(done: (error?) => any) {
         this.doneFn = (error?) => {
             this.done = true;
             if ((this.players as TestPlayer[]).filter((a) => a.decisionResponses.length).length) {
                 done(new Error("Player had decisions left when game ended"));
+            }
+            if (error) {
+                this.rejectPromise(error);
+            }
+            else {
+                this.resolvePromise();
             }
             done(error);
         };
@@ -268,6 +289,21 @@ class TestGame extends Game {
     onAccountabilityFailure(missingIds: string[], extraIds: string[]) {
         this.doneFn(new Error(`The following ids were missing: ${missingIds.join(", ")}\nThe following ids were created or duplicated: ${extraIds.join(", ")}`));
     }
+    start() {
+        super.start().then(() => {
+            if (!this.done) {
+                this.resolvePromise();
+            }
+        }).catch((e: Error) => {
+            if (e.message !== WELL_KNOWN_STOP_ERROR) {
+                this.doneFn(e);
+            }
+            else if (!this.done) {
+                this.doneFn();
+            }
+        });
+        return this.donePromise;
+    }
 }
 export default function makeTestGame({
     players = 1,
@@ -279,17 +315,17 @@ export default function makeTestGame({
     const game = new TestGame(makeFakeIo((msg) => {
         console.log(msg)
     }) as any);
-    game.setCards(null as any, [
-        ...decks.reduce((full, deck) => [...full, ...deck], []),
-        ...discards.reduce((full, discard) => [...full, ...discard], []),
-        ...activateCards
-    ].filter((a, i, arr) => arr.indexOf(a) === i));
     if (decks.some((a) => a.includes("attack"))) {
         game.injectTestAttack();
     }
     if (discards.some((a) => a.includes("attack"))) {
         game.injectTestAttack();
     }
+    game.setCards(null as any, [
+        ...decks.reduce((full, deck) => [...full, ...deck], []),
+        ...discards.reduce((full, discard) => [...full, ...discard], []),
+        ...activateCards
+    ].filter((a, i, arr) => arr.indexOf(a) === i));
     for (let i = 0; i < players; i++) {
         const player = new TestPlayer(game);
         let deck = [] as Card[];

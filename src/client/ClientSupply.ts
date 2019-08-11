@@ -1,0 +1,1 @@
+export const UNCOUNTED_EMPTY_SUPPLY_PILE = [];

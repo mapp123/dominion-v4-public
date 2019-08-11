@@ -26,6 +26,10 @@ const chunkNames = new webpack.NamedChunksPlugin((chunk) => {
     }
     return `unid-${unknown++}`;
 });
+const removeSupplyInClient = new webpack.NormalModuleReplacementPlugin(
+    /server\/Supply/,
+    '../client/ClientSupply.ts'
+);
 module.exports = {
     entry: {
         main: './src/client/app.tsx',
@@ -42,7 +46,8 @@ module.exports = {
     },
     plugins: [
         extractSass,
-        chunkNames
+        chunkNames,
+        removeSupplyInClient
     ],
     module: {
         rules: [

@@ -8,7 +8,7 @@ import {GainRestrictions} from "../server/GainRestrictions";
 export interface Cost {
     coin: number;
 }
-type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project';
+type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact';
 export default abstract class Card {
     id: string;
     game: Game;
@@ -69,7 +69,7 @@ export default abstract class Card {
         // @ts-ignore
         return new this().cardArt;
     }
-    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean}> {
+    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
         let pile: Card[] = [];
         const supplyCount = typeof this.supplyCount === 'function' ? this.supplyCount(playerCount) : this.supplyCount;
         for (let i = 0; i < supplyCount; i++) {
@@ -93,15 +93,15 @@ export default abstract class Card {
      * Use this function to determine your dependant piles. For example, you might add 'ruins' here, but not 'ruined library'.
      * This has a default implementation to use if, for example, you have the type of 'looter', so make sure to call `super.onChosen()`.
      */
-    public onChosen() {
-
+    public static onChosen(): string[] {
+        return [];
     }
 
     /**
      * Use this function to lay out the cards you use in this pile. For example, 'ruins' would add 'ruined library', 'ruined village', etc.
      */
-    public registerOtherCards() {
-
+    public static registerOtherCards(): string[] {
+        return [];
     }
 
     public static getExtraRestrictions(cardData: any, player: Player, restrictions: GainRestrictions): GainRestrictions {
@@ -124,7 +124,7 @@ export default abstract class Card {
     public shouldDiscardFromPlay() {
         return true;
     }
-    public async onDiscardFromPlay(player: Player) {
+    public async onDiscardFromPlay(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => {}) {
 
     }
     public async onAction(player: Player, exemptPlayers: Player[]) {
@@ -134,7 +134,7 @@ export default abstract class Card {
         return false;
     }
     public static async onBuy(player: Player): Promise<Card | null> {
-        return await player.gain(this.cardName, undefined, true);
+        return await player.gain(this.cardName, undefined, false);
     }
     protected async onTreasure(player: Player) {
         throw new Error("onTreasure not implemented");

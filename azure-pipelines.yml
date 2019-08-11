@@ -21,10 +21,6 @@ steps:
   displayName: 'npm install'
 
 - script: |
-    npm install mocha-junit-reporter
-  displayName: 'Install Test Utils'
-
-- script: |
     npm run test-azure
   displayName: 'Run Tests'
 

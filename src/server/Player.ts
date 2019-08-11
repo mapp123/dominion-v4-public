@@ -351,6 +351,7 @@ export default class Player {
                 this.lm('%p gains %s.', Util.formatCardList([c.name]));
             }
             const hasTrack = {hasTrack: true};
+            await c.onGainSelf(this, hasTrack, () => hasTrack.hasTrack = false);
             await this.game.events.emit('gain', this, c, hasTrack, () => {
                 hasTrack.hasTrack = false;
             });

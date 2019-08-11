@@ -136,6 +136,9 @@ export default abstract class Card {
     public static async onBuy(player: Player): Promise<Card | null> {
         return await player.gain(this.cardName, undefined, false);
     }
+    public onGainSelf(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => any): Promise<void> | void {
+
+    }
     protected async onTreasure(player: Player) {
         throw new Error("onTreasure not implemented");
     }

@@ -151,7 +151,7 @@ class DescriptionText extends React.Component<{description: string; smallDescrip
         } as const;
         return this.props.description.split("\n").map((text) => {
             let extraStyle = {};
-            if (/\+\d (Action|Card|Buy)s?/.test(text)) {
+            if (/\+\d (Action|Card|Buy|Coffer|Villager)s?/.test(text)) {
                 extraStyle = {
                     fontWeight: "bold",
                     fontSize: this.props.smallDescription ? `${(this.props.defaultSize + 4) * (3/4)}pt` : `${this.props.defaultSize + 4}pt`
@@ -211,7 +211,7 @@ class Description extends React.Component<{description: string;heirloomPresent: 
                     <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: this.props.smallDescription ? "48pt" : "64pt", display: "table-cell", verticalAlign: "middle", padding: "0 75pt"}}>
                         {this.props.description.split("\n").map((text) => {
                             let extraStyle = {};
-                            if (/\+\d (Action|Card|Buy)s?/.test(text)) {
+                            if (/\+\d (Action|Card|Buy|Coffer|Villager)s?/.test(text)) {
                                 extraStyle = {
                                     fontWeight: "bold",
                                     fontSize: this.props.smallDescription ? "48pt" : "64pt"

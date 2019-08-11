@@ -224,6 +224,7 @@ export default class Player {
         await this.actionPhase();
         await this.buyPhase();
         await this.cleanup();
+        await this.events.emit('turnEnd');
         this.data.isMyTurn = false;
     }
     async cleanup() {

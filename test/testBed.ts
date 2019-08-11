@@ -46,6 +46,7 @@ class TestPlayer extends Player {
         if (rIndex !== -1) {
             const responder = this.decisionResponses.splice(rIndex, 1)[0];
             const response = responder.response(decision);
+            console.log('Responding to ' + JSON.stringify(decision));
             try {
                 DecisionValidators[decision.decision](this.game, decision, response);
             }
@@ -142,6 +143,26 @@ class TestPlayer extends Player {
                 }
             }
         });
+    }
+    testHookEndTurn(cb: () => any) {
+        const lastDecision = this.decisionResponses[this.decisionResponses.length - 1];
+        if (!lastDecision) {
+            throw new Error("testHookEndTurn called without a decision to hook onto!");
+        }
+        const oldResponse = lastDecision.response;
+        lastDecision.response = (decision) => {
+            this.events.on('turnEnd', () => {
+                try {
+                    cb();
+                }
+                catch (e) {
+                    // @ts-ignore
+                    this.game.doneFn(e);
+                }
+                return false;
+            });
+            return oldResponse(decision);
+        }
     }
     testReorderSame(text: string) {
         this.decisionResponses.push({

@@ -39,6 +39,7 @@ export class Events<T extends BaseEvents> {
 }
 type PlayerEvent = {
     turnStart: [];
+    turnEnd: [];
     treasureCardPlayed: [Player, Card];
 }
 export class PlayerEvents extends Events<PlayerEvent> {}

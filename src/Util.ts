@@ -1,5 +1,9 @@
 import nlp = require('compromise');
+import Card from "./cards/Card";
 export default class Util {
+    static checkTrashSanity(selected: Card, choices: Card[]) {
+        return !(selected.cost.coin > 2 && choices.find((a) => selected.cost.coin > a.cost.coin) != null);
+    }
     static formatCardList(cards: string[]): string {
         let formattedCards = cards.map((a, i) => {
             if (cards.indexOf(a) !== i) {

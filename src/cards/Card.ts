@@ -12,7 +12,7 @@ type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | '
 export default abstract class Card {
     id: string;
     game: Game;
-    features: ReadonlyArray<'vp'> = [];
+    features: ReadonlyArray<'vp' | 'coffers' | 'villagers'> = [];
     static smallText = false;
     static get features(): typeof Card['features'] {
         // @ts-ignore

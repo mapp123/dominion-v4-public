@@ -13,11 +13,11 @@ export default class DataViews extends React.Component<IProps, {}> {
                     );
                 case "coffers":
                     return (
-                        <React.Fragment key={a}><span style={{fontFamily: "TrajanPro-Bold"}}>Coffers: ${this.props.playerData.coffers}</span><br /></React.Fragment>
+                        <React.Fragment key={a}><span style={{fontFamily: "TrajanPro-Bold"}}>Coffers: {this.props.playerData.coffers}</span><br /></React.Fragment>
                     );
                 case "villagers":
                     return (
-                        <React.Fragment key={a}><span style={{fontFamily: "TrajanPro-Bold"}}>Villagers: ${this.props.playerData.villagers}</span><br /></React.Fragment>
+                        <React.Fragment key={a}><span style={{fontFamily: "TrajanPro-Bold"}}>Villagers: {this.props.playerData.villagers}</span><br /></React.Fragment>
                     );
             }
             return null;

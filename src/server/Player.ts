@@ -192,7 +192,7 @@ export default class Player {
             gainRestrictions: this.getBuyRestrictions(),
             helperText: Texts.chooseCardOrBuy
         });
-        if (response.responseType === 'buy' && !this.confirmBuyIfCoffers(response)) {
+        if (response.responseType === 'buy' && !await this.confirmBuyIfCoffers(response)) {
             return this.chooseCardOrBuy();
         }
         else {
@@ -206,7 +206,7 @@ export default class Player {
             gainRestrictions: this.getBuyRestrictions(),
             helperText: Texts.buy
         });
-        if (!this.confirmBuyIfCoffers(response)) {
+        if (!await this.confirmBuyIfCoffers(response)) {
             return this.chooseCardOrBuy();
         }
         else {

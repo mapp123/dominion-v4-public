@@ -49,6 +49,7 @@ module.exports = {
         "@typescript-eslint/array-type": ["error", "array-simple"],
         "@typescript-eslint/interface-name-prefix": "off",
         "no-case-declarations": "off",
-        "no-vp-without-feature": ["error"]
+        "no-vp-without-feature": ["error"],
+        "no-fallthrough": "off"
     }
 };

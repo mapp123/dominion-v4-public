@@ -35,7 +35,7 @@ describe('WATCHTOWER', () => {
         });
         player.testPlayAction('No Card');
         player.testBuy('copper');
-        player.testOption(Texts.whatToDoWithTheGainedAForB('copper', 'watchtower'), 'Put it on your deck');
+        player.testOption(Texts.whatToDoWithTheGainedAForB('copper', 'watchtower'), Texts.putItOnYourDeck);
         player.onBuyPhaseStart(() => {
             expect(player.hand).to.have.members(['copper', 'silver', 'silver', 'gold', 'gold']);
             done();

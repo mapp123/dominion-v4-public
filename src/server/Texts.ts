@@ -14,10 +14,15 @@ export class Texts {
     static chooseCardToTakeFromDiscard = 'Please choose a card to take out of your discard pile...';
     static chooseCardToTakeFromRevealed = 'Please choose a card to put in your hand from the revealed cards...';
     static whichArtifactWouldYouLike = 'Which artifact would you like to take?';
-    static doYouWantToPutTheAOnYourDeck(a) {
+    static trashIt = "Trash It";
+    static discardIt = "Discard It";
+    static keepIt = "Keep It";
+    static putItOnYourDeck = "Put It On Your Deck";
+    static doNothing = "Do Nothing";
+    static doYouWantToPutTheAOnYourDeck(a: string) {
         return `Do you want to put the ${a} on top of your deck?`;
     }
-    static areYouSureYouWantToTrash(a) {
+    static areYouSureYouWantToTrash(a: string) {
         return `Are you sure you want to trash the ${a}?`;
     }
     static buyingWillUseCoffers(card: string, amountOver: number) {
@@ -26,58 +31,58 @@ export class Texts {
     static playActionWillUseVillagers(card: string) {
         return `Playing the ${card} will use a villager. Continue?`;
     }
-    static chooseCardToTrashForge(money) {
+    static chooseCardToTrashForge(money: string | number) {
         return `Please choose a card to trash for forge. You are currently at ${money} Money.`;
     }
     static discardForBenefit(benefit: string, number = 1) {
         return `Choose ${number === 1 ? "a" : Util.numeral(number)} card${number > 1 ? "s" : ""} to discard. You'll get ${benefit} if you do.`;
     }
-    static doYouWantToDiscardAnAForB(a, b) {
+    static doYouWantToDiscardAnAForB(a: string, b: string) {
         return `Do you want to discard a ${a} for ${b}?`;
     }
-    static chooseAToDuplicateWithB(a, b) {
+    static chooseAToDuplicateWithB(a: string, b: string) {
         return `Please choose a ${a} to duplicate with ${b}...`;
     }
-    static chooseACardThatACannotBuyThisTurn(a) {
+    static chooseACardThatACannotBuyThisTurn(a: string) {
         return `Please choose a card that ${a} cannot buy this turn...`;
     }
-    static whatToDoWith(card) {
+    static whatToDoWith(card: string) {
         return `What would you like to do with the ${card}?`;
     }
-    static whatToDoWithTheGainedAForB(a, b) {
+    static whatToDoWithTheGainedAForB(a: string, b: string) {
         return Texts.whatToDoWith(`the gained ${a} for ${b}`);
     }
-    static wantToDraw(card) {
+    static wantToDraw(card: string) {
         return `Do you want to draw the ${card}?`;
     }
-    static chooseATreasureToTrashFor(a) {
+    static chooseATreasureToTrashFor(a: string) {
         return `Choose a treasure to trash for ${a}...`;
     }
-    static shouldADiscardTheBOnTopOfTheirDeck(a, b) {
+    static shouldADiscardTheBOnTopOfTheirDeck(a: string, b: string) {
         return `Should ${a} discard the ${b} on top of their deck?`;
     }
-    static chooseAnAToTrashForB(a, b) {
+    static chooseAnAToTrashForB(a: string, b: string) {
         return `Please choose an ${a} to trash for ${b}...`;
     }
-    static chooseVictoryToTopDeckFor(card) {
+    static chooseVictoryToTopDeckFor(card: string) {
         return `Please choose a victory to place on top of your deck for ${card}...`;
     }
-    static playCardFromDiscard(card) {
+    static playCardFromDiscard(card: string) {
         return `Would you like to play the ${card} you discarded?`;
     }
-    static chooseCardToMoveFromDiscardToDeck(card) {
+    static chooseCardToMoveFromDiscardToDeck(card: string) {
         return `Please choose a card to take from your discard and place on top of your deck for ${card}...`;
     }
-    static doYouWantToReveal(card) {
+    static doYouWantToReveal(card: string) {
         return `Do you want to reveal your ${card}?`;
     }
-    static chooseCardToDiscardFor(card) {
+    static chooseCardToDiscardFor(card: string) {
         return `Please choose a card to discard for ${card}...`;
     }
-    static chooseCardToTrashFor(card) {
+    static chooseCardToTrashFor(card: string) {
         return `Please choose a card to trash for ${card}...`;
     }
-    static chooseCardToGainFor(card) {
+    static chooseCardToGainFor(card: string) {
         return `Please choose a card to gain for ${card}...`;
     }
 }

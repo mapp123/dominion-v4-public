@@ -18,7 +18,7 @@ export default class RoyalSeal extends Card {
     public static setup(globalCardData: any, game: Game) {
         game.events.on('gain', async (player, card, hasTrack, loseTrack) => {
             if (hasTrack.hasTrack && player.data.playArea.find((a) => a.name === 'royal seal') != null) {
-                const shouldContinue = await player.chooseOption(Texts.whatToDoWithTheGainedAForB(card.name, 'royal seal'), ['Put It On Your Deck', 'Do Nothing'] as const);
+                const shouldContinue = await player.chooseOption(Texts.whatToDoWithTheGainedAForB(card.name, 'royal seal'), [Texts.putItOnYourDeck, Texts.doNothing] as const);
                 if (shouldContinue === 'Put It On Your Deck') {
                     player.lm('%p puts the %s on top of their deck.', card.name);
                     loseTrack();

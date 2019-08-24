@@ -5,7 +5,7 @@ import Game from "./Game";
 import createPlayerData from "../createPlayerData";
 import Copper from "../cards/base/Copper";
 import Estate from "../cards/base/Estate";
-import {Decision, DecisionResponseType, DecisionValidators} from "./Decision";
+import {Decision, DecisionDefaults, DecisionResponseType, DecisionValidators} from "./Decision";
 import {GainRestrictions} from "./GainRestrictions";
 import Card from "../cards/Card";
 import {Texts} from "./Texts";
@@ -135,6 +135,10 @@ export default class Player {
         }
     }
     makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T['decision']]> {
+        const defaultR = DecisionDefaults[decision.decision](decision);
+        if (defaultR) {
+            return Promise.resolve(defaultR as any);
+        }
         return new Promise((f) => {
             this.pendingDecisions.push(decision);
             const toPush = this.decisionCallbacks[decision.id] || [];
@@ -228,6 +232,7 @@ export default class Player {
         this.data.isMyTurn = false;
     }
     async cleanup() {
+        await this.events.emit('cleanupStart');
         await this.data.haltNotifications(async () => {
             for (let i = 0; i < this.data.playArea.length; i++) {
                 let card = this.data.playArea[i];

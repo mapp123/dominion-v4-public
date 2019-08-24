@@ -143,7 +143,7 @@ class TestPlayer extends Player {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'gain' && (decision.helperText === Texts.chooseCardToGainFor(forCard) || decision.helperText === forCard),
             response: () => {
-                const pile = this.game.supply.data.piles.find((a) => a.pile[a.pile.length - 1].name === gainCard);
+                const pile = this.game.supply.data.piles.find((a) => a.pile.length > 0 && a.pile[a.pile.length - 1].name === gainCard);
                 if (!pile) {
                     throw new Error("Asked to find non-existent pile")
                 }

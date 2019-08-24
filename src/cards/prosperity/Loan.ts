@@ -22,7 +22,7 @@ export default class Loan extends Card {
             revealedCards.push(revealedCard);
         }
         if (revealedCard) {
-            const option = await player.chooseOption(Texts.whatToDoWith(revealedCard.name), ['Discard It', 'Trash It'] as const);
+            const option = await player.chooseOption(Texts.whatToDoWith(revealedCard.name), [Texts.discardIt, Texts.trashIt] as const);
             switch (option) {
                 case 'Discard It':
                     player.lm('%p discards a revealed %s.', revealedCard.name);

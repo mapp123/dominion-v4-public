@@ -23,7 +23,7 @@ export default class Sentry extends Card {
         }
         let keptCards: Card[] = [];
         for (let card of cards) {
-            const choice = await player.chooseOption(Texts.whatToDoWith(card.name), ['Trash It', 'Discard It', 'Keep It'] as const);
+            const choice = await player.chooseOption(Texts.whatToDoWith(card.name), [Texts.trashIt, Texts.discardIt, Texts.keepIt] as const);
             switch (choice) {
                 case "Trash It":
                     await player.trash(card);

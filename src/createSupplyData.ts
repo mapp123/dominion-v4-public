@@ -1,12 +1,12 @@
 import ReduxDataManager from "./server/ReduxDataManager";
-import {struct} from "superstruct";
+import {Struct, struct} from "superstruct";
 import Card from "./cards/Card";
 
 export default function createSupplyData() {
     return ReduxDataManager({
         piles: [{
             identifier: 'string',
-            pile: struct.list([struct.instance(Card)]),
+            pile: struct.list<ReadonlyArray<Struct<Card>>>([struct.instance(Card)] as const),
             identity: struct.instance(Card),
             displayCount: 'boolean',
             hideCost: 'boolean?'

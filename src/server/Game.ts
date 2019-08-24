@@ -240,6 +240,7 @@ export default class Game {
         });
         this.lmg('%s wins!', scores[scores.length - 1][0].username);
         this.ended = true;
+        this.events.emit('gameEnd');
     }
 
     nameAvailableInSupply(cardName: string) {

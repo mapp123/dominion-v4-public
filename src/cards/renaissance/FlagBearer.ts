@@ -1,6 +1,5 @@
 import Card from "../Card";
 import Player from "../../server/Player";
-import Flag from "./Flag";
 
 export default class FlagBearer extends Card {
     types = ["action"] as const;
@@ -16,11 +15,11 @@ export default class FlagBearer extends Card {
         player.data.money += 2;
     }
     onTrashSelf(player: Player): Promise<void> | void {
-        Flag.giveTo(player);
+        player.game.giveArtifactTo('flag', player);
     }
 
     onGainSelf(player: Player): Promise<void> | void {
-        Flag.giveTo(player);
+        player.game.giveArtifactTo('flag', player);
     }
 
     public static onChosen(): string[] {

@@ -353,6 +353,7 @@ export default class Player {
             }
             const hasTrack = {hasTrack: true};
             await c.onGainSelf(this, hasTrack, () => hasTrack.hasTrack = false);
+            await this.events.emit('gain', c, hasTrack, () => hasTrack.hasTrack = false);
             await this.game.events.emit('gain', this, c, hasTrack, () => {
                 hasTrack.hasTrack = false;
             });

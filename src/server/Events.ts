@@ -40,6 +40,7 @@ export class Events<T extends BaseEvents> {
 type PlayerEvent = {
     turnStart: [];
     turnEnd: [];
+    gain: [Card, {hasTrack: boolean}, () => any];
     treasureCardPlayed: [Player, Card];
 }
 export class PlayerEvents extends Events<PlayerEvent> {}

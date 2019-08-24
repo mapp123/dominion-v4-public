@@ -25,12 +25,12 @@ export default class Watchtower extends Card {
                 if (option !== 'Do Nothing') {
                     player.lm('%p reveals a watchtower.');
                     switch (option) {
-                        case 'Put it on your deck':
+                        case Texts.putItOnYourDeck:
                             player.lm('%p puts the %s on top of their deck.', card.name);
                             player.deck.cards.unshift(card);
                             loseTrack();
                             break;
-                        case 'Trash It':
+                        case Texts.trashIt:
                             await player.trash(card);
                             loseTrack();
                             break;

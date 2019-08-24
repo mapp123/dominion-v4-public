@@ -12,6 +12,7 @@ import {GameEvents} from "./Events";
 import {GainRestrictions} from "./GainRestrictions";
 import Artifact from "../cards/Artifact";
 import BigMoney from "./BigMoney";
+import CardHolder from "./CardHolder";
 export default class Game {
     players: Player[] = [];
     io: Namespace;
@@ -364,17 +365,24 @@ export default class Game {
         this.cardIds = [...this.cardIds, ...this.supply.data.piles.reduce((arr, pile) => [...arr, ...pile.pile.map((card) => card.id)], [] as string[])];
         this.cardIds = [...this.cardIds, ...this.players.reduce((arr, player) => [...arr, ...player.allCards.map((a) => a.id)], [] as string[])];
     }
+    private accountabilityHelpers: CardHolder[] = [];
     runAccountability() {
         const newIds = [
             ...this.supply.data.piles.reduce((arr, pile) => [...arr, ...pile.pile.map((card) => card.id)], [] as string[]),
             ...this.players.reduce((arr, player) => [...arr, ...player.allCards.map((a) => a.id)], [] as string[]),
-            ...this.trash.map((a) => a.id)
+            ...this.trash.map((a) => a.id),
+            ...this.accountabilityHelpers.reduce((cards, helper) => [...cards, ...helper.getCards()], [] as Card[]).map((a) => a.id)
         ];
         const missing = this.cardIds.filter((a) => !newIds.includes(a));
         const extra = [...newIds.filter((a) => !this.cardIds.includes(a)), ...newIds.filter((a, i) => newIds.indexOf(a) !== i)];
         if (missing.length || extra.length) {
             this.onAccountabilityFailure(missing, extra);
         }
+    }
+    getCardHolder() {
+        const ch = new CardHolder();
+        this.accountabilityHelpers.push(ch);
+        return ch;
     }
     onAccountabilityFailure(missingIds: string[], extraIds: string[]) {
         if (missingIds.length) {

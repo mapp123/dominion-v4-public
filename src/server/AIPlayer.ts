@@ -58,13 +58,15 @@ export default abstract class AIPlayer extends Player {
     ];
     private async chooseOptionFromPriorities(card: string, choices: string[]): Promise<string> {
         for (let choice of choices) {
-            const priority = await this.choiceLookup[choice]();
-            let nullIndex = priority.indexOf(null);
-            if (nullIndex === -1) {
-                nullIndex = priority.length;
-            }
-            if (priority.includes(card) && priority.indexOf(card) < nullIndex) {
-                return choice;
+            if (this.choiceLookup[choice]) {
+                const priority = await this.choiceLookup[choice].call(this);
+                let nullIndex = priority.indexOf(null);
+                if (nullIndex === -1) {
+                    nullIndex = priority.length;
+                }
+                if (priority.includes(card) && priority.indexOf(card) < nullIndex) {
+                    return choice;
+                }
             }
         }
         return choices.sort((a, b) => this.destructiveness.indexOf(a) - this.destructiveness.indexOf(b))[0];
@@ -86,8 +88,10 @@ export default abstract class AIPlayer extends Player {
         // We have to return something
         return source[0] as any;
     }
+    protected decisionContext: Decision = null as any;
     async makeDecision<T extends Decision>(de: T): Promise<DecisionResponseType[T["decision"]]> {
         const decision: Decision = de;
+        this.decisionContext = de;
         const d = DecisionDefaults[decision.decision](decision);
         if (d != null) {
             return d as any;
@@ -95,7 +99,7 @@ export default abstract class AIPlayer extends Player {
         switch (decision.decision) {
             case "chooseCardOrBuy":
                 if (!this.hasPlayedAllTreasures) {
-                    const toPlay = await this.playNextTreasure();
+                    const toPlay = await this.playNextTreasure(decision.source);
                     if (toPlay) {
                         return {
                             choice: decision.source.find((a) => a.name === toPlay),
@@ -125,11 +129,17 @@ export default abstract class AIPlayer extends Player {
                     } as any;
                 }
             case "chooseOption":
-                const chooseWhatToDoWithCard = decisionMatcher(decision.decision, Texts.whatToDoWith);
+                const chooseWhatToDoWithCard = decisionMatcher(decision.helperText, Texts.whatToDoWith);
                 if (chooseWhatToDoWithCard) {
                     const [card] = chooseWhatToDoWithCard;
                     return {
                         choice: await this.chooseOptionFromPriorities(card, decision.options)
+                    } as any;
+                }
+                const artifact = decisionMatcher(decision.helperText, () => Texts.whichArtifactWouldYouLike);
+                if (artifact) {
+                    return {
+                        choice: decision.options[0]
                     } as any;
                 }
                 break;
@@ -140,11 +150,19 @@ export default abstract class AIPlayer extends Player {
                     chooseTreasureToTrash: decisionMatcher(decision.helperText, Texts.chooseATreasureToTrashFor),
                     chooseAToTrashForB: decisionMatcher(decision.helperText, Texts.chooseAnAToTrashForB),
                     victoryTopdeck: decisionMatcher(decision.helperText, Texts.chooseVictoryToTopDeckFor),
+                    regularTopdeck: decisionMatcher(decision.helperText, () => Texts.chooseCardToPutOnDeck),
                     discardTopDeck: decisionMatcher(decision.helperText, Texts.chooseCardToMoveFromDiscardToDeck),
                     discardCard: decisionMatcher(decision.helperText, Texts.chooseCardToDiscardFor),
-                    trashCard: decisionMatcher(decision.helperText, Texts.chooseCardToTrashFor)
+                    discardCardForBenefit: /Choose (.*?) cards? to discard. You'll get (.*?) if you do./.exec(decision.helperText),
+                    trashCard: decisionMatcher(decision.helperText, Texts.chooseCardToTrashFor),
+                    playAction: decisionMatcher(decision.helperText, () => Texts.chooseActionToPlay),
+                    actionCardPlayTwice: decisionMatcher(decision.helperText, () => Texts.chooseCardToPlayTwice),
+                    cardsToGainFromTrashed: decisionMatcher(decision.helperText, () => Texts.chooseCardToGainFromTrashed),
+                    cardFromDiscard: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromDiscard),
+                    forgeTrash: decisionMatcher(decision.helperText, Texts.chooseCardToTrashForge),
+                    drawFromRevealed: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromRevealed)
                 };
-                if (keys.discardCard != null) {
+                if (keys.discardCard != null || keys.discardCardForBenefit) {
                     return this.chooseCardFromPriority(await this.discardPriority(), decision.source) as any;
                 }
                 if (keys.trashCard != null) {
@@ -156,11 +174,20 @@ export default abstract class AIPlayer extends Player {
                 if (keys.victoryTopdeck) {
                     return this.chooseCardFromPriority((await this.topDeckPriority()).reverse(), decision.source) as any;
                 }
+                if (keys.regularTopdeck) {
+                    return this.chooseCardFromPriority((await this.topDeckPriority()), decision.source) as any;
+                }
                 if (keys.chooseAToTrashForB) {
                     return this.chooseCardFromPriority((await this.trashPriority()).reverse(), decision.source) as any;
                 }
                 if (keys.chooseTreasureToTrash) {
                     return this.chooseCardFromPriority((await this.trashPriority()).reverse(), decision.source) as any;
+                }
+                if (keys.cardFromDiscard || keys.drawFromRevealed) {
+                    return this.chooseCardFromPriority(await this.drawPriority(), decision.source) as any;
+                }
+                if (keys.forgeTrash) {
+                    return this.chooseCardFromPriority(await this.trashPriority(), decision.source) as any;
                 }
                 if (keys.banCard) {
                     return {
@@ -168,8 +195,21 @@ export default abstract class AIPlayer extends Player {
                         id: ''
                     } as any;
                 }
-                if (keys.duplication) {
+                if (keys.duplication || keys.cardsToGainFromTrashed) {
                     return this.chooseCardFromPriority(await this.gainPriority(), decision.source) as any;
+                }
+                if (keys.playAction || keys.actionCardPlayTwice) {
+                    const actionToPlay = this.playNextAction(decision.source);
+                    if (actionToPlay) {
+                        const card = decision.source.find((a) => a.name === actionToPlay);
+                        if (card) {
+                            return {
+                                id: card.id,
+                                name: card.name
+                            } as any;
+                        }
+                    }
+                    return decision.source.find((a) => a.name === 'No Card') as any;
                 }
                 break;
             case "chooseUsername":
@@ -179,8 +219,8 @@ export default abstract class AIPlayer extends Player {
                 return true as any;
             case "gain":
                 const choice = this.chooseCardFromPriority(await this.gainPriority(), [
-                    decision.optional ? {card: 'No Card', id: ''} as any : null,
-                    ...decision.gainRestrictions.allowedCards.map((a) => ({card: a, id: ''}))
+                    decision.optional ? {name: 'No Card', id: ''} as any : null,
+                    ...decision.gainRestrictions.allowedCards.map((a) => ({name: a, id: ''}))
                 ].filter((a) => a));
                 if (choice.name === 'No Card') {
                     return {
@@ -188,16 +228,18 @@ export default abstract class AIPlayer extends Player {
                         name: 'Gain Nothing'
                     } as any;
                 }
-                let pile = this.game.supply.data.piles.find((a) => a.pile[a.pile.length].name === choice.name);
+                let pile = this.game.supply.data.piles.find((a) => {
+                    return a.pile.length > 0 && a.pile[a.pile.length - 1].name === choice.name;
+                });
                 if (!pile) {
-                    throw new Error();
+                    throw new Error("Missing supply pile");
                 }
                 return {
                     name: choice.name,
                     id: pile.pile[pile.pile.length - 1].id
                 } as any;
             case "reorder":
-                return decision.cards as any;
+                return {order: decision.cards} as any;
             default:
                 assertNever(decision);
                 break;
@@ -206,9 +248,11 @@ export default abstract class AIPlayer extends Player {
     }
     abstract gainPriority(): PossibleAsync<Array<string | null>>;
     abstract trashPriority(): PossibleAsync<Array<string | null>>;
+    abstract drawPriority(): PossibleAsync<Array<string | null>>;
     abstract discardPriority(): PossibleAsync<Array<string | null>>;
     abstract topDeckPriority(): PossibleAsync<Array<string | null>>;
-    abstract playNextTreasure(): PossibleAsync<string | null>;
+    abstract playNextTreasure(source: Card[]): PossibleAsync<string | null>;
+    abstract playNextAction(source: Card[]): PossibleAsync<string | null>;
     abstract generateUsername(): PossibleAsync<string>;
     protected getTotalMoney() {
         return this.allCards.reduce((sum, next) => {

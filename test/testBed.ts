@@ -5,6 +5,18 @@ import CardRegistry from "../src/cards/CardRegistry";
 import {Decision, DecisionDefaults, DecisionResponseType, DecisionValidators} from "../src/server/Decision";
 import {Texts} from "../src/server/Texts";
 
+let playerUnderTest: Player | null = null;
+
+let testedDecisions: Array<[Decision, Error | null]> = [];
+
+export function setPlayerUnderTest(player: Player) {
+    playerUnderTest = player;
+}
+
+export function getPlayerUnderTestResults() {
+    return testedDecisions;
+}
+
 function makeFakeIo(onLog?: (msg: string) => any) {
     return {
         on: () => {},
@@ -33,6 +45,23 @@ class TestPlayer extends Player {
         return this.deck.discard.map((a) => a.name);
     }
     async makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T["decision"]]> {
+        if (playerUnderTest) {
+            playerUnderTest.game = this.game;
+            try {
+                const response = await playerUnderTest.makeDecision(decision);
+                try {
+                    DecisionValidators[decision.decision](this.game, decision, response);
+                    testedDecisions.push([decision, null]);
+                }
+                catch (e) {
+                    console.error(e);
+                    throw new Error(`Responded invalidly to decision ${JSON.stringify(decision)}\nResponded with ${JSON.stringify(response)}`);
+                }
+            }
+            catch (e) {
+                testedDecisions.push([decision, e]);
+            }
+        }
         if (decision.decision === 'chooseUsername') {
             return this.username as any;
         }

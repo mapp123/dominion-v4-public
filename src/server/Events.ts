@@ -42,6 +42,7 @@ type PlayerEvent = {
     turnEnd: [];
     gain: [Card, {hasTrack: boolean}, () => any];
     cleanupStart: [];
+    handDraw: [];
     treasureCardPlayed: [Player, Card];
 }
 export class PlayerEvents extends Events<PlayerEvent> {}

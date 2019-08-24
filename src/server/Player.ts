@@ -252,6 +252,7 @@ export default class Player {
             for (const card of hand) {
                 await this.discard(card);
             }
+            await this.events.emit('handDraw');
             await this.draw(5);
         });
     }
@@ -489,7 +490,11 @@ export default class Player {
     }
     async trash(card: Card, log = true) {
         if (log) this.lm('%p trashes %s.', Util.formatCardList([card.name]));
-        this.game.trash.push(card);
+        const hasTrack = {hasTrack: true};
+        await card.onTrashSelf(this, hasTrack, () => hasTrack.hasTrack = false);
+        if (hasTrack.hasTrack) {
+            this.game.trash.push(card);
+        }
     }
     async chooseOption<T extends readonly string[]>(helperText: string, options: T): Promise<T[number]> {
         const {choice} = await this.makeDecision({

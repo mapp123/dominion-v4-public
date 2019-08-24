@@ -11,6 +11,7 @@ import Card, {Cost} from "../cards/Card";
 import {GameEvents} from "./Events";
 import {GainRestrictions} from "./GainRestrictions";
 import Artifact from "../cards/Artifact";
+import BigMoney from "./BigMoney";
 export default class Game {
     players: Player[] = [];
     io: Namespace;
@@ -24,6 +25,7 @@ export default class Game {
     ended = false;
     events = new GameEvents();
     currentPlayerIndex = 0;
+    aiNumber = 1;
     constructor(io: Server) {
         this.io = io.of('/' + this.id);
         this.io.on('connection', this.onConnect.bind(this));
@@ -43,6 +45,14 @@ export default class Game {
         this.registerEvent(socket, 'setCards', this.setCards);
         this.registerEvent(socket, 'joinAsNewPlayer', this.registerAsPlayer);
         this.registerEvent(socket, 'joinAsPlayer', this.joinAsPlayer);
+        this.registerEvent(socket, 'setAIPlayers', this.setAIPlayers);
+    }
+    private aiPlayersValidator = struct.scalar('number');
+    setAIPlayers(socket: Socket, ...args: any[]) {
+        const aiPlayers = this.aiPlayersValidator(args[0]);
+        for (let i = 0; i < aiPlayers; i++) {
+            this.players.push(new BigMoney(this));
+        }
     }
     private cardsValidator = struct.list(['string']);
     setCards(socket: Socket, ...args: any[]) {

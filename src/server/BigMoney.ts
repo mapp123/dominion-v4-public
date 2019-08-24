@@ -2,7 +2,6 @@ import AIPlayer from "./AIPlayer";
 import Card from "../cards/Card";
 
 export default class BigMoney extends AIPlayer {
-    private static bigMoneyNumber = 1;
     discardPriority(): Promise<Array<string | null>> | Array<string | null> {
         return [
             'estate',
@@ -27,7 +26,7 @@ export default class BigMoney extends AIPlayer {
     }
 
     generateUsername(): Promise<string> | string {
-        return `Big Money AI ${BigMoney.bigMoneyNumber++}`;
+        return `Big Money AI ${this.game.aiNumber++}`;
     }
 
     playNextTreasure(source: Card[]): Promise<string | null> | string | null {

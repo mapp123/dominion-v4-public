@@ -6,6 +6,7 @@ interface IState {
     cards: string[];
     projects: string[];
     shortcut: string;
+    ais: string;
     subsets: {[subset: string]: string[]};
     randomizable: {[set: string]: string[]};
     randomizerSetsChosen: {[set: string]: boolean};
@@ -20,6 +21,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
             cards: Array(10).fill(""),
             projects: Array(2).fill(""),
             shortcut: "",
+            ais: "0",
             randomizable: {},
             randomizerSetsChosen: {},
             subsetsChosen: {},
@@ -63,9 +65,12 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
         if (this.state.shortcut) {
             this.globalSocket.emit('setShortcut', this.props.match.params.gameId, this.state.shortcut);
         }
-        this.props.history.push({
-            pathname: `/game/${this.props.match.params.gameId}`
-        });
+        if (!isNaN(parseInt(this.state.ais))) {
+            this.socket.emit('setAIPlayers', parseInt(this.state.ais));
+            this.props.history.push({
+                pathname: `/game/${this.props.match.params.gameId}`
+            });
+        }
     }
     randomize() {
         const pool: string[] = [];
@@ -111,6 +116,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
         return (
             <div className="container-fluid">
                 {this.createTextInput('Shortcut', ['shortcut'])}
+                {this.createTextInput('AI Players', ['ais'])}
                 <div className="card">
                     <div className="card-header">
                         <span className="middle-align-text">Cards</span>

@@ -271,8 +271,6 @@ export default abstract class AIPlayer extends Player {
         }, 0);
     }
     protected gainsToEndGame() {
-        const provinces = this.game.supply.data.piles.find((a) => a.identifier === 'province')!.pile.length;
-        const rest = [...this.game.supply.data.piles].sort((a, b) => a.pile.length - b.pile.length).slice(0, 3).reduce((sum, next) => sum + next.pile.length, 0);
-        return Math.min(provinces, rest);
+        return this.game.supply.gainsToEndGame;
     }
 }

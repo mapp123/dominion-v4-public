@@ -29,6 +29,15 @@ export default class Supply {
             cardDefs[card].setup(this.data.globalCardData[card], game);
         });
     }
+    get gainsToEndGame() {
+        const threePiles = this.data.piles
+            .filter((a) => (a.pile as any).__underlyingValue !== UNCOUNTED_EMPTY_SUPPLY_PILE)
+            .sort((a, b) => a.pile.length - b.pile.length)
+            .slice(0, 3)
+            .reduce((sum, next) => sum + next.pile.length, 0);
+        const provinces = this.getPile('province')!.length;
+        return Math.min(provinces, threePiles);
+    }
     get pilesEmpty() {
         return this.data.piles.filter((a) => a.pile.length === 0 && (a.pile as any).__underlyingValue !== UNCOUNTED_EMPTY_SUPPLY_PILE).length;
     }

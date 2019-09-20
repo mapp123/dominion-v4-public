@@ -241,7 +241,7 @@ export default class Game {
         scores.forEach(([player, scoreTable]) => {
             this.lmg('%s: Score Breakdown:', player.username);
             Object.entries(scoreTable).forEach(([name, score]) => {
-                if (score > 0) {
+                if (score !== 0) {
                     this.lmg('-> %s: %s', name, score);
                 }
             });

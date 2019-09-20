@@ -88,6 +88,9 @@ export default abstract class AIPlayer extends Player {
         // We have to return something
         return source[0] as any;
     }
+    private wantCardOverNothing(priority: Array<string | null>, card: string): boolean {
+        return this.chooseCardFromPriority(priority, [{id: 'yes', name: card}, {id: '', name: 'No Card'}] as any).name !== 'No Card';
+    }
     protected decisionContext: Decision = null as any;
     async makeDecision<T extends Decision>(de: T): Promise<DecisionResponseType[T["decision"]]> {
         const decision: Decision = de;
@@ -216,8 +219,58 @@ export default abstract class AIPlayer extends Player {
             case "chooseUsername":
                 return this.generateUsername() as any;
             case "confirm":
-                // TODO: Maybe have this actually do something?
-                return true as any;
+                const confirmKeys = {
+                    wantTrash: decisionMatcher(decision.helperText, Texts.doYouWantToTrashA),
+                    wantDeckToDiscard: decisionMatcher(decision.helperText, () => Texts.placeDeckIntoDiscard),
+                    wantDraw: decisionMatcher(decision.helperText, Texts.wantToDraw),
+                    wantRevealMoat: decisionMatcher(decision.helperText, () => Texts.doYouWantToReveal('moat')),
+                    shouldADiscardBOnDeck: decisionMatcher(decision.helperText, Texts.shouldADiscardTheBOnTopOfTheirDeck),
+                    wantToPlayFromDiscard: decisionMatcher(decision.helperText, Texts.playCardFromDiscard),
+                    wantDiscardFor: decisionMatcher(decision.helperText, Texts.doYouWantToDiscardAnAForB),
+                    wantOnDeck: decisionMatcher(decision.helperText, Texts.doYouWantToPutTheAOnYourDeck),
+                    wantSetAside: decisionMatcher(decision.helperText, Texts.wouldYouLikeToSetAsideThe),
+                    ensureTrash: decisionMatcher(decision.helperText, Texts.areYouSureYouWantToTrash)
+                };
+                if (confirmKeys.wantTrash) {
+                    return this.wantCardOverNothing(await this.trashPriority(), confirmKeys.wantTrash[0]) as any;
+                }
+                if (confirmKeys.wantDeckToDiscard) {
+                    return (await this.wantDeckToDiscard()) as any;
+                }
+                if (confirmKeys.wantDraw) {
+                    return this.wantCardOverNothing(await this.drawPriority(), confirmKeys.wantDraw[0]) as any;
+                }
+                if (confirmKeys.wantRevealMoat) {
+                    // TODO: Delegate with attack knowledge
+                    return true as any;
+                }
+                if (confirmKeys.shouldADiscardBOnDeck) {
+                    if (confirmKeys.shouldADiscardBOnDeck[0] === 'you') {
+                        return this.wantCardOverNothing(await this.drawPriority(), confirmKeys.shouldADiscardBOnDeck[1]) as any;
+                    }
+                    else {
+                        // Do I want to discard it? Then somebody else probably shouldn't.
+                        return !this.wantCardOverNothing(await this.discardPriority(), confirmKeys.shouldADiscardBOnDeck[1]) as any;
+                    }
+                }
+                if (confirmKeys.wantToPlayFromDiscard) {
+                    // TODO: Delegate to a want play
+                    return true as any;
+                }
+                if (confirmKeys.wantDiscardFor) {
+                    return this.wantCardOverNothing(await this.discardPriority(), confirmKeys.wantDiscardFor[1]) as any;
+                }
+                if (confirmKeys.wantOnDeck) {
+                    return this.wantCardOverNothing(await this.drawPriority(), confirmKeys.wantOnDeck[0]) as any;
+                }
+                if (confirmKeys.wantSetAside) {
+                    // TODO: Delegate
+                    return false as any;
+                }
+                if (confirmKeys.ensureTrash) {
+                    return this.wantCardOverNothing(await this.trashPriority(), confirmKeys.ensureTrash[0]) as any;
+                }
+                break;
             case "gain":
                 const choice = this.chooseCardFromPriority(await this.gainPriority(), [
                     decision.optional ? {name: 'No Card', id: ''} as any : null,
@@ -255,6 +308,9 @@ export default abstract class AIPlayer extends Player {
     abstract playNextTreasure(source: Card[]): PossibleAsync<string | null>;
     abstract playNextAction(source: Card[]): PossibleAsync<string | null>;
     abstract generateUsername(): PossibleAsync<string>;
+    protected wantDeckToDiscard() {
+        return false;
+    }
     protected getTotalMoney() {
         return this.allCards.reduce((sum, next) => {
             switch (next.name) {

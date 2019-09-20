@@ -20,6 +20,9 @@ export class Texts {
     static keepIt = "Keep It";
     static putItOnYourDeck = "Put It On Your Deck";
     static doNothing = "Do Nothing";
+    static doYouWantToTrashA(a: string) {
+        return `Do you want to trash a ${a}?`;
+    }
     static doYouWantToPutTheAOnYourDeck(a: string) {
         return `Do you want to put the ${a} on top of your deck?`;
     }

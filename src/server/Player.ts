@@ -328,6 +328,7 @@ export default class Player {
             }
             else {
                 await this.buy(choice.choice.name);
+                break;
             }
         }
         while (this.data.buys > 0) {

@@ -129,7 +129,7 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                         <span style={{fontFamily:"TrajanPro-Bold"}}>{this.state.decision ? this.state.decision.helperText:'Please wait...'}<br /></span>
                         <div>
                             <div style={{display: "inline-block", width: "250px"}}>
-                                <HandView cards={this.state.decision && (this.state.decision as any).source ? (this.state.decision as any).source : this.state.playerData.hand} decision={this.state.decision} gameView={this}/>
+                                <HandView hand={this.state.playerData.hand} decision={this.state.decision} gameView={this}/>
                             </div>
                             <div style={{display: "inline-block", position: "absolute"}}>
                                 <span>

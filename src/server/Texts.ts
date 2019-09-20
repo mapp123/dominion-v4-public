@@ -13,6 +13,7 @@ export class Texts {
     static chooseCardToPutOnDeck = 'Please choose a card to put on top of your deck...';
     static chooseCardToTakeFromDiscard = 'Please choose a card to take out of your discard pile...';
     static chooseCardToTakeFromRevealed = 'Please choose a card to put in your hand from the revealed cards...';
+    static chooseCardToTakeFromSetAside = 'Please choose a card to take from the set aside cards...';
     static whichArtifactWouldYouLike = 'Which artifact would you like to take?';
     static trashIt = "Trash It";
     static discardIt = "Discard It";

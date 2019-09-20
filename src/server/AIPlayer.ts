@@ -160,7 +160,8 @@ export default abstract class AIPlayer extends Player {
                     cardsToGainFromTrashed: decisionMatcher(decision.helperText, () => Texts.chooseCardToGainFromTrashed),
                     cardFromDiscard: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromDiscard),
                     forgeTrash: decisionMatcher(decision.helperText, Texts.chooseCardToTrashForge),
-                    drawFromRevealed: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromRevealed)
+                    drawFromRevealed: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromRevealed),
+                    takeFromAside: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromSetAside),
                 };
                 if (keys.discardCard != null || keys.discardCardForBenefit) {
                     return this.chooseCardFromPriority(await this.discardPriority(), decision.source) as any;
@@ -183,7 +184,7 @@ export default abstract class AIPlayer extends Player {
                 if (keys.chooseTreasureToTrash) {
                     return this.chooseCardFromPriority((await this.trashPriority()).reverse(), decision.source) as any;
                 }
-                if (keys.cardFromDiscard || keys.drawFromRevealed) {
+                if (keys.cardFromDiscard || keys.drawFromRevealed || keys.takeFromAside) {
                     return this.chooseCardFromPriority(await this.drawPriority(), decision.source) as any;
                 }
                 if (keys.forgeTrash) {

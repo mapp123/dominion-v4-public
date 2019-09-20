@@ -405,7 +405,7 @@ export default class Player {
         });
         return score;
     }
-    async chooseCard(helperText: string, source: Card[], optional = false, filter?: (card: Card) => boolean): Promise<Card | null> {
+    async chooseCard(helperText: string, source: Card[], optional = false, filter?: (card: Card) => boolean, sourceIsHand?: boolean): Promise<Card | null> {
         const optionalSource: Card[] = optional ? [{name: 'No Card', id: 'nocard'}] as Card[] : [];
         let result;
         let foundCard;
@@ -419,7 +419,8 @@ export default class Player {
             decision: 'chooseCard',
             source: [...source, ...optionalSource],
             id: v4(),
-            helperText
+            helperText,
+            sourceIsHand
         })) != null && ((foundCard = source.find((a) => a.id === result.id && a.name === result.name)) != null) && (filter && !filter(foundCard))) {
             console.log("Failed tests");
         }
@@ -429,7 +430,7 @@ export default class Player {
         return foundCard;
     }
     async chooseCardFromHand(helperText: string, optional = false, filter?: (card: Card) => boolean): Promise<Card | null> {
-        const foundCard = await this.chooseCard(helperText, this.data.hand, optional, filter);
+        const foundCard = await this.chooseCard(helperText, this.data.hand, optional, filter, true);
         if (foundCard == null) {
             return null;
         }

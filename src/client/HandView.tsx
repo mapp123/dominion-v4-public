@@ -5,7 +5,7 @@ import GameView from "./GameView";
 import Card from "../cards/Card";
 import Reorder = require('react-reorder');
 interface IProps {
-    cards: Card[];
+    hand: Card[];
     decision: Decision | null;
     gameView: GameView;
 }
@@ -53,8 +53,9 @@ export default class HandView extends React.Component<IProps, {}> {
         }
     }
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
+        let decision: React.ReactElement<any> | React.ReactNodeArray | null = null;
         if (this.props.decision && this.props.decision.decision === 'confirm') {
-            return (
+            decision = (
                 <>
                     <button onClick={() => this.confirmDecision(true)} className="btn btn-info dominion-font" style={{margin: "4px"}}>Yes</button>
                     <button onClick={() => this.confirmDecision(false)} className="btn btn-info dominion-font" style={{margin: "4px"}}>No</button>
@@ -62,43 +63,46 @@ export default class HandView extends React.Component<IProps, {}> {
             );
         }
         if (this.props.decision && this.props.decision.decision === 'chooseOption') {
-            return this.props.decision.options.map((a, i) => {
+            decision = this.props.decision.options.map((a, i) => {
                 return (
                     <button key={i} onClick={() => this.chooseOption(a)} className="btn btn-info dominion-font" style={{margin: "4px"}}>{a}</button>
                 );
             });
         }
         if (this.props.decision && this.props.decision.decision === 'reorder') {
-            return (
+            decision = (
                 <>
                     <button className="btn btn-info dominion-font" style={{margin: "4px 0"}}>{this.props.decision.topString}</button>
-                    <React.Suspense fallback={<div>Loading...</div>}>
-                        <Reorder
-                            itemKey='id'
-                            lock={'horizontal'}
-                            holdTime={0}
-                            list={this.props.decision.cards.map((card) => {
-                                return {
-                                    cardName: card.name,
-                                    onClick: null,
-                                    id: card.id,
-                                    name: card.name
-                                };
-                            })}
-                            callback={(a,b,c,d,reorderedArray) => {
-                                this.list = reorderedArray;
-                            }}
-                            template={HandButton}
-                        />
-                    </React.Suspense>
+                    <Reorder
+                        itemKey='id'
+                        lock={'horizontal'}
+                        holdTime={0}
+                        list={this.props.decision.cards.map((card) => {
+                            return {
+                                cardName: card.name,
+                                onClick: null,
+                                id: card.id,
+                                name: card.name
+                            };
+                        })}
+                        callback={(a,b,c,d,reorderedArray) => {
+                            this.list = reorderedArray;
+                        }}
+                        template={HandButton}
+                    />
                     <button className="btn btn-info dominion-font" style={{margin: "4px 0"}}>{this.props.decision.bottomString}</button>
                     <button className="btn btn-success dominion-font" style={{margin: "4px 0"}} onClick={this.submitReorder.bind(this)}>Done</button>
                 </>
             );
         }
+        if (this.props.decision && this.props.decision.decision === 'chooseCard' && this.props.decision.sourceIsHand !== true) {
+            decision = this.props.decision.source.map((card) => <HandButton key={card.id} cardName={card.name} onClick={this.onClick.bind(this, card.name, card.id)}/>);
+        }
         return (
             <React.Suspense fallback={<div>Loading...</div>}>
-                {this.props.cards.map((card) => <HandButton key={card.id} cardName={card.name} onClick={this.onClick.bind(this, card.name, card.id)}/>)}
+                {decision}
+                {decision && <><hr style={{borderColor: "black", borderWidth: "3px", width: "100%"}} /><span>Your Hand:</span><br /></>}
+                {this.props.hand.map((card) => <HandButton key={card.id} cardName={card.name} onClick={decision ? () => {} : this.onClick.bind(this, card.name, card.id)}/>)}
             </React.Suspense>
         );
     }

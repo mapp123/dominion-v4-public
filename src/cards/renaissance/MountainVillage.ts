@@ -10,7 +10,8 @@ export default class MountainVillage extends Card {
         coin: 4
     };
     cardText = "+2 Actions\n" +
-        "Look through your discard pile and put a card from it into your hand; if you can't, +1 Card.";
+        "Look through your discard pile and put a card from it into your hand; if you can't, \n" +
+        "+1 Card.";
     supplyCount = 10;
     cardArt = "/img/card-img/Mountain_VillageArt.jpg";
     async onAction(player: Player): Promise<void> {

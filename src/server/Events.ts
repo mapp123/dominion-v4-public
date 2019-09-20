@@ -43,6 +43,7 @@ type PlayerEvent = {
     gain: [Card, {hasTrack: boolean}, () => any];
     trash: [Card, {hasTrack: boolean}, () => any];
     cleanupStart: [];
+    buyStart: [];
     handDraw: [];
     treasureCardPlayed: [Player, Card];
 }

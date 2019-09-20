@@ -199,29 +199,73 @@ class DescriptionText extends React.Component<{description: string; smallDescrip
         });
     }
 }
-class Description extends React.Component<{description: string;heirloomPresent: boolean; smallDescription: boolean}, {}> {
+class Description extends React.Component<{description: string;heirloomPresent: boolean; smallDescription: boolean}, {fontSize: number}> {
+    constructor(props) {
+        super(props);
+        this.state = {
+            fontSize: 60
+        };
+    }
+
+    componentWillReceiveProps(): void {
+        this.setState({
+            fontSize: 60
+        });
+    }
+
+    foreignObjectRef = React.createRef<SVGForeignObjectElement>();
+    desRef = React.createRef<HTMLDivElement>();
+    componentDidMount() {
+        const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
+        const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
+        if (foreignHeight !== desHeight) {
+            window.setTimeout(() => {
+                this.setState({
+                    fontSize: this.state.fontSize - 1
+                });
+            }, 0);
+        }
+        else {
+            console.log(this.state.fontSize);
+        }
+    }
+    componentDidUpdate(): void {
+        const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
+        const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
+        if (foreignHeight !== desHeight) {
+            window.setTimeout(() => {
+                this.setState({
+                    fontSize: this.state.fontSize - 1
+                });
+            }, 10);
+        }
+        else {
+            console.log(this.state.fontSize);
+        }
+    }
+
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         const textStyle = {
-            fontSize: this.props.smallDescription ? "45pt" : "60pt",
+            fontSize: this.state.fontSize + "pt",
             fontFamily: "Times New Roman"
         } as const;
         return (
-            <foreignObject x={140} y={1140} width={1130} height={this.props.heirloomPresent ? 620 : 700}>
+            <foreignObject x={140} y={1140} width={1130} height={this.props.heirloomPresent ? 620 : 700} ref={this.foreignObjectRef}>
                 <div style={{display: "table", position: "absolute", top: 0, left: 0, height: "100%", width: "100%"}}>
-                    <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: this.props.smallDescription ? "48pt" : "64pt", display: "table-cell", verticalAlign: "middle", padding: "0 75pt"}}>
+                    <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: this.state.fontSize + Math.floor(this.state.fontSize / 15) + "pt", display: "table-cell", verticalAlign: "middle", padding: `0 ${Math.floor(this.state.fontSize * (5/4))}pt`}} ref={this.desRef}>
                         {this.props.description.split("\n").map((text) => {
                             let extraStyle = {};
                             if (/\+\d (Action|Card|Buy|Coffer|Villager)s?/.test(text)) {
                                 extraStyle = {
                                     fontWeight: "bold",
-                                    fontSize: this.props.smallDescription ? "48pt" : "64pt"
+                                    fontSize: this.state.fontSize + Math.floor(this.state.fontSize / 15) + "pt"
                                 };
                             }
                             if (/^\+\$\d/.test(text)) {
                                 const num = text.slice(2,3);
                                 extraStyle = {
                                     fontWeight: "bold",
-                                    fontSize: this.props.smallDescription ? "48pt" : "64pt"
+                                    fontSize: this.state.fontSize + Math.floor(this.state.fontSize / 15) + "pt"
                                 };
                                 return (
                                 <>

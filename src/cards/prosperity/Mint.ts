@@ -16,6 +16,7 @@ export default class Mint extends Card {
     async onAction(player: Player): Promise<void> {
         const card = await player.chooseCard(Texts.chooseAToDuplicateWithB('treasure', 'mint'), player.data.hand, true, (card) => card.types.includes("treasure"));
         if (card) {
+            await player.reveal([card], false);
             await player.gain(card.name);
         }
     }

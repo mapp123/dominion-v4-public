@@ -19,7 +19,8 @@ export default class Loan extends Card {
         let revealedCards: Card[] = [];
         while ((revealedCard = player.deck.pop()) != null && !revealedCard.types.includes("treasure")) {
             player.lm('%p reveals %s.', Util.formatCardList([revealedCard.name]));
-            revealedCards.push(revealedCard);
+            const kept = await player.reveal([revealedCard]);
+            revealedCards.push(...kept);
         }
         if (revealedCard) {
             const option = await player.chooseOption(Texts.whatToDoWith(revealedCard.name), [Texts.discardIt, Texts.trashIt] as const);

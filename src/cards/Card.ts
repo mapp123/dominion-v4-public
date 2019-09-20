@@ -142,6 +142,9 @@ export default abstract class Card {
     public onTrashSelf(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => any): Promise<void> | void {
 
     }
+    public onRevealSelf(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => any): Promise<void> | void {
+
+    }
     protected async onTreasure(player: Player) {
         throw new Error("onTreasure not implemented");
     }

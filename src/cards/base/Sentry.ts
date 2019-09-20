@@ -17,9 +17,10 @@ export default class Sentry extends Card {
     async onAction(player: Player): Promise<void> {
         player.draw();
         player.data.actions++;
-        const cards = [player.deck.pop(), player.deck.pop()].filter((a) => a) as Card[];
+        let cards = [player.deck.pop(), player.deck.pop()].filter((a) => a) as Card[];
         if (cards.length) {
             player.lm('%p reveals %s.', Util.formatCardList(cards.map((a) => a.name)));
+            cards = await player.reveal(cards);
         }
         let keptCards: Card[] = [];
         for (let card of cards) {

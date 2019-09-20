@@ -18,6 +18,7 @@ export default class Rabble extends Card {
         await player.attackOthers(exemptPlayers, async (p) => {
             let cards = [p.deck.pop(), p.deck.pop(), p.deck.pop()].filter((a) => a != null) as Card[];
             p.lm('%p reveals %s.', Util.formatCardList(cards.map((a) => a.name)));
+            cards = await player.reveal(cards);
             await p.discard(cards.filter((a) => a.types.includes("action") || a.types.includes("treasure")));
             const rest = await p.chooseOrder(Texts.chooseOrderOfCards, cards.filter((a) => !a.types.includes("action") && !a.types.includes("treasure")), 'Top of Deck', 'Rest of Deck');
             p.deck.cards.unshift(...rest);

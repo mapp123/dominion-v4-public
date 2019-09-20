@@ -15,7 +15,7 @@ export default class Bishop extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/BishopArt.jpg";
     async onAction(player: Player): Promise<void> {
-        player.data.money += 2;
+        player.data.money += 1;
         player.data.vp += 1;
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('bishop'));
         if (card) {

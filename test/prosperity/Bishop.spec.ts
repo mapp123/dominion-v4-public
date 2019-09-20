@@ -13,7 +13,7 @@ describe('BISHOP', () => {
         player.testChooseCard(Texts.chooseCardToTrashFor('bishop'), 'silver');
         q.testChooseCard(Texts.chooseCardToTrashFor('bishop'), 'copper');
         player.onBuyPhaseStart(() => {
-            expect(player.data.money).to.equal(2);
+            expect(player.data.money).to.equal(1);
             expect(player.data.vp).to.equal(2);
             expect(q.hand.length).to.equal(0);
             expect(game.trash.map((a) => a.name)).to.have.members(['silver', 'copper']);
@@ -33,7 +33,7 @@ describe('BISHOP', () => {
         player.testChooseCard(Texts.chooseCardToTrashFor('bishop'), 'silver');
         q.testChooseCard(Texts.chooseCardToTrashFor('bishop'), 'copper');
         player.onBuyPhaseStart(() => {
-            expect(player.data.money).to.equal(4);
+            expect(player.data.money).to.equal(2);
             expect(player.data.vp).to.equal(4);
             expect(q.hand.length).to.equal(0);
             expect(game.trash.map((a) => a.name)).to.have.members(['silver', 'silver', 'copper']);

@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Util from "../../Util";
 
 export default class Spy extends Card {
     types = ["action","attack"] as const;
@@ -14,8 +15,13 @@ export default class Spy extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SpyArt.jpg";
     async affectPlayer(player: Player, p: Player) {
-        const topCard = p.deck.peek();
+        let topCard = p.deck.peek();
         if (topCard) {
+            player.lm('%p reveals %s.', Util.formatCardList([topCard.name]));
+            topCard = (await player.reveal([topCard]))[0];
+            if (!topCard) {
+                return;
+            }
             if (await player.confirmAction(Texts.shouldADiscardTheBOnTopOfTheirDeck(player === p ? "you" : p.username, topCard.name))) {
                 p.lm('%p discards the %s on top of their deck.', topCard.name);
                 await p.discard(p.deck.pop()!);

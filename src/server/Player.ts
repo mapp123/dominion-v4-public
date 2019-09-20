@@ -573,4 +573,16 @@ export default class Player {
         }
         return null;
     }
+    async reveal(cards: Card[], hasTrack = true): Promise<Card[]> {
+        const keptCards = [] as Card[];
+        for (let card of cards) {
+            const _hasTrack = {hasTrack};
+            const loseTrack = () => _hasTrack.hasTrack = false;
+            await card.onRevealSelf(this, _hasTrack, loseTrack);
+            if (_hasTrack.hasTrack) {
+                keptCards.push(card);
+            }
+        }
+        return keptCards;
+    }
 }

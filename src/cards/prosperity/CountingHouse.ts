@@ -15,6 +15,10 @@ export default class CountingHouse extends Card {
         let card: Card | null;
         while ((card = await player.chooseCard(Texts.chooseCardToTakeFromDiscard, player.deck.discard.filter((a) => a.name === 'copper'), true)) != null) {
             player.deck.discard.splice(player.deck.discard.indexOf(card), 1);
+            card = (await player.reveal([card]))[0];
+            if (!card) {
+                continue;
+            }
             player.lm('%p puts a copper into their hand.');
             player.data.hand.push(card);
         }

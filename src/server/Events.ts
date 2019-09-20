@@ -41,6 +41,7 @@ type PlayerEvent = {
     turnStart: [];
     turnEnd: [];
     gain: [Card, {hasTrack: boolean}, () => any];
+    trash: [Card, {hasTrack: boolean}, () => any];
     cleanupStart: [];
     handDraw: [];
     treasureCardPlayed: [Player, Card];

@@ -492,6 +492,7 @@ export default class Player {
         if (log) this.lm('%p trashes %s.', Util.formatCardList([card.name]));
         const hasTrack = {hasTrack: true};
         await card.onTrashSelf(this, hasTrack, () => hasTrack.hasTrack = false);
+        await this.events.emit('trash', card, hasTrack, () => hasTrack.hasTrack);
         if (hasTrack.hasTrack) {
             this.game.trash.push(card);
         }

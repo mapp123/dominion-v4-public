@@ -9,6 +9,7 @@ export default class ActingTroupe extends Card {
     };
     cardText = "+4 Villagers\n" +
         "Trash this.";
+    features = ["villagers"] as const;
     supplyCount = 10;
     cardArt = "/img/card-img/Acting_TroupeArt.jpg";
     async onAction(player: Player): Promise<void> {

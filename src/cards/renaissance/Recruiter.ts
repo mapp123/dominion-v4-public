@@ -12,6 +12,7 @@ export default class Recruiter extends Card {
         "Trash a card from your hand.\n" +
         "+1 Villager\n" +
         "per $1 it costs.";
+    features = ["villagers"] as const;
     supplyCount = 10;
     cardArt = "/img/card-img/RecruiterArt.jpg";
     async onAction(player: Player): Promise<void> {

@@ -11,6 +11,7 @@ export default class Patron extends Card {
         "+$2\n" +
         "When something cause you to reveal this (using the word \"reveal\"),\n" +
         "+1 Coffers";
+    features = ["villagers", "coffers"] as const;
     supplyCount = 10;
     cardArt = "/img/card-img/PatronArt.jpg";
     async onAction(player: Player): Promise<void> {

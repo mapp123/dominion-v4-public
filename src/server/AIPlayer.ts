@@ -145,6 +145,12 @@ export default abstract class AIPlayer extends Player {
                         choice: decision.options[0]
                     } as any;
                 }
+                const chooseBenefit = decisionMatcher(decision.helperText, Texts.chooseBenefitFor);
+                if (chooseBenefit) {
+                    return {
+                        choice: decision.options[0]
+                    } as any;
+                }
                 break;
             case "chooseCard":
                 const keys = {
@@ -160,6 +166,7 @@ export default abstract class AIPlayer extends Player {
                     trashCard: decisionMatcher(decision.helperText, Texts.chooseCardToTrashFor),
                     playAction: decisionMatcher(decision.helperText, () => Texts.chooseActionToPlay),
                     actionCardPlayTwice: decisionMatcher(decision.helperText, () => Texts.chooseCardToPlayTwice),
+                    actionCardReplay: decisionMatcher(decision.helperText, () => Texts.chooseCardToReplay),
                     cardsToGainFromTrashed: decisionMatcher(decision.helperText, () => Texts.chooseCardToGainFromTrashed),
                     cardFromDiscard: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromDiscard),
                     forgeTrash: decisionMatcher(decision.helperText, Texts.chooseCardToTrashForge),
@@ -214,6 +221,9 @@ export default abstract class AIPlayer extends Player {
                         }
                     }
                     return decision.source.find((a) => a.name === 'No Card') as any;
+                }
+                if (keys.actionCardReplay) {
+                    return decision.source[0] as any;
                 }
                 break;
             case "chooseUsername":

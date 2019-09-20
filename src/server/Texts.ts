@@ -5,6 +5,7 @@ export class Texts {
     static chooseCardOrBuy = "Please play a treasure or buy a card...";
     static chooseActionToPlay = "Please choose an action card to play...";
     static buy = "Please buy a card...";
+    static chooseCardToReplay = "Please choose a card to replay...";
     static chooseCardToPlayTwice = "Please choose a card to play twice...";
     static chooseCardToPlayThrice = "Please choose a card to play thrice...";
     static placeDeckIntoDiscard = "Would you like to place your deck into your discard?";
@@ -20,6 +21,13 @@ export class Texts {
     static keepIt = "Keep It";
     static putItOnYourDeck = "Put It On Your Deck";
     static doNothing = "Do Nothing";
+    static replayAction = "Replay an Action Card";
+    static extraMoney(amount: string) {
+        return `+${amount} Money`;
+    }
+    static chooseBenefitFor(a: string) {
+        return `Choose benefit for ${a}...`;
+    }
     static doYouWantToTrashA(a: string) {
         return `Do you want to trash a ${a}?`;
     }

@@ -22,6 +22,15 @@ export class Texts {
     static putItOnYourDeck = "Put It On Your Deck";
     static doNothing = "Do Nothing";
     static replayAction = "Replay an Action Card";
+    static trashA(type: string) {
+        return `Trash A ${type}`;
+    }
+    static gainAFromB(a: string, b: string) {
+        return `Gain a ${a} from ${b}`;
+    }
+    static takeArtifact(artifact: string) {
+        return `Take the ${artifact}`;
+    }
     static extraMoney(amount: string) {
         return `+${amount} Money`;
     }

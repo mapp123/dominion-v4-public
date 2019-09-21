@@ -22,6 +22,9 @@ export default class Bureaucrat extends Card {
                     p.deck.cards.unshift(card);
                 }
             }
+            else {
+                await p.reveal(p.data.hand);
+            }
         });
     }
 }

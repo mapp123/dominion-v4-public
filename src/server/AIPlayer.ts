@@ -239,7 +239,8 @@ export default abstract class AIPlayer extends Player {
                     wantDiscardFor: decisionMatcher(decision.helperText, Texts.doYouWantToDiscardAnAForB),
                     wantOnDeck: decisionMatcher(decision.helperText, Texts.doYouWantToPutTheAOnYourDeck),
                     wantSetAside: decisionMatcher(decision.helperText, Texts.wouldYouLikeToSetAsideThe),
-                    ensureTrash: decisionMatcher(decision.helperText, Texts.areYouSureYouWantToTrash)
+                    ensureTrash: decisionMatcher(decision.helperText, Texts.areYouSureYouWantToTrash),
+                    wantBuyCoffers: decisionMatcher(decision.helperText, () => Texts.wantBuyCoffers)
                 };
                 if (confirmKeys.wantTrash) {
                     return this.wantCardOverNothing(await this.trashPriority(), confirmKeys.wantTrash[0]) as any;
@@ -279,6 +280,9 @@ export default abstract class AIPlayer extends Player {
                 }
                 if (confirmKeys.ensureTrash) {
                     return this.wantCardOverNothing(await this.trashPriority(), confirmKeys.ensureTrash[0]) as any;
+                }
+                if (confirmKeys.wantBuyCoffers) {
+                    return true as any;
                 }
                 break;
             case "gain":

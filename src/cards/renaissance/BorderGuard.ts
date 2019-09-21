@@ -18,7 +18,7 @@ export default class BorderGuard extends Card {
     cardArt = "/img/card-img/Border_GuardArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.data.actions += 1;
-        const revealed = [player.deck.pop(), player.deck.pop(), (this.getGlobalData().lantern as Lantern).belongsToPlayer === player ? player.deck.pop() : null].filter((a) => a) as Card[];
+        const revealed = [await player.deck.pop(), await player.deck.pop(), (this.getGlobalData().lantern as Lantern).belongsToPlayer === player ? await player.deck.pop() : null].filter((a) => a) as Card[];
         const kept = await player.reveal(revealed);
         player.lm('%p reveals %s.', Util.formatCardList(kept.map((a) => a.name)));
         const card = await player.chooseCard(Texts.chooseCardToTakeFromRevealed, kept, false);

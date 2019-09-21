@@ -12,7 +12,7 @@ export default class Witch extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/WitchArt.jpg";
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
-        player.draw(2);
+        await player.draw(2);
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             if (!await p.gain('curse')) {
                 p.lm('%p does not gain a curse.');

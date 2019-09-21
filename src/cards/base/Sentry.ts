@@ -15,9 +15,9 @@ export default class Sentry extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SentryArt.jpg";
     async onAction(player: Player): Promise<void> {
-        player.draw();
+        await player.draw();
         player.data.actions++;
-        let cards = [player.deck.pop(), player.deck.pop()].filter((a) => a) as Card[];
+        let cards = [await player.deck.pop(), await player.deck.pop()].filter((a) => a) as Card[];
         if (cards.length) {
             player.lm('%p reveals %s.', Util.formatCardList(cards.map((a) => a.name)));
             cards = await player.reveal(cards);

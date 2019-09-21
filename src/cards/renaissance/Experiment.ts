@@ -14,7 +14,7 @@ export default class Experiment extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ExperimentArt.jpg";
     async onAction(player: Player): Promise<void> {
-        player.draw(2);
+        await player.draw(2);
         player.data.actions++;
         const card = player.data.playArea.find((a) => a.id === this.id);
         if (card) {

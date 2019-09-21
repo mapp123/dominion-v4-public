@@ -45,7 +45,7 @@ export default class Player {
             new Estate(this.game),
             new Estate(this.game)
         ];
-        this.draw(5);
+        this.startDraw();
         if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('vp'))) {
             this.data.dataViews.push('vp');
         }
@@ -56,8 +56,19 @@ export default class Player {
             this.data.dataViews.push('villagers');
         }
     }
-    draw(amount = 1) {
-        const cards = new Array(amount).fill(undefined).map(() => this.deck.pop()).filter((a) => a != null) as Card[];
+    private startDraw() {
+        while (this.data.hand.length < 5 && this.deck.deckAndDiscard.length > 0) {
+            let card = this.deck.cards.shift();
+            if (!card) {
+                // @ts-ignore
+                this.deck._fastShuffle();
+                card = this.deck.cards.shift()!;
+            }
+            this.data.hand.push(card);
+        }
+    }
+    async draw(amount = 1) {
+        const cards = (await Promise.all(new Array(amount).fill(undefined).map(() => this.deck.pop()))).filter((a) => a != null) as Card[];
         if (cards.length) {
             this.lm(`%p draws %h[${amount === 1 ? 'a' : Util.numeral(amount)} card${amount === 1 ? '' : 's'}].`, Util.formatCardList(cards.map((a) => a.name)));
             this.data.hand.push(...cards);

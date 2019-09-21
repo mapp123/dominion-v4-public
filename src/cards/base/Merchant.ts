@@ -14,7 +14,7 @@ export default class Merchant extends Card {
     cardArt = "/img/card-img/MerchantArt.jpg";
     cb: ((player: Player, card: Card) => boolean | Promise<boolean>) | null = null;
     async onAction(player: Player): Promise<void> {
-        player.draw(1);
+        await player.draw(1);
         player.data.actions++;
         this.cb = player.events.on('treasureCardPlayed', (player, card) => {
             if (card.name === "silver") {

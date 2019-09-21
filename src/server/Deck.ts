@@ -13,20 +13,27 @@ export default class Deck {
         this.cards = cards;
     }
 
-    pop() {
+    async pop() {
         if (this.cards.length === 0) {
-            this.shuffle();
+            await this.shuffle();
         }
         return this.cards.shift();
     }
-    peek(): Card | undefined {
+    async peek(): Promise<Card | undefined> {
         if (this.cards.length === 0) {
-            this.shuffle();
+            await this.shuffle();
         }
         return this.cards[0];
     }
 
-    shuffle() {
+    async shuffle() {
+        this.cards = [...this.cards, ...shuffle(this.discard)];
+        this.discard = [];
+    }
+
+    // This is actually used, just suppressed
+    // noinspection JSUnusedLocalSymbols
+    private _fastShuffle() {
         this.cards = [...this.cards, ...shuffle(this.discard)];
         this.discard = [];
     }
@@ -39,10 +46,10 @@ export default class Deck {
         }
     }
 
-    draw() {
+    /*draw() {
         if (this.cards.length === 0) {
             this.shuffle();
         }
         return this.cards.shift();
-    }
+    }*/
 }

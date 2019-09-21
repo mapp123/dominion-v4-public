@@ -16,7 +16,7 @@ export default class Venture extends Card {
         player.data.money += 1;
         let revealedCard: Card | undefined;
         let revealedCards: Card[] = [];
-        while ((revealedCard = player.deck.pop()) != null) {
+        while ((revealedCard = await player.deck.pop()) != null) {
             const kept = await player.reveal([revealedCard]);
             revealedCards.push(...kept);
             if (revealedCard.types.includes("treasure")) {

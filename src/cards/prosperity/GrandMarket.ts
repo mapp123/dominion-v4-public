@@ -16,7 +16,7 @@ export default class GrandMarket extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Grand_MarketArt.jpg";
     async onAction(player: Player): Promise<void> {
-        player.draw();
+        await player.draw();
         player.data.actions++;
         player.data.buys++;
         player.data.money += 2;

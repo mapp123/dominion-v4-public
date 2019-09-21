@@ -16,7 +16,7 @@ export default class Peddler extends Card {
     cardArt = "/img/card-img/PeddlerArt.jpg";
     static smallText = true;
     async onAction(player: Player): Promise<void> {
-        player.draw();
+        await player.draw();
         player.data.actions += 1;
         player.data.money += 1;
     }

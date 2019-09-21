@@ -15,7 +15,7 @@ export default class Bandit extends Card {
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.gain('gold');
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
-            let topCards: Card[] = [p.deck.pop(), p.deck.pop()].filter((a) => a) as Card[];
+            let topCards: Card[] = [await p.deck.pop(), await p.deck.pop()].filter((a) => a) as Card[];
             if (topCards.length) {
                 p.lm('%p reveals %s.', Util.formatCardList(topCards.map((a) => a.name)));
                 topCards = await player.reveal(topCards);

@@ -15,9 +15,9 @@ export default class Seer extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SeerArt.jpg";
     async onAction(player: Player): Promise<void> {
-        player.draw(1);
+        await player.draw(1);
         player.data.actions++;
-        let revealed = [player.deck.pop(), player.deck.pop(), player.deck.pop()].filter((a) => a) as Card[];
+        let revealed = [await player.deck.pop(), await player.deck.pop(), await player.deck.pop()].filter((a) => a) as Card[];
         player.lm('%p reveals %s.', Util.formatCardList(revealed.map((a) => a.name)));
         revealed = await player.reveal(revealed);
         revealed = revealed.filter((a) => {

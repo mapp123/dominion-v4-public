@@ -14,8 +14,8 @@ export default class Watchtower extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/WatchtowerArt.jpg";
     async onAction(player: Player): Promise<void> {
-        while (player.data.hand.length < 6 && player.deck.peek()) {
-            player.draw();
+        while (player.data.hand.length < 6 && await player.deck.peek()) {
+            await player.draw();
         }
     }
     static setup(cardData: any, game: Game) {

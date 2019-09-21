@@ -14,7 +14,7 @@ export default class Adventurer extends Card {
     async onAction(player: Player): Promise<void> {
         let revealed: Card[] = [];
         let revealedCard: Card | undefined;
-        while (revealed.filter((a) => a.types.includes("treasure")).length < 2 && (revealedCard = player.deck.pop()) != null) {
+        while (revealed.filter((a) => a.types.includes("treasure")).length < 2 && (revealedCard = await player.deck.pop()) != null) {
             player.lm('%p reveals %s.', Util.formatCardList([revealedCard.name]));
             const kept = await player.reveal([revealedCard]);
             revealed.push(...kept);

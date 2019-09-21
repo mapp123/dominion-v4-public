@@ -272,7 +272,7 @@ class DrawAttack extends Card {
     cardArt = "";
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.attackOthersInOrder(exemptPlayers, async (player) => {
-            player.draw(1);
+            await player.draw(1);
         });
     }
 }
@@ -393,7 +393,8 @@ export default function makeTestGame({
         }
         player.deck.discard = discard;
         player.data.hand = [];
-        player.draw(5);
+        // @ts-ignore
+        player.startDraw();
         game.players.push(player);
     }
     const done = game.setDone(d);

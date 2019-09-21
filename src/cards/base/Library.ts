@@ -15,7 +15,7 @@ export default class Library extends Card {
     async onAction(player: Player): Promise<void> {
         let nextCard: Card | undefined;
         let setAside: Card[] = [];
-        while (player.data.hand.length < 7 && (nextCard = player.deck.pop()) != null) {
+        while (player.data.hand.length < 7 && (nextCard = await player.deck.pop()) != null) {
             if (nextCard.types.includes("action") && !await player.confirmAction(Texts.wantToDraw(nextCard.name))) {
                 setAside.push(nextCard);
                 player.lm('%p sets aside %s.', Util.formatCardList([nextCard.name]));

@@ -12,7 +12,7 @@ export default class Laboratory extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/LaboratoryArt.jpg";
     async onAction(player: Player): Promise<void> {
-        player.draw(2);
+        await player.draw(2);
         player.data.actions++;
     }
 }

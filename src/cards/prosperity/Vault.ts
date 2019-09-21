@@ -14,7 +14,7 @@ export default class Vault extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/VaultArt.jpg";
     async onAction(player: Player): Promise<void> {
-        player.draw(2);
+        await player.draw(2);
         let card: Card | null;
         while ((card = await player.chooseCardFromHand(Texts.discardForBenefit('+1 Money'), true)) != null) {
             await player.discard(card, true);
@@ -27,7 +27,7 @@ export default class Vault extends Card {
                 const card2 = await p.chooseCardFromHand(Texts.discardForBenefit('to draw a card'));
                 if (card2) {
                     await p.discard(card2, true);
-                    p.draw();
+                    await p.draw();
                 }
             }
         });

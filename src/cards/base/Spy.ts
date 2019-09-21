@@ -15,7 +15,7 @@ export default class Spy extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SpyArt.jpg";
     async affectPlayer(player: Player, p: Player) {
-        let topCard = p.deck.peek();
+        let topCard = await p.deck.peek();
         if (topCard) {
             player.lm('%p reveals %s.', Util.formatCardList([topCard.name]));
             topCard = (await player.reveal([topCard]))[0];
@@ -24,7 +24,7 @@ export default class Spy extends Card {
             }
             if (await player.confirmAction(Texts.shouldADiscardTheBOnTopOfTheirDeck(player === p ? "you" : p.username, topCard.name))) {
                 p.lm('%p discards the %s on top of their deck.', topCard.name);
-                await p.discard(p.deck.pop()!);
+                await p.discard((await p.deck.pop())!);
             }
             else {
                 p.lm('%p puts the %s back on top of their deck.', topCard.name);
@@ -32,7 +32,7 @@ export default class Spy extends Card {
         }
     }
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
-        player.draw();
+        await player.draw();
         player.data.actions += 1;
         await this.affectPlayer(player, player);
         await player.attackOthersInOrder(exemptPlayers, async (p) => {

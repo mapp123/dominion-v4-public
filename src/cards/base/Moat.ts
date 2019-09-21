@@ -13,7 +13,7 @@ export default class Moat extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/MoatArt.jpg";
     async onAction(player: Player): Promise<void> {
-        player.draw(2);
+        await player.draw(2);
     }
     async onAttackInHand(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {
         if (playerAlreadyExempt) {

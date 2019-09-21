@@ -12,7 +12,7 @@ export default class Village extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/VillageArt.jpg";
     async onAction(player: Player): Promise<void> {
-        player.draw(1);
+        await player.draw(1);
         player.data.actions += 2;
     }
 }

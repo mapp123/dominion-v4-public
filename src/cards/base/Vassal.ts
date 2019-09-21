@@ -15,7 +15,7 @@ export default class Vassal extends Card {
     cardArt = "/img/card-img/VassalArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.data.money += 2;
-        const card = player.deck.pop();
+        const card = await player.deck.pop();
         if (card) {
             player.lm('%p discards %s.', Util.formatCardList([card.name]));
             await player.discard(card);

@@ -16,7 +16,7 @@ export default class CouncilRoom extends Card {
         await player.draw(4);
         player.data.buys += 1;
         await player.affectOthersInOrder(async (p) => {
-            p.draw();
+            await p.draw();
         });
     }
 }

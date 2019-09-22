@@ -1,9 +1,14 @@
 import shuffle from "./util/shuffle";
 import Card from "../cards/Card";
+import Player from "./Player";
 
 export default class Deck {
     cards: Card[] = [];
     discard: Card[] = [];
+    player: Player;
+    constructor(player: Player) {
+        this.player = player;
+    }
 
     get deckAndDiscard() {
         return [...this.cards, ...this.discard];
@@ -29,6 +34,7 @@ export default class Deck {
     async shuffle() {
         this.cards = [...this.cards, ...shuffle(this.discard)];
         this.discard = [];
+        await this.player.events.emit('shuffle', this);
     }
 
     // This is actually used, just suppressed

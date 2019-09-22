@@ -15,7 +15,7 @@ import Util from "../Util";
 
 export default class Player {
     id = v4();
-    deck = new Deck();
+    deck = new Deck(this);
     private _currentSocket: Socket | null = null;
     username = '';
     private waitingForResponse = false;

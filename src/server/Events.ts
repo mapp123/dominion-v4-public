@@ -1,5 +1,6 @@
 import Card from "../cards/Card";
 import Player from "./Player";
+import Deck from "./Deck";
 
 type BaseEvents = {[event: string]: any[]};
 type Cbs<A extends BaseEvents> = {
@@ -46,6 +47,7 @@ type PlayerEvent = {
     buyStart: [];
     handDraw: [];
     treasureCardPlayed: [Player, Card];
+    shuffle: [Deck];
 }
 export class PlayerEvents extends Events<PlayerEvent> {}
 type GameEvent = {

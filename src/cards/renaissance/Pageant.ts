@@ -14,8 +14,8 @@ export default class Pageant extends Project {
         player.events.on('cleanupStart', async () => {
             player.lm('The pageant activates for %p.');
             if (player.data.money > 0 && await player.confirmAction(Texts.wantBuyCoffers)) {
-                player.data.coffers += player.data.money;
-                player.data.money = 0;
+                player.data.coffers++;
+                player.data.money--;
             }
             return true;
         });

@@ -15,7 +15,7 @@ export class Texts {
     static chooseCardToTakeFromDiscard = 'Please choose a card to take out of your discard pile...';
     static chooseCardToTakeFromRevealed = 'Please choose a card to put in your hand from the revealed cards...';
     static chooseCardToTakeFromSetAside = 'Please choose a card to take from the set aside cards...';
-    static wantBuyCoffers = 'Do you want to buy Coffers with your extra coins?';
+    static wantBuyCoffers = 'Do you want to buy a Coffers with your extra coin?';
     static whichArtifactWouldYouLike = 'Which artifact would you like to take?';
     static trashIt = "Trash It";
     static discardIt = "Discard It";

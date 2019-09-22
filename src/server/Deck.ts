@@ -3,11 +3,17 @@ import Card from "../cards/Card";
 import Player from "./Player";
 
 export default class Deck {
-    cards: Card[] = [];
+    _cards: Card[] = [];
     discard: Card[] = [];
     player: Player;
     constructor(player: Player) {
         this.player = player;
+    }
+    get cards() {
+        return this._cards;
+    }
+    set cards(val) {
+        this._cards = val;
     }
 
     get deckAndDiscard() {

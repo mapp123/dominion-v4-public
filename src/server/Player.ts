@@ -68,7 +68,11 @@ export default class Player {
         }
     }
     async draw(amount = 1) {
-        const cards = (await Promise.all(new Array(amount).fill(undefined).map(() => this.deck.pop()))).filter((a) => a != null) as Card[];
+        let cards: Card[] = [];
+        let card: Card | undefined;
+        while (cards.length < amount && (card = await this.deck.pop()) !== undefined) {
+            cards.push(card);
+        }
         if (cards.length) {
             this.lm(`%p draws %h[${amount === 1 ? 'a' : Util.numeral(amount)} card${amount === 1 ? '' : 's'}].`, Util.formatCardList(cards.map((a) => a.name)));
             this.data.hand.push(...cards);

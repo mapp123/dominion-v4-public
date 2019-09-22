@@ -37,6 +37,7 @@ let testPlayerIndex = 1;
 const WELL_KNOWN_STOP_ERROR = 'WELL_KNOWN_STOP_ERROR';
 class TestPlayer extends Player {
     decisionResponses: Array<DecisionResponse> = [];
+    private optionalDecisionResponses: Array<DecisionResponse> = [];
     username = `Test Player ${testPlayerIndex++}`;
     get hand() {
         return this.data.hand.map((a) => a.name);
@@ -72,8 +73,9 @@ class TestPlayer extends Player {
             return d as any;
         }
         const rIndex = this.decisionResponses.findIndex((a) => a.matcher(decision));
-        if (rIndex !== -1) {
-            const responder = this.decisionResponses.splice(rIndex, 1)[0];
+        const oIndex = this.optionalDecisionResponses.findIndex((a) => a.matcher(decision));
+        if (rIndex !== -1 || oIndex !== -1) {
+            const responder = rIndex !== -1 ? this.decisionResponses.splice(rIndex, 1)[0] : this.optionalDecisionResponses.splice(oIndex, 1)[0];
             const response = responder.response(decision);
             console.log('Responding to ' + JSON.stringify(decision));
             try {
@@ -219,6 +221,13 @@ class TestPlayer extends Player {
                 throw new Error(WELL_KNOWN_STOP_ERROR);
             }
         })
+    }
+    optional(cb: () => any) {
+        const oldReponses = this.decisionResponses;
+        this.decisionResponses = [];
+        cb();
+        this.optionalDecisionResponses = [...this.optionalDecisionResponses, ...this.decisionResponses];
+        this.decisionResponses = oldReponses;
     }
     endTurn() {
         this.decisionResponses.push({

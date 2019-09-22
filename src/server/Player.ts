@@ -365,7 +365,6 @@ export default class Player {
         this.data.money -= this.game.getCostOfCard(cardName).coin - cofferAmount;
         this.data.buys--;
         this.lm('%p buys %s.', Util.formatCardList([cardName]));
-        await this.game.events.emit('buy', this, cardName);
         await CardRegistry.getInstance().getCard(cardName).onBuy(this);
     }
     async gain(cardName: string, realCard?: Card, log: boolean = true, destination: "discard" | "hand" | "deck" = 'discard'): Promise<Card | null> {

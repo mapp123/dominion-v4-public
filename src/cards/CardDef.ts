@@ -7,4 +7,5 @@ export class CardDef extends Card {
     types = [];
     supplyCount = 0;
     cardArt = "";
+    static isCard = false;
 }

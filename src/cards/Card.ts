@@ -13,6 +13,7 @@ export default abstract class Card {
     id: string;
     game: Game;
     features: ReadonlyArray<'vp' | 'coffers' | 'villagers'> = [];
+    static isCard = true;
     static smallText = false;
     static get features(): typeof Card['features'] {
         // @ts-ignore
@@ -134,6 +135,8 @@ export default abstract class Card {
         return false;
     }
     public static async onBuy(player: Player): Promise<Card | null> {
+        await player.game.events.emit('buy', player, this.cardName);
+        await player.events.emit('buy', this.cardName);
         return await player.gain(this.cardName, undefined, false);
     }
     public onGainSelf(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => any): Promise<void> | void {

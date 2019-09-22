@@ -25,6 +25,9 @@ export default class Inventor extends Card {
 
     public static getCostModifier(cardData: any, game: Game, activatedCards: string[]): {[card: string]: Cost} | null {
         return activatedCards.reduce((last, card) => {
+            if (!game.getCard(card).isCard) {
+                return last;
+            }
             return {
                 ...last,
                 [card]: {

@@ -41,6 +41,7 @@ export class Events<T extends BaseEvents> {
 type PlayerEvent = {
     turnStart: [];
     turnEnd: [];
+    buy: [string];
     gain: [Card, {hasTrack: boolean}, () => any];
     trash: [Card, {hasTrack: boolean}, () => any];
     cleanupStart: [];

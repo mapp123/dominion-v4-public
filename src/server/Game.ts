@@ -252,12 +252,13 @@ export default class Game {
             this.runAccountability();
             this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         }
-        this.endOfGame();
+        await this.endOfGame();
     }
     determineTurnOrder() {
         shuffle(this.players);
     }
-    endOfGame() {
+    async endOfGame() {
+        await this.events.emit('scoreStart');
         const scores = this.players.map((player) => {
             let score = player.score();
             let scoreNumber = Object.values(score).reduce((sum, value) => sum + value, 0);
@@ -278,7 +279,7 @@ export default class Game {
         });
         this.lmg('%s wins!', scores[scores.length - 1][0].username);
         this.ended = true;
-        this.events.emit('gameEnd');
+        await this.events.emit('gameEnd');
     }
 
     nameAvailableInSupply(cardName: string) {

@@ -9,7 +9,7 @@ export default abstract class Project extends Card {
     supplyCount = 0;
     isCard = false;
     abstract onPlayerJoinProject(player: Player): Promise<any>;
-    private playersJoined: Player[] = [];
+    protected playersJoined: Player[] = [];
     public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean}> {
         return [{
             identifier: this.cardName,
@@ -20,7 +20,7 @@ export default abstract class Project extends Card {
             displayCount: false
         }];
     }
-    private static getInstance(player: Player): Project {
+    protected static getInstance(player: Player): Project {
         return player.game.supply.data.piles.find((a) => a.identifier === this.cardName)!.identity as Project;
     }
     public static async onBuy(player: Player): Promise<Card | null> {

@@ -370,7 +370,7 @@ export default function makeTestGame({
     discards = [[]] as string[][],
     activateCards = [] as string[],
     d = () => {}
-                                     }): [TestGame, TestPlayer[], () => any] {
+                                     }): [TestGame, TestPlayer[], (err?) => any] {
     const game = new TestGame(makeFakeIo((msg) => {
         console.log(msg)
     }) as any);

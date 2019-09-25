@@ -1,7 +1,6 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
-import Util from "../../Util";
 
 export default class Research extends Card {
     intrinsicTypes = ["action","duration"] as const;
@@ -27,14 +26,10 @@ export default class Research extends Card {
             }
         }
         player.events.on('turnStart', async () => {
-            const card = await player.chooseCard(Texts.chooseCardToTakeFromSetAside, this.cards.getCards(), false);
-            if (card) {
-                player.lm('%p takes %ac from the set aside cards for research.', Util.formatCardList([card.name]));
+            player.lm('%p takes the set aside cards for research.');
+            while (this.cards.getCards().length) {
+                const card = this.cards.popCard()!;
                 player.data.hand.push(card);
-                this.cards.removeCard(card);
-                if (this.cards.getCards().length !== 0) {
-                    return true;
-                }
             }
             return false;
         });

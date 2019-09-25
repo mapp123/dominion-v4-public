@@ -5,7 +5,7 @@ import {Texts} from "../../src/server/Texts";
 describe('RESEARCH', () => {
     it('works normally', (d) => {
         const [game, [player], done] = makeTestGame({
-            decks: [['research', 'estate', 'copper', 'copper', 'copper', 'silver', 'gold', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper']],
+            decks: [['research', 'estate', 'copper', 'copper', 'copper', 'silver', 'gold', 'copper', 'copper', 'copper', 'copper', 'copper']],
             d
         });
         player.testPlayAction('research');
@@ -13,19 +13,15 @@ describe('RESEARCH', () => {
         player.onBuyPhaseStart(() => {
             expect(player.data.actions).to.equal(1);
         });
-        player.testChooseCard(Texts.chooseCardToTakeFromSetAside, 'silver');
         player.onBuyPhaseStart(() => {
-            expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'copper', 'silver']);
-        });
-        player.onBuyPhaseStart(() => {
-            expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'copper', 'gold']);
+            expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'copper', 'silver', 'gold']);
             done();
         });
         game.start();
     });
     it('can be throne roomed', (d) => {
         const [game, [player], done] = makeTestGame({
-            decks: [['throne room', 'research', 'estate', 'estate', 'copper', 'copper', 'silver', 'copper', 'silver', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper']],
+            decks: [['throne room', 'research', 'estate', 'estate', 'copper', 'copper', 'silver', 'copper', 'silver', 'copper', 'copper', 'copper', 'copper', 'copper']],
             d
         });
         player.testPlayAction('throne room');
@@ -35,13 +31,8 @@ describe('RESEARCH', () => {
         player.onBuyPhaseStart(() => {
             expect(player.data.actions).to.equal(2);
         });
-        player.testChooseCard(Texts.chooseCardToTakeFromSetAside, 'silver');
-        player.testChooseCard(Texts.chooseCardToTakeFromSetAside, 'copper');
         player.onBuyPhaseStart(() => {
-            expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'silver']);
-        });
-        player.onBuyPhaseStart(() => {
-            expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'silver']);
+            expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'silver', 'copper', 'silver']);
             done();
         });
         game.start();

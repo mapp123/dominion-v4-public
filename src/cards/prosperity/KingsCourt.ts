@@ -12,6 +12,7 @@ export default class KingsCourt extends Card {
     cardText = "You may play an Action card from your hand three times.";
     supplyCount = 10;
     cardArt = "/img/card-img/Kings_CourtArt.jpg";
+    private _originalCard: Card | null = null;
     private _duplicateCard1: Card | null = null;
     private _duplicateCard2: Card | null = null;
     private _isUnderThroneRoom: boolean = false;
@@ -20,33 +21,15 @@ export default class KingsCourt extends Card {
         if (card) {
             player.lm('%p chooses %s.', Util.formatCardList([card.name]));
             player.data.playArea.push(card);
+            this._originalCard = card;
             await player.playActionCard(card);
-            // We create a duplicate card with the same ID, and call it's play function. This way, it can find itself,
-            // but have an independent version of data and everything else.
-            // @ts-ignore
-            this._duplicateCard1 = new card.constructor(this.game) as Card;
-            this._duplicateCard1.id = card.id;
-            if (typeof (this._duplicateCard1 as any)._isUnderThroneRoom !== "undefined") {
-                (this._duplicateCard1 as any)._isUnderThroneRoom = true;
-            }
-            player.lm('%p replays the %s.', card.name);
-            await player.playActionCard(this._duplicateCard1, false);
-            // @ts-ignore
-            this._duplicateCard2 = new card.constructor(this.game) as Card;
-            this._duplicateCard2.id = card.id;
-            if (typeof (this._duplicateCard2 as any)._isUnderThroneRoom !== "undefined") {
-                (this._duplicateCard2 as any)._isUnderThroneRoom = true;
-            }
-            player.lm('%p replays the %s.', card.name);
-            await player.playActionCard(this._duplicateCard2, false);
+            this._duplicateCard1 = await player.replayActionCard(card);
+            this._duplicateCard2 = await player.replayActionCard(card);
         }
     }
     shouldDiscardFromPlay(): boolean {
-        if (this._isUnderThroneRoom) {
-            return true;
-        }
-        if (this._duplicateCard1) {
-            return this._duplicateCard1.shouldDiscardFromPlay();
+        if (this._originalCard && this._duplicateCard1 && this._duplicateCard2) {
+            return [this._originalCard.shouldDiscardFromPlay(), this._duplicateCard1.shouldDiscardFromPlay(), this._duplicateCard2.shouldDiscardFromPlay()].filter((a) => a).length >= 2;
         }
         return true;
     }

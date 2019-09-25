@@ -12,41 +12,27 @@ export default class ThroneRoom extends Card {
     cardText = "You may play an Action card from your hand twice.";
     supplyCount = 10;
     cardArt = "/img/card-img/Throne_RoomArt.jpg";
+    private _originalCard: Card | null = null;
     private _duplicateCard: Card | null = null;
-    private _isUnderThroneRoom: boolean = false;
     async onAction(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseCardToPlayTwice, true, (card) => card.types.includes('action'));
         if (card) {
             player.lm('%p chooses %s.', Util.formatCardList([card.name]));
             player.data.playArea.push(card);
+            this._originalCard = card;
             await player.playActionCard(card);
-            // We create a duplicate card with the same ID, and call it's play function. This way, it can find itself,
-            // but have an independent version of data and everything else.
-            // @ts-ignore
-            this._duplicateCard = new card.constructor(this.game) as Card;
-            this._duplicateCard.id = card.id;
-            if (typeof (this._duplicateCard as any)._isUnderThroneRoom !== "undefined") {
-                (this._duplicateCard as any)._isUnderThroneRoom = true;
-            }
-            player.lm('%p replays the %s.', card.name);
-            await player.playActionCard(this._duplicateCard, false);
+            this._duplicateCard = await player.replayActionCard(card);
         }
     }
     shouldDiscardFromPlay(): boolean {
-        if (this._isUnderThroneRoom) {
-            return true;
-        }
-        if (this._duplicateCard) {
-            return this._duplicateCard.shouldDiscardFromPlay();
+        if (this._originalCard && this._duplicateCard) {
+            return this._originalCard.shouldDiscardFromPlay() || this._duplicateCard.shouldDiscardFromPlay();
         }
         return true;
     }
 
-    async onDiscardFromPlay(player: Player, hasTrack: { hasTrack: boolean }, loseTrack: () => {}): Promise<any> {
-        this._isUnderThroneRoom = false;
-        if (this._duplicateCard) {
-            await this._duplicateCard.onDiscardFromPlay(player, hasTrack, loseTrack);
-        }
+    async onDiscardFromPlay(): Promise<any> {
+        // The duplicate does not get an on-discard-from-play because it can't actually be discarded -- it's virtual
         this._duplicateCard = null;
     }
 }

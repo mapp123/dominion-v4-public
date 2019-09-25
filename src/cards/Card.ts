@@ -14,6 +14,7 @@ export default abstract class Card {
     game: Game;
     features: ReadonlyArray<'vp' | 'coffers' | 'villagers'> = [];
     static isCard = true;
+    isCard = (this.constructor as any).isCard as boolean;
     static smallText = false;
     static get features(): typeof Card['features'] {
         // @ts-ignore
@@ -123,8 +124,8 @@ export default abstract class Card {
     public static getSupplyMarkers(cardData: any, piles: SupplyData['piles']): {[card: string]: string[]} | null {
         return null;
     }
-    public async doTreasure(player: Player, exemptPlayers: Player[]) {
-        return await this.onTreasure(player, exemptPlayers);
+    public async doTreasure(player: Player) {
+        return await this.onTreasure(player);
     }
     public static onScore(player: Player): number {
         return 0;
@@ -155,8 +156,8 @@ export default abstract class Card {
     public onRevealSelf(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => any): Promise<void> | void {
 
     }
-    protected async onTreasure(player: Player, exemptPlayers: Player[]) {
-        await player.events.emit('noTreasureImpl', this, exemptPlayers);
+    protected async onTreasure(player: Player) {
+        await player.events.emit('noTreasureImpl', this);
     }
     protected getGlobalData() {
         return (this.game || {supply: {data: {globalCardData: {[this.name]: {}}}}}).supply.data.globalCardData[this.name];

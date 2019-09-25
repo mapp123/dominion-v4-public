@@ -24,6 +24,7 @@ export default class Player {
         [key: string]: Array<(response: any) => any> | undefined;
     } = {};
     private pendingDecisions: Decision[] = [];
+    private _duplicatedPlayArea: Card[] = [];
     turnNumber = 0;
     game: Game;
     events: PlayerEvents = new PlayerEvents();
@@ -251,8 +252,12 @@ export default class Player {
         await this.data.haltNotifications(async () => {
             for (let i = 0; i < this.data.playArea.length; i++) {
                 let card = this.data.playArea[i];
-                if (card.shouldDiscardFromPlay()) {
+                let dupCard = this._duplicatedPlayArea.filter((a) => a.id === card.id);
+                if (card.shouldDiscardFromPlay() && (!dupCard || dupCard.every((a) => a.shouldDiscardFromPlay()))) {
                     this.data.playArea.splice(i, 1);
+                    if (dupCard.length) {
+                        this._duplicatedPlayArea = this._duplicatedPlayArea.filter((a) => a.id !== card.id);
+                    }
                     const hasTrack = {hasTrack: true};
                     const loseTrack = () => hasTrack.hasTrack = false;
                     await card.onDiscardFromPlay(this, hasTrack, loseTrack);
@@ -306,8 +311,39 @@ export default class Player {
             this.lm('%p plays %s.', Util.formatCardList([card.name]));
         }
         let exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
+        await this.events.emit('willPlayAction', card);
         await card.onAction(this, exemptPlayers);
+        await this.events.emit('actionCardPlayed', card);
         await this.game.events.emit('actionCardPlayed', this, card);
+    }
+
+    /**
+     * This function allows you to replay a action card that is already in play (even if "already in play" means played and trashed, like feast)
+     * This essentially duplicates the card and stores the duplicate internally so it can "wake up" on events, but things that counting things in the
+     * play area will not see the duplicate.
+     * This returns the duplicate card if you need it for things like determining when a Throne Room should be discarded.
+     * @param card
+     * @param log
+     */
+    async replayActionCard(card: Card, log = true): Promise<Card> {
+        if (log) {
+            this.lm('%p replays the %s.', card.name);
+        }
+        // We create a duplicate card with the same ID, and call it's play function. This way, it can find itself,
+        // but have an independent version of data and everything else.
+        // @ts-ignore
+        let duplicateCard = new card.constructor(this.game) as Card;
+        duplicateCard.id = card.id;
+        // This informs the card (if it has such a property) that it is being played under a throne room instead of under normal conditions.
+        // This should only be used for extremely exceptional cases, such as the extra Throne Rooms in a chain being discarded regardless of the results of their children,
+        // but the first Throne Room remaining out.
+        // This would not be a good candidate for "when this is in play" effects that are much better handled as a setup side effect.
+        if (typeof (duplicateCard as any)._isUnderThroneRoom !== 'undefined') {
+            (duplicateCard as any)._isUnderThroneRoom = true;
+        }
+        this._duplicatedPlayArea.push(duplicateCard);
+        await this.playActionCard(duplicateCard);
+        return duplicateCard;
     }
     async getExemptPlayers(attackingCard: Card): Promise<Player[]> {
         let exemptPlayers = [] as Player[];
@@ -401,8 +437,7 @@ export default class Player {
         return null;
     }
     async playTreasure(card: Card) {
-        let exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
-        await card.doTreasure(this, exemptPlayers);
+        await card.doTreasure(this);
     }
     async discard(card: Card | Card[], log = false) {
         if (log && (!Array.isArray(card) || card.length > 0)) {

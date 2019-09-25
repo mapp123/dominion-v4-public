@@ -14,9 +14,9 @@ export default class Feast extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/FeastArt.jpg";
     async onAction(player: Player): Promise<void> {
-        if (player.data.playArea.includes(this)) {
-            player.data.playArea.splice(player.data.playArea.indexOf(this), 1);
-            await player.trash(this);
+        if (player.data.playArea.some((a) => a.id === this.id)) {
+            const card = player.data.playArea.splice(player.data.playArea.findIndex((a) => a.id === this.id), 1)[0];
+            await player.trash(card);
         }
         await player.chooseGain(Texts.chooseCardToGainFor('feast'), false, GainRestrictions.instance().setMaxCoinCost(5));
     }

@@ -35,6 +35,7 @@ interface ChooseCardDecision {
     source: Card[];
     helperText: string;
     sourceIsHand?: boolean;
+    validChoices: Card[];
 }
 
 interface ConfirmDecision {

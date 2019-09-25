@@ -163,6 +163,7 @@ export default abstract class AIPlayer extends Player {
                     discardTopDeck: decisionMatcher(decision.helperText, Texts.chooseCardToMoveFromDiscardToDeck),
                     discardCard: decisionMatcher(decision.helperText, Texts.chooseCardToDiscardFor),
                     discardCardForBenefit: /Choose (.*?) cards? to discard. You'll get (.*?) if you do./.exec(decision.helperText),
+                    discardTypeForBenefit: decisionMatcher(decision.helperText, Texts.discardAForBenefit),
                     trashCard: decisionMatcher(decision.helperText, Texts.chooseCardToTrashFor),
                     playAction: decisionMatcher(decision.helperText, () => Texts.chooseActionToPlay),
                     actionCardPlayTwice: decisionMatcher(decision.helperText, () => Texts.chooseCardToPlayTwice),
@@ -173,32 +174,32 @@ export default abstract class AIPlayer extends Player {
                     drawFromRevealed: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromRevealed),
                     takeFromAside: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromSetAside),
                 };
-                if (keys.discardCard != null || keys.discardCardForBenefit) {
-                    return this.chooseCardFromPriority(await this.discardPriority(), decision.source) as any;
+                if (keys.discardCard != null || keys.discardCardForBenefit || keys.discardTypeForBenefit) {
+                    return this.chooseCardFromPriority(await this.discardPriority(), decision.validChoices) as any;
                 }
                 if (keys.trashCard != null) {
-                    return this.chooseCardFromPriority(await this.trashPriority(), decision.source) as any;
+                    return this.chooseCardFromPriority(await this.trashPriority(), decision.validChoices) as any;
                 }
                 if (keys.discardTopDeck) {
-                    return this.chooseCardFromPriority(await this.topDeckPriority(), decision.source) as any;
+                    return this.chooseCardFromPriority(await this.topDeckPriority(), decision.validChoices) as any;
                 }
                 if (keys.victoryTopdeck) {
-                    return this.chooseCardFromPriority((await this.topDeckPriority()).reverse(), decision.source) as any;
+                    return this.chooseCardFromPriority((await this.topDeckPriority()).reverse(), decision.validChoices) as any;
                 }
                 if (keys.regularTopdeck) {
-                    return this.chooseCardFromPriority((await this.topDeckPriority()), decision.source) as any;
+                    return this.chooseCardFromPriority((await this.topDeckPriority()), decision.validChoices) as any;
                 }
                 if (keys.chooseAToTrashForB) {
-                    return this.chooseCardFromPriority((await this.trashPriority()).reverse(), decision.source) as any;
+                    return this.chooseCardFromPriority((await this.trashPriority()).reverse(), decision.validChoices) as any;
                 }
                 if (keys.chooseTreasureToTrash) {
-                    return this.chooseCardFromPriority((await this.trashPriority()).reverse(), decision.source) as any;
+                    return this.chooseCardFromPriority((await this.trashPriority()).reverse(), decision.validChoices) as any;
                 }
                 if (keys.cardFromDiscard || keys.drawFromRevealed || keys.takeFromAside) {
-                    return this.chooseCardFromPriority(await this.drawPriority(), decision.source) as any;
+                    return this.chooseCardFromPriority(await this.drawPriority(), decision.validChoices) as any;
                 }
                 if (keys.forgeTrash) {
-                    return this.chooseCardFromPriority(await this.trashPriority(), decision.source) as any;
+                    return this.chooseCardFromPriority(await this.trashPriority(), decision.validChoices) as any;
                 }
                 if (keys.banCard) {
                     return {
@@ -207,12 +208,12 @@ export default abstract class AIPlayer extends Player {
                     } as any;
                 }
                 if (keys.duplication || keys.cardsToGainFromTrashed) {
-                    return this.chooseCardFromPriority(await this.gainPriority(), decision.source) as any;
+                    return this.chooseCardFromPriority(await this.gainPriority(), decision.validChoices) as any;
                 }
                 if (keys.playAction || keys.actionCardPlayTwice) {
-                    const actionToPlay = this.playNextAction(decision.source);
+                    const actionToPlay = this.playNextAction(decision.validChoices);
                     if (actionToPlay) {
-                        const card = decision.source.find((a) => a.name === actionToPlay);
+                        const card = decision.validChoices.find((a) => a.name === actionToPlay);
                         if (card) {
                             return {
                                 id: card.id,
@@ -220,10 +221,10 @@ export default abstract class AIPlayer extends Player {
                             } as any;
                         }
                     }
-                    return decision.source.find((a) => a.name === 'No Card') as any;
+                    return decision.validChoices.find((a) => a.name === 'No Card') as any;
                 }
                 if (keys.actionCardReplay) {
-                    return decision.source[0] as any;
+                    return decision.validChoices[0] as any;
                 }
                 break;
             case "chooseUsername":

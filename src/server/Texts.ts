@@ -65,6 +65,9 @@ export class Texts {
     static discardForBenefit(benefit: string, number = 1) {
         return `Choose ${number === 1 ? "a" : Util.numeral(number)} card${number > 1 ? "s" : ""} to discard. You'll get ${benefit} if you do.`;
     }
+    static discardAForBenefit(type: string, benefit: string) {
+        return `Choose ${type} to discard. You'll get ${benefit} if you do.`;
+    }
     static doYouWantToDiscardAnAForB(a: string, b: string) {
         return `Do you want to discard a ${a} for ${b}?`;
     }

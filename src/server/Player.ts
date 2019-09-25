@@ -439,7 +439,8 @@ export default class Player {
             source: [...source, ...optionalSource],
             id: v4(),
             helperText,
-            sourceIsHand
+            sourceIsHand,
+            validChoices: [...source.filter((a) => filter ? filter(a) : true), ...optionalSource]
         })) != null && ((foundCard = source.find((a) => a.id === result.id && a.name === result.name)) != null) && (filter && !filter(foundCard))) {
             console.log("Failed tests");
         }
@@ -585,7 +586,8 @@ export default class Player {
             decision: 'chooseCard',
             source: [...chooseFrom, ...optionalSource],
             id: v4(),
-            helperText
+            helperText,
+            validChoices: [...this.deck.discard.filter((a) => filter ? filter(a) : true), ...optionalSource]
         })) != null && ((foundCard = this.deck.discard.find((a) => a.id === result.id && a.name == result.name)) != null) && (filter && !filter(foundCard))) {
             console.log("Filter unsatisfied");
         }

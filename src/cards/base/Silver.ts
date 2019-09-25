@@ -2,7 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 
 export default class Silver extends Card {
-    types = ["treasure"] as const;
+    intrinsicTypes = ["treasure"] as const;
     name = "silver";
     cost = {
         coin: 3

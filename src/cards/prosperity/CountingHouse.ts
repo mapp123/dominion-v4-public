@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class CountingHouse extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "counting house";
     cost = {
         coin: 5

@@ -2,7 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 
 export default class CouncilRoom extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "council room";
     cost = {
         coin: 5

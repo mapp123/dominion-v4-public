@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 
 export default class Rabble extends Card {
-    types = ["action","attack"] as const;
+    intrinsicTypes = ["action","attack"] as const;
     name = "rabble";
     cost = {
         coin: 5

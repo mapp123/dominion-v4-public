@@ -305,17 +305,19 @@ export default class Player {
         if (log) {
             this.lm('%p plays %s.', Util.formatCardList([card.name]));
         }
-        let exemptPlayers = [] as Player[];
-        if (card.types.includes("attack")) {
-            let playersToCheck = this.game.players.filter((a) => a != this);
-            for (let player of playersToCheck) {
-                if (await player.onAttack(this, card)) {
-                    exemptPlayers.push(player);
-                }
-            }
-        }
+        let exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
         await card.onAction(this, exemptPlayers);
         await this.game.events.emit('actionCardPlayed', this, card);
+    }
+    async getExemptPlayers(attackingCard: Card): Promise<Player[]> {
+        let exemptPlayers = [] as Player[];
+        let playersToCheck = this.game.players.filter((a) => a != this);
+        for (let player of playersToCheck) {
+            if (await player.onAttack(this, attackingCard)) {
+                exemptPlayers.push(player);
+            }
+        }
+        return exemptPlayers;
     }
     async onAttack(attacker: Player, attackingCard: Card): Promise<boolean> {
         let exempt = false;
@@ -399,7 +401,8 @@ export default class Player {
         return null;
     }
     async playTreasure(card: Card) {
-        await card.doTreasure(this);
+        let exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
+        await card.doTreasure(this, exemptPlayers);
     }
     async discard(card: Card | Card[], log = false) {
         if (log && (!Array.isArray(card) || card.length > 0)) {

@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class OldWitch extends Card {
-    types = ["action","attack"] as const;
+    intrinsicTypes = ["action","attack"] as const;
     name = "old witch";
     cost = {
         coin: 5

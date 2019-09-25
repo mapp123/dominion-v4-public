@@ -8,7 +8,7 @@ import {GainRestrictions} from "../server/GainRestrictions";
 export interface Cost {
     coin: number;
 }
-type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact';
+export type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact';
 export default abstract class Card {
     id: string;
     game: Game;
@@ -44,13 +44,16 @@ export default abstract class Card {
         // @ts-ignore
         return new this().cost;
     }
-    abstract types: readonly ValidCardTypes[];
+    abstract intrinsicTypes: readonly ValidCardTypes[];
+    get types() {
+        return this.game ? this.game.getTypesOfCard(this.name) : this.intrinsicTypes;
+    }
     static get types(): Card['types'] {
         if (this === Card) {
             throw new Error("types are only available on implemented cards.");
         }
         // @ts-ignore
-        return new this().types;
+        return new this().intrinsicTypes;
     }
     abstract name: string;
     static get cardName(): string {
@@ -113,11 +116,15 @@ export default abstract class Card {
         return null;
     }
 
+    public static getTypeModifier(cardData: any, game: Game, activatedCards: string[]): {[card: string]: {toRemove: ValidCardTypes[]; toAdd: ValidCardTypes[]}} | null {
+        return null;
+    }
+
     public static getSupplyMarkers(cardData: any, piles: SupplyData['piles']): {[card: string]: string[]} | null {
         return null;
     }
-    public async doTreasure(player: Player) {
-        return await this.onTreasure(player);
+    public async doTreasure(player: Player, exemptPlayers: Player[]) {
+        return await this.onTreasure(player, exemptPlayers);
     }
     public static onScore(player: Player): number {
         return 0;
@@ -129,7 +136,7 @@ export default abstract class Card {
 
     }
     public async onAction(player: Player, exemptPlayers: Player[]) {
-        throw new Error("onAction not implemented");
+        await player.events.emit('noActionImpl', this, exemptPlayers);
     }
     public async onAttackInHand(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {
         return false;
@@ -148,15 +155,15 @@ export default abstract class Card {
     public onRevealSelf(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => any): Promise<void> | void {
 
     }
-    protected async onTreasure(player: Player) {
-        throw new Error("onTreasure not implemented");
+    protected async onTreasure(player: Player, exemptPlayers: Player[]) {
+        await player.events.emit('noTreasureImpl', this, exemptPlayers);
     }
     protected getGlobalData() {
         return (this.game || {supply: {data: {globalCardData: {[this.name]: {}}}}}).supply.data.globalCardData[this.name];
     }
     // noinspection JSUnusedGlobalSymbols
     toJSON() {
-        let {id, name} = this;
-        return {id, name};
+        let {id, name, types} = this;
+        return {id, name, types};
     }
 }

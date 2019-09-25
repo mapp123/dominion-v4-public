@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import Game from "../../server/Game";
 
 export default class Goons extends Card {
-    types = ["action","attack"] as const;
+    intrinsicTypes = ["action","attack"] as const;
     name = "goons";
     features = ["vp"] as const;
     cost = {

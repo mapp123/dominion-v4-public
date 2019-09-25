@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 
 export default class Bureaucrat extends Card {
-    types = ["action","attack"] as const;
+    intrinsicTypes = ["action","attack"] as const;
     name = "bureaucrat";
     cost = {
         coin: 4

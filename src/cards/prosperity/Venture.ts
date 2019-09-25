@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import Util from "../../Util";
 
 export default class Venture extends Card {
-    types = ["treasure"] as const;
+    intrinsicTypes = ["treasure"] as const;
     name = "venture";
     cost = {
         coin: 5

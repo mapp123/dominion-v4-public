@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 
 export default class Loan extends Card {
-    types = ["treasure"] as const;
+    intrinsicTypes = ["treasure"] as const;
     name = "loan";
     cost = {
         coin: 3

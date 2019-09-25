@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class CargoShip extends Card {
-    types = ["action", "duration"] as const;
+    intrinsicTypes = ["action", "duration"] as const;
     name = "cargo ship";
     cost = {
         coin: 3

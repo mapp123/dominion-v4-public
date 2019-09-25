@@ -275,7 +275,7 @@ class DrawAttack extends Card {
     cost = {
         coin: 5
     };
-    types = ["action", "attack"] as const;
+    intrinsicTypes = ["action", "attack"] as const;
     name = "attack";
     supplyCount = 10;
     cardArt = "";
@@ -294,7 +294,7 @@ function createEmptySupplyPileCard() {
         cost = {
             coin: 0
         };
-        types = ["action"] as const;
+        intrinsicTypes = ["action"] as const;
         name = name;
         supplyCount = 0;
         cardArt = "";

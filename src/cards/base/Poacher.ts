@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 
 export default class Poacher extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "poacher";
     cost = {
         coin: 4

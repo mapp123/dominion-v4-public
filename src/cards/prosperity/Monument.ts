@@ -2,7 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 
 export default class Monument extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "monument";
     features = ["vp"] as const;
     cost = {

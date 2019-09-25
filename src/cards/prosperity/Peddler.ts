@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import Game from "../../server/Game";
 
 export default class Peddler extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "peddler";
     cost = {
         coin: 8

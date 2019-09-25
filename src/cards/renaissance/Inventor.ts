@@ -5,7 +5,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 import Game from "../../server/Game";
 
 export default class Inventor extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "inventor";
     cost = {
         coin: 4

@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import Game from "../../server/Game";
 
 export default class Hoard extends Card {
-    types = ["treasure"] as const;
+    intrinsicTypes = ["treasure"] as const;
     name = "hoard";
     cost = {
         coin: 6

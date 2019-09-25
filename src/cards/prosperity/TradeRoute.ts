@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import Game from "../../server/Game";
 
 export default class TradeRoute extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "trade route";
     cost = {
         coin: 3

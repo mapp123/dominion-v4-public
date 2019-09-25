@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
 
 export default class Expand extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "expand";
     cost = {
         coin: 7

@@ -7,7 +7,7 @@ import shuffle from "./util/shuffle";
 import {format} from "util";
 import Supply from "./Supply";
 import CardRegistry from "../cards/CardRegistry";
-import Card, {Cost} from "../cards/Card";
+import Card, {Cost, ValidCardTypes} from "../cards/Card";
 import {GameEvents} from "./Events";
 import {GainRestrictions} from "./GainRestrictions";
 import Artifact from "../cards/Artifact";
@@ -76,6 +76,7 @@ export default class Game {
             });
         }
         this.checkForCostModifier = [...this.selectedCards];
+        this.checkForTypeModifier = [...this.selectedCards];
         this.checkForRestrictionModifier = [...this.selectedCards];
     }
     giveArtifactTo(artifact: string, player: Player) {
@@ -125,6 +126,28 @@ export default class Game {
         });
         return restrictions;
     }
+    private checkForTypeModifier: string[] = [];
+    updateTypeModifiers() {
+        const mods: {[card: string]: {toRemove: ValidCardTypes[]; toAdd: ValidCardTypes[]}} = {};
+        this.checkForTypeModifier = this.checkForTypeModifier.filter((a) => {
+            const modifiers = CardRegistry.getInstance().getCard(a).getTypeModifier(this.supply.data.globalCardData[a], this, this.selectedCards);
+            if (modifiers) {
+                Object.keys(modifiers).forEach((card) => {
+                    if (mods[card]) {
+                        const localModifier = modifiers[card];
+                        mods[card].toRemove = [...mods[card].toRemove, ...localModifier[card].toRemove];
+                        mods[card].toAdd = [...mods[card].toAdd, ...localModifier[card].toAdd];
+                    }
+                    else {
+                        mods[card] = modifiers[card];
+                    }
+                });
+                return true;
+            }
+            return false;
+        });
+        this.supply.data.typeModifiers = mods;
+    }
     private checkForCostModifier: string[] = [];
     updateCostModifiers() {
         const mods = {};
@@ -163,8 +186,12 @@ export default class Game {
         });
         return cost;
     }
-    getTypesOfCard(card: string) {
-        return CardRegistry.getInstance().getCard(card).types;
+    getTypesOfCard(card: string): readonly ValidCardTypes[] {
+        const types = CardRegistry.getInstance().getCard(card).types;
+        if (this.supply.data.typeModifiers[card]) {
+            return types.filter((a) => !this.supply.data.typeModifiers[card].toRemove.includes(a)).concat(this.supply.data.typeModifiers[card].toAdd);
+        }
+        return types;
     }
     lmg(msg: string, ...params: any[]) {
         this.lm(null, msg,...params);

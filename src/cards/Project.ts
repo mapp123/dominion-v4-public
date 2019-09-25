@@ -4,7 +4,7 @@ import Game from "../server/Game";
 import {GainRestrictions} from "../server/GainRestrictions";
 
 export default abstract class Project extends Card {
-    types = ["project"] as const;
+    intrinsicTypes = ["project"] as const;
     randomizable = false;
     supplyCount = 0;
     isCard = false;

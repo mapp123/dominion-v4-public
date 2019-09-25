@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import Game from "../../server/Game";
 
 export default class Watchtower extends Card {
-    types = ["action","reaction"] as const;
+    intrinsicTypes = ["action","reaction"] as const;
     name = "watchtower";
     cost = {
         coin: 3

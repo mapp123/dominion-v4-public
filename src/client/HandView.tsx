@@ -96,13 +96,17 @@ export default class HandView extends React.Component<IProps, {}> {
             );
         }
         if (this.props.decision && this.props.decision.decision === 'chooseCard' && this.props.decision.sourceIsHand !== true) {
-            decision = this.props.decision.source.map((card) => <HandButton key={card.id} cardName={card.name} onClick={this.onClick.bind(this, card.name, card.id)}/>);
+            decision = this.props.decision.source.map((card) => <HandButton key={card.id} cardName={card.name} types={card.types || []} onClick={this.onClick.bind(this, card.name, card.id)}/>);
+        }
+        let extras: Card[] = [];
+        if (this.props.decision && this.props.decision.decision === 'chooseCard' && this.props.decision.sourceIsHand) {
+            extras = this.props.decision.source.filter((a) => !this.props.hand.some((b) => a.id === b.id));
         }
         return (
             <React.Suspense fallback={<div>Loading...</div>}>
                 {decision}
                 {decision && <><hr style={{borderColor: "black", borderWidth: "3px", width: "100%"}} /><span>Your Hand:</span><br /></>}
-                {this.props.hand.map((card) => <HandButton key={card.id} cardName={card.name} onClick={decision ? () => {} : this.onClick.bind(this, card.name, card.id)}/>)}
+                {[...this.props.hand, ...extras].map((card) => <HandButton key={card.id} cardName={card.name} types={card.types || []} onClick={decision ? () => {} : this.onClick.bind(this, card.name, card.id)}/>)}
             </React.Suspense>
         );
     }

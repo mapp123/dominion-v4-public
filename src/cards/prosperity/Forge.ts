@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
 
 export default class Forge extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "forge";
     cost = {
         coin: 7

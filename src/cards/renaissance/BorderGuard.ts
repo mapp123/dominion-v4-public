@@ -7,7 +7,7 @@ import Util from "../../Util";
 import Horn from "./Horn";
 
 export default class BorderGuard extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "border guard";
     cost = {
         coin: 2

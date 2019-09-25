@@ -2,7 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 
 export default class Lackeys extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "lackeys";
     features = ["villagers"] as const;
     cost = {

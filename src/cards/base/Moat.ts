@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Moat extends Card {
-    types = ["action", "reaction"] as const;
+    intrinsicTypes = ["action", "reaction"] as const;
     name = "moat";
     cost = {
         coin: 2

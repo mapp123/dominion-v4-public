@@ -4,7 +4,7 @@ export class CardDef extends Card {
     cardText = "";
     cost = {coin: 0};
     name = "";
-    types = [];
+    intrinsicTypes = [];
     supplyCount = 0;
     cardArt = "";
     static isCard = false;

@@ -5,7 +5,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 import Game from "../../server/Game";
 
 export default class Contraband extends Card {
-    types = ["treasure"] as const;
+    intrinsicTypes = ["treasure"] as const;
     name = "contraband";
     cost = {
         coin: 5

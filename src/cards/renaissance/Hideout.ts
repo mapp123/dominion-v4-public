@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Hideout extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "hideout";
     cost = {
         coin: 4

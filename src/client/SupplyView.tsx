@@ -159,12 +159,21 @@ export default class SupplyView extends React.Component<IProps, IState> {
             Object.entries(this.supplyData.costModifiers[def.cardName] || {}).forEach(([key, value]) => {
                 cost[key] += value;
             });
+            let types = [...def.types];
+            if (this.supplyData.typeModifiers[def.cardName]) {
+                const mod = this.supplyData.typeModifiers[def.cardName];
+                types = types.filter((a) => !mod.toRemove.includes(a)).concat(mod.toAdd);
+            }
             Object.entries(cost).forEach(([key, value]) => {
                 cost[key] = Math.max(0, value);
             });
+            const HoverDef = class extends def {
+                intrinsicTypes = types as any;
+                cost = cost;
+            };
             const disabled = restrictions ? !restrictions.validateCard(cardName) : true;
             return (
-                <SupplyButton markers={markers[cardName] || []} onHover={() => this.props.setHoveredCard(def)} key={pile.identifier} cardName={cardName} cardTypes={def.types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined} hideCost={pile.hideCost}/>
+                <SupplyButton markers={markers[cardName] || []} onHover={() => this.props.setHoveredCard(HoverDef)} key={pile.identifier} cardName={cardName} cardTypes={types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined} hideCost={pile.hideCost}/>
             );
         });
         return (
@@ -173,5 +182,4 @@ export default class SupplyView extends React.Component<IProps, IState> {
             </div>
         );
     }
-
 }

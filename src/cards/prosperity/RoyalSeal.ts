@@ -4,7 +4,7 @@ import {Texts} from "../../server/Texts";
 import Game from "../../server/Game";
 
 export default class RoyalSeal extends Card {
-    types = ["treasure"] as const;
+    intrinsicTypes = ["treasure"] as const;
     name = "royal seal";
     cost = {
         coin: 5

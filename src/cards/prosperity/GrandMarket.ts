@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import {GainRestrictions} from "../../server/GainRestrictions";
 
 export default class GrandMarket extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "grand market";
     cost = {
         coin: 6

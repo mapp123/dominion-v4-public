@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import Game from "../../server/Game";
 
 export default class Talisman extends Card {
-    types = ["treasure"] as const;
+    intrinsicTypes = ["treasure"] as const;
     name = "talisman";
     cost = {
         coin: 4

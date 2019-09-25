@@ -14,13 +14,15 @@ export default function createSupplyData() {
         locations: struct.dict(['string', 'string']),
         activatedCards: ["string"],
         globalCardData: struct.dict(['string', 'any']),
-        costModifiers: struct.dict(['string', struct({cost: 'number'})])
+        costModifiers: struct.dict(['string', struct({cost: 'number'})]),
+        typeModifiers: struct.dict(['string', struct({toAdd: ['string'], toRemove: ['string']})])
     }, {
         piles: [],
         locations: {},
         activatedCards: [],
         globalCardData: {},
-        costModifiers: {}
+        costModifiers: {},
+        typeModifiers: {}
     });
 }
 export type SupplyData = ReturnType<ReturnType<typeof createSupplyData>['getState']>;

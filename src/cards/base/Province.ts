@@ -2,7 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 
 export default class Duchy extends Card {
-    types = ["victory"] as const;
+    intrinsicTypes = ["victory"] as const;
     name = "province";
     cost = {
         coin: 8

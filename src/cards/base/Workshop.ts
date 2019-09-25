@@ -4,7 +4,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 import {Texts} from "../../server/Texts";
 
 export default class Workshop extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "workshop";
     cost = {
         coin: 3

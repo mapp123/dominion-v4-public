@@ -3,7 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Treasurer extends Card {
-    types = ["action"] as const;
+    intrinsicTypes = ["action"] as const;
     name = "treasurer";
     cost = {
         coin: 5

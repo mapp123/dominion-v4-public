@@ -47,4 +47,7 @@ export default class Util {
         }
         return this.numberCache[number]!;
     }
+    static nonNull<T>(item: T | null | undefined): item is T {
+        return item != null;
+    }
 }

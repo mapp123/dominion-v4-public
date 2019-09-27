@@ -133,7 +133,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
                                     <label>Randomize by Set</label>
                                 </div>
                                 {Object.keys(this.state.randomizerSetsChosen).map((set) =>
-                                    this.createCheckboxInput(set.slice(0, 1).toUpperCase() + set.slice(1), ['randomizerSetsChosen', set])
+                                    this.createCheckboxInput(set.slice(0, 1).toUpperCase() + set.replace(/([A-Z])/g, ' $1').slice(1), ['randomizerSetsChosen', set])
                                 )}
                                 <hr style={{borderTopColor: "#696969"}} />
                                 {Object.keys(this.state.subsetsChosen).map((subset) => {

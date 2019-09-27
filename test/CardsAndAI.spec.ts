@@ -16,7 +16,7 @@ describe('CARDS', () => {
         withFileTypes: true
     });
     dir.filter((a) => a.isDirectory()).forEach((box) => {
-        describe(box.name.toUpperCase(), () => {
+        describe(box.name.replace(/([A-Z])/g, " $1").toUpperCase(), () => {
             const cards = readdirSync(resolve(__dirname, box.name));
             cards.filter((a) => /.*\.spec\.js$/.test(a)).forEach((card) => {
                 process.env.NODE_ENV = '';

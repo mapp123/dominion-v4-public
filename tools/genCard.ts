@@ -82,7 +82,7 @@ async function parsePage(p: string) {
                 info.types = links.filter((a) => a.attributes.href !== "/index.php/Card_types").map((a) => a.innerHTML.toLowerCase());
             }
             if (links.find((a) => a.attributes.href === "/index.php/Expansions") != null) {
-                info.set = links.find((a) => a.attributes.href !== "/index.php/Expansions")!.innerHTML.toLowerCase();
+                info.set = links.find((a) => a.attributes.href !== "/index.php/Expansions")!.innerHTML.toLowerCase().split(' ').map((a, i) => i === 0 ? a : a.slice(0, 1).toUpperCase() + a.slice(1)).join('');
             }
         });
         const art = await fetchPage(`/index.php/File:${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join("_")}Art.jpg`);

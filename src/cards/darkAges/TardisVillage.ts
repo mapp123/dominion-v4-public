@@ -1,7 +1,5 @@
 import Card from "../Card";
 import Player from "../../server/Player";
-import {Texts} from "../../server/Texts";
-import Util from "../../Util";
 
 export default class TardisVillage extends Card {
     intrinsicTypes = ["action"] as const;

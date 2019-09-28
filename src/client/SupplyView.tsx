@@ -3,7 +3,7 @@ import createSupplyData from "../createSupplyData";
 import {Unsubscribe} from "redux";
 import {CardDef} from "../cards/CardDef";
 import SupplyButton from "./SupplyButton";
-import ClientCardRegistry from "./ClientCardRegisitry";
+import ClientCardRegistry from "./ClientCardRegistry";
 import {Decision} from "../server/Decision";
 import GameView from "./GameView";
 import {GainRestrictions} from "../server/GainRestrictions";

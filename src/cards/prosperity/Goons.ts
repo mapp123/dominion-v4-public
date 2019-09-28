@@ -13,6 +13,7 @@ export default class Goons extends Card {
     cardText = "+1 Buy\n" +
         "+$2\n" +
         "Each other player discards down to 3 cards in hand.\n" +
+        "---\n" +
         "While this is in play, when you buy a card, +1 VP.";
     supplyCount = 10;
     cardArt = "/img/card-img/GoonsArt.jpg";

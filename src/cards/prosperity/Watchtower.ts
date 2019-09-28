@@ -10,6 +10,7 @@ export default class Watchtower extends Card {
         coin: 3
     };
     cardText = "Draw until you have 6 cards in hand.\n" +
+        "---\n" +
         "When you gain a card, you may reveal this from your hand, to either trash that card or put it onto your deck.";
     supplyCount = 10;
     cardArt = "/img/card-img/WatchtowerArt.jpg";

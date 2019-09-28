@@ -9,6 +9,7 @@ export default class Hoard extends Card {
         coin: 6
     };
     cardText = "+$2\n" +
+        "---\n" +
         "While this is in play, when you buy a Victory card, gain a Gold.";
     supplyCount = 10;
     cardArt = "/img/card-img/HoardArt.jpg";

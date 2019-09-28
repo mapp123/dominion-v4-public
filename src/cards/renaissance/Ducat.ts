@@ -12,6 +12,7 @@ export default class Ducat extends Card {
     };
     cardText = "+1 Coffers\n" +
         "+1 Buy\n" +
+        "---\n" +
         "When you gain this, you may trash a Copper from your hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/DucatArt.jpg";

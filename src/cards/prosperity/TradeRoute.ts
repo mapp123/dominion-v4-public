@@ -12,6 +12,7 @@ export default class TradeRoute extends Card {
     cardText = "+1 Buy\n" +
         "Trash a card from your hand.\n" +
         "$1 per Coin token on the Trade Route mat.\n" +
+        "---\n" +
         "Setup: Add a Coin token to each Victory Supply pile; move that token to the Trade Route mat when a card is gained from the pile.";
     supplyCount = 10;
     cardArt = "/img/card-img/Trade_RouteArt.jpg";

@@ -7,7 +7,6 @@ interface IProps {
     onClick: (cardName: string) => any;
 }
 export default function HandButton(props: IProps) {
-    console.log(props.types);
     return (
         <button
             className={"btn btn-"+getColorForButton(props.types)}

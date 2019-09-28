@@ -8,6 +8,7 @@ export default class FlagBearer extends Card {
         coin: 4
     };
     cardText = "+$2\n" +
+        "---\n" +
         "When you gain or trash this, take the Flag.";
     supplyCount = 10;
     cardArt = "/img/card-img/Flag_BearerArt.jpg";

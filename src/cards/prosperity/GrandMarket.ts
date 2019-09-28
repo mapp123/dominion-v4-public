@@ -12,6 +12,7 @@ export default class GrandMarket extends Card {
         "+1 Action\n" +
         "+1 Buy\n" +
         "+$2\n" +
+        "---\n" +
         "You can’t buy this if you have any Coppers in play.";
     supplyCount = 10;
     cardArt = "/img/card-img/Grand_MarketArt.jpg";

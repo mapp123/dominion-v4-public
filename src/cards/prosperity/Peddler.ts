@@ -11,6 +11,7 @@ export default class Peddler extends Card {
     cardText = "+1 Card\n" +
         "+1 Action\n" +
         "+$1\n" +
+        "---\n" +
         "During your Buy phase, this costs $2 less per Action card you have in play, but not less than $0.";
     supplyCount = 10;
     cardArt = "/img/card-img/PeddlerArt.jpg";
@@ -29,7 +30,7 @@ export default class Peddler extends Card {
         };
     }
     public static setup(globalCardData: any, game: Game) {
-        game.events.on('actionCardPlayed', () => {
+        game.events.on('buyStart', () => {
             game.updateCostModifiers();
             return true;
         });

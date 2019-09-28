@@ -9,7 +9,7 @@ export default class RoyalSeal extends Card {
     cost = {
         coin: 5
     };
-    cardText = "+$2\nWhile this is in play, when you gain a card, you may put that card onto your deck.";
+    cardText = "+$2\n---\nWhile this is in play, when you gain a card, you may put that card onto your deck.";
     supplyCount = 10;
     cardArt = "/img/card-img/Royal_SealArt.jpg";
     async onTreasure(player: Player): Promise<void> {

@@ -13,7 +13,7 @@ export default class ClientCardRegistry {
     private constructor() {
         this.getCard = this.getCard.bind(this);
     }
-    public async getCard(cardName: string, location?: string) {
+    public async getCard(cardName: string, location?: string): Promise<typeof CardDef> {
         let card = this.cardDefs[cardName];
         if (!card) {
             if (!this.locations[cardName] && !location) {

@@ -9,6 +9,7 @@ export default class Lackeys extends Card {
         coin: 2
     };
     cardText = "+2 Cards\n" +
+        "---\n" +
         "When you gain this, +2 Villagers.";
     supplyCount = 10;
     cardArt = "/img/card-img/LackeysArt.jpg";

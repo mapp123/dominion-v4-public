@@ -38,6 +38,15 @@ export class Texts {
     static extraMoney(amount: string) {
         return `+${amount} Money`;
     }
+    static extraActions(amount: string) {
+        return `+${amount} Actions`;
+    }
+    static extraBuys(amount: string) {
+        return `+${amount} Buys`;
+    }
+    static gain(cards: string[]) {
+        return `Gain ${Util.formatCardList(cards)}`;
+    }
     static drawXCards(amount: string) {
         return `Draw ${amount} cards`;
     }

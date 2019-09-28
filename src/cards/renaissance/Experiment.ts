@@ -10,6 +10,7 @@ export default class Experiment extends Card {
     cardText = "+2 Cards\n" +
         "+1 Action\n" +
         "Return this to the Supply.\n" +
+        "---\n" +
         "When you gain this, gain another Experiment (that doesn't come with another).";
     supplyCount = 10;
     cardArt = "/img/card-img/ExperimentArt.jpg";

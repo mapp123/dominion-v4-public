@@ -10,6 +10,7 @@ export default class Mint extends Card {
         coin: 5
     };
     cardText = "You may reveal a Treasure card from your hand. Gain a copy of it.\n" +
+        "---\n" +
         "When you buy this, trash all Treasures you have in play.";
     supplyCount = 10;
     cardArt = "/img/card-img/MintArt.jpg";

@@ -364,6 +364,7 @@ export default class Player {
     }
     async buyPhase() {
         await this.events.emit('buyStart');
+        await this.game.events.emit('buyStart');
         while (this.data.buys > 0 && this.data.hand.filter((a) => a.types.includes('treasure')).length > 0) {
             const choice = await this.chooseCardOrBuy();
             if (choice.choice.name === 'End Turn') return;

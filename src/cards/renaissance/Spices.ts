@@ -9,6 +9,7 @@ export default class Spices extends Card {
     };
     cardText = "+$2\n" +
         "+1 Buy\n" +
+        "---\n" +
         "When you gain this,\n" +
         "+2 Coffers";
     features = ["coffers"] as const;

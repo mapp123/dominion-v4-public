@@ -9,6 +9,7 @@ export default class Talisman extends Card {
         coin: 4
     };
     cardText = "+$1\n" +
+        "---\n" +
         "While this is in play, when you buy a non-Victory card costing $4 or less, gain a copy of it.";
     supplyCount = 10;
     cardArt = "/img/card-img/TalismanArt.jpg";

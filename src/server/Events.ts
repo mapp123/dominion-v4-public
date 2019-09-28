@@ -60,6 +60,7 @@ type GameEvent = {
     gameEnd: [];
     gain: [Player, Card, {hasTrack: boolean}, () => any];
     buy: [Player, string];
+    buyStart: [];
     actionCardPlayed: [Player, Card];
     turnStart: [Player];
     turnEnd: [Player];

@@ -44,7 +44,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
         });
     }
     updateState(path: string[], e: any) {
-        const newValue = e.target.value;
+        const newValue = e.target.type === "checkbox" ? e.target.checked : e.target.value;
         this.setState((state) => {
             let top = state;
             path.slice(0, -1).forEach((key) => {
@@ -107,7 +107,7 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
     createCheckboxInput(friendlyName, path) {
         return (
             <div className="form-group form-check" key={path.join(".")}>
-                <input type="checkbox" className="form-check-input" value={path.reduce((top, key) => top[key], this.state)} onChange={this.updateState.bind(this, path)} />
+                <input type="checkbox" className="form-check-input" checked={path.reduce((top, key) => top[key], this.state)} onChange={this.updateState.bind(this, path)} />
                 <label className="form-check-label">{friendlyName}</label>
             </div>
         );

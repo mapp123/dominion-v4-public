@@ -1,7 +1,6 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
-import Util from "../../Util";
 
 export default class Ducat extends Card {
     intrinsicTypes = ["treasure"] as const;
@@ -21,12 +20,8 @@ export default class Ducat extends Card {
         player.data.buys += 1;
     }
     async onGainSelf(player: Player): Promise<void> {
-        let card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('ducat'), true);
-        while (card && !Util.checkTrashSanity(card, player.data.hand) && !await player.confirmAction(Texts.areYouSureYouWantToTrash(card.name))) {
-            player.data.hand.push(card);
-            card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('ducat'), true);
-        }
-        if (card) {
+        if (player.data.hand.some((a) => a.name === 'copper') && await player.confirmAction(Texts.doYouWantToTrashA('copper'))) {
+            const card = player.data.hand.splice(player.data.hand.findIndex((a) => a.name === 'copper'), 1)[0];
             await player.trash(card);
         }
     }

@@ -23,7 +23,7 @@ describe('DUCAT', () => {
         });
         player.testPlayTreasure('silver');
         player.testBuy('ducat');
-        player.testChooseCard(Texts.chooseCardToTrashFor('ducat'), 'copper');
+        player.testConfirm(Texts.doYouWantToTrashA('copper'), true);
         player.onBuyPhaseStart(() => {
             expect(game.trash.map((a) => a.name)).to.have.members(['copper']);
             done();

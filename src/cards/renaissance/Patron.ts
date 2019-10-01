@@ -10,7 +10,7 @@ export default class Patron extends Card {
     cardText = "+1 Villager\n" +
         "+$2\n" +
         "---\n" +
-        "When something cause you to reveal this (using the word \"reveal\"),\n" +
+        "When something causes you to reveal this (using the word \"reveal\"),\n" +
         "+1 Coffers";
     features = ["villagers", "coffers"] as const;
     supplyCount = 10;

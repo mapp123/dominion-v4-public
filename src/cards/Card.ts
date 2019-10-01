@@ -9,12 +9,16 @@ export interface Cost {
     coin: number;
 }
 export type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact';
+export type CardImplementation = (typeof Card) & {new (game: Game | null): Card};
 export default abstract class Card {
     id: string;
     game: Game;
     features: ReadonlyArray<'vp' | 'coffers' | 'villagers'> = [];
-    static isCard = true;
-    isCard = (this.constructor as any).isCard as boolean;
+    isCard = true;
+    static get isCard(): typeof Card['isCard'] {
+        // @ts-ignore
+        return new this().isCard;
+    }
     static smallText = false;
     static get features(): typeof Card['features'] {
         // @ts-ignore

@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import {readdirSync} from "fs";
 import {relative, resolve, sep} from "path";
-import {CardDef} from "./CardDef";
+import {CardImplementation} from "./Card";
 
 export default class CardRegistry {
     private static instance: CardRegistry;
@@ -14,9 +14,9 @@ export default class CardRegistry {
         }
         return this.instance;
     }
-    private cardCache: {[key: string]: {[key: string]: typeof CardDef}} | null = null;
+    private cardCache: {[key: string]: {[key: string]: CardImplementation}} | null = null;
     private cardLocations: {[cardName: string]: string} = {};
-    public cardsBySet(): {[key: string]: {[key: string]: typeof CardDef}} {
+    public cardsBySet(): {[key: string]: {[key: string]: CardImplementation}} {
         if (this.cardCache) {
             return this.cardCache;
         }
@@ -31,12 +31,12 @@ export default class CardRegistry {
             return [a.name, ...readdirSync(resolve(__dirname, a.name)).filter((a) => cardMatcher.test(a))];
         }).filter((a) => a != null) as string[][];
         this.cardCache = cardsInSet.reduce((sets, [setName, ...cards]) => {
-            const set: { [key: string]: typeof CardDef } = {};
+            const set: { [key: string]: CardImplementation} = {};
             cards.forEach((card) => {
                 const path = resolve(__dirname, setName, card);
                 // webpack always uses "/", so use it here even if we're on Windows. Also use .ts instead of .js
                 const relPath = relative(__dirname, path).split(sep).join("/").replace(/\.js/g, '.ts');
-                const cardDef: typeof CardDef = require(path).default;
+                const cardDef: CardImplementation = require(path).default;
                 this.cardLocations[cardDef.cardName] = relPath;
                 set[cardDef.cardName] = cardDef;
             });
@@ -47,8 +47,8 @@ export default class CardRegistry {
         }, {});
         return this.cardCache;
     }
-    private allCardsCache: {[key: string]: typeof CardDef} | null = null;
-    public allCards(): {[key: string]: typeof CardDef} {
+    private allCardsCache: {[key: string]: CardImplementation} | null = null;
+    public allCards(): {[key: string]: CardImplementation} {
         if (!this.allCardsCache) {
             this.allCardsCache = Object.values(this.cardsBySet()).reduce((cards, set) => ({...cards, ...set}), {});
         }
@@ -70,10 +70,10 @@ export default class CardRegistry {
             };
         }, {});
     }
-    public getCard(card: string): typeof CardDef {
+    public getCard(card: string): CardImplementation {
         return this.allCards()[card];
     }
-    public injectCard(card: typeof CardDef) {
+    public injectCard(card: CardImplementation) {
         this.cardLocations[card.cardName] = "";
         if (!this.cardCache) {
             this.cardsBySet();

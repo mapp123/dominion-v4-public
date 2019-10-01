@@ -19,6 +19,25 @@ describe('INVENTOR', () => {
         });
         game.start();
     });
+    it('should not be able to gain projects', (d) => {
+        const [game, [player], done] = makeTestGame({
+            decks: [['inventor']],
+            d,
+            activateCards: ['cathedral']
+        });
+        player.testPlayAction('inventor');
+        player.testHookNextDecision((decision) => {
+            expect(decision.decision).to.equal('gain');
+            if (decision.decision === 'gain') {
+                expect(decision.gainRestrictions.allowedCards).to.not.contain('cathedral');
+            }
+        });
+        player.testGain('inventor', 'silver');
+        player.onBuyPhaseStart(() => {
+            done();
+        });
+        game.start();
+    });
     it('can be throne roomed', (d) => {
         const [game, [player], done] = makeTestGame({
             decks: [['throne room', 'inventor']],

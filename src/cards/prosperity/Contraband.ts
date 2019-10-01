@@ -23,7 +23,7 @@ export default class Contraband extends Card {
             playerToLeft = player.game.players.length - 1;
         }
         const p = player.game.players[playerToLeft];
-        const card = await p.chooseGain(Texts.chooseACardThatACannotBuyThisTurn(player.username), false, GainRestrictions.instance(), 'none');
+        const card = await p.chooseGain(Texts.chooseACardThatACannotBuyThisTurn(player.username), false, GainRestrictions.instance().setIsCard(false), 'none');
         if (card) {
             player.lm('%p may not buy %s this turn.', card.name);
             if (!this.getGlobalData()[player.username]) {

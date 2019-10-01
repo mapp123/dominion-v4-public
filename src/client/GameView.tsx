@@ -8,8 +8,8 @@ import LogView from "./LogView";
 import HandView from "./HandView";
 import DefaultDecision from "./DefaultDecision";
 import CardGenerator from "./CardGenerator/CardGenerator";
-import {CardDef} from "../cards/CardDef";
 import DataViews from "./DataViews";
+import {CardImplementation} from "../cards/Card";
 interface Params {
     gameId: string;
 }
@@ -17,7 +17,7 @@ interface IState {
     playersJoined: number;
     playerData: PlayerData;
     decision: Decision | null;
-    hoveredCard: typeof CardDef | null;
+    hoveredCard: CardImplementation | null;
 }
 export default class GameView extends React.Component<RouteComponentProps<Params>, IState> {
     socket: SocketIOClient.Socket;

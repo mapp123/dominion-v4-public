@@ -2,6 +2,7 @@ import Player from "./Player";
 import {Decision, DecisionDefaults, DecisionResponseType} from "./Decision";
 import {Texts} from "./Texts";
 import Card from "../cards/Card";
+import Util from "../Util";
 
 type PossibleAsync<T> = T | Promise<T>;
 
@@ -47,7 +48,9 @@ export default abstract class AIPlayer extends Player {
     private hasPlayedAllTreasures = false;
     private choiceLookup = {
         [Texts.trashIt]: this.trashPriority,
-        [Texts.discardIt]: this.discardPriority
+        [Texts.discardIt]: this.discardPriority,
+        [Texts.putThemOnYourDeck]: this.topDeckPriority,
+        [Texts.discardThem]: this.discardPriority
     };
     // Least to most destructive
     protected destructiveness = [
@@ -149,6 +152,14 @@ export default abstract class AIPlayer extends Player {
                 if (chooseBenefit) {
                     return {
                         choice: decision.options[0]
+                    } as any;
+                }
+                const chooseWhatToDoWithCards = decisionMatcher(decision.helperText, Texts.whatToDoWithCards);
+                if (chooseWhatToDoWithCards) {
+                    const [cards] = chooseWhatToDoWithCards;
+                    const cardList = Util.parseCardList(cards);
+                    return {
+                        choice: await this.chooseOptionFromPriorities(cardList[0], decision.options)
                     } as any;
                 }
                 break;

@@ -3,6 +3,7 @@ let typeClasses = {
     victory:"success",
     action:"secondary",
     reaction:"primary",
+    ruins: "dark ruins-button-override",
     curse:"dark curse-button-override",
     duration:"dark duration-button-override",
     actionTreasure: "secondary action-treasure-button-override",
@@ -21,6 +22,9 @@ export default function getColorForButton(types: readonly string[]) {
     }
     if(types.indexOf('action') !== -1 && types.indexOf('victory') !== -1 && types.length === 2) {
         return typeClasses.actionVictory;
+    }
+    if (types.indexOf('ruins') !== -1) {
+        return typeClasses.ruins;
     }
     if(types.indexOf('night') !== -1 && types.indexOf('duration') !== -1 && types.length === 2) {
         return typeClasses.nightDuration;

@@ -19,7 +19,9 @@ export class Texts {
     static whichArtifactWouldYouLike = 'Which artifact would you like to take?';
     static trashIt = "Trash It";
     static discardIt = "Discard It";
+    static discardThem = "Discard Them";
     static keepIt = "Keep It";
+    static putThemOnYourDeck = "Put Them On Your Deck";
     static putItOnYourDeck = "Put It On Your Deck";
     static doNothing = "Do Nothing";
     static replayAction = "Replay an Action Card";
@@ -127,5 +129,8 @@ export class Texts {
     }
     static wouldYouLikeToSetAsideThe(card: string, withCard: string){
         return `Would you like to set aside the ${card} with ${withCard}?`;
+    }
+    static whatToDoWithCards(cards: string) {
+        return `Choose what to do with ${cards}...`;
     }
 }

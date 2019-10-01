@@ -1,21 +1,21 @@
 import * as React from 'react';
 import createSupplyData from "../createSupplyData";
 import {Unsubscribe} from "redux";
-import {CardDef} from "../cards/CardDef";
 import SupplyButton from "./SupplyButton";
 import ClientCardRegistry from "./ClientCardRegistry";
 import {Decision} from "../server/Decision";
 import GameView from "./GameView";
 import {GainRestrictions} from "../server/GainRestrictions";
+import {CardImplementation} from "../cards/Card";
 interface IProps {
     socket: SocketIOClient.Socket;
     decision: Decision | null;
     gameView: GameView;
-    setHoveredCard: (card: typeof CardDef | null) => any;
+    setHoveredCard: (card: CardImplementation| null) => any;
 }
 interface IState {
     data: ReturnType<ReturnType<typeof createSupplyData>['getState']>;
-    cardDefs: {[name: string]: typeof CardDef | undefined};
+    cardDefs: {[name: string]: CardImplementation | undefined};
 }
 export default class SupplyView extends React.Component<IProps, IState> {
     supplyData = createSupplyData();
@@ -167,6 +167,7 @@ export default class SupplyView extends React.Component<IProps, IState> {
             Object.entries(cost).forEach(([key, value]) => {
                 cost[key] = Math.max(0, value);
             });
+            // @ts-ignore
             const HoverDef = class extends def {
                 intrinsicTypes = types as any;
                 cost = cost;

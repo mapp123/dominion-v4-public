@@ -1,19 +1,19 @@
-import {CardDef} from "../cards/CardDef";
 // eslint-disable-next-line @typescript-eslint/camelcase
 import {unstable_createResource} from "@luontola/react-cache";
+import {CardImplementation} from "../cards/Card";
 // @ts-ignore
-const context: (module: string) => Promise<{default: typeof CardDef}> = require.context(
+const context: (module: string) => Promise<{default: CardImplementation}> = require.context(
     '../cards', true, /\.\/(.*?)\/(.*?)\.ts/, 'lazy'
 );
 export default class ClientCardRegistry {
     private static instance: ClientCardRegistry | null = null;
     private locations: {[key: string]: string} = {};
-    private cardDefs: {[key: string]: typeof CardDef | undefined} = {};
+    private cardDefs: {[key: string]: CardImplementation | undefined} = {};
     private awaitingLocations: {[key: string]: Array<() => any> | undefined} = {};
     private constructor() {
         this.getCard = this.getCard.bind(this);
     }
-    public async getCard(cardName: string, location?: string): Promise<typeof CardDef> {
+    public async getCard(cardName: string, location?: string): Promise<CardImplementation> {
         let card = this.cardDefs[cardName];
         if (!card) {
             if (!this.locations[cardName] && !location) {

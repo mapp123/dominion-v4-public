@@ -195,6 +195,7 @@ export default class Player {
             this,
             GainRestrictions.instance()
                 .setMaxCoinCost(this.data.money + this.data.coffers)
+                .setIsCard(false)
         ).build(this.game);
     }
     private async confirmBuyIfCoffers(response: DecisionResponseType["chooseCardOrBuy"] | DecisionResponseType["buy"]): Promise<boolean> {

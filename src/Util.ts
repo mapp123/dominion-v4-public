@@ -26,6 +26,20 @@ export default class Util {
         }
         return formattedCards.slice(0, -1).join(', ') + ', and ' + formattedCards.slice(-1)[0];
     }
+    static parseCardList(list: string): string[] {
+        let cards: string[] = [];
+        let match: RegExpExecArray | null;
+        let reg = /(\S*)\s*([^,\s]*),?\s*(?:and)?\s*/g;
+        while ((match = reg.exec(list)) != null && match[0] !== '') {
+            let [, quantity, card] = match;
+            let numQuantity = this.unnumeral(quantity);
+            let singular = this.unpluralize(card);
+            for (let i = 0; i < numQuantity; i++) {
+                cards.push(singular);
+            }
+        }
+        return cards;
+    }
     private static articleCache: {[word: string]: string | undefined} = {};
     static article(card: string): string {
         if (!this.articleCache[card]) {
@@ -46,6 +60,13 @@ export default class Util {
             this.numberCache[number] = nlp(number + '').values().list[0].toText().out('text').trim();
         }
         return this.numberCache[number]!;
+    }
+    static unnumeral(number: string): number {
+        if (number === 'a') return 1;
+        return nlp(number).values(0).toNumber().out();
+    }
+    static unpluralize(card: string): string {
+        return Object.entries(this.pluralCache).find(([key, value]) => key === card || value === card)![0];
     }
     static nonNull<T>(item: T | null | undefined): item is T {
         return item != null;

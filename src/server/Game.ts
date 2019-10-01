@@ -287,7 +287,7 @@ export default class Game {
     }
 
     grabNameFromSupply(cardName: string) {
-        const pile = this.supply.data.piles.find((a) => a.pile.length > 0 && a.pile[a.pile.length - 1].name === cardName);
+        const pile = this.supply.data.piles.find((a) => a.pile.length > 0 && (a.pile[a.pile.length - 1].name === cardName || a.identifier === cardName));
         if (pile) {
             return pile.pile.splice(pile.pile.length - 1, 1)[0];
         }

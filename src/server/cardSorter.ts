@@ -1,4 +1,4 @@
-import {CardDef} from "../cards/CardDef";
+import {CardImplementation} from "../cards/Card";
 
 const CardOrder = [
     "copper",
@@ -11,7 +11,7 @@ const CardOrder = [
     "colony",
     "curse"
 ];
-export default function cardSorter(cardA: typeof CardDef, cardB: typeof CardDef) {
+export default function cardSorter(cardA: CardImplementation, cardB: CardImplementation) {
     if (CardOrder.includes(cardA.cardName)) {
         if (CardOrder.includes(cardB.cardName)) {
             return CardOrder.indexOf(cardA.cardName) - CardOrder.indexOf(cardB.cardName);

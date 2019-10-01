@@ -9,7 +9,7 @@ const colorFactorLists = {
     "reserve": [0.9, 0.75, 0.5],
     "curse": [0.6, 0.15, 0.6],
     "shelter": [1.05, 0.65, 0.5],
-    "ruins": [0.75, 0.6, 0.35],
+    "ruins": [0.25, 0.05, 0],
     "landmark": [0.45, 1.25, 0.85],
     "night": [0.3, 0.4, 0.45],
     "boon": [1.4, 1.35, 0.55, 0, 0, 0, 1.7, 1.25, 0.65, 1.95, 1.6, 0.4],
@@ -34,6 +34,7 @@ interface IProps {
     };
     smallDescription: boolean;
     description: string;
+    factorOverrides?: [number, number, number];
 }
 function pickTypesFromTypeArray(types: readonly string[]): [string, string | undefined] {
     if (types.length === 1 && Object.keys(colorFactorLists).includes(types[0])) {
@@ -44,6 +45,9 @@ function pickTypesFromTypeArray(types: readonly string[]): [string, string | und
     }
     if (types.includes('reaction')) {
         return ['reaction', undefined];
+    }
+    if (types.includes('ruins')) {
+        return ['ruins', undefined];
     }
     return ['action', undefined];
 }
@@ -87,7 +91,7 @@ export default class CardGenerator extends React.Component<IProps, {}> {
         const [type, secondaryType] = pickTypesFromTypeArray(this.props.cardTypes);
         return (
             <svg viewBox={`0 0 1403 2151`} style={{height: "100%"}}>
-                <RecolorFilter factors={colorFactorLists[type]} name={'color0'} />
+                <RecolorFilter factors={this.props.factorOverrides || colorFactorLists[type]} name={'color0'} />
                 {secondaryType && <RecolorFilter factors={colorFactorLists[secondaryType]} name={'color1'}/>}
                 <RecolorFilter factors={colorFactorLists[type]} name={'cardGray'} offset={6} />
                 <RecolorFilter factors={colorFactorLists[type]} name={'cardBrown'} offset={9} />

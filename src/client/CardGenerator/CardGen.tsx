@@ -2,15 +2,24 @@ import * as React from 'react';
 import CardGenerator from "./CardGenerator";
 import { RouteComponentProps } from 'react-router';
 import ClientCardRegistry from "../ClientCardRegistry";
-import {CardDef} from "../../cards/CardDef";
+import {CardImplementation} from "../../cards/Card";
 
-export default class CardGen extends React.Component<RouteComponentProps<{card: string}>, {card: typeof CardDef | null}> {
+export default class CardGen extends React.Component<RouteComponentProps<{card: string}>, {card: CardImplementation | null; r: number; g: number; b: number}> {
     constructor(props) {
         super(props);
         this.state = {
-            card: null
+            card: null,
+            r: 1,
+            g: 1,
+            b: 1
         };
         this.componentWillReceiveProps(props);
+    }
+
+    updateState(key, e) {
+        this.setState({
+            [key]: parseFloat(e.target.value)
+        } as any);
     }
 
     componentWillReceiveProps(nextProps: Readonly<RouteComponentProps<{ card: string }>>): void {
@@ -27,14 +36,20 @@ export default class CardGen extends React.Component<RouteComponentProps<{card: 
             return null;
         }
         return (
-            <div style={{width: "100vw", height: "100vh"}}>
-                <CardGenerator cardArtUrl={this.state.card.cardArt}
-                    cardName={this.state.card.cardName}
-                    cardTypes={this.state.card.types}
-                    costs={this.state.card.cost}
-                    smallDescription={false}
-                    description={this.state.card.cardText} />
-            </div>
+            <>
+                <div style={{width: "100vw", height: "100vh"}}>
+                    <CardGenerator cardArtUrl={this.state.card.cardArt}
+                        cardName={this.state.card.cardName}
+                        cardTypes={this.state.card.types}
+                        costs={this.state.card.cost}
+                        smallDescription={false}
+                        description={this.state.card.cardText}
+                        factorOverrides={(this.state.r === this.state.g) && (this.state.g === this.state.b) && (this.state.b === 1) ? undefined : [this.state.r, this.state.g, this.state.b]}/>
+                </div>
+                <input type="range" min="0" max="1.5" value={this.state.r} step="0.05" onChange={this.updateState.bind(this, 'r')} /><span>{this.state.r}</span><br />
+                <input type="range" min="0" max="1.5" value={this.state.g} step="0.05" onChange={this.updateState.bind(this, 'g')} /><span>{this.state.g}</span><br />
+                <input type="range" min="0" max="1.5" value={this.state.b} step="0.05" onChange={this.updateState.bind(this, 'b')} /><span>{this.state.b}</span><br />
+            </>
         );
     }
 }

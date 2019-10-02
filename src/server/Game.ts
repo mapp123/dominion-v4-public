@@ -56,9 +56,12 @@ export default class Game {
         }
     }
     private cardsValidator = struct.list(['string']);
+    randomizedCards: string[] | undefined;
     setCards(socket: Socket, ...args: any[]) {
         this.selectedCards = this.cardsValidator(args[0]);
+        this.randomizedCards = this.selectedCards.slice(0);
         this.selectedCards = Rules.chooseBasicCards(this.selectedCards);
+        this.selectedCards = [...this.selectedCards, ...Rules.getStartingCards(this.randomizedCards).map((a) => a.cardName)].filter((a, i, arr) => arr.indexOf(a) === i);
         for (let i = 0; i < this.selectedCards.length; i++) {
             let extras = CardRegistry.getInstance().getCard(this.selectedCards[i]).onChosen();
             extras.forEach((extra) => {

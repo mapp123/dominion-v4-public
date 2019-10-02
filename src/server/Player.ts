@@ -3,8 +3,6 @@ import Deck from "./Deck";
 import {Socket} from "socket.io";
 import Game from "./Game";
 import createPlayerData from "../createPlayerData";
-import Copper from "../cards/base/Copper";
-import Estate from "../cards/base/Estate";
 import {Decision, DecisionDefaults, DecisionResponseType, DecisionValidators} from "./Decision";
 import {GainRestrictions} from "./GainRestrictions";
 import Card from "../cards/Card";
@@ -12,6 +10,7 @@ import {Texts} from "./Texts";
 import CardRegistry from "../cards/CardRegistry";
 import {PlayerEvents} from "./Events";
 import Util from "../Util";
+import Rules from "./Rules";
 
 export default class Player {
     id = v4();
@@ -34,18 +33,7 @@ export default class Player {
     }
     constructor(game: Game) {
         this.game = game;
-        this.deck.discard = [
-            new Copper(this.game),
-            new Copper(this.game),
-            new Copper(this.game),
-            new Copper(this.game),
-            new Copper(this.game),
-            new Copper(this.game),
-            new Copper(this.game),
-            new Estate(this.game),
-            new Estate(this.game),
-            new Estate(this.game)
-        ];
+        this.deck.discard = Rules.getStartingCards(this.game.randomizedCards!).map((a) => new a(this.game));
         this.startDraw();
         if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('vp'))) {
             this.data.dataViews.push('vp');

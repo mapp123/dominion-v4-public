@@ -2,12 +2,14 @@ import * as React from 'react';
 import HandButton from "./HandButton";
 import {Decision} from "../server/Decision";
 import GameView from "./GameView";
-import Card from "../cards/Card";
+import Card, {CardImplementation} from "../cards/Card";
 import Reorder = require('react-reorder');
+import ClientCardRegistry from "./ClientCardRegistry";
 interface IProps {
     hand: Card[];
     decision: Decision | null;
     gameView: GameView;
+    setHoveredCard: (card: CardImplementation| null) => any;
 }
 export default class HandView extends React.Component<IProps, {}> {
     list: Card[] = [];
@@ -51,6 +53,11 @@ export default class HandView extends React.Component<IProps, {}> {
                 })
             });
         }
+    }
+    onHover(card) {
+        ClientCardRegistry.getInstance().getCard(card).then((a) => {
+            this.props.setHoveredCard(a);
+        });
     }
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         let decision: React.ReactElement<any> | React.ReactNodeArray | null = null;
@@ -96,7 +103,7 @@ export default class HandView extends React.Component<IProps, {}> {
             );
         }
         if (this.props.decision && this.props.decision.decision === 'chooseCard' && this.props.decision.sourceIsHand !== true) {
-            decision = this.props.decision.source.map((card) => <HandButton key={card.id} cardName={card.name} types={card.types || []} onClick={this.onClick.bind(this, card.name, card.id)}/>);
+            decision = this.props.decision.source.map((card) => <HandButton onHover={this.onHover.bind(this)} key={card.id} cardName={card.name} types={card.types || []} onClick={this.onClick.bind(this, card.name, card.id)}/>);
         }
         let extras: Card[] = [];
         if (this.props.decision && this.props.decision.decision === 'chooseCard' && this.props.decision.sourceIsHand) {
@@ -106,7 +113,7 @@ export default class HandView extends React.Component<IProps, {}> {
             <React.Suspense fallback={<div>Loading...</div>}>
                 {decision}
                 {decision && <><hr style={{borderColor: "black", borderWidth: "3px", width: "100%"}} /><span>Your Hand:</span><br /></>}
-                {[...this.props.hand, ...extras].map((card) => <HandButton key={card.id} cardName={card.name} types={card.types || []} onClick={decision ? () => {} : this.onClick.bind(this, card.name, card.id)}/>)}
+                {[...this.props.hand, ...extras].map((card) => <HandButton onHover={this.onHover.bind(this)} key={card.id} cardName={card.name} types={card.types || []} onClick={decision ? () => {} : this.onClick.bind(this, card.name, card.id)}/>)}
             </React.Suspense>
         );
     }

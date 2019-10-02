@@ -79,7 +79,7 @@ function dataManagerReducer<T extends StructDef<{}>>(state: StructForm<{}, T> | 
             currentTargetA[lastKey] = currentTargetA[lastKey].slice(0, action.start).concat(action.addToArray).concat(currentTargetA[lastKey].slice(action.start + action.deleteCount));
             return topA;
     }
-    return state;
+    return state!;
 }
 function fakeSplice(dispatch: (a: Action) => any, target: any, keyMap: Array<string | number | symbol>, start: number, deleteCount?: number, ...addToArray: any[]) {
     if (!deleteCount) {

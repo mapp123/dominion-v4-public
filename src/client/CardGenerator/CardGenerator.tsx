@@ -8,7 +8,7 @@ const colorFactorLists = {
     "duration": [1.1, 0.3, 0],
     "reserve": [0.9, 0.75, 0.5],
     "curse": [0.6, 0.15, 0.6],
-    "shelter": [1.05, 0.65, 0.5],
+    "shelter": [1, 0.1, 0.1],
     "ruins": [0.25, 0.05, 0],
     "landmark": [0.45, 1.25, 0.85],
     "night": [0.3, 0.4, 0.45],
@@ -42,6 +42,15 @@ function pickTypesFromTypeArray(types: readonly string[]): [string, string | und
     }
     if (types.includes('action') && types.includes('victory')) {
         return ['victory', 'action'];
+    }
+    if (types.includes('reaction') && types.includes('shelter')) {
+        return ['reaction', 'shelter'];
+    }
+    if (types.includes('shelter') && types.includes('action')) {
+        return ['action', 'shelter'];
+    }
+    if (types.includes('shelter') && types.includes('victory')) {
+        return ['victory', 'shelter'];
     }
     if (types.includes('reaction')) {
         return ['reaction', undefined];

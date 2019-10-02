@@ -37,7 +37,7 @@ export default class ClientCardRegistry {
         }
         return card;
     }
-    public static getInstance() {
+    public static getInstance(): ClientCardRegistry {
         if (!this.instance) {
             this.instance = new this();
         }

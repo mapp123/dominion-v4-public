@@ -331,7 +331,7 @@ export default class Player {
             (duplicateCard as any)._isUnderThroneRoom = true;
         }
         this._duplicatedPlayArea.push(duplicateCard);
-        await this.playActionCard(duplicateCard);
+        await this.playActionCard(duplicateCard, false);
         return duplicateCard;
     }
     async getExemptPlayers(attackingCard: Card): Promise<Player[]> {

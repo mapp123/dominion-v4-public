@@ -20,6 +20,7 @@ describe('CARDS', () => {
             const cards = readdirSync(resolve(__dirname, box.name));
             cards.filter((a) => /.*\.spec\.js$/.test(a)).forEach((card) => {
                 process.env.NODE_ENV = '';
+                process.env.SKIP_WAITS = 'true';
                 process.env.FORCE_COLONY = 'true';
                 process.env.SHOULD_LOG_PRIVATE = 'yes';
                 require(resolve(__dirname, box.name, card));

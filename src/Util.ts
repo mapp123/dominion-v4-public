@@ -71,4 +71,14 @@ export default class Util {
     static nonNull<T>(item: T | null | undefined): item is T {
         return item != null;
     }
+    static wait(time: number): Promise<void> {
+        return new Promise((f) => {
+            if (process.env.SKIP_WAITS === 'true') {
+                f();
+            }
+            else {
+                setTimeout(f, time);
+            }
+        });
+    }
 }

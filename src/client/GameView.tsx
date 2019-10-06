@@ -10,6 +10,8 @@ import DefaultDecision from "./DefaultDecision";
 import CardGenerator from "./CardGenerator/CardGenerator";
 import DataViews from "./DataViews";
 import {CardImplementation} from "../cards/Card";
+import EndOfGameModel from "./EndOfGameModel";
+import ChooseUsernameModal from "./ChooseUsernameModal";
 interface Params {
     gameId: string;
 }
@@ -18,6 +20,11 @@ interface IState {
     playerData: PlayerData;
     decision: Decision | null;
     hoveredCard: CardImplementation | null;
+    flashButton?: string;
+    mUsername?: string;
+    scoreBreakdown?: {[player: string]: {total: number; [card: string]: number}};
+    gameResult?: "victory" | "loss";
+    forceCloseModal: boolean;
 }
 export default class GameView extends React.Component<RouteComponentProps<Params>, IState> {
     socket: SocketIOClient.Socket;
@@ -25,6 +32,9 @@ export default class GameView extends React.Component<RouteComponentProps<Params
     decisionTimeout: any = null;
     private outOfTurnDecision = new Audio('/audio/outOfTurnDecision.mp3');
     private turnNotification = new Audio('/audio/turnNotification.mp3');
+    private endGame = new Audio('/audio/endGame.mp3');
+    private win = new Audio('/audio/win.mp3');
+    private loss = new Audio('/audio/loss.mp3');
     private firstTurnPlayed = false;
     constructor(props) {
         super(props);
@@ -53,10 +63,6 @@ export default class GameView extends React.Component<RouteComponentProps<Params
         });
         this.socket.on('decision', (decision: Decision) => {
             window.clearTimeout(this.decisionTimeout);
-            if (decision.decision === "chooseUsername") {
-                const username = prompt("What would you like your username to be?") || "PICK_A_USERNAME_COWARD";
-                this.respondToDecision(username, decision);
-            }
             if (!this.state.decision && !this.playerData.isMyTurn && this.firstTurnPlayed) {
                 this.outOfTurnDecision.play().catch(() => console.log("on mobile"));
             }
@@ -69,6 +75,33 @@ export default class GameView extends React.Component<RouteComponentProps<Params
         });
         this.socket.on('playerState', (state) => {
             this.playerData.state = state;
+        });
+        this.socket.on('endGameSound', (flashTarget) => {
+            this.endGame.play().catch(() => console.log("on mobile"));
+            this.setState({
+                flashButton: flashTarget
+            });
+        });
+        this.socket.on('stopFlash', () => {
+            this.setState({
+                flashButton: undefined
+            });
+        });
+        this.socket.on('win', (breakdown) => {
+            this.win.play().catch(() => console.log("on mobile"));
+            this.setState({
+                mUsername: breakdown.username,
+                scoreBreakdown: breakdown.breakdown,
+                gameResult: "victory"
+            });
+        });
+        this.socket.on('loss', (breakdown) => {
+            this.loss.play().catch(() => console.log("on mobile"));
+            this.setState({
+                mUsername: breakdown.username,
+                scoreBreakdown: breakdown.breakdown,
+                gameResult: "loss"
+            });
         });
         this.playerData.subscribe(() => {
             let decisionSet: any = {};
@@ -90,7 +123,8 @@ export default class GameView extends React.Component<RouteComponentProps<Params
             playersJoined: 0,
             playerData: this.playerData.getState(),
             decision: null,
-            hoveredCard: null
+            hoveredCard: null,
+            forceCloseModal: false
         };
     }
 
@@ -107,12 +141,16 @@ export default class GameView extends React.Component<RouteComponentProps<Params
         this.decisionTimeout = window.setTimeout(() => this.setState({decision: null}), 100);
     }
 
+    onChoseUsername(username: string) {
+        this.respondToDecision(username, this.state.decision!);
+    }
+
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         return (
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-10" style={{height: "calc(100vh - 20px)"}}>
-                        <SupplyView socket={this.socket} decision={this.state.decision} gameView={this} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
+                        <SupplyView flash={this.state.flashButton} socket={this.socket} decision={this.state.decision} gameView={this} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
                         {this.state.playersJoined > 0 && !this.state.playerData.gameStarted &&
                         <><button className="btn btn-primary dominion-font" onClick={this.startGame.bind(this)}>Start Game</button><br /></>}
                         {this.state.playersJoined > 0 && !this.state.playerData.gameStarted &&
@@ -146,6 +184,8 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                         <LogView socket={this.socket} />
                     </div>
                 </div>
+                <EndOfGameModel close={() => this.setState({forceCloseModal: true})} visible={!this.state.forceCloseModal && !!this.state.gameResult} type={this.state.gameResult || "victory"} points={this.state.scoreBreakdown?.[this.state.mUsername || ""]?.total || 0} breakdown={this.state.scoreBreakdown || {}}/>
+                <ChooseUsernameModal onChosen={this.onChoseUsername.bind(this)} isOpen={this.state.decision?.decision === 'chooseUsername'} />
             </div>
         );
     }

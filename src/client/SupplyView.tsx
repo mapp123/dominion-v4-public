@@ -12,6 +12,7 @@ interface IProps {
     decision: Decision | null;
     gameView: GameView;
     setHoveredCard: (card: CardImplementation| null) => any;
+    flash?: string;
 }
 interface IState {
     data: ReturnType<ReturnType<typeof createSupplyData>['getState']>;
@@ -172,9 +173,10 @@ export default class SupplyView extends React.Component<IProps, IState> {
                 intrinsicTypes = types as any;
                 cost = cost;
             };
-            const disabled = restrictions ? !restrictions.validateCard(cardName) : true;
+            const flash = this.props.flash === pile.identifier;
+            const disabled = !flash && (restrictions ? !restrictions.validateCard(cardName) : true);
             return (
-                <SupplyButton markers={markers[cardName] || []} onHover={() => this.props.setHoveredCard(HoverDef)} key={pile.identifier} cardName={cardName} cardTypes={types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined} hideCost={pile.hideCost}/>
+                <SupplyButton flash={flash} markers={markers[cardName] || []} onHover={() => this.props.setHoveredCard(HoverDef)} key={pile.identifier} cardName={cardName} cardTypes={types} onClick={this.onClick.bind(this, cardName, cardId)} cardText={def.cardText} cost={cost} disabled={disabled} supplyAmount={pile.displayCount ? pile.pile.length : undefined} hideCost={pile.hideCost}/>
             );
         });
         return (

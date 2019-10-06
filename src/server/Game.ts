@@ -13,6 +13,7 @@ import {GainRestrictions} from "./GainRestrictions";
 import Artifact from "../cards/Artifact";
 import BigMoney from "./BigMoney";
 import CardHolder from "./CardHolder";
+import Util from "../Util";
 export default class Game {
     players: Player[] = [];
     io: Namespace;
@@ -81,6 +82,15 @@ export default class Game {
         this.checkForCostModifier = [...this.selectedCards];
         this.checkForTypeModifier = [...this.selectedCards];
         this.checkForRestrictionModifier = [...this.selectedCards];
+    }
+    private hasAlerted = false;
+    async alertPlayersToProvinceOrColony(card: string) {
+        if (!this.hasAlerted) {
+            this.hasAlerted = true;
+            this.io.emit('endGameSound', card);
+            await Util.wait(5000);
+            this.io.emit('stopFlash');
+        }
     }
     giveArtifactTo(artifact: string, player: Player) {
         return (CardRegistry.getInstance().getCard(artifact) as any as typeof Artifact).giveTo(player);
@@ -277,8 +287,23 @@ export default class Game {
                 }
             });
         });
-        scores.forEach(([player, , total]) => {
+        const sendScores = scores.reduce((obj, [player, breakDown, total]) => {
+            return {
+                ...obj,
+                [player.username]: {
+                    ...Object.entries(breakDown).filter(([, amount]) => amount).reduce((obj, next) => ({...obj, [next[0]]: next[1]}), {}),
+                    total
+                }
+            };
+        }, {});
+        scores.forEach(([player, , total], i, arr) => {
             this.lmg('%s scored %s points.', player.username, total);
+            if (arr.length === i + 1) {
+                player.currentSocket?.emit?.('win', {username: player.username, breakdown: sendScores});
+            }
+            else {
+                player.currentSocket?.emit?.('loss', {username: player.username, breakdown: sendScores});
+            }
         });
         this.lmg('%s wins!', scores[scores.length - 1][0].username);
         this.ended = true;

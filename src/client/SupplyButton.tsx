@@ -14,6 +14,7 @@ interface IProps {
     disabled: boolean;
     embargoAmount?: number;
     markers: string[];
+    flash?: boolean;
 }
 export default class SupplyButton extends React.Component<IProps, {}> {
     static genCoinIcon(num) {
@@ -49,13 +50,26 @@ export default class SupplyButton extends React.Component<IProps, {}> {
             embargoImg.push(SupplyButton.genEmbargoIcon());
         }
         let padding = 4 + (this.props.markers.length * 10);
+        let animation;
+        if (this.props.flash) {
+            animation = {
+                animationName: "button-flash",
+                animationDuration: "1s",
+                animationDirection: "alternate",
+                animationIterationCount: "infinite",
+                animationDelay: "-0.3s"
+            };
+        }
+        else {
+            animation = {};
+        }
+        let isDisabled = this.props.disabled && !this.props.cardTypes.includes("artifact");
         return (
             <button
-                className={"btn btn-"+getColorForButton(this.props.cardTypes)}
-                onClick={() => !this.props.cardTypes.includes("artifact") && this.props.onClick(this.props.cardName)}
+                className={"btn btn-"+getColorForButton(this.props.cardTypes)+(isDisabled ? " btn-disabled" : "")}
+                onClick={() => !isDisabled && this.props.onClick(this.props.cardName)}
                 onMouseEnter={this.props.onHover}
-                disabled={!this.props.cardTypes.includes("artifact") && this.props.disabled}
-                style={{fontFamily:"TrajanPro-Bold",fontSize:'24px', padding: `4px 12px ${padding}px 6px`}}>
+                style={{fontFamily:"TrajanPro-Bold",fontSize:'24px', padding: `4px 12px ${padding}px 6px`, ...animation}}>
                 {!this.props.hideCost && <div style={{display:"inline",marginRight:"6px"}}>{SupplyButton.genCoinIcon(this.props.cost.coin)}</div>}
                 {this.props.cardName} {this.props.supplyAmount != null ? `(${this.props.supplyAmount})` : ''} {embargoImg}
                 {this.props.markers.map((marker, i) => <span key={i} style={{fontFamily: "TrajanPro-Bold", fontSize: "10px", position: "absolute", bottom: 0, left: "50%", transform: "translate(-50%, 0)"}}>{marker}</span>)}

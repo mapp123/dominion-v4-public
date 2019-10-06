@@ -394,6 +394,9 @@ export default class Player {
         this.data.buys--;
         this.lm('%p buys %s.', Util.formatCardList([cardName]));
         await CardRegistry.getInstance().getCard(cardName).onBuy(this);
+        if (cardName === 'province' || cardName === 'colony') {
+            await this.game.alertPlayersToProvinceOrColony(cardName);
+        }
     }
     async gain(cardName: string, realCard?: Card, log: boolean = true, destination: "discard" | "hand" | "deck" = 'discard'): Promise<Card | null> {
         const c = realCard ? realCard : this.game.grabNameFromSupply(cardName);

@@ -15,6 +15,7 @@ export default abstract class Card {
     game: Game;
     features: ReadonlyArray<'vp' | 'coffers' | 'villagers'> = [];
     isCard = true;
+    static inSupply = true;
     static get isCard(): typeof Card['isCard'] {
         // @ts-ignore
         return new this().isCard;
@@ -78,7 +79,7 @@ export default abstract class Card {
         // @ts-ignore
         return new this().cardArt;
     }
-    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
+    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean; inSupply?: boolean}> {
         let pile: Card[] = [];
         const supplyCount = typeof this.supplyCount === 'function' ? this.supplyCount(playerCount) : this.supplyCount;
         for (let i = 0; i < supplyCount; i++) {
@@ -90,7 +91,8 @@ export default abstract class Card {
             identifier: this.cardName,
             // @ts-ignore
             identity: new this(game),
-            displayCount: true
+            displayCount: true,
+            inSupply: this.inSupply
         }];
     }
 

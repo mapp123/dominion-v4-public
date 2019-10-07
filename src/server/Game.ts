@@ -311,7 +311,7 @@ export default class Game {
     }
 
     nameAvailableInSupply(cardName: string) {
-        return this.supply.data.piles.find((a) => a.pile.length > 0 && a.pile[a.pile.length - 1].name === cardName) != null;
+        return this.supply.data.piles.find((a) => a.inSupply !== false && a.pile.length > 0 && a.pile[a.pile.length - 1].name === cardName) != null;
     }
 
     grabNameFromSupply(cardName: string) {

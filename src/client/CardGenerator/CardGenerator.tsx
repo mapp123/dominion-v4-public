@@ -277,10 +277,10 @@ class DescriptionLine extends React.Component<{line: string; fontSize: number}, 
             fontSize: this.props.fontSize + "pt",
             fontFamily: "Times New Roman",
             fontWeight: "normal" as "normal" | "bold",
+            fontStyle: "normal" as "normal" | "italic",
             whiteSpace: "inherit" as "inherit" | "nowrap"
         } as const;
-        const phrases = this.props.line.split(/(\+\d+\s*(?:[a-z]|[A-Z])*)|([+-]?\$\d+)|([+-]?\d+VP)|(---)/g).filter((a) => a);
-        console.log(phrases);
+        const phrases = this.props.line.split(/(\+\d+\s*(?:[a-z]|[A-Z])*)|([+-]?\$\d+)|([+-]?\d+VP)|(---)|(\(This is not in the Supply.\))/g).filter((a) => a);
         return phrases.map((a, i) => {
             let thisStyle = {
                 ...baseStyle
@@ -314,6 +314,9 @@ class DescriptionLine extends React.Component<{line: string; fontSize: number}, 
             }
             if (/---/.test(a)) {
                 return <hr key={i} style={{borderColor: "black", borderWidth: "3px", margin: this.props.fontSize * 0.5 + "pt"}} />;
+            }
+            if (/\(This is not in the Supply.\)/.test(a)) {
+                thisStyle.fontStyle = "italic";
             }
             return <span key={i} style={thisStyle}>{a}</span>;
         }).concat([phrases.length === 1 && phrases[0] === "---" ? <span key={phrases.length} /> : <br key={phrases.length} />]);

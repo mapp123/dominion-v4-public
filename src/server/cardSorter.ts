@@ -21,6 +21,12 @@ export default function cardSorter(cardA: CardImplementation, cardB: CardImpleme
     else if(CardOrder.includes(cardB.cardName)) {
         return 1;
     }
+    else if (cardA.inSupply && !cardB.inSupply) {
+        return -1;
+    }
+    else if (cardB.inSupply && !cardA.inSupply) {
+        return 1;
+    }
     else {
         return cardB.cost.coin - cardA.cost.coin;
     }

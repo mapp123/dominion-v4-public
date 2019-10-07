@@ -227,6 +227,7 @@ export default class Player {
         this.data.buys = 1;
         this.data.money = 0;
         this.data.actions = 1;
+        this.boughtCards = [];
         this.lm("%p's turn %s", this.turnNumber);
         this.data.isMyTurn = true;
         await this.events.emit('turnStart');
@@ -381,6 +382,7 @@ export default class Player {
             await this.buy(choice.choice.name);
         }
     }
+    boughtCards: Card[] = [];
     async buy(cardName: string) {
         let cofferAmount = this.game.getCostOfCard(cardName).coin - this.data.money;
         if (cofferAmount > 0) {
@@ -393,7 +395,10 @@ export default class Player {
         this.data.money -= this.game.getCostOfCard(cardName).coin - cofferAmount;
         this.data.buys--;
         this.lm('%p buys %s.', Util.formatCardList([cardName]));
-        await CardRegistry.getInstance().getCard(cardName).onBuy(this);
+        const card = await CardRegistry.getInstance().getCard(cardName).onBuy(this);
+        if (card?.isCard) {
+            this.boughtCards.push(card);
+        }
         if (cardName === 'province' || cardName === 'colony') {
             await this.game.alertPlayersToProvinceOrColony(cardName);
         }

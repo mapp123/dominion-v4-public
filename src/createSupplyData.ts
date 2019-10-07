@@ -9,7 +9,8 @@ export default function createSupplyData() {
             pile: struct.list<ReadonlyArray<Struct<Card>>>([struct.instance(Card)] as const),
             identity: struct.instance(Card),
             displayCount: 'boolean',
-            hideCost: 'boolean?'
+            hideCost: 'boolean?',
+            inSupply: 'boolean?'
         } as const],
         locations: struct.dict(['string', 'string']),
         activatedCards: ["string"],

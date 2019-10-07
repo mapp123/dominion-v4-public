@@ -4,6 +4,7 @@ import Card from "../cards/Card";
 export default class BigMoney extends AIPlayer {
     discardPriority(): Promise<Array<string | null>> | Array<string | null> {
         return [
+            'curse',
             'estate',
             'duchy',
             'province',
@@ -35,6 +36,7 @@ export default class BigMoney extends AIPlayer {
 
     trashPriority(): Promise<Array<string | null>> | Array<string | null> {
         return [
+            'curse',
             this.gainsToEndGame() <= 2 ? null : 'estate'
         ];
     }

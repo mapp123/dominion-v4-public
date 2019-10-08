@@ -91,8 +91,6 @@ function decisionMatcher<T extends (...args: any[]) => string>(helperText: strin
                     regBuilder += a.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + "?";
                 }
             });
-            console.log(textFn);
-            console.log(Texts);
         });
         let regex = new RegExp(regBuilder);
         let nums = new Array(textFn.length).fill(null).map((a, i) => i + offset);

@@ -404,6 +404,7 @@ export default function makeTestGame({
         player.data.hand = [];
         // @ts-ignore
         player.startDraw();
+        player.deck.shouldShuffle = false;
         game.players.push(player);
     }
     const done = game.setDone(d);

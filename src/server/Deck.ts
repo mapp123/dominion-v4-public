@@ -6,6 +6,7 @@ export default class Deck {
     _cards: Card[] = [];
     discard: Card[] = [];
     player: Player;
+    shouldShuffle = true;
     constructor(player: Player) {
         this.player = player;
     }
@@ -38,7 +39,7 @@ export default class Deck {
     }
 
     async shuffle() {
-        this.cards = [...this.cards, ...shuffle(this.discard)];
+        this.cards = [...this.cards, ...(this.shouldShuffle ? shuffle(this.discard) : this.discard)];
         this.discard = [];
         await this.player.events.emit('shuffle', this);
     }

@@ -13,7 +13,7 @@ export default class CropRotation extends Project {
     async onPlayerJoinProject(player: Player): Promise<any> {
         player.events.on('turnStart', async () => {
             if (player.data.hand.some((a) => a.types.includes("victory"))) {
-                const card = await player.chooseCardFromHand(Texts.discardAForBenefit('a victory', 'draw 2 cards'), true, (card) => card.types.includes("victory"));
+                const card = await player.chooseCardFromHand(Texts.discardAForBenefit('victory', 1, 'draw 2 cards'), true, (card) => card.types.includes("victory"));
                 if (card) {
                     await player.discard(card, true);
                     await player.draw(2);

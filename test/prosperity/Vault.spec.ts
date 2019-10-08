@@ -10,10 +10,10 @@ describe('VAULT', () => {
             players: 2
         });
         player.testPlayAction('vault');
-        player.testChooseCard(Texts.discardForBenefit('+1 Money'), 'copper');
-        player.testChooseCard(Texts.discardForBenefit('+1 Money'), 'No Card');
+        player.testChooseCard(Texts.discardForBenefit('+1 Money', 1), 'copper');
+        player.testChooseCard(Texts.discardForBenefit('+1 Money', 1), 'No Card');
         q.testChooseCard(Texts.discardForBenefit('to draw a card', 2), 'copper');
-        q.testChooseCard(Texts.discardForBenefit('to draw a card'), 'copper');
+        q.testChooseCard(Texts.discardForBenefit('to draw a card', 1), 'copper');
         player.onBuyPhaseStart(() => {
             expect(player.hand).to.have.members(['silver', 'copper', 'copper', 'gold', 'gold']);
             expect(player.data.money).to.equal(1);
@@ -30,13 +30,13 @@ describe('VAULT', () => {
         });
         player.testPlayAction('throne room');
         player.testChooseCard(Texts.chooseCardToPlayTwice, 'vault');
-        player.testChooseCard(Texts.discardForBenefit('+1 Money'), 'copper');
-        player.testChooseCard(Texts.discardForBenefit('+1 Money'), 'No Card');
+        player.testChooseCard(Texts.discardForBenefit('+1 Money', 1), 'copper');
+        player.testChooseCard(Texts.discardForBenefit('+1 Money', 1), 'No Card');
         q.testChooseCard(Texts.discardForBenefit('to draw a card', 2), 'copper');
-        q.testChooseCard(Texts.discardForBenefit('to draw a card'), 'copper');
-        player.testChooseCard(Texts.discardForBenefit('+1 Money'), 'copper');
-        player.testChooseCard(Texts.discardForBenefit('+1 Money'), 'copper');
-        player.testChooseCard(Texts.discardForBenefit('+1 Money'), 'No Card');
+        q.testChooseCard(Texts.discardForBenefit('to draw a card', 1), 'copper');
+        player.testChooseCard(Texts.discardForBenefit('+1 Money', 1), 'copper');
+        player.testChooseCard(Texts.discardForBenefit('+1 Money', 1), 'copper');
+        player.testChooseCard(Texts.discardForBenefit('+1 Money', 1), 'No Card');
         q.testChooseCard(Texts.discardForBenefit('to draw a card', 2), 'No Card');
         player.onBuyPhaseStart(() => {
             expect(player.hand).to.have.members(['silver', 'silver', 'gold', 'gold']);

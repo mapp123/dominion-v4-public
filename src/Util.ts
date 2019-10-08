@@ -54,7 +54,10 @@ export default class Util {
         }
         return this.pluralCache[card]!;
     }
-    private static numberCache: {[number: number]: string | undefined} = {};
+    private static numberCache: {[number: number]: string | undefined} = {
+        // Guess what? nlp doesn't recognize 0, so we get to do this. Works the other way around.
+        0: "zero"
+    };
     static numeral(number: number): string {
         if (!this.numberCache[number]) {
             this.numberCache[number] = nlp(number + '').values().list[0].toText().out('text').trim();
@@ -63,7 +66,11 @@ export default class Util {
     }
     static unnumeral(number: string): number {
         if (number === 'a') return 1;
-        return nlp(number).values(0).toNumber().out();
+        let num = nlp(number).values(0).toNumber().out();
+        if (num === "") {
+            return Number.NEGATIVE_INFINITY;
+        }
+        return num;
     }
     static unpluralize(card: string): string {
         return Object.entries(this.pluralCache).find(([key, value]) => key === card || value === card)![0];

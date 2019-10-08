@@ -3,6 +3,7 @@ import {Decision, DecisionDefaults, DecisionResponseType} from "./Decision";
 import {Texts} from "./Texts";
 import Card from "../cards/Card";
 import Util from "../Util";
+import nlp = require('compromise');
 
 type PossibleAsync<T> = T | Promise<T>;
 
@@ -10,40 +11,126 @@ function assertNever(a: never) {
     throw a;
 }
 
-const SENTINEL = "SENTINEL";
+const normalizeParams = {
+    whitespace: false,
+    case: false,
+    numbers: false,
+    punctuation: false,
+    unicode: false,
+    contractions: false,
+    acronyms: false,
+    plurals: true
+};
+type Matcher = {
+    regex: RegExp;
+    mappings: Array<{
+        type: 'pure' | 'unnumeral';
+        index: number;
+    }>;
+}
+type ArgTuple<T> = T extends (...args: infer R) => string ? R : never;
+const offset = 5;
+const decisionMatcherCache = new Map<(...args: any[]) => string, Matcher>();
 
-function decisionMatcher<T extends string[]>(helperText: string, textFn: (...args: T) => string): T | null {
-    const parts = textFn(...(new Array(textFn.length).fill(SENTINEL) as any)).split(SENTINEL);
-    let subs = [] as string[];
-    let currentIndex = 0;
-    let lastMatchedIndex = 0;
-    let partIndex = 0;
-    let replacement = "";
-    top: while (currentIndex < helperText.length) {
-        while (helperText.slice(lastMatchedIndex, currentIndex + 1) === parts[partIndex].slice(0, (currentIndex - lastMatchedIndex) + 1)) {
-            currentIndex++;
-            if (parts[partIndex].length === (currentIndex - lastMatchedIndex)) {
-                // Part matched, move on
-                partIndex++;
-                lastMatchedIndex = currentIndex;
-                subs.push(replacement);
-                replacement = "";
-                continue top;
+/**
+ * This function generates a RegEx for a given string-generating function, caches it with the function, and then returns what arguments were passed to the function to make the given helperText (or null if it's not a match).
+ * @param helperText
+ * @param textFn
+ */
+function decisionMatcher<T extends (...args: any[]) => string>(helperText: string, textFn: T): ArgTuple<T> | null {
+    let matcher: Matcher;
+    if (!decisionMatcherCache.has(textFn)) {
+        let partsWithOne = textFn(...new Array(textFn.length).fill(1)).split(/(\b(?:1|one)\b)/);
+        const partsWithTwo = textFn(...new Array(textFn.length).fill(2)).split(/(\b(?:2|two)\b)/);
+        if (partsWithOne.length !== partsWithTwo.length) {
+            let oneIndex = 0;
+            let twoIndex = 0;
+            let tempOne = [] as string[];
+            while (oneIndex < partsWithOne.length) {
+                const twoPart = nlp(partsWithTwo[twoIndex]).normalize(normalizeParams).out('text');
+                if (partsWithOne[oneIndex].length !== twoPart.length) {
+                    let sep = new RegExp("(" + twoPart + ")");
+                    let parts = partsWithOne[oneIndex].split(sep);
+                    if (parts[0] === '') {
+                        // We matched the front, push onto temp and move to second half
+                        tempOne.push(parts[1]);
+                        partsWithOne.splice(oneIndex, 1, ...parts.slice(2));
+                    } else {
+                        // We matched the back, push onto temp completely and move on
+                        tempOne.push(...parts.slice(0, -1), partsWithOne[oneIndex + 1]);
+                        oneIndex += 2;
+                    }
+                    twoIndex += 2;
+                } else {
+                    tempOne.push(partsWithOne[oneIndex], partsWithOne[oneIndex + 1]);
+                    oneIndex += 2;
+                    twoIndex += 2;
+                }
             }
+            if (tempOne.length === partsWithTwo.length + 1) {
+                // We may get an extra piece at the end due to skips. Eliminate it if needed.
+                tempOne = tempOne.slice(0, -1);
+            }
+            partsWithOne = tempOne;
         }
-        // Part didn't match, add current index to replacement and move on
-        replacement += helperText.slice(lastMatchedIndex++, ++currentIndex);
+        let regBuilder = '';
+        partsWithOne.map((a, i) => {
+            if (i % 2 === 1) {
+                // Return a universal matcher
+                regBuilder += '(.*?)';
+                return;
+            }
+            let onePart = a;
+            let twoPart = partsWithTwo[i];
+            let oneIndex = 0;
+            twoPart.split('').forEach((a) => {
+                if (a === onePart[oneIndex]) {
+                    regBuilder += a.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    oneIndex++;
+                } else {
+                    regBuilder += a.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + "?";
+                }
+            });
+            console.log(textFn);
+            console.log(Texts);
+        });
+        let regex = new RegExp(regBuilder);
+        let nums = new Array(textFn.length).fill(null).map((a, i) => i + offset);
+        const callWithMaps = textFn(...nums);
+        let mappings = Array.prototype.slice.call(regex.exec(callWithMaps), 1).map((a) => {
+            if (/^\d+$/.test(a)) {
+                // Just a pure number
+                return {
+                    type: 'pure' as 'pure',
+                    index: parseInt(a) - offset
+                };
+            } else {
+                return {
+                    type: 'unnumeral' as 'unnumeral',
+                    index: Util.unnumeral(a) - offset
+                };
+            }
+        });
+        matcher = {
+            regex,
+            mappings
+        };
+        decisionMatcherCache.set(textFn, matcher);
     }
-    subs.push(replacement);
-    if (partIndex !== parts.length) {
-        // We didn't get through all the parts, this isn't a matching message
+    else {
+        matcher = decisionMatcherCache.get(textFn)!;
+    }
+    let subs = [] as Array<string | number>;
+    let exec = matcher.regex.exec(helperText);
+    if (exec == null) {
         return null;
     }
-    if (subs[0] === "") {
-        subs = subs.slice(1);
-    }
+    Array.prototype.slice.call(matcher.regex.exec(helperText), 1).forEach((match: string, i) => {
+        subs[matcher.mappings[i].index] = matcher.mappings[i].type === 'unnumeral' ? Util.unnumeral(match) : match;
+    });
     return subs as any;
 }
+
 export default abstract class AIPlayer extends Player {
     private hasPlayedAllTreasures = false;
     private choiceLookup = {
@@ -173,7 +260,7 @@ export default abstract class AIPlayer extends Player {
                     regularTopdeck: decisionMatcher(decision.helperText, () => Texts.chooseCardToPutOnDeck),
                     discardTopDeck: decisionMatcher(decision.helperText, Texts.chooseCardToMoveFromDiscardToDeck),
                     discardCard: decisionMatcher(decision.helperText, Texts.chooseCardToDiscardFor),
-                    discardCardForBenefit: /Choose (.*?) cards? to discard. You'll get (.*?) if you do./.exec(decision.helperText),
+                    discardCardForBenefit: decisionMatcher(decision.helperText, Texts.discardForBenefit),
                     discardTypeForBenefit: decisionMatcher(decision.helperText, Texts.discardAForBenefit),
                     trashCard: decisionMatcher(decision.helperText, Texts.chooseCardToTrashFor),
                     playAction: decisionMatcher(decision.helperText, () => Texts.chooseActionToPlay),
@@ -185,8 +272,16 @@ export default abstract class AIPlayer extends Player {
                     drawFromRevealed: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromRevealed),
                     takeFromAside: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromSetAside),
                 };
-                if (keys.discardCard != null || keys.discardCardForBenefit || keys.discardTypeForBenefit) {
+                if (keys.discardCard != null) {
                     return this.chooseCardFromPriority(await this.discardPriority(), decision.validChoices) as any;
+                }
+                if (keys.discardCardForBenefit) {
+                    const choice = await this.discardForBenefit(decision.validChoices.map((a) => a.name), keys.discardCardForBenefit[1], keys.discardCardForBenefit[0]);
+                    return decision.validChoices.find((a) => a.name === choice) as any;
+                }
+                if (keys.discardTypeForBenefit) {
+                    const choice = await this.discardForBenefit(decision.validChoices.map((a) => a.name), keys.discardTypeForBenefit[1], keys.discardTypeForBenefit[2]) as any;
+                    return decision.validChoices.find((a) => a.name === choice) as any;
                 }
                 if (keys.trashCard != null) {
                     return this.chooseCardFromPriority(await this.trashPriority(), decision.validChoices) as any;
@@ -252,7 +347,8 @@ export default abstract class AIPlayer extends Player {
                     wantOnDeck: decisionMatcher(decision.helperText, Texts.doYouWantToPutTheAOnYourDeck),
                     wantSetAside: decisionMatcher(decision.helperText, Texts.wouldYouLikeToSetAsideThe),
                     ensureTrash: decisionMatcher(decision.helperText, Texts.areYouSureYouWantToTrash),
-                    wantBuyCoffers: decisionMatcher(decision.helperText, () => Texts.wantBuyCoffers)
+                    wantBuyCoffers: decisionMatcher(decision.helperText, () => Texts.wantBuyCoffers),
+                    discardForBenefit: decisionMatcher(decision.helperText, Texts.wantToDiscardAForBenefit)
                 };
                 if (confirmKeys.wantTrash) {
                     return this.wantCardOverNothing(await this.trashPriority(), confirmKeys.wantTrash[0]) as any;
@@ -296,6 +392,9 @@ export default abstract class AIPlayer extends Player {
                 if (confirmKeys.wantBuyCoffers) {
                     return true as any;
                 }
+                if (confirmKeys.discardForBenefit) {
+                    return ((await this.discardForBenefit([confirmKeys.discardForBenefit[0]],1, confirmKeys.discardForBenefit[1])) !== 'No Card') as any;
+                }
                 break;
             case "gain":
                 const choice = this.chooseCardFromPriority(await this.gainPriority(), [
@@ -334,6 +433,19 @@ export default abstract class AIPlayer extends Player {
     abstract playNextTreasure(source: Card[]): PossibleAsync<string | null>;
     abstract playNextAction(source: Card[]): PossibleAsync<string | null>;
     abstract generateUsername(): PossibleAsync<string>;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected async discardForBenefit(choices: string[], number: number, benefit: string): Promise<string> {
+        if (number === 1 && choices.length === 1 && choices[0] === 'market square') {
+            return 'market square';
+        }
+        if (number < await this.willingToDiscard(choices.filter((a) => a !== 'No Card'))) {
+            return this.chooseCardFromPriority(await this.discardPriority(), choices.map((a, i) => ({name: a, id: a + i})) as any).name;
+        }
+        return choices.find((a) => a === 'No Card') || choices[0];
+    }
+    protected async willingToDiscard(choices: string[]): Promise<number> {
+        return (await Promise.all(choices.map(async (a) => this.wantCardOverNothing(await this.discardPriority(), a)))).filter((a) => a).length;
+    }
     protected wantDeckToDiscard() {
         return false;
     }

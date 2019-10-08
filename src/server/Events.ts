@@ -59,6 +59,7 @@ type GameEvent = {
     scoreStart: [];
     gameEnd: [];
     gain: [Player, Card, {hasTrack: boolean}, () => any];
+    trash: [Player, Card, {hasTrack: boolean}, () => any];
     buy: [Player, string];
     buyStart: [];
     actionCardPlayed: [Player, Card];

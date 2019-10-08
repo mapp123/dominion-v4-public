@@ -16,7 +16,7 @@ export default class Vault extends Card {
     async onAction(player: Player): Promise<void> {
         await player.draw(2);
         let card: Card | null;
-        while ((card = await player.chooseCardFromHand(Texts.discardForBenefit('+1 Money'), true)) != null) {
+        while ((card = await player.chooseCardFromHand(Texts.discardForBenefit('+1 Money', 1), true)) != null) {
             await player.discard(card, true);
             player.data.money += 1;
         }
@@ -24,7 +24,7 @@ export default class Vault extends Card {
             const card = await p.chooseCardFromHand(Texts.discardForBenefit('to draw a card', 2), true);
             if (card != null) {
                 await p.discard(card, true);
-                const card2 = await p.chooseCardFromHand(Texts.discardForBenefit('to draw a card'));
+                const card2 = await p.chooseCardFromHand(Texts.discardForBenefit('to draw a card', 1));
                 if (card2) {
                     await p.discard(card2, true);
                     await p.draw();

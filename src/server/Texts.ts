@@ -73,11 +73,14 @@ export class Texts {
     static chooseCardToTrashForge(money: string | number) {
         return `Please choose a card to trash for forge. You are currently at ${money} Money.`;
     }
-    static discardForBenefit(benefit: string, number = 1) {
+    static discardForBenefit(benefit: string, number: number) {
         return `Choose ${number === 1 ? "a" : Util.numeral(number)} card${number > 1 ? "s" : ""} to discard. You'll get ${benefit} if you do.`;
     }
-    static discardAForBenefit(type: string, benefit: string) {
-        return `Choose ${type} to discard. You'll get ${benefit} if you do.`;
+    static discardAForBenefit(type: string, number: number, benefit: string) {
+        return `Choose ${Util.numeral(number)} ${type} to discard. You'll get ${benefit} if you do.`;
+    }
+    static wantToDiscardAForBenefit(a: string, benefit: string) {
+        return `Do you want to discard a ${a}? You'll get ${benefit} if you do.`;
     }
     static doYouWantToDiscardAnAForB(a: string, b: string) {
         return `Do you want to discard a ${a} for ${b}?`;

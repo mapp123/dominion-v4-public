@@ -13,7 +13,7 @@ describe('CROP ROTATION', () => {
         player.testPlayTreasure('silver');
         player.testPlayTreasure('silver');
         player.testBuy('crop rotation');
-        player.testChooseCard(Texts.discardAForBenefit('a victory', 'draw 2 cards'), 'estate');
+        player.testChooseCard(Texts.discardAForBenefit('victory', 1, 'draw 2 cards'), 'estate');
         player.onBuyPhaseStart(() => {
             expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'silver', 'silver']);
             done();

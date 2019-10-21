@@ -58,6 +58,9 @@ export class Texts {
     static doYouWantToTrashA(a: string) {
         return `Do you want to trash a ${a}?`;
     }
+    static doYouWantToTrashAToB(a: string, b: string) {
+        return `Do you want to trash a ${a} to ${b}?`;
+    }
     static doYouWantToPutTheAOnYourDeck(a: string) {
         return `Do you want to put the ${a} on top of your deck?`;
     }
@@ -75,6 +78,9 @@ export class Texts {
     }
     static discardForBenefit(benefit: string, number: number) {
         return `Choose ${number === 1 ? "a" : Util.numeral(number)} card${number > 1 ? "s" : ""} to discard. You'll get ${benefit} if you do.`;
+    }
+    static trashForBenefit(benefit: string, number: number) {
+        return `Choose ${number === 1 ? "a" : Util.numeral(number)} card${number > 1 ? "s" : ""} to trash. You'll get ${benefit} if you do.`;
     }
     static discardAForBenefit(type: string, number: number, benefit: string) {
         return `Choose ${Util.numeral(number)} ${type} to discard. You'll get ${benefit} if you do.`;

@@ -17,7 +17,8 @@ const chunkNames = new webpack.NamedChunksPlugin((chunk) => {
         if (cardTest.test(m.rawRequest)) {
             cardTest.lastIndex = 0;
             const [, set, cardName] = cardTest.exec(m.rawRequest);
-            return `cards/${set}/${cardName}`;
+            // uBlock Origin blocks the name Urchin.js, so we want to make sure we rename it for safety.
+            return `cards/${set}/${cardName === "Urchin" ? "darkAgesUrchin": cardName}`;
         }
     }
     // Hack to return first module ID

@@ -261,6 +261,7 @@ export default abstract class AIPlayer extends Player {
                     discardCardForBenefit: decisionMatcher(decision.helperText, Texts.discardForBenefit),
                     discardTypeForBenefit: decisionMatcher(decision.helperText, Texts.discardAForBenefit),
                     trashCard: decisionMatcher(decision.helperText, Texts.chooseCardToTrashFor),
+                    trashForBenefit: decisionMatcher(decision.helperText, Texts.trashForBenefit),
                     playAction: decisionMatcher(decision.helperText, () => Texts.chooseActionToPlay),
                     actionCardPlayTwice: decisionMatcher(decision.helperText, () => Texts.chooseCardToPlayTwice),
                     actionCardReplay: decisionMatcher(decision.helperText, () => Texts.chooseCardToReplay),
@@ -283,6 +284,10 @@ export default abstract class AIPlayer extends Player {
                 }
                 if (keys.trashCard != null) {
                     return this.chooseCardFromPriority(await this.trashPriority(), decision.validChoices) as any;
+                }
+                if (keys.trashForBenefit) {
+                    const choice = await this.trashForBenefit(decision.validChoices.map((a) => a.name), keys.trashForBenefit[1], keys.trashForBenefit[0]);
+                    return decision.validChoices.find((a) => a.name === choice) as any;
                 }
                 if (keys.discardTopDeck) {
                     return this.chooseCardFromPriority(await this.topDeckPriority(), decision.validChoices) as any;
@@ -336,6 +341,7 @@ export default abstract class AIPlayer extends Player {
             case "confirm":
                 const confirmKeys = {
                     wantTrash: decisionMatcher(decision.helperText, Texts.doYouWantToTrashA),
+                    wantTrashForBenefit: decisionMatcher(decision.helperText, Texts.doYouWantToTrashAToB),
                     wantDeckToDiscard: decisionMatcher(decision.helperText, () => Texts.placeDeckIntoDiscard),
                     wantDraw: decisionMatcher(decision.helperText, Texts.wantToDraw),
                     wantRevealMoat: decisionMatcher(decision.helperText, () => Texts.doYouWantToReveal('moat')),
@@ -348,6 +354,9 @@ export default abstract class AIPlayer extends Player {
                     wantBuyCoffers: decisionMatcher(decision.helperText, () => Texts.wantBuyCoffers),
                     discardForBenefit: decisionMatcher(decision.helperText, Texts.wantToDiscardAForBenefit)
                 };
+                if (confirmKeys.wantTrashForBenefit) {
+                    return ((await this.trashForBenefit([confirmKeys.wantTrashForBenefit[0]], 1, confirmKeys.wantTrashForBenefit[1])) !== 'No Card') as any;
+                }
                 if (confirmKeys.wantTrash) {
                     return this.wantCardOverNothing(await this.trashPriority(), confirmKeys.wantTrash[0]) as any;
                 }
@@ -440,6 +449,10 @@ export default abstract class AIPlayer extends Player {
             return this.chooseCardFromPriority(await this.discardPriority(), choices.map((a, i) => ({name: a, id: a + i})) as any).name;
         }
         return choices.find((a) => a === 'No Card') || choices[0];
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected async trashForBenefit(choices: string[], number: number, benefit: string): Promise<string> {
+        return choices[0];
     }
     protected async willingToDiscard(choices: string[]): Promise<number> {
         return (await Promise.all(choices.map(async (a) => this.wantCardOverNothing(await this.discardPriority(), a)))).filter((a) => a).length;

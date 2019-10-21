@@ -14,11 +14,10 @@ export default class Madman extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/MadmanArt.jpg";
     randomizable = false;
-    async onAction(player: Player): Promise<void> {
+    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
         player.data.actions += 2;
-        if (player.data.playArea.some((a) => a.id === this.id)) {
-            const card = player.data.playArea.splice(player.data.playArea.findIndex((a) => a.id === this.id), 1)[0];
-            player.game.supply.getPile('madman')?.unshift(card);
+        if (tracker.hasTrack) {
+            player.game.supply.getPile('madman')?.unshift(tracker.exercise()!);
             await player.draw(player.data.hand.length);
         }
     }

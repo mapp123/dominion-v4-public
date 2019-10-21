@@ -14,11 +14,11 @@ export default class Piazza extends Project {
             let card = await player.deck.pop();
             if (card) {
                 player.lm('The piazza activates for %p, who reveals %s.', Util.formatCardList([card.name]));
-                card = (await player.reveal([card], true))[0];
+                card = (await player.reveal([card]))[0];
             }
             if (card && card.types.includes("action")) {
                 player.data.playArea.push(card);
-                await player.playActionCard(card, true);
+                await player.playActionCard(card, null, true);
             }
             else if (card) {
                 player.deck.cards.unshift(card);

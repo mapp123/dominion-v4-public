@@ -22,16 +22,7 @@ export default class Scepter extends Card {
             case Texts.replayAction:
                 const card = await player.chooseCard(Texts.chooseCardToReplay, player.data.playArea.filter((a) => a.types.includes("action")));
                 if (card) {
-                    // We create a duplicate card with the same ID, and call it's play function. This way, it can find itself,
-                    // but have an independent version of data and everything else.
-                    // @ts-ignore
-                    this._duplicateCard = new card.constructor(this.game) as Card;
-                    this._duplicateCard.id = card.id;
-                    if (typeof (this._duplicateCard as any)._isUnderThroneRoom !== "undefined") {
-                        (this._duplicateCard as any)._isUnderThroneRoom = true;
-                    }
-                    player.lm('%p replays the %s.', card.name);
-                    await player.playActionCard(this._duplicateCard, false);
+                    this._duplicateCard = await player.replayActionCard(card, player.getTrackerInPlay(card), true);
                 }
                 break;
         }
@@ -46,11 +37,7 @@ export default class Scepter extends Card {
         return true;
     }
 
-    async onDiscardFromPlay(player: Player, hasTrack: { hasTrack: boolean }, loseTrack: () => {}): Promise<any> {
+    async onDiscardFromPlay(): Promise<any> {
         this._isUnderThroneRoom = false;
-        if (this._duplicateCard) {
-            await this._duplicateCard.onDiscardFromPlay(player, hasTrack, loseTrack);
-        }
-        this._duplicateCard = null;
     }
 }

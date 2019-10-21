@@ -16,7 +16,7 @@ export default class Urchin extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/UrchinArt.jpg";
     private sub: any = null;
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onAction(player: Player, exemptPlayers: Player[], tracker): Promise<void> {
         await player.draw(1);
         player.data.actions++;
         await player.attackOthers(exemptPlayers, async (p) => {
@@ -28,16 +28,13 @@ export default class Urchin extends Card {
             }
         });
         this.sub = player.events.on('willPlayAction', async (card) => {
-            if (player.data.playArea.find((a) => a.id === this.id) == null) {
+            if (!tracker.hasTrack) {
                 this.sub = null;
                 return false;
             }
             if (card.id !== this.id && card.types.includes("attack") && await player.confirmAction(Texts.doYouWantToTrashAToB('urchin', 'gain a mercenary'))) {
-                const me = player.data.playArea.splice(player.data.playArea.findIndex((a) => a.id === this.id), 1)[0];
-                if (me) {
-                    await player.trash(me);
-                    await player.gain('mercenary');
-                }
+                await player.trash(tracker.exercise()!);
+                await player.gain('mercenary');
                 this.sub = null;
                 return false;
             }

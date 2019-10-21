@@ -1,6 +1,7 @@
 import Card from "../cards/Card";
 import Player from "./Player";
 import Deck from "./Deck";
+import Tracker from "./Tracker";
 
 type BaseEvents = {[event: string]: any[]};
 type Cbs<A extends BaseEvents> = {
@@ -42,8 +43,8 @@ type PlayerEvent = {
     turnStart: [];
     turnEnd: [];
     buy: [string];
-    gain: [Card, {hasTrack: boolean}, () => any];
-    trash: [Card, {hasTrack: boolean}, () => any];
+    gain: [Tracker<Card>];
+    trash: [Tracker<Card>];
     cleanupStart: [];
     buyStart: [];
     handDraw: [];
@@ -52,14 +53,14 @@ type PlayerEvent = {
     noTreasureImpl: [Card];
     shuffle: [Deck];
     willPlayAction: [Card];
-    actionCardPlayed: [Card];
+    actionCardPlayed: [Card, Tracker<Card>];
 }
 export class PlayerEvents extends Events<PlayerEvent> {}
 type GameEvent = {
     scoreStart: [];
     gameEnd: [];
-    gain: [Player, Card, {hasTrack: boolean}, () => any];
-    trash: [Player, Card, {hasTrack: boolean}, () => any];
+    gain: [Player, Tracker<Card>];
+    trash: [Player, Tracker<Card>];
     buy: [Player, string];
     buyStart: [];
     actionCardPlayed: [Player, Card];

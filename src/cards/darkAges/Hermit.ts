@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Tracker from "../../server/Tracker";
 
 export default class Hermit extends Card {
     intrinsicTypes = ["action"] as const;
@@ -27,15 +28,14 @@ export default class Hermit extends Card {
         }
         await player.chooseGain(Texts.chooseCardToGainFor('hermit'), false, GainRestrictions.instance().setMaxCoinCost(3));
     }
-    async onDiscardFromPlay(player: Player, hasTrack: { hasTrack: boolean }, loseTrack: () => {}): Promise<any> {
-        if (player.boughtCards.length === 0) {
-            if (hasTrack.hasTrack) {
-                loseTrack();
-                await player.trash(this);
-            }
-            await player.gain('madman');
+
+    async onDiscardFromPlay(player: Player, tracker: Tracker<Card>): Promise<any> {
+        if (player.boughtCards.length === 0 && tracker.hasTrack) {
+            await player.trash(tracker.exercise()!);
         }
+        await player.gain('madman');
     }
+
     public static onChosen(): string[] {
         return ['madman'];
     }

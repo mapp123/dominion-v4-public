@@ -20,8 +20,9 @@ export default class ThroneRoom extends Card {
             player.lm('%p chooses %s.', Util.formatCardList([card.name]));
             player.data.playArea.push(card);
             this._originalCard = card;
-            await player.playActionCard(card);
-            this._duplicateCard = await player.replayActionCard(card);
+            const tracker = player.getTrackerInPlay(card);
+            await player.playActionCard(card, tracker);
+            this._duplicateCard = await player.replayActionCard(card, tracker);
         }
     }
     shouldDiscardFromPlay(): boolean {

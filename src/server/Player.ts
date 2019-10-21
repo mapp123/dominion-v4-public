@@ -11,6 +11,7 @@ import CardRegistry from "../cards/CardRegistry";
 import {PlayerEvents} from "./Events";
 import Util from "../Util";
 import Rules from "./Rules";
+import Tracker from "./Tracker";
 
 export default class Player {
     id = v4();
@@ -248,12 +249,11 @@ export default class Player {
                     if (dupCard.length) {
                         this._duplicatedPlayArea = this._duplicatedPlayArea.filter((a) => a.id !== card.id);
                     }
-                    const hasTrack = {hasTrack: true};
-                    const loseTrack = () => hasTrack.hasTrack = false;
-                    await card.onDiscardFromPlay(this, hasTrack, loseTrack);
+                    const tracker = new Tracker(card);
+                    await card.onDiscardFromPlay(this, tracker);
                     i--;
-                    if (hasTrack.hasTrack) {
-                        await this.discard(card);
+                    if (tracker.hasTrack) {
+                        await this.discard(tracker.exercise()!);
                     }
                 }
             }
@@ -281,7 +281,7 @@ export default class Player {
                     this.data.actions--;
                 }
                 this.data.playArea.push(card);
-                await this.playActionCard(card);
+                await this.playActionCard(card, null);
             }
             else {
                 break;
@@ -294,17 +294,22 @@ export default class Player {
      * (Note that this is not necessarily true, for example, if Feast trashes itself during a Throne Room, this will be called,
      * but the card will be in the trash.
      * @param card
+     * @param tracker
      * @param log
      */
-    async playActionCard(card: Card, log = true) {
+    async playActionCard(card: Card, tracker: Tracker<Card> | null, log = true): Promise<Tracker<Card>> {
         if (log) {
             this.lm('%p plays %s.', Util.formatCardList([card.name]));
         }
         let exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
         await this.events.emit('willPlayAction', card);
-        await card.onAction(this, exemptPlayers);
-        await this.events.emit('actionCardPlayed', card);
+        if (tracker == null) {
+            tracker = this.getTrackerInPlay(card);
+        }
+        await card.onAction(this, exemptPlayers, tracker);
+        await this.events.emit('actionCardPlayed', card, tracker);
         await this.game.events.emit('actionCardPlayed', this, card);
+        return tracker;
     }
 
     /**
@@ -313,9 +318,10 @@ export default class Player {
      * play area will not see the duplicate.
      * This returns the duplicate card if you need it for things like determining when a Throne Room should be discarded.
      * @param card
+     * @param tracker
      * @param log
      */
-    async replayActionCard(card: Card, log = true): Promise<Card> {
+    async replayActionCard(card: Card, tracker: Tracker<Card>, log = true): Promise<Card> {
         if (log) {
             this.lm('%p replays the %s.', card.name);
         }
@@ -332,7 +338,7 @@ export default class Player {
             (duplicateCard as any)._isUnderThroneRoom = true;
         }
         this._duplicatedPlayArea.push(duplicateCard);
-        await this.playActionCard(duplicateCard, false);
+        await this.playActionCard(duplicateCard, tracker, false);
         return duplicateCard;
     }
     async getExemptPlayers(attackingCard: Card): Promise<Player[]> {
@@ -409,27 +415,34 @@ export default class Player {
             if (log) {
                 this.lm('%p gains %s.', Util.formatCardList([c.name]));
             }
-            const hasTrack = {hasTrack: true};
-            await c.onGainSelf(this, hasTrack, () => hasTrack.hasTrack = false);
-            await this.events.emit('gain', c, hasTrack, () => hasTrack.hasTrack = false);
-            await this.game.events.emit('gain', this, c, hasTrack, () => {
-                hasTrack.hasTrack = false;
-            });
-            if (!hasTrack.hasTrack) {
-                return c;
-            }
+            const tracker = new Tracker(c);
             switch (destination) {
                 case 'discard':
                     // Per http://wiki.dominionstrategy.com/index.php/Discard, you do not discard a card when you gain it.
                     await this.deck.discardCard(c);
+                    tracker.onExercise(() => {
+                        this.deck.discard.splice(this.deck.discard.indexOf(c), 1);
+                    });
                     break;
                 case 'hand':
                     this.data.hand.push(c);
+                    tracker.onExercise(() => {
+                        this.data.hand.splice(this.data.hand.indexOf(c), 1);
+                    });
                     break;
                 case 'deck':
                     this.deck.cards.unshift(c);
+                    tracker.canExercise(() => {
+                        return this.deck.cards[0] === c;
+                    });
+                    tracker.onExercise(() => {
+                        this.deck.cards.shift();
+                    });
                     break;
             }
+            await c.onGainSelf(this, tracker);
+            await this.events.emit('gain', tracker);
+            await this.game.events.emit('gain', this, tracker);
             return c;
         }
         return null;
@@ -549,13 +562,14 @@ export default class Player {
     }
     async trash(card: Card, log = true) {
         if (log) this.lm('%p trashes %s.', Util.formatCardList([card.name]));
-        const hasTrack = {hasTrack: true};
-        await card.onTrashSelf(this, hasTrack, () => hasTrack.hasTrack = false);
-        await this.events.emit('trash', card, hasTrack, () => hasTrack.hasTrack = false);
-        await this.game.events.emit('trash', this, card, hasTrack, () => hasTrack.hasTrack = false);
-        if (hasTrack.hasTrack) {
-            this.game.trash.push(card);
-        }
+        this.game.trash.push(card);
+        const tracker = new Tracker(card);
+        tracker.onExercise(() => {
+            this.game.trash.splice(this.game.trash.indexOf(card), 1);
+        });
+        await card.onTrashSelf(this, tracker);
+        await this.events.emit('trash', tracker);
+        await this.game.events.emit('trash', this, tracker);
     }
     async chooseOption<T extends readonly string[]>(helperText: string, options: T): Promise<T[number]> {
         const {choice} = await this.makeDecision({
@@ -635,16 +649,28 @@ export default class Player {
         }
         return null;
     }
-    async reveal(cards: Card[], hasTrack = true): Promise<Card[]> {
+    async reveal(cards: Card[]): Promise<Card[]> {
         const keptCards = [] as Card[];
         for (let card of cards) {
-            const _hasTrack = {hasTrack};
-            const loseTrack = () => _hasTrack.hasTrack = false;
-            await card.onRevealSelf(this, _hasTrack, loseTrack);
-            if (_hasTrack.hasTrack) {
+            const tracker = new Tracker(card);
+            await card.onRevealSelf(this, tracker);
+            if (tracker.hasTrack) {
                 keptCards.push(card);
             }
         }
         return keptCards;
+    }
+    getTrackerInPlay<T extends Card>(card: T): Tracker<T> {
+        if (!this.data.playArea.includes(card)) {
+            throw new Error("Attempted to get a tracker for a card not in play!");
+        }
+        const t = new Tracker(card);
+        t.onExercise(() => {
+            if (!this.data.playArea.includes(card)) {
+                throw new Error("Attempted to exercise a tracker after the card was already gone!");
+            }
+            this.data.playArea.splice(this.data.playArea.indexOf(card), 1);
+        });
+        return t;
     }
 }

@@ -11,8 +11,8 @@ export default class Academy extends Project {
     features = ["villagers"] as const;
     name = "academy";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.events.on('gain', async (card) => {
-            if (card.types.includes("action")) {
+        player.events.on('gain', async (tracker) => {
+            if (tracker.viewCard().types.includes("action")) {
                 player.data.villagers++;
             }
             return true;

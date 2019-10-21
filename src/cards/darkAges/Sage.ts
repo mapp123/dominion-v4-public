@@ -23,13 +23,13 @@ export default class Sage extends Card {
             revealedCards.push(card);
         }
         player.lm('%p reveals %s.', Util.formatCardList(revealedCards.map((a) => a.name)));
-        revealedCards = await player.reveal(revealedCards, true);
+        revealedCards = await player.reveal(revealedCards);
         if (card === undefined) {
             player.lm('%p has run out of cards to reveal, and draws nothing.');
         }
         else {
             player.lm('%p reveals and draws %s.', Util.formatCardList([card.name]));
-            card = (await player.reveal([card], true))[0];
+            card = (await player.reveal([card]))[0];
             if (card) {
                 player.data.hand.push(card);
             }

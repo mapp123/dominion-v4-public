@@ -15,13 +15,13 @@ export default class Innovation extends Project {
             usedThisTurn = false;
             return true;
         });
-        player.events.on('gain', async (card, hasTrack, loseTrack) => {
-            if (!usedThisTurn && card.types.includes("action")) {
+        player.events.on('gain', async (tracker) => {
+            if (!usedThisTurn && tracker.viewCard().types.includes("action")) {
                 usedThisTurn = true;
-                if (hasTrack.hasTrack && await player.confirmAction(Texts.wouldYouLikeToSetAsideThe(card.name, "innovation"))) {
-                    loseTrack();
+                if (tracker.hasTrack && await player.confirmAction(Texts.wouldYouLikeToSetAsideThe(tracker.viewCard().name, "innovation"))) {
+                    const card = tracker.exercise()!;
                     player.data.playArea.push(card);
-                    await player.playActionCard(card);
+                    await player.playActionCard(card, null);
                 }
             }
             return true;

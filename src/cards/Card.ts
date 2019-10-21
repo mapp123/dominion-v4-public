@@ -4,6 +4,7 @@ import Player from "../server/Player";
 import Game from "../server/Game";
 import {SupplyData} from "../createSupplyData";
 import {GainRestrictions} from "../server/GainRestrictions";
+import Tracker from "../server/Tracker";
 
 export interface Cost {
     coin: number;
@@ -139,10 +140,18 @@ export default abstract class Card {
     public shouldDiscardFromPlay() {
         return true;
     }
-    public async onDiscardFromPlay(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => {}) {
+    private trackers: Array<Tracker<Card>> = [];
+    public addTracker(tracker: Tracker<Card>) {
+        this.trackers.push(tracker);
+    }
+    public loseTrack() {
+        this.trackers.forEach((t) => t.loseTrack());
+        this.trackers = [];
+    }
+    public async onDiscardFromPlay(player: Player, tracker: Tracker<Card>) {
 
     }
-    public async onAction(player: Player, exemptPlayers: Player[]) {
+    public async onAction(player: Player, exemptPlayers: Player[], tracker: Tracker<this>) {
         await player.events.emit('noActionImpl', this, exemptPlayers);
     }
     public async onAttackInHand(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {
@@ -153,13 +162,13 @@ export default abstract class Card {
         await player.events.emit('buy', this.cardName);
         return await player.gain(this.cardName, undefined, false);
     }
-    public onGainSelf(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => any): Promise<void> | void {
+    public onGainSelf(player: Player, tracker: Tracker<this>): Promise<void> | void {
 
     }
-    public onTrashSelf(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => any): Promise<void> | void {
+    public onTrashSelf(player: Player, tracker: Tracker<this>): Promise<void> | void {
 
     }
-    public onRevealSelf(player: Player, hasTrack: {hasTrack: boolean}, loseTrack: () => any): Promise<void> | void {
+    public onRevealSelf(player: Player, tracker: Tracker<this>): Promise<void> | void {
 
     }
     protected async onTreasure(player: Player) {

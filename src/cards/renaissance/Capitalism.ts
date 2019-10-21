@@ -23,7 +23,7 @@ export default class Capitalism extends Project {
         });
         player.events.on('noTreasureImpl', async (card) => {
             if ((card.constructor as any).isCard && card.types.includes("action") && card.cardText.includes("+$")) {
-                await player.playActionCard(card, false);
+                await player.playActionCard(card, null, false);
             }
             return true;
         });

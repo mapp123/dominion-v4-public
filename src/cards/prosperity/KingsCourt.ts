@@ -22,9 +22,10 @@ export default class KingsCourt extends Card {
             player.lm('%p chooses %s.', Util.formatCardList([card.name]));
             player.data.playArea.push(card);
             this._originalCard = card;
-            await player.playActionCard(card);
-            this._duplicateCard1 = await player.replayActionCard(card);
-            this._duplicateCard2 = await player.replayActionCard(card);
+            const tracker = player.getTrackerInPlay(card);
+            await player.playActionCard(card, tracker);
+            this._duplicateCard1 = await player.replayActionCard(card, tracker);
+            this._duplicateCard2 = await player.replayActionCard(card, tracker);
         }
     }
     shouldDiscardFromPlay(): boolean {
@@ -34,11 +35,7 @@ export default class KingsCourt extends Card {
         return true;
     }
 
-    async onDiscardFromPlay(player: Player, hasTrack: { hasTrack: boolean }, loseTrack: () => {}): Promise<any> {
+    async onDiscardFromPlay(): Promise<any> {
         this._isUnderThroneRoom = false;
-        if (this._duplicateCard1) {
-            await this._duplicateCard1.onDiscardFromPlay(player, hasTrack, loseTrack);
-        }
-        this._duplicateCard1 = null;
     }
 }

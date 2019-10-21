@@ -15,7 +15,7 @@ export default class Survivors extends Card {
     randomizable = false;
     async onAction(player: Player): Promise<void> {
         let cards = [await player.deck.pop(), await player.deck.pop()].filter(Util.nonNull);
-        cards = await player.reveal(cards, true);
+        cards = await player.reveal(cards);
         const choice = await player.chooseOption(Texts.whatToDoWithCards(Util.formatCardList(cards.map((a) => a.name))), [Texts.discardThem, Texts.putThemOnYourDeck] as const);
         switch (choice) {
             case Texts.discardThem:

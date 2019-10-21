@@ -25,7 +25,7 @@ export default class Vassal extends Card {
                 player.deck.discard.pop();
                 player.data.playArea.push(card);
                 player.lm('%p plays the discarded %s.', card.name);
-                await player.playActionCard(card, false);
+                await player.playActionCard(card, null, false);
             }
         }
     }

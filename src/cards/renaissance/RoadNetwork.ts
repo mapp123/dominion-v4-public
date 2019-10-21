@@ -10,9 +10,9 @@ export default class RoadNetwork extends Project {
     };
     name = "road network";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.game.events.on('gain', async (p, card) => {
+        player.game.events.on('gain', async (p, tracker) => {
             // Must be other player
-            if (player !== p && card.types.includes("victory")) {
+            if (player !== p && tracker.viewCard().types.includes("victory")) {
                 player.lm('Road Network activates for %p.');
                 await player.draw(1);
             }

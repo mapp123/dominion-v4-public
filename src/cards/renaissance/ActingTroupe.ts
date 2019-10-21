@@ -12,11 +12,10 @@ export default class ActingTroupe extends Card {
     features = ["villagers"] as const;
     supplyCount = 10;
     cardArt = "/img/card-img/Acting_TroupeArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
         player.data.villagers += 4;
-        if (player.data.playArea.find((a) => a.id === this.id)) {
-            let [toTrash] = player.data.playArea.splice(player.data.playArea.findIndex((a) => a.id == this.id), 1);
-            await player.trash(toTrash);
+        if (tracker.hasTrack) {
+            await player.trash(tracker.exercise()!);
         }
     }
 }

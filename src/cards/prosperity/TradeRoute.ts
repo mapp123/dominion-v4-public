@@ -32,9 +32,9 @@ export default class TradeRoute extends Card {
                 globalCardData.tokens[pile.identity.name] = true;
             }
         });
-        game.events.on('gain', (player, card) => {
-            if (card.types.includes("victory") && globalCardData.tokens[card.name]) {
-                globalCardData.tokens[card.name] = false;
+        game.events.on('gain', (player, tracker) => {
+            if (tracker.viewCard().types.includes("victory") && globalCardData.tokens[tracker.viewCard().name]) {
+                globalCardData.tokens[tracker.viewCard().name] = false;
                 globalCardData.coins = (globalCardData.coins || 0) + 1;
             }
             return true;

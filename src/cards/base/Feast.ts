@@ -13,10 +13,9 @@ export default class Feast extends Card {
         "Gain a card costing up to $5.";
     supplyCount = 10;
     cardArt = "/img/card-img/FeastArt.jpg";
-    async onAction(player: Player): Promise<void> {
-        if (player.data.playArea.some((a) => a.id === this.id)) {
-            const card = player.data.playArea.splice(player.data.playArea.findIndex((a) => a.id === this.id), 1)[0];
-            await player.trash(card);
+    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+        if (tracker.hasTrack) {
+            await player.trash(tracker.exercise()!);
         }
         await player.chooseGain(Texts.chooseCardToGainFor('feast'), false, GainRestrictions.instance().setMaxCoinCost(5));
     }

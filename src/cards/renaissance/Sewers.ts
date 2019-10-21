@@ -12,8 +12,8 @@ export default class Sewers extends Project {
     name = "sewers";
     async onPlayerJoinProject(player: Player): Promise<any> {
         let trashingCard: Card | null = null;
-        player.events.on('trash', async (trashedCard) => {
-            if (trashingCard !== trashedCard) {
+        player.events.on('trash', async (tracker) => {
+            if (trashingCard !== tracker.viewCard()) {
                 player.lm('The sewers activates for %p.');
                 const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('sewers'), true);
                 if (card) {

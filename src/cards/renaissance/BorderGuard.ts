@@ -5,6 +5,7 @@ import Game from "../../server/Game";
 import Lantern from "./Lantern";
 import Util from "../../Util";
 import Horn from "./Horn";
+import Tracker from "../../server/Tracker";
 
 export default class BorderGuard extends Card {
     intrinsicTypes = ["action"] as const;
@@ -33,16 +34,17 @@ export default class BorderGuard extends Card {
             player.game.giveArtifactTo(choice, player);
         }
     }
-    async onDiscardFromPlay(player: Player, hasTrack: { hasTrack: boolean }, loseTrack: () => {}): Promise<any> {
+
+    async onDiscardFromPlay(player: Player, tracker: Tracker<Card>): Promise<any> {
         const horn = this.getGlobalData().horn as Horn;
-        if (hasTrack.hasTrack && horn.belongsToPlayer === player && horn.lastUsedOn < player.turnNumber) {
+        if (tracker.hasTrack && horn.belongsToPlayer === player && horn.lastUsedOn < player.turnNumber) {
             horn.lastUsedOn = player.turnNumber;
             if (await player.confirmAction(Texts.doYouWantToPutTheAOnYourDeck('border guard'))) {
-                loseTrack();
-                player.deck.cards.unshift(this);
+                player.deck.cards.unshift(tracker.exercise()!);
             }
         }
     }
+
     public static setup(globalCardData: any, game: Game) {
         globalCardData.lantern = game.getArtifact('lantern') as Lantern;
         globalCardData.horn = game.getArtifact('horn') as Lantern;

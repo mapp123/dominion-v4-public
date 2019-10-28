@@ -110,7 +110,7 @@ export default class Game {
         this.host.notifyPlayerCount();
         socket.emit(returnTo, player.id);
     }
-    private joinValidator = struct.tuple(['string', 'string'] as const);
+    private joinValidator = struct.tuple(['string', 'string', 'boolean?'] as const);
     joinAsPlayer(socket: Socket, ...args: any[]) {
         const [playerId, returnTo] = this.joinValidator(args);
         const player = this.players.find((a) => a.id === playerId);

@@ -1,9 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/camelcase
-import {unstable_createResource} from "@luontola/react-cache";
 import {CardImplementation} from "../cards/Card";
 // @ts-ignore
 const context: (module: string) => Promise<{default: CardImplementation}> = require.context(
-    '../cards', true, /\.\/(.*?)\/(.*?)\.ts/, 'lazy'
+    '../cards', true, /\.\/(.*?)\/([^.]*?)(?:.?(?!abstract)[^.]*?)\.ts/, 'lazy'
 );
 export default class ClientCardRegistry {
     private static instance: ClientCardRegistry | null = null;
@@ -44,4 +42,3 @@ export default class ClientCardRegistry {
         return this.instance;
     }
 }
-export const CardResource = unstable_createResource(ClientCardRegistry.getInstance().getCard);

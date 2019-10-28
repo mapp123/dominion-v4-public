@@ -53,7 +53,8 @@ export default class GameView extends React.Component<RouteComponentProps<Params
         });
         let id: string | null;
         if ((id = sessionStorage.getItem(`game:${this.props.match.params.gameId}`)) != null) {
-            this.socket.emit('joinAsPlayer', id, 'joinedAsPlayer');
+            const isReload = (window?.performance?.getEntriesByType?.('navigation')?.[0] as PerformanceNavigationTiming)?.type === "reload";
+            this.socket.emit('joinAsPlayer', id, 'joinedAsPlayer', isReload);
         }
         else {
             this.socket.emit('joinAsNewPlayer', 'joinedAsPlayer');

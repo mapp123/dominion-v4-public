@@ -33,6 +33,7 @@ export default class CardRegistry {
         this.cardCache = cardsInSet.reduce((sets, [setName, ...cards]) => {
             const set: { [key: string]: CardImplementation} = {};
             cards.forEach((card) => {
+                if (/.*?\.abstract\.[tj]s/.test(card)) return;
                 const path = resolve(__dirname, setName, card);
                 // webpack always uses "/", so use it here even if we're on Windows. Also use .ts instead of .js
                 const relPath = relative(__dirname, path).split(sep).join("/").replace(/\.js/g, '.ts');

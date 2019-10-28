@@ -1,7 +1,6 @@
 /* eslint-disable */
 let MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const HtmlOutputPlugin = require('html-webpack-plugin');
-const path = require('path');
 const webpack = require('webpack');
 let extractSass = new MiniCssExtractPlugin({
     filename: '../css/[name].css',
@@ -17,6 +16,14 @@ const chunkNames = new webpack.NamedChunksPlugin((chunk) => {
         if (cardTest.test(m.rawRequest)) {
             cardTest.lastIndex = 0;
             const [, set, cardName] = cardTest.exec(m.rawRequest);
+            if (chunk._modules.size > 1) {
+                // We have non-pulled util modules, log the extras!
+                for (let p of chunk._modules) {
+                    if (p !== m) {
+                        console.log(`Extra module in card chunk: ${p.rawRequest}`);
+                    }
+                }
+            }
             // uBlock Origin blocks the name Urchin.js, so we want to make sure we rename it for safety.
             return `cards/${set}/${cardName === "Urchin" ? "darkAgesUrchin": cardName}`;
         }
@@ -30,6 +37,10 @@ const chunkNames = new webpack.NamedChunksPlugin((chunk) => {
 const removeSupplyInClient = new webpack.NormalModuleReplacementPlugin(
     /server\/Supply/,
     '../client/ClientSupply.ts'
+);
+const removeCompromiseInClient = new webpack.NormalModuleReplacementPlugin(
+    /compromise/,
+    './ClientCompromise.ts'
 );
 module.exports = {
     entry: {
@@ -48,7 +59,8 @@ module.exports = {
     plugins: [
         extractSass,
         chunkNames,
-        removeSupplyInClient
+        removeSupplyInClient,
+        removeCompromiseInClient
     ],
     module: {
         rules: [
@@ -86,7 +98,14 @@ module.exports = {
     optimization: {
         runtimeChunk: "single",
         splitChunks: {
-            chunks: "all"
+            chunks: "all",
+            cacheGroups: {
+                util: {
+                    test: /Texts|Util|Artifact|(?:.*?\.abstract)|Project|ClientSupply|ClientCompromise/,
+                    name: 'util',
+                    chunks: 'all'
+                }
+            }
         }
     }
 };

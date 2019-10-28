@@ -89,13 +89,14 @@ export default class HandView extends React.Component<IProps, {}> {
                                 cardName: card.name,
                                 onClick: null,
                                 id: card.id,
-                                name: card.name
+                                name: card.name,
+                                types: card.types
                             };
                         })}
                         callback={(a,b,c,d,reorderedArray) => {
                             this.list = reorderedArray;
                         }}
-                        template={HandButton}
+                        template={({item}) => <HandButton {...item}/>}
                     />
                     <button className="btn btn-info dominion-font" style={{margin: "4px 0"}}>{this.props.decision.bottomString}</button>
                     <button className="btn btn-success dominion-font" style={{margin: "4px 0"}} onClick={this.submitReorder.bind(this)}>Done</button>

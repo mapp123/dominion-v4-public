@@ -113,7 +113,7 @@ export default class CardGenerator extends React.Component<IProps, {}> {
                 {this.props.heirloomLine && <image href="/img/card-resources/Heirloom.png" x={97} y={1720} />}
                 {this.props.heirloomLine && <SingleTextLine line={this.props.heirloomLine} x={701} y={1835} maxWidth={1040} initialSize={58} family="Times New Roman" style={"italic"}/>}
                 <SingleTextLine line={this.props.cardName} x={701} y={242} maxWidth={1180} initialSize={75} />
-                <SingleTextLine line={this.props.cardTypes.join(" - ")} x={750} y={1950} maxWidth={890} initialSize={64} />
+                <ForceWrappingTextLine line={this.props.cardTypes.map((a, i) => i === 0 ? a : i % 2 === 1 ? "\u00a0-\u00a0" + a : " - " + a).join("")} x={300} y={1865} maxWidth={890} maxHeight={120} initialSize={64} />
                 <image href="/img/CoinHighRes.png" x={129} y={1850} width={150} height={145} />
                 <text x={205} y={1965} textAnchor="middle" style={{fontSize: "86pt", fontFamily: "TrajanPro-Bold"}}>{this.props.costs.coin}</text>
                 <Description description={this.props.description} heirloomPresent={!!this.props.heirloomLine} smallDescription={this.props.smallDescription}/>
@@ -143,6 +143,60 @@ class RecolorFilter extends React.Component<{factors: number[]; name: string; of
                     type="matrix"
                     values={`${factors[0]} 0 0 0 ${factors[3]}\n0 ${factors[1]} 0 0 ${factors[4]}\n0 0 ${factors[2]} 0 ${factors[5]}\n0 0 0 1 0`} />
             </filter>
+        );
+    }
+}
+class ForceWrappingTextLine extends React.Component<{line: string; x: number; y: number; maxWidth: number; maxHeight: number; initialSize?: number; family?: string; style?: string}, {size: number}> {
+    foreignObjectRef = React.createRef<SVGForeignObjectElement>();
+    desRef = React.createRef<HTMLDivElement>();
+    constructor(props) {
+        super(props);
+        this.state = {
+            size: props.initialSize || 85
+        };
+    }
+    componentDidMount() {
+        const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
+        const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
+        if (foreignHeight !== desHeight) {
+            window.setTimeout(() => {
+                this.setState({
+                    size: this.state.size - 1
+                });
+            }, 0);
+        }
+    }
+    componentDidUpdate(): void {
+        const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
+        const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
+        if (foreignHeight !== desHeight) {
+            window.setTimeout(() => {
+                this.setState({
+                    size: this.state.size - 1
+                });
+            }, 10);
+        }
+        else {
+            console.log('typeline: ' + this.state.size);
+        }
+    }
+    render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
+        const baseStyle = {
+            fontSize: this.state.size + "pt",
+            fontFamily: this.props.family || "TrajanPro-Bold",
+            fontWeight: "normal" as "normal" | "bold",
+            fontStyle: "normal" as "normal" | "italic",
+            whiteSpace: "inherit" as "inherit" | "nowrap",
+            verticalAlign: "-webkit-baseline-middle"
+        } as const;
+        return (
+            <foreignObject x={this.props.x} y={this.props.y} width={this.props.maxWidth} height={this.props.maxHeight} ref={this.foreignObjectRef}>
+                <div style={{display: "table", position: "absolute", top: 0, left: 0, height: "100%", width: "100%"}}>
+                    <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: this.state.size + Math.floor(this.state.size / 15) + "pt", display: "table-cell", verticalAlign: "middle"}} ref={this.desRef}>
+                        <span style={baseStyle}>{this.props.line}</span>
+                    </div>
+                </div>
+            </foreignObject>
         );
     }
 }
@@ -178,34 +232,34 @@ class DescriptionText extends React.Component<{description: string; smallDescrip
                 };
                 return (
                     <>
-                            <span style={{...textStyle, ...extraStyle}}>
+                        <span style={{...textStyle, ...extraStyle}}>
                                 +
-                                <svg height="1.5em" width="1.5em" viewBox="0 0 100 100" style={{verticalAlign: 'middle'}}>
-                                    <image xlinkHref="/img/CoinHighRes.png" x="0" y="0" height="100" width="100"/>
-                                    <text x={("" + num).length > 1 ? "14":"28.5"} y="75" fontSize="70" letterSpacing="-12" style={{fontWeight: "normal", fontFamily: "TrajanPro-Bold"}}>{num}</text>
-                                </svg>
-                            </span>
+                            <svg height="1.5em" width="1.5em" viewBox="0 0 100 100" style={{verticalAlign: 'middle'}}>
+                                <image xlinkHref="/img/CoinHighRes.png" x="0" y="0" height="100" width="100"/>
+                                <text x={("" + num).length > 1 ? "14":"28.5"} y="75" fontSize="70" letterSpacing="-12" style={{fontWeight: "normal", fontFamily: "TrajanPro-Bold"}}>{num}</text>
+                            </svg>
+                        </span>
                         <br />
                     </>
                 );
             }
             return (
                 <>
-                        <span style={{...textStyle, ...extraStyle}}>{text.split("$").map((item, i) => {
-                            if (i % 2 === 0) {
-                                return item;
-                            }
-                            const [, num, rest] = (/^(\d*)(.*)/.exec(item) || [null, "", ""]);
-                            return (
-                                <>
-                                    <svg height="1.2em" width="1.2em" viewBox="0 0 100 100" style={{verticalAlign: 'middle'}}>
-                                        <image xlinkHref="/img/CoinHighRes.png" x="0" y="0" height="100" width="100"/>
-                                        <text x={("" + num).length > 1 ? "14":"28.5"} y="75" fontSize="70" letterSpacing="-12" style={{fontWeight: "normal", fontFamily: "TrajanPro-Bold"}}>{num}</text>
-                                    </svg>
-                                    <span>{rest}</span>
-                                </>
-                            );
-                        })}</span>
+                    <span style={{...textStyle, ...extraStyle}}>{text.split("$").map((item, i) => {
+                        if (i % 2 === 0) {
+                            return item;
+                        }
+                        const [, num, rest] = (/^(\d*)(.*)/.exec(item) || [null, "", ""]);
+                        return (
+                            <>
+                                <svg height="1.2em" width="1.2em" viewBox="0 0 100 100" style={{verticalAlign: 'middle'}}>
+                                    <image xlinkHref="/img/CoinHighRes.png" x="0" y="0" height="100" width="100"/>
+                                    <text x={("" + num).length > 1 ? "14":"28.5"} y="75" fontSize="70" letterSpacing="-12" style={{fontWeight: "normal", fontFamily: "TrajanPro-Bold"}}>{num}</text>
+                                </svg>
+                                <span>{rest}</span>
+                            </>
+                        );
+                    })}</span>
                     <br />
                 </>
             );
@@ -220,12 +274,6 @@ class Description extends React.Component<{description: string;heirloomPresent: 
         };
     }
 
-    componentWillReceiveProps(): void {
-        this.setState({
-            fontSize: 60
-        });
-    }
-
     foreignObjectRef = React.createRef<SVGForeignObjectElement>();
     desRef = React.createRef<HTMLDivElement>();
     componentDidMount() {
@@ -238,11 +286,14 @@ class Description extends React.Component<{description: string;heirloomPresent: 
                 });
             }, 0);
         }
-        else {
-            console.log(this.state.fontSize);
-        }
     }
-    componentDidUpdate(): void {
+    componentDidUpdate(prevProps): void {
+        if (prevProps !== this.props) {
+            this.setState({
+                fontSize: 60
+            });
+            return;
+        }
         const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
         const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
         if (foreignHeight !== desHeight) {
@@ -253,7 +304,7 @@ class Description extends React.Component<{description: string;heirloomPresent: 
             }, 10);
         }
         else {
-            console.log(this.state.fontSize);
+            console.log("description: " + this.state.fontSize);
         }
     }
 
@@ -291,7 +342,7 @@ class DescriptionLine extends React.Component<{line: string; fontSize: number}, 
                 thisStyle.fontWeight = "bold";
             }
             if (/\$/.test(a)) {
-                const [, pre, amount, post] = /^(.*?)\$(\d+)(.*?)/g.exec(a)!;
+                const [, pre, amount, post] = /^(.*?)\$(\d*)(.*?)/g.exec(a)!;
                 thisStyle.whiteSpace = "nowrap";
                 return (
                     <span key={i} style={thisStyle}>

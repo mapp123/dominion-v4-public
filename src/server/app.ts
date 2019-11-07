@@ -8,8 +8,9 @@ import CardRegistry from "../cards/CardRegistry";
 import {Socket} from "socket.io";
 const app = express();
 app.use(express.static(resolve(__dirname, "../..", "dist")));
-const server = createServer(app);
-const sockets = io(server);
+export const server = createServer(app);
+// Export this so tests can get at it
+export const sockets = io(server);
 const games: {[key: string]: Game} = {};
 const shortcuts: {[key: string]: string} = {};
 const listeners: Map<Socket, string> = new Map<Socket, string>();
@@ -45,4 +46,6 @@ sockets.on('connection', (socket) => {
     });
 });
 app.use((req, res) => res.sendFile(resolve(__dirname, "../..", "dist/index.html")));
-server.listen(process.env.PORT || 3000);
+server.listen(process.env.PORT || 3000, () => {
+    console.log("Listening");
+});

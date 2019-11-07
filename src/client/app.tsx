@@ -6,8 +6,14 @@ import Home from "./Home";
 import GameView from "./GameView";
 import CreateGameView from "./CreateGameView";
 import CardGen from "./CardGenerator/CardGen";
+import Rollbar = require('rollbar');
 class Application extends React.Component<{}, {}> {
     socket = io();
+    rollbar = process.env.NODE_ENV === 'production' ? new Rollbar({
+        accessToken: "b8ad6fa0000440a5a336805d2f47846a",
+        captureUncaught: true,
+        captureUnhandledRejections: true
+    }) : null;
     constructor(props: {}) {
         super(props);
         // @ts-ignore

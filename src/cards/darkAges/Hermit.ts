@@ -5,6 +5,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 import Tracker from "../../server/Tracker";
 
 export default class Hermit extends Card {
+    static descriptionSize = 45;
     intrinsicTypes = ["action"] as const;
     name = "hermit";
     cost = {

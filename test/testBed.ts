@@ -29,13 +29,13 @@ function makeFakeIo(onLog?: (msg: string) => any) {
     }
 }
 type DecisionMatcher = (decision: Decision) => boolean;
-type DecisionResponse = {
+export type DecisionResponse = {
     matcher: DecisionMatcher;
     response: (decision) => DecisionResponseType[Decision["decision"]];
 }
 let testPlayerIndex = 1;
 const WELL_KNOWN_STOP_ERROR = 'WELL_KNOWN_STOP_ERROR';
-class TestPlayer extends Player {
+export class TestPlayer extends Player {
     decisionResponses: Array<DecisionResponse> = [];
     private optionalDecisionResponses: Array<DecisionResponse> = [];
     username = `Test Player ${testPlayerIndex++}`;
@@ -303,7 +303,7 @@ function createEmptySupplyPileCard() {
         }
     }
 }
-class TestGame extends Game {
+export class TestGame extends Game {
     done = false;
     private doneFn: (error?) => any = null as any;
     private resolvePromise!: () => any;
@@ -371,9 +371,24 @@ export default function makeTestGame({
     activateCards = [] as string[],
     d = () => {}
                                      }): [TestGame, TestPlayer[], (err?) => any] {
-    const game = new TestGame(makeFakeIo((msg) => {
-        console.log(msg)
-    }) as any);
+    if (typeof globalThis.testGameImpl !== 'undefined') {
+        return globalThis.testGameImpl({
+            players,
+            decks,
+            discards,
+            activateCards,
+            d
+        });
+    }
+    let game: TestGame;
+    if (typeof globalThis.testGameCreator !== 'undefined') {
+        game = globalThis.testGameCreator();
+    }
+    else {
+        game = new TestGame(makeFakeIo((msg) => {
+            console.log(msg)
+        }) as any);
+    }
     if (decks.some((a) => a.includes("attack"))) {
         game.injectTestAttack();
     }
@@ -386,7 +401,7 @@ export default function makeTestGame({
         ...activateCards
     ].filter((a, i, arr) => arr.indexOf(a) === i));
     for (let i = 0; i < players; i++) {
-        const player = new TestPlayer(game);
+        const player = new (typeof globalThis.testPlayerPrototype !== 'undefined' ? globalThis.testPlayerPrototype : TestPlayer)(game);
         let deck = [] as Card[];
         for (const cardName of (decks[i] || [])) {
             deck.push(

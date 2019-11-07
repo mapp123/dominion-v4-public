@@ -16,6 +16,7 @@ export const knightNames = [
 ];
 
 export default class Knights extends Card {
+    static typelineSize = 47;
     intrinsicTypes = ["action","attack","knight"] as const;
     name = "knights";
     cost = {

@@ -3,7 +3,8 @@ import Player from "../../server/Player";
 import Game from "../../server/Game";
 import {Cost} from "../Card";
 
-export default class Innovation extends Project {
+export default class Canal extends Project {
+    static descriptionSize = 20;
     cardArt = "/img/card-img/CanalArt.jpg";
     cardText = "During your turns, cards cost $1 less, but not less than $0.";
     cost = {

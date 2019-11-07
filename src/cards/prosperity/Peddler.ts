@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import Game from "../../server/Game";
 
 export default class Peddler extends Card {
+    static descriptionSize = 51;
     intrinsicTypes = ["action"] as const;
     name = "peddler";
     cost = {

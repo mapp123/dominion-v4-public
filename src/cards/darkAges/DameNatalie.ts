@@ -4,6 +4,8 @@ import Knight from "./Knight.abstract";
 import {GainRestrictions} from "../../server/GainRestrictions";
 
 export default class DameNatalie extends Knight {
+    static descriptionSize = 58;
+    static typelineSize = 47;
     intrinsicTypes = ["action","attack","knight"] as const;
     name = "dame natalie";
     cost = {

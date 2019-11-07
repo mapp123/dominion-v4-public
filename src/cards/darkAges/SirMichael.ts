@@ -3,6 +3,8 @@ import Knight from "./Knight.abstract";
 import {Texts} from "../../server/Texts";
 
 export default class SirMichael extends Knight {
+    static descriptionSize = 54;
+    static typelineSize = 47;
     intrinsicTypes = ["action","attack","knight"] as const;
     name = "sir michael";
     cost = {
@@ -22,3 +24,5 @@ export default class SirMichael extends Knight {
         });
     }
 }
+
+

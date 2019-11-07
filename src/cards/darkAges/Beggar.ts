@@ -4,6 +4,7 @@ import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 
 export default class Beggar extends Card {
+    static descriptionSize = 59;
     intrinsicTypes = ["action", "reaction"] as const;
     name = "beggar";
     cost = {

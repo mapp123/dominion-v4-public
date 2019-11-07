@@ -4,6 +4,8 @@ src/**/*.js
 src/**/*.map
 test/**/*.js
 test/**/*.map
+testClient/**/*.js
+testClient/**/*.map
 tools/*.js
 tools/*.map
 lint/*.js

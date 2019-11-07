@@ -4,6 +4,7 @@ import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 
 export default class Thief extends Card {
+    static descriptionSize = 55;
     intrinsicTypes = ["action", "attack"] as const;
     name = "thief";
     cost = {

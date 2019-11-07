@@ -4,6 +4,7 @@ import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 
 export default class Seer extends Card {
+    static descriptionSize = 57;
     intrinsicTypes = ["action"] as const;
     name = "seer";
     cost = {

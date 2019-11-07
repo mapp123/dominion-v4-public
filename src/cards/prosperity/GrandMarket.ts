@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {GainRestrictions} from "../../server/GainRestrictions";
 
 export default class GrandMarket extends Card {
+    static descriptionSize = 54;
     intrinsicTypes = ["action"] as const;
     name = "grand market";
     cost = {

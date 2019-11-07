@@ -2,6 +2,7 @@ import Player from "../../server/Player";
 import Artifact from "../Artifact";
 
 export default class Key extends Artifact {
+    static descriptionSize = 20;
     cardArt = "/img/card-img/KeyArt.jpg";
     cardText = "At the start of your turn, $1";
     name = "key";

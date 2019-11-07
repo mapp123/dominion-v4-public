@@ -1,0 +1,5 @@
+--require source-map-support/register
+--require ./test/set-env.js
+--require mocha-steps
+--timeout 5s
+./testClient/*.spec.js

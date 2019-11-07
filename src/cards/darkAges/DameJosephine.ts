@@ -2,6 +2,8 @@ import Knight from "./Knight.abstract";
 import Player from "../../server/Player";
 
 export default class DameJosephine extends Knight {
+    static descriptionSize = 54;
+    static typelineSize = 39;
     async beforeKnight(): Promise<void> {
 
     }

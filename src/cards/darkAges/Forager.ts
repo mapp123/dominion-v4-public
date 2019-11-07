@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Forager extends Card {
+    static descriptionSize = 56;
     intrinsicTypes = ["action"] as const;
     name = "forager";
     cost = {

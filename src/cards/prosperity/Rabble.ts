@@ -4,6 +4,7 @@ import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 
 export default class Rabble extends Card {
+    static descriptionSize = 57;
     intrinsicTypes = ["action","attack"] as const;
     name = "rabble";
     cost = {

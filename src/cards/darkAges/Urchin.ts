@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Urchin extends Card {
+    static descriptionSize = 45;
     intrinsicTypes = ["action","attack"] as const;
     name = "urchin";
     cost = {

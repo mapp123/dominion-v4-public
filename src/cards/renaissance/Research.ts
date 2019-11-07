@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Research extends Card {
+    static descriptionSize = 56;
     intrinsicTypes = ["action","duration"] as const;
     name = "research";
     cost = {

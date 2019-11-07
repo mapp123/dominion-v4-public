@@ -4,6 +4,7 @@ import {Texts} from "../../server/Texts";
 import Game from "../../server/Game";
 
 export default class TradeRoute extends Card {
+    static descriptionSize = 45;
     intrinsicTypes = ["action"] as const;
     name = "trade route";
     cost = {

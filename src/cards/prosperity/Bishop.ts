@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Bishop extends Card {
+    static descriptionSize = 54;
     intrinsicTypes = ["action"] as const;
     name = "bishop";
     features = ["vp"] as const;

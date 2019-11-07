@@ -4,6 +4,7 @@ import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
 
 export default class Improve extends Card {
+    static descriptionSize = 59;
     intrinsicTypes = ["action"] as const;
     name = "improve";
     cost = {

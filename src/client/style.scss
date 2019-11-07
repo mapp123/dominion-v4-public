@@ -151,6 +151,14 @@
   right: 25%;
   background: none !important;
 }
+.modal-confirm {
+  @extend %modal;
+  top: 40px;
+  bottom: 50%;
+  left: 33%;
+  right: 33%;
+  background: none !important;
+}
 .btn-disabled {
   opacity: 0.4;
   cursor: not-allowed !important;

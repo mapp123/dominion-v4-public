@@ -2,6 +2,8 @@ import Player from "../../server/Player";
 import Knight from "./Knight.abstract";
 
 export default class SirVander extends Knight {
+    static descriptionSize = 51;
+    static typelineSize = 47;
     intrinsicTypes = ["action","attack","knight"] as const;
     name = "sir vander";
     cost = {

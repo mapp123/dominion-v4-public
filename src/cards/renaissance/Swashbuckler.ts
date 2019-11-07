@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 
 export default class Swashbuckler extends Card {
+    static descriptionSize = 56;
     intrinsicTypes = ["action"] as const;
     name = "swashbuckler";
     cost = {

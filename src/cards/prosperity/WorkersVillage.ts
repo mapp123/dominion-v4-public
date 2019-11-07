@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 
 export default class WorkersVillage extends Card {
+    static descriptionSize = 57;
     intrinsicTypes = ["action"] as const;
     name = "worker's village";
     cost = {

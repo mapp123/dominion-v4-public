@@ -1,10 +1,32 @@
 import * as React from 'react';
 import {Decision} from "../server/Decision";
-export default class DefaultDecision extends React.Component<{decision: Decision | null; respondToDecision: (response: any) => any}, {}> {
+import ConfirmModal from './ConfirmModal';
+export default class DefaultDecision extends React.Component<{decision: Decision | null; respondToDecision: (response: any) => any}, {modalOpen: boolean}> {
+    constructor(props) {
+        super(props);
+        this.state = {
+            modalOpen: false
+        };
+    }
+
     onClick(confirm, decision) {
-        if (!confirm || window.confirm("Are you sure?")) {
+        if (confirm) {
+            this.setState({
+                modalOpen: true
+            });
+        }
+        else {
             this.props.respondToDecision(decision);
         }
+    }
+
+    onChosen(decision, confirmed: boolean) {
+        if (confirmed) {
+            this.props.respondToDecision(decision);
+        }
+        this.setState({
+            modalOpen: false
+        });
     }
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         if (!this.props.decision) {
@@ -55,7 +77,10 @@ export default class DefaultDecision extends React.Component<{decision: Decision
                 return null;
         }
         return (
-            <button style={{fontFamily: "TrajanPro-Bold", fontSize: "20px", padding: "4px 12px"}} className={`btn btn-${className}`} onClick={this.onClick.bind(this, confirm, decision)}>{text}</button>
+            <>
+                <button style={{fontFamily: "TrajanPro-Bold", fontSize: "20px", padding: "4px 12px"}} className={`btn btn-${className}`} onClick={this.onClick.bind(this, confirm, decision)}>{text}</button>
+                <ConfirmModal isOpen={this.state.modalOpen} onChosen={this.onChosen.bind(this, decision)} />
+            </>
         );
     }
 }

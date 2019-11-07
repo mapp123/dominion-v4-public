@@ -42,7 +42,18 @@ const removeCompromiseInClient = new webpack.NormalModuleReplacementPlugin(
     /compromise/,
     './ClientCompromise.ts'
 );
-module.exports = {
+let istanbul = {
+    test: /\.tsx?$/,
+    use: {
+        loader: 'istanbul-instrumenter-loader',
+        options: {
+            esModules: true
+        }
+    },
+    enforce: 'post',
+    exclude: /node_modules/
+};
+module.exports = env => ({
     entry: {
         main: './src/client/app.tsx',
         css: './src/client/style.scss'
@@ -92,8 +103,9 @@ module.exports = {
                         }
                     }
                 ]
-            }
-        ]
+            },
+            env === "coverage" ? istanbul : null
+        ].filter((a) => a)
     },
     optimization: {
         runtimeChunk: "single",
@@ -108,4 +120,4 @@ module.exports = {
             }
         }
     }
-};
+});

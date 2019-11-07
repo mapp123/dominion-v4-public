@@ -180,7 +180,7 @@ export default class SupplyView extends React.Component<IProps, IState> {
             );
         });
         return (
-            <div className="btn-group" style={{flexWrap: "wrap", paddingBottom: "10px"}} onMouseLeave={() => this.props.setHoveredCard(null)}>
+            <div className="btn-group" id="supplyGroup" style={{flexWrap: "wrap", paddingBottom: "10px"}} onMouseLeave={() => this.props.setHoveredCard(null)}>
                 {buttons}
             </div>
         );

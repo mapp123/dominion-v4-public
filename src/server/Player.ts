@@ -112,6 +112,7 @@ export default class Player {
                 this.emitNextDecision();
                 return;
             }
+            console.log(`got response to ${decision.decision}: ${JSON.stringify(response)}`);
             const callbacks = this.decisionCallbacks[decisionId];
             if (callbacks) {
                 callbacks.forEach((a) => {

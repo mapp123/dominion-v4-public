@@ -16,6 +16,8 @@ export default abstract class Card {
     game: Game;
     features: ReadonlyArray<'vp' | 'coffers' | 'villagers'> = [];
     isCard = true;
+    static descriptionSize = 60;
+    static typelineSize = 64;
     static inSupply = true;
     static get isCard(): typeof Card['isCard'] {
         // @ts-ignore

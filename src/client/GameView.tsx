@@ -146,6 +146,17 @@ export default class GameView extends React.Component<RouteComponentProps<Params
         this.respondToDecision(username, this.state.decision!);
     }
 
+    componentDidUpdate(prevProps: Readonly<RouteComponentProps<Params>>, prevState: Readonly<IState>): void {
+        if (prevState.decision !== this.state.decision && this.state.decision != null) {
+            // @ts-ignore
+            window.dominionDecision = this.state.decision;
+            const e = new CustomEvent('dominionDecision', {
+                detail: this.state.decision
+            });
+            window.dispatchEvent(e);
+        }
+    }
+
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         return (
             <div className="container-fluid">
@@ -167,7 +178,7 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                         <DataViews playerData={this.state.playerData} />
                         <span style={{fontFamily:"TrajanPro-Bold"}}>{this.state.decision ? this.state.decision.helperText:'Please wait...'}<br /></span>
                         <div>
-                            <div style={{display: "inline-block", width: "250px"}}>
+                            <div id="handGroup" style={{display: "inline-block", width: "250px"}}>
                                 <HandView setHoveredCard={(card) => this.setState({hoveredCard: card})} hand={this.state.playerData.hand} decision={this.state.decision} gameView={this}/>
                             </div>
                             <div style={{display: "inline-block", position: "absolute"}}>
@@ -178,7 +189,7 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                             </div>
                         </div>
                         <div id="cardId" style={{height: "50%", position: "absolute", bottom: 0, right: 0}}>
-                            {this.state.hoveredCard && <CardGenerator cardArtUrl={this.state.hoveredCard.cardArt} cardName={this.state.hoveredCard.cardName} cardTypes={this.state.hoveredCard.types} costs={this.state.hoveredCard.cost} description={this.state.hoveredCard.cardText} smallDescription={this.state.hoveredCard.smallText} />}
+                            {this.state.hoveredCard && <CardGenerator cardArtUrl={this.state.hoveredCard.cardArt} cardName={this.state.hoveredCard.cardName} cardTypes={this.state.hoveredCard.types} costs={this.state.hoveredCard.cost} description={this.state.hoveredCard.cardText} smallDescription={this.state.hoveredCard.smallText} descriptionFontStart={this.state.hoveredCard.descriptionSize} typeFontStart={this.state.hoveredCard.typelineSize}/>}
                         </div>
                     </div>
                     <div className="col-sm-2" style={{height:"calc(100vh - 7px)",overflowY:"scroll"}}>

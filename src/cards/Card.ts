@@ -108,7 +108,11 @@ export default abstract class Card {
      * This has a default implementation to use if, for example, you have the type of 'looter', so make sure to call `super.onChosen()`.
      */
     public static onChosen(): string[] {
-        return [];
+        let def = [] as string[];
+        if (this.types.includes("looter")) {
+            def.push("ruins");
+        }
+        return def;
     }
 
     /**

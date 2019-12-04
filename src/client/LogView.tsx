@@ -23,6 +23,7 @@ export default class LogView extends React.Component<IProps, IState> {
             };
         });
     }
+    // eslint-disable-next-line react/no-deprecated
     componentWillUpdate() {
         // eslint-disable-next-line react/no-find-dom-node
         let node = ReactDOM.findDOMNode(this)!.parentNode as HTMLDivElement;

@@ -14,14 +14,14 @@ export default class Thief extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ThiefArt.jpg";
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
-        let chosenCards: Card[] = [];
+        const chosenCards: Card[] = [];
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             let topCards: Card[] = [await p.deck.pop(), await p.deck.pop()].filter((a) => a != null) as Card[];
             if (topCards.length) {
                 p.lm('%p reveals %s.', Util.formatCardList(topCards.map((a) => a.name)));
                 topCards = await p.reveal(topCards);
             }
-            let chosen = await player.chooseCard(Texts.chooseATreasureToTrashFor(p.username), topCards, false, (card) => card.types.includes("treasure"));
+            const chosen = await player.chooseCard(Texts.chooseATreasureToTrashFor(p.username), topCards, false, (card) => card.types.includes("treasure"));
             if (chosen) {
                 chosenCards.push(chosen);
                 await p.trash(chosen);

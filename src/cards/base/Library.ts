@@ -14,7 +14,7 @@ export default class Library extends Card {
     cardArt = "/img/card-img/LibraryArt.jpg";
     async onAction(player: Player): Promise<void> {
         let nextCard: Card | undefined;
-        let setAside: Card[] = [];
+        const setAside: Card[] = [];
         while (player.data.hand.length < 7 && (nextCard = await player.deck.pop()) != null) {
             if (nextCard.types.includes("action") && !await player.confirmAction(Texts.wantToDraw(nextCard.name))) {
                 setAside.push(nextCard);

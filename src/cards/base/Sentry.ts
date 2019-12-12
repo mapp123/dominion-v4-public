@@ -23,8 +23,8 @@ export default class Sentry extends Card {
             player.lm('%p reveals %s.', Util.formatCardList(cards.map((a) => a.name)));
             cards = await player.reveal(cards);
         }
-        let keptCards: Card[] = [];
-        for (let card of cards) {
+        const keptCards: Card[] = [];
+        for (const card of cards) {
             const choice = await player.chooseOption(Texts.whatToDoWith(card.name), [Texts.trashIt, Texts.discardIt, Texts.keepIt] as const);
             switch (choice) {
                 case "Trash It":

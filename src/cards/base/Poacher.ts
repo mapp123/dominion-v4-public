@@ -19,7 +19,7 @@ export default class Poacher extends Card {
         await player.draw();
         player.data.actions += 1;
         player.data.money += 1;
-        let empty = player.game.supply.pilesEmpty;
+        const empty = player.game.supply.pilesEmpty;
         for (let i = 0; i < empty; i++) {
             const card = await player.chooseCardFromHand(Texts.chooseCardToDiscardFor('poacher'));
             if (card) {

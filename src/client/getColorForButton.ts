@@ -1,4 +1,4 @@
-let typeClasses = {
+const typeClasses = {
     treasure:"warning",
     victory:"success",
     action:"secondary",

@@ -120,7 +120,7 @@ export default class SupplyView extends React.Component<IProps, IState> {
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         const restrictions = (!this.props.decision || (this.props.decision.decision !== 'chooseCardOrBuy' && this.props.decision.decision !== 'buy' && this.props.decision.decision !== 'gain')) ?
             null : GainRestrictions.fromJSON(this.props.decision.gainRestrictions);
-        let cardsToRemove: string[] = [];
+        const cardsToRemove: string[] = [];
         const markers = (this.cardsToMarker || []).reduce((old, card) => {
             const cardDef = this.state.cardDefs[card];
             if (!cardDef) {

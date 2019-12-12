@@ -46,8 +46,12 @@ module.exports = {
         "require-atomic-updates": "off",
         "@typescript-eslint/explicit-member-accessibility": "off",
         "@typescript-eslint/prefer-interface": "off",
-        "@typescript-eslint/array-type": ["error", "array-simple"],
+        "@typescript-eslint/array-type": ["error", {
+            default: 'array-simple'
+        }],
         "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/ban-ts-ignore": "off",
+        "@typescript-eslint/no-empty-function": "off",
         "no-case-declarations": "off",
         "no-vp-without-feature": ["error"],
         "no-fallthrough": "off"

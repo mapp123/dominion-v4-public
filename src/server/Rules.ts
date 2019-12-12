@@ -21,7 +21,7 @@ export default class Rules {
     }
     static getStartingCards(chosenCards: string[]): CardImplementation[] {
         const inDarkAges = this.countInSet('darkAges', chosenCards);
-        let coppers = [
+        const coppers = [
             Copper,
             Copper,
             Copper,

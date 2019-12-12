@@ -22,7 +22,7 @@ sockets.on('connection', (socket) => {
     });
     socket.on('setShortcut', (gameId, shortcut) => {
         shortcuts[shortcut] = gameId;
-        for (let [s, returnTo] of listeners) {
+        for (const [s, returnTo] of listeners) {
             s.emit(returnTo, [[shortcut, gameId]]);
         }
     });

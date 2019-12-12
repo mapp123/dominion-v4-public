@@ -10,7 +10,7 @@ type Cbs<A extends BaseEvents> = {
 export class Events<T extends BaseEvents> {
     private cbs: Cbs<T> = {} as any;
     async emit<P extends keyof T>(event: P, ...args: T[P]) {
-        let arr = this.cbs[event];
+        const arr = this.cbs[event];
         if (typeof arr === 'undefined') {
             return;
         }

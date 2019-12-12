@@ -58,7 +58,7 @@ export default class Player {
         }
     }
     async draw(amount = 1) {
-        let cards: Card[] = [];
+        const cards: Card[] = [];
         let card: Card | undefined;
         while (cards.length < amount && (card = await this.deck.pop()) !== undefined) {
             cards.push(card);
@@ -189,14 +189,14 @@ export default class Player {
         ).build(this.game);
     }
     private async confirmBuyIfCoffers(response: DecisionResponseType["chooseCardOrBuy"] | DecisionResponseType["buy"]): Promise<boolean> {
-        let cost = this.game.getCostOfCard(response.choice.name).coin;
+        const cost = this.game.getCostOfCard(response.choice.name).coin;
         if (cost > this.data.money) {
             return await this.confirmAction(Texts.buyingWillUseCoffers(response.choice.name, cost - this.data.money));
         }
         return true;
     }
     async chooseCardOrBuy(): Promise<DecisionResponseType["chooseCardOrBuy"]> {
-        let response = await this.makeDecision({
+        const response = await this.makeDecision({
             decision: 'chooseCardOrBuy',
             id: v4(),
             source: this.data.hand,
@@ -211,7 +211,7 @@ export default class Player {
         }
     }
     async chooseBuy(): Promise<DecisionResponseType["buy"]> {
-        let response = await this.makeDecision({
+        const response = await this.makeDecision({
             decision: 'buy',
             id: v4(),
             gainRestrictions: this.getBuyRestrictions(),
@@ -243,8 +243,8 @@ export default class Player {
         await this.events.emit('cleanupStart');
         await this.data.haltNotifications(async () => {
             for (let i = 0; i < this.data.playArea.length; i++) {
-                let card = this.data.playArea[i];
-                let dupCard = this._duplicatedPlayArea.filter((a) => a.id === card.id);
+                const card = this.data.playArea[i];
+                const dupCard = this._duplicatedPlayArea.filter((a) => a.id === card.id);
                 if (card.shouldDiscardFromPlay() && (!dupCard || dupCard.every((a) => a.shouldDiscardFromPlay()))) {
                     this.data.playArea.splice(i, 1);
                     if (dupCard.length) {
@@ -302,7 +302,7 @@ export default class Player {
         if (log) {
             this.lm('%p plays %s.', Util.formatCardList([card.name]));
         }
-        let exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
+        const exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
         await this.events.emit('willPlayAction', card);
         if (tracker == null) {
             tracker = this.getTrackerInPlay(card);
@@ -329,7 +329,7 @@ export default class Player {
         // We create a duplicate card with the same ID, and call it's play function. This way, it can find itself,
         // but have an independent version of data and everything else.
         // @ts-ignore
-        let duplicateCard = new card.constructor(this.game) as Card;
+        const duplicateCard = new card.constructor(this.game) as Card;
         duplicateCard.id = card.id;
         // This informs the card (if it has such a property) that it is being played under a throne room instead of under normal conditions.
         // This should only be used for extremely exceptional cases, such as the extra Throne Rooms in a chain being discarded regardless of the results of their children,
@@ -343,9 +343,9 @@ export default class Player {
         return duplicateCard;
     }
     async getExemptPlayers(attackingCard: Card): Promise<Player[]> {
-        let exemptPlayers = [] as Player[];
-        let playersToCheck = this.game.players.filter((a) => a != this);
-        for (let player of playersToCheck) {
+        const exemptPlayers = [] as Player[];
+        const playersToCheck = this.game.players.filter((a) => a != this);
+        for (const player of playersToCheck) {
             if (await player.onAttack(this, attackingCard)) {
                 exemptPlayers.push(player);
             }
@@ -354,7 +354,7 @@ export default class Player {
     }
     async onAttack(attacker: Player, attackingCard: Card): Promise<boolean> {
         let exempt = false;
-        for (let card of this.data.hand) {
+        for (const card of this.data.hand) {
             exempt = (await card.onAttackInHand(this, attacker, attackingCard, exempt)) || exempt;
         }
         return exempt;
@@ -410,7 +410,7 @@ export default class Player {
             await this.game.alertPlayersToProvinceOrColony(cardName);
         }
     }
-    async gain(cardName: string, realCard?: Card, log: boolean = true, destination: "discard" | "hand" | "deck" = 'discard'): Promise<Card | null> {
+    async gain(cardName: string, realCard?: Card, log = true, destination: "discard" | "hand" | "deck" = 'discard'): Promise<Card | null> {
         const c = realCard ? realCard : this.game.grabNameFromSupply(cardName);
         if (c) {
             if (log) {
@@ -515,19 +515,19 @@ export default class Player {
         });
     }
     async affectOthers(cb: (player: Player) => Promise<any>) {
-        let currentPlayerIndex = this.game.players.indexOf(this);
-        let affected = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
+        const currentPlayerIndex = this.game.players.indexOf(this);
+        const affected = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
         await Promise.all(affected.map((a) => cb(a)));
     }
     async affectOthersInOrder(cb: (player: Player) => Promise<any>) {
-        let currentPlayerIndex = this.game.players.indexOf(this);
-        let players = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
-        for (let player of players) {
+        const currentPlayerIndex = this.game.players.indexOf(this);
+        const players = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
+        for (const player of players) {
             await cb(player);
         }
     }
     async attackOthers(exemptPlayers: Player[], cb: (player: Player) => Promise<any>) {
-        let currentPlayerIndex = this.game.players.indexOf(this);
+        const currentPlayerIndex = this.game.players.indexOf(this);
         let attacked = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
         attacked = attacked.filter((a) => !exemptPlayers.includes(a));
         await Promise.all(attacked.map((a) => cb(a)));
@@ -545,10 +545,10 @@ export default class Player {
         }
     }
     async attackOthersInSteps<T>(exemptPlayers: Player[], steps: [(player: Player) => Promise<T>, (player: Player, result: T) => Promise<any>]): Promise<void> {
-        let currentPlayerIndex = this.game.players.indexOf(this);
+        const currentPlayerIndex = this.game.players.indexOf(this);
         let attacked = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
         attacked = attacked.filter((a) => !exemptPlayers.includes(a));
-        let fastStep = attacked.map((a) => steps[0](a));
+        const fastStep = attacked.map((a) => steps[0](a));
         if (fastStep.length === 0) {
             return Promise.resolve();
         }
@@ -609,7 +609,7 @@ export default class Player {
         if (destination === 'none') {
             return this.game.findCard(cardToGain.id, 'supply', true);
         }
-        let gained = await this.gain(cardToGain.name, undefined, false, destination);
+        const gained = await this.gain(cardToGain.name, undefined, false, destination);
         if (gained != null) {
             this.lm('%p gains %s.', Util.formatCardList([gained.name]));
             return gained;
@@ -629,8 +629,8 @@ export default class Player {
         if (this.deck.discard.length === 0) {
             return null;
         }
-        let discardNames = this.deck.discard.map((a) => a.name);
-        let chooseFrom = this.deck.discard.filter((a, i) => discardNames.indexOf(a.name) === i);
+        const discardNames = this.deck.discard.map((a) => a.name);
+        const chooseFrom = this.deck.discard.filter((a, i) => discardNames.indexOf(a.name) === i);
         while ((result = await this.makeDecision({
             decision: 'chooseCard',
             source: [...chooseFrom, ...optionalSource],
@@ -652,7 +652,7 @@ export default class Player {
     }
     async reveal(cards: Card[]): Promise<Card[]> {
         const keptCards = [] as Card[];
-        for (let card of cards) {
+        for (const card of cards) {
             const tracker = new Tracker(card);
             await card.onRevealSelf(this, tracker);
             if (tracker.hasTrack) {

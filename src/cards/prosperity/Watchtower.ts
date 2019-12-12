@@ -23,7 +23,7 @@ export default class Watchtower extends Card {
     static setup(cardData: any, game: Game) {
         game.events.on('gain', async (player, tracker) => {
             if (player.data.hand.some((a) => a.name === 'watchtower') && tracker.hasTrack) {
-                let option = await player.chooseOption(Texts.whatToDoWithTheGainedAForB(tracker.viewCard().name, 'watchtower'), [Texts.trashIt, Texts.putItOnYourDeck, Texts.doNothing] as const);
+                const option = await player.chooseOption(Texts.whatToDoWithTheGainedAForB(tracker.viewCard().name, 'watchtower'), [Texts.trashIt, Texts.putItOnYourDeck, Texts.doNothing] as const);
                 if (option !== 'Do Nothing') {
                     player.lm('%p reveals a watchtower.');
                     switch (option) {

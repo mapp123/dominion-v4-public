@@ -65,7 +65,7 @@ export default class Game {
         this.selectedCards = Rules.chooseBasicCards(this.selectedCards);
         this.selectedCards = [...this.selectedCards, ...Rules.getStartingCards(this.randomizedCards).map((a) => a.cardName)].filter((a, i, arr) => arr.indexOf(a) === i);
         for (let i = 0; i < this.selectedCards.length; i++) {
-            let extras = CardRegistry.getInstance().getCard(this.selectedCards[i]).onChosen();
+            const extras = CardRegistry.getInstance().getCard(this.selectedCards[i]).onChosen();
             extras.forEach((extra) => {
                 if (!this.selectedCards.includes(extra)) {
                     this.selectedCards.push(extra);
@@ -73,7 +73,7 @@ export default class Game {
             });
         }
         for (let i = 0; i < this.selectedCards.length; i++) {
-            let extras = CardRegistry.getInstance().getCard(this.selectedCards[i]).registerOtherCards();
+            const extras = CardRegistry.getInstance().getCard(this.selectedCards[i]).registerOtherCards();
             extras.forEach((extra) => {
                 if (!this.selectedCards.includes(extra)) {
                     this.selectedCards.push(extra);
@@ -275,8 +275,8 @@ export default class Game {
     async endOfGame() {
         await this.events.emit('scoreStart');
         const scores = this.players.map((player) => {
-            let score = player.score();
-            let scoreNumber = Object.values(score).reduce((sum, value) => sum + value, 0);
+            const score = player.score();
+            const scoreNumber = Object.values(score).reduce((sum, value) => sum + value, 0);
             return [player, score, scoreNumber] as [Player, {[key: string]: number}, number];
         }).sort((a, b) => {
             return a[2] - b[2];

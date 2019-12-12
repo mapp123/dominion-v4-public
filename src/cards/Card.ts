@@ -33,7 +33,7 @@ export default abstract class Card {
         this.id = v4();
         this.game = game as Game;
     }
-    randomizable: boolean = true;
+    randomizable = true;
     static get randomizable(): boolean {
         // @ts-ignore
         return new this().randomizable;
@@ -84,7 +84,7 @@ export default abstract class Card {
         return new this().cardArt;
     }
     public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean; inSupply?: boolean}> {
-        let pile: Card[] = [];
+        const pile: Card[] = [];
         const supplyCount = typeof this.supplyCount === 'function' ? this.supplyCount(playerCount) : this.supplyCount;
         for (let i = 0; i < supplyCount; i++) {
             // @ts-ignore
@@ -109,7 +109,7 @@ export default abstract class Card {
      * This has a default implementation to use if, for example, you have the type of 'looter', so make sure to call `super.onChosen()`.
      */
     public static onChosen(): string[] {
-        let def = [] as string[];
+        const def = [] as string[];
         if (this.types.includes("looter")) {
             def.push("ruins");
         }
@@ -186,7 +186,7 @@ export default abstract class Card {
     }
     // noinspection JSUnusedGlobalSymbols
     toJSON() {
-        let {id, name, types} = this;
+        const {id, name, types} = this;
         return {id, name, types};
     }
 }

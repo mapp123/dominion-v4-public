@@ -5,11 +5,11 @@ export default class Util {
         return !(selected.cost.coin > 2 && choices.find((a) => selected.cost.coin > a.cost.coin) != null);
     }
     static formatCardList(cards: string[]): string {
-        let formattedCards = cards.map((a, i) => {
+        const formattedCards = cards.map((a, i) => {
             if (cards.indexOf(a) !== i) {
                 return undefined;
             }
-            let count = cards.filter((b) => a === b).length;
+            const count = cards.filter((b) => a === b).length;
             if (count === 1) {
                 return this.article(a) + ' ' + a;
             }
@@ -27,13 +27,13 @@ export default class Util {
         return formattedCards.slice(0, -1).join(', ') + ', and ' + formattedCards.slice(-1)[0];
     }
     static parseCardList(list: string): string[] {
-        let cards: string[] = [];
+        const cards: string[] = [];
         let match: RegExpExecArray | null;
-        let reg = /(\S*)\s*([^,\s]*),?\s*(?:and)?\s*/g;
+        const reg = /(\S*)\s*([^,\s]*),?\s*(?:and)?\s*/g;
         while ((match = reg.exec(list)) != null && match[0] !== '') {
-            let [, quantity, card] = match;
-            let numQuantity = this.unnumeral(quantity);
-            let singular = this.unpluralize(card);
+            const [, quantity, card] = match;
+            const numQuantity = this.unnumeral(quantity);
+            const singular = this.unpluralize(card);
             for (let i = 0; i < numQuantity; i++) {
                 cards.push(singular);
             }
@@ -66,7 +66,7 @@ export default class Util {
     }
     static unnumeral(number: string): number {
         if (number === 'a') return 1;
-        let num = nlp(number).values(0).toNumber().out();
+        const num = nlp(number).values(0).toNumber().out();
         if (num === "") {
             return Number.NEGATIVE_INFINITY;
         }

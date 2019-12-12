@@ -16,7 +16,7 @@ export default class Fleet extends Project {
         game.events.on('scoreStart', async () => {
             game.lm(null, 'The game is ending. Everyone that purchased fleet will now get an extra turn.');
             const playersToRun = game.players.slice(game.currentPlayerIndex).concat(game.players.slice(0, game.currentPlayerIndex)).filter((a) => (this.getInstance(a) as any).playersJoined.includes(a));
-            for (let player of playersToRun) {
+            for (const player of playersToRun) {
                 await player.playTurn();
             }
             return true;

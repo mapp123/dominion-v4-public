@@ -13,7 +13,7 @@ export default class Ruins extends Card {
     cardArt = "/img/card-img/Abandoned_MineArt.jpg";
     randomizable = false;
     public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
-        let basePile: Card[] = [];
+        const basePile: Card[] = [];
         const implementations: CardImplementation[] = [
             game.getCard('abandoned mine'),
             game.getCard('ruined library'),
@@ -28,7 +28,7 @@ export default class Ruins extends Card {
         });
         shuffle(basePile);
         const supplyCount = (playerCount - 1) * 10;
-        let pile: Card[] = basePile.slice(0, supplyCount);
+        const pile: Card[] = basePile.slice(0, supplyCount);
         return [{
             pile,
             identifier: "ruins",

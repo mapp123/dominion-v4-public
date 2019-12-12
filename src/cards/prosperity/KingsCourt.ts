@@ -15,7 +15,7 @@ export default class KingsCourt extends Card {
     private _originalCard: Card | null = null;
     private _duplicateCard1: Card | null = null;
     private _duplicateCard2: Card | null = null;
-    private _isUnderThroneRoom: boolean = false;
+    private _isUnderThroneRoom = false;
     async onAction(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseCardToPlayThrice, true, (card) => card.types.includes('action'));
         if (card) {

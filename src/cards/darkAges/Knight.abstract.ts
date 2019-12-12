@@ -20,8 +20,8 @@ export default abstract class Knight extends Card {
         await player.attackOthers(exemptPlayers, async (p) => {
             let revealed = [await p.deck.pop(), await p.deck.pop()].filter(Util.nonNull);
             revealed = await p.reveal(revealed);
-            let trashable = revealed.filter((a) => {
-                let b = p.game.getCostOfCard(a.name).coin;
+            const trashable = revealed.filter((a) => {
+                const b = p.game.getCostOfCard(a.name).coin;
                 return b >= 3 && b <= 6;
             });
             const card = await p.chooseCard(Texts.chooseCardToTrashFor(this.name), trashable);

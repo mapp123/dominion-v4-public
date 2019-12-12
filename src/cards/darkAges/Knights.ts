@@ -26,7 +26,7 @@ export default class Knights extends Card {
     cardArt = "/img/card-img/KnightsArt.jpg";
     supplyCount = 0;
     public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean; inSupply?: boolean}> {
-        let pile: Card[] = knightNames.map((a) => new (game.getCard(a))(game));
+        const pile: Card[] = knightNames.map((a) => new (game.getCard(a))(game));
         shuffle(pile);
         return [{
             pile,

@@ -46,7 +46,7 @@ function dataManagerReducer<T extends StructDef<{}>>(state: StructForm<{}, T> | 
         case "STATE_REPLACE":
             return action.value;
         case "DEEP_SET":
-            let top: any = {...state};
+            const top: any = {...state};
             let currentTarget = top;
             action.keyMap.slice(0, -1).forEach((key) => {
                 if (Array.isArray(currentTarget[key])) {
@@ -62,7 +62,7 @@ function dataManagerReducer<T extends StructDef<{}>>(state: StructForm<{}, T> | 
             currentTarget[action.keyMap.slice(-1)[0]] = action.value;
             return top;
         case "DEEP_SPLICE":
-            let topA: any = {...state};
+            const topA: any = {...state};
             let currentTargetA = topA;
             action.keyMap.slice(0, -1).forEach((key) => {
                 if (Array.isArray(currentTargetA[key])) {
@@ -75,7 +75,7 @@ function dataManagerReducer<T extends StructDef<{}>>(state: StructForm<{}, T> | 
                 }
                 currentTargetA = currentTargetA[key];
             });
-            let lastKey = action.keyMap.slice(-1)[0];
+            const lastKey = action.keyMap.slice(-1)[0];
             currentTargetA[lastKey] = currentTargetA[lastKey].slice(0, action.start).concat(action.addToArray).concat(currentTargetA[lastKey].slice(action.start + action.deleteCount));
             return topA;
     }
@@ -151,11 +151,11 @@ function makeEnhancer<T extends StructDef<{}>>(keys: T): StoreEnhancer<StructFor
     let halted = false;
     return compose((creator: StoreEnhancerStoreCreator) => {
         return (reducer, preloadedState) => {
-            let store = creator(reducer, preloadedState);
+            const store = creator(reducer, preloadedState);
             Object.keys(keys).forEach((key) => {
                 Object.defineProperty(store, key, {
                     get() {
-                        let k = this.getState()[key];
+                        const k = this.getState()[key];
                         if (k != null && !(k instanceof Card) && typeof k === 'object') {
                             return createDeepObjectInspection(this.dispatch, [key], k, store);
                         }

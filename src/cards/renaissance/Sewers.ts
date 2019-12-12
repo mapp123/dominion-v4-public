@@ -17,7 +17,7 @@ export default class Sewers extends Project {
                 player.lm('The sewers activates for %p.');
                 const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('sewers'), true);
                 if (card) {
-                    let lastTrashingCard = trashingCard;
+                    const lastTrashingCard = trashingCard;
                     trashingCard = card;
                     await player.trash(card);
                     trashingCard = lastTrashingCard;

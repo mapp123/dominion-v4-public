@@ -12,7 +12,7 @@ export default class Scepter extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ScepterArt.jpg";
     private _duplicateCard: Card | null = null;
-    private _isUnderThroneRoom: boolean = false;
+    private _isUnderThroneRoom = false;
     intrinsicValue = 2;
     async onTreasure(player: Player): Promise<void> {
         const choice = await player.chooseOption(Texts.chooseBenefitFor('scepter'), [Texts.extraMoney("2"), Texts.replayAction] as const);

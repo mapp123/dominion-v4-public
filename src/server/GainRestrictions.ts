@@ -5,13 +5,13 @@ export type GainRestrictionsJSON = {
     allowedCards: string[];
 }
 export class GainRestrictions {
-    maxCoinCost: number = Infinity;
+    maxCoinCost = Infinity;
     exactCoinCost: number | null = null;
     inSupply = true;
     allowedCards: string[] | null = null;
     mustHaveTypes: string[] = [];
     banned: string[] = [];
-    isCard: boolean = true;
+    isCard = true;
     private constructor() {
 
     }

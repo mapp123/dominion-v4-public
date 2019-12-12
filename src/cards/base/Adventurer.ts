@@ -12,7 +12,7 @@ export default class Adventurer extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/AdventurerArt.jpg";
     async onAction(player: Player): Promise<void> {
-        let revealed: Card[] = [];
+        const revealed: Card[] = [];
         let revealedCard: Card | undefined;
         while (revealed.filter((a) => a.types.includes("treasure")).length < 2 && (revealedCard = await player.deck.pop()) != null) {
             player.lm('%p reveals %s.', Util.formatCardList([revealedCard.name]));

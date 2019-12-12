@@ -19,7 +19,7 @@ export default class Research extends Card {
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('research'));
         if (card) {
             await player.trash(card);
-            let cost = player.game.getCostOfCard(card.name).coin;
+            const cost = player.game.getCostOfCard(card.name).coin;
             for (let i = 0; i < cost; i++) {
                 const card = await player.deck.pop();
                 if (card === undefined) break;

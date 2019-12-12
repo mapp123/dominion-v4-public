@@ -50,8 +50,8 @@ function decisionMatcher<T extends (...args: any[]) => string>(helperText: strin
             while (oneIndex < partsWithOne.length) {
                 const twoPart = nlp(partsWithTwo[twoIndex]).normalize(normalizeParams).out('text');
                 if (partsWithOne[oneIndex].length !== twoPart.length) {
-                    let sep = new RegExp("(" + twoPart + ")");
-                    let parts = partsWithOne[oneIndex].split(sep);
+                    const sep = new RegExp("(" + twoPart + ")");
+                    const parts = partsWithOne[oneIndex].split(sep);
                     if (parts[0] === '') {
                         // We matched the front, push onto temp and move to second half
                         tempOne.push(parts[1]);
@@ -81,8 +81,8 @@ function decisionMatcher<T extends (...args: any[]) => string>(helperText: strin
                 regBuilder += '(.*?)';
                 return;
             }
-            let onePart = a;
-            let twoPart = partsWithTwo[i];
+            const onePart = a;
+            const twoPart = partsWithTwo[i];
             let oneIndex = 0;
             twoPart.split('').forEach((a) => {
                 if (a === onePart[oneIndex]) {
@@ -93,10 +93,10 @@ function decisionMatcher<T extends (...args: any[]) => string>(helperText: strin
                 }
             });
         });
-        let regex = new RegExp(regBuilder);
-        let nums = new Array(textFn.length).fill(null).map((a, i) => i + offset);
+        const regex = new RegExp(regBuilder);
+        const nums = new Array(textFn.length).fill(null).map((a, i) => i + offset);
         const callWithMaps = textFn(...nums);
-        let mappings = Array.prototype.slice.call(regex.exec(callWithMaps), 1).map((a) => {
+        const mappings = Array.prototype.slice.call(regex.exec(callWithMaps), 1).map((a) => {
             if (/^\d+$/.test(a)) {
                 // Just a pure number
                 return {
@@ -119,8 +119,8 @@ function decisionMatcher<T extends (...args: any[]) => string>(helperText: strin
     else {
         matcher = decisionMatcherCache.get(textFn)!;
     }
-    let subs = [] as Array<string | number>;
-    let exec = matcher.regex.exec(helperText);
+    const subs = [] as Array<string | number>;
+    const exec = matcher.regex.exec(helperText);
     if (exec == null) {
         return null;
     }
@@ -150,7 +150,7 @@ export default abstract class AIPlayer extends Player {
         Texts.trashIt
     ];
     private async chooseOptionFromPriorities(card: string, choices: string[]): Promise<string> {
-        for (let choice of choices) {
+        for (const choice of choices) {
             if (this.choiceLookup[choice]) {
                 const priority = await this.choiceLookup[choice].call(this);
                 let nullIndex = priority.indexOf(null);
@@ -174,7 +174,7 @@ export default abstract class AIPlayer extends Player {
         if (choice != null) {
             return choice as any;
         }
-        let noChoice = source.find((a) => a.name === 'No Card');
+        const noChoice = source.find((a) => a.name === 'No Card');
         if (noChoice) {
             return noChoice as any;
         }
@@ -419,7 +419,7 @@ export default abstract class AIPlayer extends Player {
                         name: 'Gain Nothing'
                     } as any;
                 }
-                let pile = this.game.supply.data.piles.find((a) => {
+                const pile = this.game.supply.data.piles.find((a) => {
                     return a.pile.length > 0 && a.pile[a.pile.length - 1].name === choice.name;
                 });
                 if (!pile) {

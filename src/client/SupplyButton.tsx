@@ -49,7 +49,7 @@ export default class SupplyButton extends React.Component<IProps, {}> {
         for (let i = 0; i < (this.props.embargoAmount || 0); i++) {
             embargoImg.push(SupplyButton.genEmbargoIcon());
         }
-        let padding = 4 + (this.props.markers.length * 10);
+        const padding = 4 + (this.props.markers.length * 10);
         let animation;
         if (this.props.flash) {
             animation = {
@@ -63,7 +63,7 @@ export default class SupplyButton extends React.Component<IProps, {}> {
         else {
             animation = {};
         }
-        let isDisabled = this.props.disabled && !this.props.cardTypes.includes("artifact");
+        const isDisabled = this.props.disabled && !this.props.cardTypes.includes("artifact");
         return (
             <button
                 className={"btn btn-"+getColorForButton(this.props.cardTypes)+(isDisabled ? " btn-disabled" : "")}

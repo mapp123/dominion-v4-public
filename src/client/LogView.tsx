@@ -26,13 +26,13 @@ export default class LogView extends React.Component<IProps, IState> {
     // eslint-disable-next-line react/no-deprecated
     componentWillUpdate() {
         // eslint-disable-next-line react/no-find-dom-node
-        let node = ReactDOM.findDOMNode(this)!.parentNode as HTMLDivElement;
+        const node = ReactDOM.findDOMNode(this)!.parentNode as HTMLDivElement;
         this.shouldScroll = Math.abs(node.scrollTop + node.offsetHeight - node.scrollHeight) < 2;
     }
     componentDidUpdate() {
         if(this.shouldScroll) {
             // eslint-disable-next-line react/no-find-dom-node
-            let node = ReactDOM.findDOMNode(this)!.parentNode as HTMLDivElement;
+            const node = ReactDOM.findDOMNode(this)!.parentNode as HTMLDivElement;
             node.scrollTop = node.scrollHeight;
         }
     }

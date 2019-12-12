@@ -150,7 +150,7 @@ export default class CardGenerator extends React.Component<IProps, {}> {
 class RecolorFilter extends React.Component<{factors: number[]; name: string; offset?: number}, {}> {
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         let factors = [...this.props.factors];
-        let offset = this.props.offset || 0;
+        const offset = this.props.offset || 0;
         if (this.props.offset === 0) {
             if (factors.length === 3) {
                 factors.push(0, 0, 0);
@@ -320,7 +320,7 @@ class DescriptionLine extends React.Component<{line: string; fontSize: number}, 
         } as const;
         const phrases = this.props.line.split(/(\+\d+\s*(?:[a-z]|[A-Z])*)|([+-]?\$\d*)|([+-]?\d+VP)|(---)|(\(This is not in the Supply.\))/g).filter((a) => a);
         return phrases.map((a, i) => {
-            let thisStyle = {
+            const thisStyle = {
                 ...baseStyle
             };
             if (/^[+-]/.test(a)) {

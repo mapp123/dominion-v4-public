@@ -25,7 +25,7 @@ export default class Mint extends Card {
         game.events.on('buy', async (player, card) => {
             if (card === 'mint') {
                 player.lm('%p trashes all treasures in play.');
-                let cardsToTrash = player.data.playArea.filter((a) => a.types.includes("treasure"));
+                const cardsToTrash = player.data.playArea.filter((a) => a.types.includes("treasure"));
                 player.data.playArea = player.data.playArea.filter((a) => !cardsToTrash.includes(a));
                 await Promise.all(cardsToTrash.map((a) => player.trash(a, false)));
             }

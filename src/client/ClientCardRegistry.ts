@@ -28,7 +28,7 @@ export default class ClientCardRegistry {
             }
             card = (await context("./" + (this.locations[cardName] || location || ''))).default;
             this.cardDefs[cardName] = card;
-            let a = this.awaitingLocations[cardName];
+            const a = this.awaitingLocations[cardName];
             if (a) {
                 a.forEach((f) => f());
             }

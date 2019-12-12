@@ -11,9 +11,9 @@ import Card, {Cost, ValidCardTypes} from "../cards/Card";
 import {GameEvents} from "./Events";
 import {GainRestrictions} from "./GainRestrictions";
 import Artifact from "../cards/Artifact";
-import BigMoney from "./BigMoney";
 import CardHolder from "./CardHolder";
 import Util from "../Util";
+import {chooseAIPlayer} from "./ai/chooseAIPlayer";
 export default class Game {
     players: Player[] = [];
     io: Namespace;
@@ -52,8 +52,9 @@ export default class Game {
     private aiPlayersValidator = struct.scalar('number');
     setAIPlayers(socket: Socket, ...args: any[]) {
         const aiPlayers = this.aiPlayersValidator(args[0]);
+        const useAiPlayer = chooseAIPlayer(this);
         for (let i = 0; i < aiPlayers; i++) {
-            this.players.push(new BigMoney(this));
+            this.players.push(new (useAiPlayer)(this));
         }
     }
     private cardsValidator = struct.list(['string']);
@@ -270,15 +271,17 @@ export default class Game {
     determineTurnOrder() {
         shuffle(this.players);
     }
+    scores: Array<[Player, {[key: string]: number}, number]> | null = null;
     async endOfGame() {
         await this.events.emit('scoreStart');
         const scores = this.players.map((player) => {
             let score = player.score();
             let scoreNumber = Object.values(score).reduce((sum, value) => sum + value, 0);
-            return [player, player.score(), scoreNumber] as [Player, {[key: string]: number}, number];
+            return [player, score, scoreNumber] as [Player, {[key: string]: number}, number];
         }).sort((a, b) => {
             return a[2] - b[2];
         });
+        this.scores = scores;
         scores.forEach(([player, scoreTable]) => {
             this.lmg('%s: Score Breakdown:', player.username);
             Object.entries(scoreTable).forEach(([name, score]) => {

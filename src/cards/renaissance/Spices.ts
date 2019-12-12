@@ -15,6 +15,7 @@ export default class Spices extends Card {
     features = ["coffers"] as const;
     supplyCount = 10;
     cardArt = "/img/card-img/SpicesArt.jpg";
+    intrinsicValue = 2;
     async onTreasure(player: Player): Promise<void> {
         player.data.money += 2;
         player.data.buys += 1;

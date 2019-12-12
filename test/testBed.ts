@@ -17,7 +17,7 @@ export function getPlayerUnderTestResults() {
     return testedDecisions;
 }
 
-function makeFakeIo(onLog?: (msg: string) => any) {
+export function makeFakeIo(onLog?: (msg: string) => any) {
     return {
         on: () => {},
         emit: (msg, ...args) => {

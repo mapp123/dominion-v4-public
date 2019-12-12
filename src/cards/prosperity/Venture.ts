@@ -12,6 +12,7 @@ export default class Venture extends Card {
         "When you play this, reveal cards from your deck until you reveal a Treasure. Discard the other cards. Play that Treasure.";
     supplyCount = 10;
     cardArt = "/img/card-img/VentureArt.jpg";
+    intrinsicValue = 1;
     async onTreasure(player: Player): Promise<void> {
         player.data.money += 1;
         let revealedCard: Card | undefined;

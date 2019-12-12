@@ -19,6 +19,7 @@ export default abstract class Card {
     static descriptionSize = 60;
     static typelineSize = 64;
     static inSupply = true;
+    intrinsicValue = 0;
     static get isCard(): typeof Card['isCard'] {
         // @ts-ignore
         return new this().isCard;

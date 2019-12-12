@@ -13,6 +13,7 @@ export default class Loan extends Card {
         "When you play this, reveal cards from your deck until you reveal a Treasure. Discard it or trash it. Discard the other cards.";
     supplyCount = 10;
     cardArt = "/img/card-img/LoanArt.jpg";
+    intrinsicValue = 1;
     protected async onTreasure(player: Player): Promise<void> {
         player.data.money += 1;
         let revealedCard: Card | undefined;

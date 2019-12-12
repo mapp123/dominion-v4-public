@@ -1,7 +1,7 @@
 import {readdirSync} from "fs";
 import {resolve} from "path";
 import makeTestGame, {getPlayerUnderTestResults, setPlayerUnderTest} from "./testBed";
-import BigMoney from "../src/server/BigMoney";
+import BigMoney from "../src/server/ai/BigMoney";
 import Game from "../src/server/Game";
 
 describe('CARDS', () => {

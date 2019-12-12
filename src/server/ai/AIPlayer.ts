@@ -1,9 +1,10 @@
-import Player from "./Player";
-import {Decision, DecisionDefaults, DecisionResponseType} from "./Decision";
-import {Texts} from "./Texts";
-import Card from "../cards/Card";
-import Util from "../Util";
+import Player from "../Player";
+import {Decision, DecisionDefaults, DecisionResponseType} from "../Decision";
+import {Texts} from "../Texts";
+import Card from "../../cards/Card";
+import Util from "../../Util";
 import nlp = require('compromise');
+import Game from "../Game";
 
 type PossibleAsync<T> = T | Promise<T>;
 
@@ -128,8 +129,12 @@ function decisionMatcher<T extends (...args: any[]) => string>(helperText: strin
     });
     return subs as any;
 }
-
+export type AIPlayerImplementation = (typeof AIPlayer) & {new (game: Game): AIPlayer};
 export default abstract class AIPlayer extends Player {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    static canBeUsed(game: Game): boolean {
+        return true;
+    }
     private hasPlayedAllTreasures = false;
     private choiceLookup = {
         [Texts.trashIt]: this.trashPriority,
@@ -478,5 +483,11 @@ export default abstract class AIPlayer extends Player {
     }
     protected gainsToEndGame() {
         return this.game.supply.gainsToEndGame;
+    }
+    protected countInDeck(cardName: string): number {
+        return this.allCards.reduce((sum, next) => sum + (next.name === cardName ? 1 : 0), 0);
+    }
+    protected moneyInHand(): number {
+        return this.data.hand.reduce((sum, next) => sum + next.intrinsicValue, 0);
     }
 }

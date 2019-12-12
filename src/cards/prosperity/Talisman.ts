@@ -13,6 +13,7 @@ export default class Talisman extends Card {
         "While this is in play, when you buy a non-Victory card costing $4 or less, gain a copy of it.";
     supplyCount = 10;
     cardArt = "/img/card-img/TalismanArt.jpg";
+    intrinsicValue = 1;
     protected async onTreasure(player: Player): Promise<void> {
         player.data.money += 1;
     }

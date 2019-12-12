@@ -66,6 +66,9 @@ module.exports = creator({
                                     return;
                                 }
                                 let value = features.value;
+                                if (value == null) {
+                                    return;
+                                }
                                 while (value.type === 'TSAsExpression') {
                                     value = value.expression;
                                 }

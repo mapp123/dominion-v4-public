@@ -11,6 +11,7 @@ export default class Gold extends Card {
     randomizable = false;
     supplyCount = 30;
     cardArt = "/img/card-img/GoldArt.jpg";
+    intrinsicValue = 3;
     protected async onTreasure(player: Player) {
         player.data.money += 3;
     }

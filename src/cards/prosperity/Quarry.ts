@@ -11,6 +11,7 @@ export default class Quarry extends Card {
     cardText = "+$1\n---\nWhile this is in play, Action cards cost $2 less, but not less than $0.";
     supplyCount = 10;
     cardArt = "/img/card-img/QuarryArt.jpg";
+    intrinsicValue = 1;
     protected async onTreasure(player: Player): Promise<void> {
         player.data.money += 1;
         player.game.updateCostModifiers();

@@ -15,6 +15,7 @@ export default class Contraband extends Card {
         "When you play this, the player to your left names a card. You can’t buy that card this turn.";
     supplyCount = 10;
     cardArt = "/img/card-img/ContrabandArt.jpg";
+    intrinsicValue = 3;
     async onTreasure(player: Player): Promise<void> {
         player.data.money += 3;
         player.data.buys += 1;

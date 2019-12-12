@@ -13,6 +13,7 @@ export default class Hoard extends Card {
         "While this is in play, when you buy a Victory card, gain a Gold.";
     supplyCount = 10;
     cardArt = "/img/card-img/HoardArt.jpg";
+    intrinsicValue = 2;
     async onTreasure(player: Player): Promise<void> {
         player.data.money += 2;
     }

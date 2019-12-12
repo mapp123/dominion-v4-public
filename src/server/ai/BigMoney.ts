@@ -1,5 +1,5 @@
 import AIPlayer from "./AIPlayer";
-import Card from "../cards/Card";
+import Card from "../../cards/Card";
 
 export default class BigMoney extends AIPlayer {
     discardPriority(): Promise<Array<string | null>> | Array<string | null> {

@@ -2,3 +2,5 @@ test
 testClient
 old
 dist
+src/**/*.js
+src/**/*.map

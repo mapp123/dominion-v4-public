@@ -2,6 +2,8 @@ import Card from "../Card";
 import Player from "../../server/Player";
 
 export default class Spoils extends Card {
+    static inSupply = false;
+    randomizable = false;
     intrinsicTypes = ["treasure"] as const;
     name = "spoils";
     cost = {

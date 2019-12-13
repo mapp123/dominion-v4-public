@@ -138,8 +138,8 @@ export default abstract class Card {
     public static getSupplyMarkers(cardData: any, piles: SupplyData['piles']): {[card: string]: string[]} | null {
         return null;
     }
-    public async doTreasure(player: Player) {
-        return await this.onTreasure(player);
+    public async doTreasure(player: Player, tracker: Tracker<this>) {
+        return await this.onTreasure(player, tracker);
     }
     public static onScore(player: Player): number {
         return 0;
@@ -178,7 +178,7 @@ export default abstract class Card {
     public onRevealSelf(player: Player, tracker: Tracker<this>): Promise<void> | void {
 
     }
-    protected async onTreasure(player: Player) {
+    protected async onTreasure(player: Player, tracker: Tracker<this>) {
         await player.events.emit('noTreasureImpl', this);
     }
     protected getGlobalData() {

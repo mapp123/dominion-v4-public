@@ -17,6 +17,21 @@ describe('SQUIRE', () => {
         });
         game.start();
     });
+    it('reacts to trash', (d) => {
+        const [game, [player], done] = makeTestGame({
+            decks: [['squire', 'chapel']],
+            d,
+            activateCards: ['militia']
+        });
+        player.testPlayAction('chapel');
+        player.testChooseCard(Texts.chooseCardToTrashFor('chapel'), 'squire');
+        player.testGain('squire', 'militia');
+        player.onBuyPhaseStart(() => {
+            expect(player.discardPile).to.have.members(['militia']);
+            done();
+        });
+        game.start();
+    });
     it('can be throne roomed', (d) => {
         const [game, [player], done] = makeTestGame({
             decks: [['throne room', 'squire']],

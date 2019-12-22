@@ -17,6 +17,19 @@ describe('SAGE', () => {
         });
         game.start();
     });
+    it('works with an empty deck', (d) => {
+        const [game, [player], done] = makeTestGame({
+            decks: [['sage', 'copper', 'copper', 'copper', 'copper']],
+            d
+        });
+        player.testPlayAction('sage');
+        player.onBuyPhaseStart(() => {
+            expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper']);
+            expect(player.data.actions).to.equal(1);
+            done();
+        });
+        game.start();
+    });
     it('can be throne roomed', (d) => {
         const [game, [player], done] = makeTestGame({
             decks: [['throne room', 'sage', 'copper', 'copper', 'copper', 'copper', 'silver', 'copper']],

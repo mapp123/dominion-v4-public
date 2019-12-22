@@ -34,6 +34,23 @@ describe('MARKET SQUARE', () => {
         });
         game.start();
     });
+    it('allows decline from trash', (d) => {
+        const [game, [player], done] = makeTestGame({
+            decks: [['market square', 'chapel', 'copper', 'copper', 'silver']],
+            d
+        });
+        player.testPlayAction('chapel');
+        player.testChooseCard(Texts.chooseCardToTrashFor('chapel'), 'copper');
+        player.testConfirm(Texts.wantToDiscardAForBenefit('market square', 'to gain a Gold'), false);
+        player.testChooseCard(Texts.chooseCardToTrashFor('chapel'), 'copper');
+        player.testConfirm(Texts.wantToDiscardAForBenefit('market square', 'to gain a Gold'), false);
+        player.testChooseCard(Texts.chooseCardToTrashFor('chapel'), 'No Card');
+        player.onBuyPhaseStart(() => {
+            expect(player.hand).to.have.members(['market square', 'silver']);
+            done();
+        });
+        game.start();
+    });
     it('can be throne roomed', (d) => {
         const [game, [player], done] = makeTestGame({
             decks: [['throne room', 'market square', 'copper', 'copper', 'copper', 'silver', 'silver']],

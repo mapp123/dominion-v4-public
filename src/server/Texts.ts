@@ -30,6 +30,8 @@ export class Texts {
     static putItOnYourDeck = "Put It On Your Deck";
     static doNothing = "Do Nothing";
     static replayAction = "Replay an Action Card";
+    static putACardFromYourHandOnTopOfYourDeck = "Put a card from your hand to your deck";
+    static trashYourHand = "Trash Your Hand";
     static addTokenTo(mat: string) {
         return `Add a token to ${mat}`;
     }
@@ -56,6 +58,9 @@ export class Texts {
     }
     static drawXCards(amount: string) {
         return `Draw ${amount} cards`;
+    }
+    static discardXCards(amount: string) {
+        return `Discard ${amount} cards`;
     }
     static chooseBenefitFor(a: string) {
         return `Choose benefit for ${a}...`;

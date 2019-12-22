@@ -21,7 +21,11 @@ export class Texts {
     static trashIt = "Trash It";
     static discardIt = "Discard It";
     static discardThem = "Discard Them";
+    static discardThemForBenefit(benefit: string) {
+        return `Discard Them for ${benefit}`;
+    }
     static keepIt = "Keep It";
+    static keepThem = "Keep Them";
     static putThemOnYourDeck = "Put Them On Your Deck";
     static putItOnYourDeck = "Put It On Your Deck";
     static doNothing = "Do Nothing";

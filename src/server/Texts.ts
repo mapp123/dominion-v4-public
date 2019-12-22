@@ -6,6 +6,7 @@ export class Texts {
     static chooseActionToPlay = "Please choose an action card to play...";
     static buy = "Please buy a card...";
     static chooseCardToReplay = "Please choose a card to replay...";
+    static chooseCardFromSupplyToPlay = 'Please choose a card to play from the Supply...';
     static chooseCardToPlayTwice = "Please choose a card to play twice...";
     static chooseCardToPlayThrice = "Please choose a card to play thrice...";
     static placeDeckIntoDiscard = "Would you like to place your deck into your discard?";

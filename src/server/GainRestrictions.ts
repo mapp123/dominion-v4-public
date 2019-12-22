@@ -10,6 +10,7 @@ export class GainRestrictions {
     inSupply = true;
     allowedCards: string[] | null = null;
     mustHaveTypes: string[] = [];
+    bannedTypes: string[] = [];
     banned: string[] = [];
     isCard = true;
     private constructor() {
@@ -34,6 +35,7 @@ export class GainRestrictions {
             && game.getCostOfCard(card).coin <= this.maxCoinCost
             && ((this.exactCoinCost == null) || game.getCostOfCard(card).coin === this.exactCoinCost)
             && this.mustHaveTypes.reduce((last, type) => last && game.getTypesOfCard(card).includes(type as any), true)
+            && this.bannedTypes.reduce((last, type) => last && !game.getTypesOfCard(card).includes(type as any), true)
             && !this.banned.includes(card)
             && (!this.isCard || game.getCard(card).isCard);
     }
@@ -71,6 +73,10 @@ export class GainRestrictions {
     }
     setMustIncludeType(type: string) {
         this.mustHaveTypes.push(type);
+        return this;
+    }
+    addBannedType(type: string) {
+        this.bannedTypes.push(type);
         return this;
     }
     // noinspection JSUnusedGlobalSymbols

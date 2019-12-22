@@ -11,6 +11,10 @@ export default class ClientInstrumentor {
             // @ts-ignore
             callback(window.__coverage__);
         });
+        if (coverage == null) {
+            // We're not collecting coverage
+            return;
+        }
         this.collector.add(coverage);
     }
     complete() {

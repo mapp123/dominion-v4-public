@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 
 export default class Marauder extends Card {
+    static typelineSize = 48;
     intrinsicTypes = ["action","attack","looter"] as const;
     name = "marauder";
     cost = {

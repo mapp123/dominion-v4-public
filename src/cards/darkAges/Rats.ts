@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Rats extends Card {
+    static descriptionSize = 54;
     intrinsicTypes = ["action"] as const;
     name = "rats";
     cost = {

@@ -189,7 +189,7 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                             </div>
                         </div>
                         <div id="cardId" style={{height: "50%", position: "absolute", bottom: 0, right: 0}}>
-                            {this.state.hoveredCard && <CardGenerator cardArtUrl={this.state.hoveredCard.cardArt} cardName={this.state.hoveredCard.cardName} cardTypes={this.state.hoveredCard.types} costs={this.state.hoveredCard.cost} description={this.state.hoveredCard.cardText} smallDescription={this.state.hoveredCard.smallText} descriptionFontStart={this.state.hoveredCard.descriptionSize} typeFontStart={this.state.hoveredCard.typelineSize}/>}
+                            {this.state.hoveredCard && <CardGenerator cardArtUrl={this.state.hoveredCard.cardArt} cardName={this.state.hoveredCard.cardName} cardTypes={this.state.hoveredCard.types} costs={this.state.hoveredCard.cost} description={this.state.hoveredCard.cardText} smallDescription={this.state.hoveredCard.smallText} descriptionFontStart={this.state.hoveredCard.descriptionSize} typeFontStart={this.state.hoveredCard.typelineSize} cardNameStart={this.state.hoveredCard.nameSize}/>}
                         </div>
                     </div>
                     <div className="col-sm-2" style={{height:"calc(100vh - 7px)",overflowY:"scroll"}}>

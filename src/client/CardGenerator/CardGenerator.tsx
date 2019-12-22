@@ -37,6 +37,7 @@ interface IProps {
     factorOverrides?: [number, number, number];
     descriptionFontStart?: number;
     typeFontStart?: number;
+    cardNameStart?: number;
 }
 function pickTypesFromTypeArray(types: readonly string[]): [string, string | undefined] {
     if (types.length === 1 && Object.keys(colorFactorLists).includes(types[0])) {
@@ -129,7 +130,7 @@ export default class CardGenerator extends React.Component<IProps, {}> {
                 <image href="/img/card-resources/DescriptionFocus.png" x={44} y={1094} />
                 {this.props.heirloomLine && <image href="/img/card-resources/Heirloom.png" x={97} y={1720} />}
                 {this.props.heirloomLine && <SingleTextLine line={this.props.heirloomLine} x={701} y={1835} maxWidth={1040} initialSize={58} family="Times New Roman" style={"italic"}/>}
-                <SingleTextLine line={this.props.cardName} x={701} y={242} maxWidth={1180} initialSize={75} />
+                <SingleTextLine line={this.props.cardName} x={701} y={242} maxWidth={1180} initialSize={this.props.cardNameStart || 75} />
                 <ForceWrappingTextLine line={this.props.cardTypes.map((a, i) => i === 0 ? a : i % 2 === 1 ? "\u00a0-\u00a0" + a : " - " + a).join("")} x={300} y={1865} maxWidth={890} maxHeight={120} initialSize={this.props.typeFontStart || 64} id="typeline"/>
                 <image href="/img/CoinHighRes.png" x={129} y={1850} width={150} height={145} />
                 <text x={205} y={1965} textAnchor="middle" style={{fontSize: "86pt", fontFamily: "TrajanPro-Bold"}}>{this.props.costs.coin}</text>

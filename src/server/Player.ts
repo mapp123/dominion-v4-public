@@ -650,6 +650,14 @@ export default class Player {
         }
         return null;
     }
+    async revealTop(cards: number): Promise<Array<Tracker<Card>>> {
+        const cardsArr = (await Promise.all(new Array(cards).fill(null).map(() => this.deck.pop()))).filter((a) => a != null) as Card[];
+        const cardTrackers = cardsArr.map((card) => new Tracker(card));
+        for (const card of cardTrackers) {
+            await card.viewCard().onRevealSelf(this, card);
+        }
+        return cardTrackers;
+    }
     async reveal(cards: Card[]): Promise<Card[]> {
         const keptCards = [] as Card[];
         for (const card of cards) {

@@ -18,6 +18,7 @@ export default abstract class Card {
     isCard = true;
     static descriptionSize = 60;
     static typelineSize = 64;
+    static nameSize = 75;
     static inSupply = true;
     intrinsicValue = 0;
     static get isCard(): typeof Card['isCard'] {

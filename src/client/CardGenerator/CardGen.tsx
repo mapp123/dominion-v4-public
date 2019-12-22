@@ -56,7 +56,8 @@ export default class CardGen extends React.Component<RouteComponentProps<{card: 
                         description={this.state.card.cardText}
                         factorOverrides={(this.state.r === this.state.g) && (this.state.g === this.state.b) && (this.state.b === 1) ? undefined : [this.state.r, this.state.g, this.state.b]}
                         descriptionFontStart={this.state.card.descriptionSize}
-                        typeFontStart={this.state.card.typelineSize}/>
+                        typeFontStart={this.state.card.typelineSize}
+                        cardNameStart={this.state.card.nameSize}/>
                 </div>
                 <input type="range" min="0" max="1.5" value={this.state.r} step="0.05" onChange={this.updateState.bind(this, 'r')} /><span>{this.state.r}</span><br />
                 <input type="range" min="0" max="1.5" value={this.state.g} step="0.05" onChange={this.updateState.bind(this, 'g')} /><span>{this.state.g}</span><br />

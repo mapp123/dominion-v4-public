@@ -94,7 +94,14 @@ async function parsePage(p: string) {
     }
 }
 function infoToTemplate(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
-    let cardText = info.text.replace(/<img [^>]*?alt="(\$\d*?)"[^>]*?>/g, (match, money) => money).replace(/"/g, '\\"').split('\n').map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"").join(" +\n        ") + ";";
+    let cardText = info.text
+        .replace(/<img [^>]*?alt="(\$\d*?)"[^>]*?>/g, (match, money) => money)
+        .replace(/"/g, '\\"')
+        .replace(/(\S)(\$\d+)/g, (match, pre, money) => pre + " " + money)
+        .replace(/(\$\d+)([^\s,])/g, (match, money, post) => money + " " + post)
+        .split('\n')
+        .map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"")
+        .join(" +\n        ") + ";";
     return (
         // eslint-disable-next-line @typescript-eslint/indent
 `import Card from "../Card";

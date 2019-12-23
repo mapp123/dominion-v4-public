@@ -448,8 +448,8 @@ export default class Player {
         }
         return null;
     }
-    async playTreasure(card: Card) {
-        await card.doTreasure(this, this.getTrackerInPlay(card));
+    async playTreasure(card: Card, tracker?: Tracker<Card>) {
+        await card.doTreasure(this, tracker || this.getTrackerInPlay(card));
     }
     async discard(card: Card | Card[], log = false) {
         if (log && (!Array.isArray(card) || card.length > 0)) {

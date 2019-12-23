@@ -357,7 +357,8 @@ export default abstract class AIPlayer extends Player {
                     wantSetAside: decisionMatcher(decision.helperText, Texts.wouldYouLikeToSetAsideThe),
                     ensureTrash: decisionMatcher(decision.helperText, Texts.areYouSureYouWantToTrash),
                     wantBuyCoffers: decisionMatcher(decision.helperText, () => Texts.wantBuyCoffers),
-                    discardForBenefit: decisionMatcher(decision.helperText, Texts.wantToDiscardAForBenefit)
+                    discardForBenefit: decisionMatcher(decision.helperText, Texts.wantToDiscardAForBenefit),
+                    wantPlayFromHand: decisionMatcher(decision.helperText, Texts.playCardFromHand)
                 };
                 if (confirmKeys.wantTrashForBenefit) {
                     return ((await this.trashForBenefit([confirmKeys.wantTrashForBenefit[0]], 1, confirmKeys.wantTrashForBenefit[1])) !== 'No Card') as any;
@@ -406,6 +407,15 @@ export default abstract class AIPlayer extends Player {
                 }
                 if (confirmKeys.discardForBenefit) {
                     return ((await this.discardForBenefit([confirmKeys.discardForBenefit[0]],1, confirmKeys.discardForBenefit[1])) !== 'No Card') as any;
+                }
+                if (confirmKeys.wantPlayFromHand) {
+                    // We want to keep this switch for when we have future cards.
+                    // noinspection JSRedundantSwitchStatement
+                    switch (confirmKeys.wantPlayFromHand[0]) {
+                        case "cultist":
+                            // Playing another cultist is always a net benefit.
+                            return true as any;
+                    }
                 }
                 break;
             case "gain":

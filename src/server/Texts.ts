@@ -128,6 +128,9 @@ export class Texts {
     static chooseVictoryToTopDeckFor(card: string) {
         return `Please choose a victory to place on top of your deck for ${card}...`;
     }
+    static playCardFromHand(card: string) {
+        return `Would you like to play a ${card} from your hand?`;
+    }
     static playCardFromDiscard(card: string) {
         return `Would you like to play the ${card} you discarded?`;
     }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {CardImplementation} from "../../cards/Card";
 const colorFactorLists = {
     "action": [1, 1, 1],
     "event": [1, 1, 1],
@@ -147,6 +148,9 @@ export default class CardGenerator extends React.Component<IProps, {}> {
             </svg>
         );
     }
+}
+export function CardGeneratorWrapped(props: {card: CardImplementation; factorOverrides?: [number, number, number]}) {
+    return <CardGenerator key={props.card.cardName} cardArtUrl={props.card.cardArt} cardName={props.card.cardName} cardTypes={props.card.types} costs={props.card.cost} description={props.card.cardText} smallDescription={props.card.smallText} descriptionFontStart={props.card.descriptionSize} typeFontStart={props.card.typelineSize} cardNameStart={props.card.nameSize} factorOverrides={props.factorOverrides}/>;
 }
 class RecolorFilter extends React.Component<{factors: number[]; name: string; offset?: number}, {}> {
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {

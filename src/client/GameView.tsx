@@ -12,12 +12,15 @@ import DataViews from "./DataViews";
 import {CardImplementation} from "../cards/Card";
 import EndOfGameModel from "./EndOfGameModel";
 import ChooseUsernameModal from "./ChooseUsernameModal";
+import createGameData, {GameData} from "../createGameData";
+import TrashView from "./TrashView";
 interface Params {
     gameId: string;
 }
 interface IState {
     playersJoined: number;
     playerData: PlayerData;
+    gameData: GameData;
     decision: Decision | null;
     hoveredCard: CardImplementation | null;
     flashButton?: string;
@@ -29,6 +32,7 @@ interface IState {
 export default class GameView extends React.Component<RouteComponentProps<Params>, IState> {
     socket: SocketIOClient.Socket;
     playerData = createPlayerData();
+    gameData = createGameData();
     decisionTimeout: any = null;
     private outOfTurnDecision = new Audio('/audio/outOfTurnDecision.mp3');
     private turnNotification = new Audio('/audio/turnNotification.mp3');
@@ -74,8 +78,14 @@ export default class GameView extends React.Component<RouteComponentProps<Params
         this.socket.on('playerStateUpdate', (action) => {
             this.playerData.dispatch(action);
         });
+        this.socket.on('gameDataUpdate', (action) => {
+            this.gameData.dispatch(action);
+        });
         this.socket.on('playerState', (state) => {
             this.playerData.state = state;
+        });
+        this.socket.on('gameState', (state) => {
+            this.gameData.state = state;
         });
         this.socket.on('endGameSound', (flashTarget) => {
             this.endGame.play().catch(() => console.log("on mobile"));
@@ -120,9 +130,15 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                 ...decisionSet
             });
         });
+        this.gameData.subscribe(() => {
+            this.setState({
+                gameData: this.gameData.getState()
+            });
+        });
         this.state = {
             playersJoined: 0,
             playerData: this.playerData.getState(),
+            gameData: this.gameData.getState(),
             decision: null,
             hoveredCard: null,
             forceCloseModal: false
@@ -159,12 +175,12 @@ export default class GameView extends React.Component<RouteComponentProps<Params
 
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         return (
-            <div className="container-fluid">
+            <div className="container-fluid" style={{height: "calc(100vh-7px)"}}>
                 <div className="row">
-                    <div className="col-sm-10" style={{height: "calc(100vh - 20px)"}}>
+                    <div className="col-sm-10" style={{display: "flex", flexDirection: "column"}}>
                         <SupplyView flash={this.state.flashButton} socket={this.socket} decision={this.state.decision} gameView={this} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
                         {this.state.playersJoined > 0 && !this.state.playerData.gameStarted &&
-                        <><button className="btn btn-primary dominion-font" onClick={this.startGame.bind(this)}>Start Game</button><br /></>}
+                        <><button className="btn btn-primary dominion-font" onClick={this.startGame.bind(this)} style={{width: "fit-content"}}>Start Game</button><br /></>}
                         {this.state.playersJoined > 0 && !this.state.playerData.gameStarted &&
                         <><span className="dominion-font-small">Players In: {this.state.playersJoined}</span><br /></>}
                         <span style={{fontFamily:"TrajanPro-Bold",fontSize:"20px"}}>{this.state.playerData.actions} {this.state.playerData.actions === 1 ? 'Action':'Actions'}, {this.state.playerData.buys} {this.state.playerData.buys === 1 ? 'Buy':'Buys'},<span> </span>
@@ -177,19 +193,25 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                         </span>
                         <DataViews playerData={this.state.playerData} />
                         <span style={{fontFamily:"TrajanPro-Bold"}}>{this.state.decision ? this.state.decision.helperText:'Please wait...'}<br /></span>
-                        <div>
-                            <div id="handGroup" style={{display: "inline-block", width: "250px"}}>
+                        <div style={{flex: 1, display: "flex", flexDirection: "row"}}>
+                            <div id="handGroup" style={{width: "250px"}}>
                                 <HandView setHoveredCard={(card) => this.setState({hoveredCard: card})} hand={this.state.playerData.hand} decision={this.state.decision} gameView={this}/>
                             </div>
-                            <div style={{display: "inline-block", position: "absolute"}}>
+                            <div style={{alignSelf: "flex-start"}}>
                                 <span>
                                     <DefaultDecision decision={this.state.decision} respondToDecision={this.respondToDecision.bind(this)} />
                                     <br />
                                 </span>
                             </div>
-                        </div>
-                        <div id="cardId" style={{height: "50%", position: "absolute", bottom: 0, right: 0}}>
-                            {this.state.hoveredCard && <CardGeneratorWrapped card={this.state.hoveredCard} />}
+                            <div style={{display: "flex", flexDirection: "column", marginLeft: "auto"}}>
+                                <div style={{width: "500px", flex: "0 0", alignSelf: "flex-end", border: "2px solid blue", borderRadius: "3px", marginBottom: "7px", padding: "7px"}}>
+                                    <span>Trash:</span><br />
+                                    <TrashView trash={this.state.gameData.trash} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
+                                </div>
+                                <div id="cardId" style={{display: "flex", flex: "1 1", alignSelf: "flex-end", flexDirection: "column"}}>
+                                    {this.state.hoveredCard && <CardGeneratorWrapped card={this.state.hoveredCard} />}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="col-sm-2" style={{height:"calc(100vh - 7px)",overflowY:"scroll"}}>

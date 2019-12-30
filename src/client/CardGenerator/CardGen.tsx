@@ -47,13 +47,15 @@ export default class CardGen extends React.Component<RouteComponentProps<{card: 
         }
         return (
             <>
-                <div style={{width: "100vw", height: "100vh"}}>
-                    <CardGeneratorWrapped card={this.state.card}
-                        factorOverrides={(this.state.r === this.state.g) && (this.state.g === this.state.b) && (this.state.b === 1) ? undefined : [this.state.r, this.state.g, this.state.b]} />
+                <div style={{width: "100vw", height: "calc(100vh - 7px)", display: "flex", flexDirection: "column"}}>
+                    <div style={{display: "flex", flexDirection: "column", flex: "1 1"}}>
+                        <CardGeneratorWrapped card={this.state.card}
+                            factorOverrides={(this.state.r === this.state.g) && (this.state.g === this.state.b) && (this.state.b === 1) ? undefined : [this.state.r, this.state.g, this.state.b]} />
+                    </div>
+                    <input type="range" min="0" max="1.5" value={this.state.r} step="0.05" onChange={this.updateState.bind(this, 'r')} /><span>{this.state.r}</span><br />
+                    <input type="range" min="0" max="1.5" value={this.state.g} step="0.05" onChange={this.updateState.bind(this, 'g')} /><span>{this.state.g}</span><br />
+                    <input type="range" min="0" max="1.5" value={this.state.b} step="0.05" onChange={this.updateState.bind(this, 'b')} /><span>{this.state.b}</span><br />
                 </div>
-                <input type="range" min="0" max="1.5" value={this.state.r} step="0.05" onChange={this.updateState.bind(this, 'r')} /><span>{this.state.r}</span><br />
-                <input type="range" min="0" max="1.5" value={this.state.g} step="0.05" onChange={this.updateState.bind(this, 'g')} /><span>{this.state.g}</span><br />
-                <input type="range" min="0" max="1.5" value={this.state.b} step="0.05" onChange={this.updateState.bind(this, 'b')} /><span>{this.state.b}</span><br />
             </>
         );
     }

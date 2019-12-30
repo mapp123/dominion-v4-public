@@ -14,6 +14,7 @@ import Artifact from "../cards/Artifact";
 import CardHolder from "./CardHolder";
 import Util from "../Util";
 import {chooseAIPlayer} from "./ai/chooseAIPlayer";
+import createGameData from "../createGameData";
 export default class Game {
     players: Player[] = [];
     io: Namespace;
@@ -21,7 +22,13 @@ export default class Game {
     name?: string;
     host?: Player;
     started = false;
-    trash: Card[] = [];
+    data = createGameData();
+    get trash() {
+        return this.data.trash;
+    }
+    set trash(trash: Card[]) {
+        this.data.trash = trash;
+    }
     supply = new Supply();
     selectedCards: string[] = [];
     ended = false;

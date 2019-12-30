@@ -83,8 +83,13 @@ export default class Player {
             return;
         }
         socket.emit('playerState', this.data.getState());
+        socket.emit('gameState', this.game.data.getState());
         this.data.onAction((action) => {
             socket.emit('playerStateUpdate', action);
+            return true;
+        });
+        this.game.data.onAction((action) => {
+            socket.emit('gameDataUpdate', action);
             return true;
         });
         this.game.supply.data.onAction((action) => {

@@ -132,7 +132,7 @@ const chooseCardValidator = (game: Game, decision: Decision, response: any) => {
     if (decision.decision !== 'chooseCard') {
         throw new Error("Wrong validator.");
     }
-    if (decision.source.find((a) => a.id === r.id && a.name === r.name) == null) {
+    if (decision.validChoices.find((a) => a.id === r.id && a.name === r.name) == null) {
         console.log("Invalid choice");
         throw new Error("Choice is invalid.");
     }

@@ -29,9 +29,10 @@ export function makeFakeIo(onLog?: (msg: string) => any) {
     }
 }
 type DecisionMatcher = (decision: Decision) => boolean;
+type PossibleAsync<T> = T | Promise<T>;
 export type DecisionResponse = {
     matcher: DecisionMatcher;
-    response: (decision) => DecisionResponseType[Decision["decision"]];
+    response: (decision) => PossibleAsync<DecisionResponseType[Decision["decision"]]>;
 }
 let testPlayerIndex = 1;
 const WELL_KNOWN_STOP_ERROR = 'WELL_KNOWN_STOP_ERROR';
@@ -76,7 +77,7 @@ export class TestPlayer extends Player {
         const oIndex = this.optionalDecisionResponses.findIndex((a) => a.matcher(decision));
         if (rIndex !== -1 || oIndex !== -1) {
             const responder = rIndex !== -1 ? this.decisionResponses.splice(rIndex, 1)[0] : this.optionalDecisionResponses.splice(oIndex, 1)[0];
-            const response = responder.response(decision);
+            const response = await responder.response(decision);
             console.log('Responding to ' + JSON.stringify(decision));
             try {
                 DecisionValidators[decision.decision](this.game, decision, response);
@@ -91,6 +92,42 @@ export class TestPlayer extends Player {
         // @ts-ignore
         this.game.doneFn(new Error(`Failed to find a response for ${JSON.stringify(decision)}`));
         throw new Error("Failed to find a response.");
+    }
+    testInvalid() {
+        let responder = -1;
+        const response = {
+            matcher: (decision) => {
+                let tmpResponder = this.decisionResponses.indexOf(response);
+                if (this.decisionResponses[tmpResponder + 1].matcher(decision)) {
+                    responder = tmpResponder;
+                    return true;
+                }
+                return false;
+            },
+            response: (decision) => {
+                let errored = false;
+                let res = this.decisionResponses[responder].response(decision);
+                try {
+                    DecisionValidators[decision.decision](this.game, decision, res);
+                }
+                catch (e) {
+                    // We're expecting an error
+                    errored = true;
+                }
+                // Remove the next decision responder, as we've already handled it
+                this.decisionResponses.splice(responder, 1);
+                if (!errored) {
+                    // @ts-ignore
+                    this.game.doneFn(new Error("Response should have been invalid: " + JSON.stringify(res)));
+                    return res;
+                }
+                else {
+                    return this.makeDecision(decision);
+                }
+            }
+        };
+        this.decisionResponses.push(response);
+        return this;
     }
     testHookNextDecision(cb: (decision: Decision) => any) {
         const response = {

@@ -56,6 +56,9 @@ export class Texts {
     static gain(cards: string[]) {
         return `Gain ${Util.formatCardList(cards)}`;
     }
+    static gainCostingFrom(from: number, to: number) {
+        return `Gain a card costing from ${from} to ${to}`;
+    }
     static drawXCards(amount: string) {
         return `Draw ${amount} cards`;
     }

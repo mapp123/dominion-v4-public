@@ -275,6 +275,7 @@ export default abstract class AIPlayer extends Player {
                     forgeTrash: decisionMatcher(decision.helperText, Texts.chooseCardToTrashForge),
                     drawFromRevealed: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromRevealed),
                     takeFromAside: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromSetAside),
+                    chooseGain: decisionMatcher(decision.helperText, Texts.chooseCardToGainFor)
                 };
                 if (keys.discardCard != null) {
                     return this.chooseCardFromPriority(await this.discardPriority(), decision.validChoices) as any;
@@ -339,6 +340,10 @@ export default abstract class AIPlayer extends Player {
                 }
                 if (keys.actionCardReplay) {
                     return decision.validChoices[0] as any;
+                }
+                if (keys.chooseGain) {
+                    const choice = this.chooseCardFromPriority(await this.gainPriority(), decision.source);
+                    return choice as any;
                 }
                 break;
             case "chooseUsername":

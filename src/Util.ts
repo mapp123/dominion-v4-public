@@ -88,4 +88,7 @@ export default class Util {
             }
         });
     }
+    static deduplicateByName(list: Card[]): Card[] {
+        return list.filter((a, i) => list.findIndex((b) => b.name === a.name) === i);
+    }
 }

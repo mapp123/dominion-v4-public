@@ -4,6 +4,7 @@ import Game from "../../server/Game";
 import {ValidCardTypes} from "../Card";
 
 export default class Capitalism extends Project {
+    static descriptionSize = 29;
     cardArt = "/img/card-img/CapitalismArt.jpg";
     cardText = "During your turns, Actions with +$ amounts in their text are also Treasures.";
     cost = {

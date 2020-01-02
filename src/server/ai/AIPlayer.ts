@@ -353,6 +353,8 @@ export default abstract class AIPlayer extends Player {
                     switch (keys.cardToName[0]) {
                         case "mystic":
                             return decision.source[Math.floor(Math.random() * decision.source.length)] as any;
+                        case "rebuild":
+                            return [...decision.source].sort((a, b) => b.cost.coin - a.cost.coin)[0] as Card as any;
                     }
                 }
                 if (keys.discardForPlayer) {

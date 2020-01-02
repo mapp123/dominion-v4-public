@@ -264,7 +264,7 @@ class Description extends React.Component<{x: number; y: number; width: number; 
     componentDidMount() {
         const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
         const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
-        if (foreignHeight == null || desHeight == null || foreignHeight > desHeight) {
+        if (foreignHeight == null || desHeight == null || foreignHeight < desHeight) {
             window.setTimeout(() => {
                 this.setState({
                     fontSize: this.state.fontSize - 1
@@ -285,7 +285,7 @@ class Description extends React.Component<{x: number; y: number; width: number; 
         }
         const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
         const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
-        if (foreignHeight == null || desHeight == null || foreignHeight > desHeight) {
+        if (foreignHeight == null || desHeight == null || foreignHeight < desHeight) {
             window.setTimeout(() => {
                 this.setState({
                     fontSize: this.state.fontSize - 1

@@ -143,6 +143,9 @@ export class Texts {
     static chooseCardToMoveFromDiscardToDeck(card: string) {
         return `Please choose a card to take from your discard and place on top of your deck for ${card}...`;
     }
+    static chooseCardForPlayerToDiscard(player: string) {
+        return `Please choose a card for ${player} to discard...`;
+    }
     static doYouWantToReveal(card: string) {
         return `Do you want to reveal your ${card}?`;
     }

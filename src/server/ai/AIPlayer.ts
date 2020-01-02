@@ -276,7 +276,8 @@ export default abstract class AIPlayer extends Player {
                     drawFromRevealed: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromRevealed),
                     takeFromAside: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromSetAside),
                     chooseGain: decisionMatcher(decision.helperText, Texts.chooseCardToGainFor),
-                    cardToName: decisionMatcher(decision.helperText, Texts.chooseCardToNameFor)
+                    cardToName: decisionMatcher(decision.helperText, Texts.chooseCardToNameFor),
+                    discardForPlayer: decisionMatcher(decision.helperText, Texts.chooseCardForPlayerToDiscard)
                 };
                 if (keys.discardCard != null) {
                     return this.chooseCardFromPriority(await this.discardPriority(), decision.validChoices) as any;
@@ -353,6 +354,10 @@ export default abstract class AIPlayer extends Player {
                         case "mystic":
                             return decision.source[Math.floor(Math.random() * decision.source.length)] as any;
                     }
+                }
+                if (keys.discardForPlayer) {
+                    const choice = this.chooseCardFromPriority((await this.discardPriority()).reverse(), decision.source) as any;
+                    return choice as any;
                 }
                 break;
             case "chooseUsername":

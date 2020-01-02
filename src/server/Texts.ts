@@ -89,6 +89,9 @@ export class Texts {
     static chooseCardToTrashForge(money: string | number) {
         return `Please choose a card to trash for forge. You are currently at ${money} Money.`;
     }
+    static chooseCardToNameFor(card: string) {
+        return `Please choose a card to name for ${card}...`;
+    }
     static discardForBenefit(benefit: string, number: number) {
         return `Choose ${number === 1 ? "a" : Util.numeral(number)} card${number > 1 ? "s" : ""} to discard. You'll get ${benefit} if you do.`;
     }

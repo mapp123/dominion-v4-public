@@ -275,7 +275,8 @@ export default abstract class AIPlayer extends Player {
                     forgeTrash: decisionMatcher(decision.helperText, Texts.chooseCardToTrashForge),
                     drawFromRevealed: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromRevealed),
                     takeFromAside: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromSetAside),
-                    chooseGain: decisionMatcher(decision.helperText, Texts.chooseCardToGainFor)
+                    chooseGain: decisionMatcher(decision.helperText, Texts.chooseCardToGainFor),
+                    cardToName: decisionMatcher(decision.helperText, Texts.chooseCardToNameFor)
                 };
                 if (keys.discardCard != null) {
                     return this.chooseCardFromPriority(await this.discardPriority(), decision.validChoices) as any;
@@ -344,6 +345,14 @@ export default abstract class AIPlayer extends Player {
                 if (keys.chooseGain) {
                     const choice = this.chooseCardFromPriority(await this.gainPriority(), decision.source);
                     return choice as any;
+                }
+                if (keys.cardToName) {
+                    // This needs to be a switch for future cards, leave it
+                    // noinspection JSRedundantSwitchStatement
+                    switch (keys.cardToName[0]) {
+                        case "mystic":
+                            return decision.source[Math.floor(Math.random() * decision.source.length)] as any;
+                    }
                 }
                 break;
             case "chooseUsername":

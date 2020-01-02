@@ -655,8 +655,11 @@ export default class Player {
         }
         return null;
     }
-    async revealTop(cards: number): Promise<Array<Tracker<Card>>> {
+    async revealTop(cards: number, log = false): Promise<Array<Tracker<Card>>> {
         const cardsArr = (await Promise.all(new Array(cards).fill(null).map(() => this.deck.pop()))).filter((a) => a != null) as Card[];
+        if (log) {
+            this.lm('%p reveals %s.', Util.formatCardList(cardsArr.map((a) => a.name)));
+        }
         const cardTrackers = cardsArr.map((card) => new Tracker(card));
         for (const card of cardTrackers) {
             await card.viewCard().onRevealSelf(this, card);

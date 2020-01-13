@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {GainRestrictions} from "../../server/GainRestrictions";
 import {Texts} from "../../server/Texts";
+import Cost from "../../server/Cost";
 
 export default class Workshop extends Card {
     intrinsicTypes = ["action"] as const;
@@ -13,6 +14,6 @@ export default class Workshop extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/WorkshopArt.jpg";
     async onAction(player: Player): Promise<void> {
-        await player.chooseGain(Texts.chooseCardToGainFor('workshop'), false, GainRestrictions.instance().setMaxCoinCost(4));
+        await player.chooseGain(Texts.chooseCardToGainFor('workshop'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)));
     }
 }

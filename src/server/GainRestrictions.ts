@@ -1,12 +1,14 @@
 import Game from "./Game";
 import Card from "../cards/Card";
+import Cost, {CostResult} from "./Cost";
 
 export type GainRestrictionsJSON = {
     allowedCards: string[];
 }
 export class GainRestrictions {
-    maxCoinCost = Infinity;
-    exactCoinCost: number | null = null;
+    upToCost: Cost | null = null;
+    exactCost: Cost | null = null;
+    lessThanCost: Cost | null = null;
     inSupply = true;
     allowedCards: string[] | null = null;
     mustHaveTypes: string[] = [];
@@ -32,11 +34,12 @@ export class GainRestrictions {
     }
     private isCardAllowed(game: Game, card: string) {
         return (!this.inSupply || game.nameAvailableInSupply(card))
-            && game.getCostOfCard(card).coin <= this.maxCoinCost
-            && ((this.exactCoinCost == null) || game.getCostOfCard(card).coin === this.exactCoinCost)
             && this.mustHaveTypes.reduce((last, type) => last && game.getTypesOfCard(card).includes(type as any), true)
             && this.bannedTypes.reduce((last, type) => last && !game.getTypesOfCard(card).includes(type as any), true)
             && !this.banned.includes(card)
+            && (this.exactCost == null || this.exactCost.compareTo(game.getCostOfCard(card)) === CostResult.EQUAL)
+            && (this.upToCost == null || game.getCostOfCard(card).isInRange(null, this.upToCost))
+            && (this.lessThanCost == null || game.getCostOfCard(card).compareTo(this.lessThanCost) === CostResult.LESS_THAN)
             && (!this.isCard || game.getCard(card).isCard);
     }
     toJSON(game: Game): GainRestrictionsJSON {
@@ -63,12 +66,22 @@ export class GainRestrictions {
     build(game: Game) {
         return this.toJSON(game);
     }
-    setMaxCoinCost(coinCost: number) {
-        this.maxCoinCost = coinCost;
+    setUpToCost(cost: Cost) {
+        this.upToCost = cost;
+        this.exactCost = null;
+        this.lessThanCost = null;
         return this;
     }
-    setExactCoinCost(coinCost: number) {
-        this.exactCoinCost = coinCost;
+    setExactCost(cost: Cost) {
+        this.exactCost = cost;
+        this.upToCost = null;
+        this.lessThanCost = null;
+        return this;
+    }
+    setLessThanCost(cost: Cost) {
+        this.lessThanCost = cost;
+        this.exactCost = null;
+        this.upToCost = null;
         return this;
     }
     setMustIncludeType(type: string) {

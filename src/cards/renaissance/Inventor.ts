@@ -15,7 +15,7 @@ export default class Inventor extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/InventorArt.jpg";
     async onAction(player: Player): Promise<void> {
-        await player.chooseGain(Texts.chooseCardToGainFor('inventor'), false, GainRestrictions.instance().setMaxCoinCost(4));
+        await player.chooseGain(Texts.chooseCardToGainFor('inventor'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)));
         const data = this.getGlobalData();
         if (typeof data.number === 'undefined') {
             data.number = 0;

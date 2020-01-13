@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Cost from "../../server/Cost";
 
 export default class Altar extends Card {
     intrinsicTypes = ["action"] as const;
@@ -17,6 +18,6 @@ export default class Altar extends Card {
         if (card) {
             await player.trash(card);
         }
-        await player.chooseGain(Texts.chooseCardToGainFor('altar'), false, GainRestrictions.instance().setMaxCoinCost(5));
+        await player.chooseGain(Texts.chooseCardToGainFor('altar'), false, GainRestrictions.instance().setUpToCost(Cost.create(5)));
     }
 }

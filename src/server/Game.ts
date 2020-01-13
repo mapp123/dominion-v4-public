@@ -204,7 +204,7 @@ export default class Game {
         Object.entries(cost).forEach(([key, value]) => {
             cost[key] = Math.max(0, value);
         });
-        return cost;
+        return cost.normalize();
     }
     getTypesOfCard(card: string): readonly ValidCardTypes[] {
         const types = CardRegistry.getInstance().getCard(card).types;

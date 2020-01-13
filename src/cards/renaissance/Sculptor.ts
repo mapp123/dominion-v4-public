@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Cost from "../../server/Cost";
 
 export default class Sculptor extends Card {
     intrinsicTypes = ["action"] as const;
@@ -15,7 +16,7 @@ export default class Sculptor extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SculptorArt.jpg";
     async onAction(player: Player): Promise<void> {
-        const card = await player.chooseGain(Texts.chooseCardToGainFor('sculptor'), false, GainRestrictions.instance().setMaxCoinCost(4));
+        const card = await player.chooseGain(Texts.chooseCardToGainFor('sculptor'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)));
         if (card && card.types.includes("treasure")) {
             player.data.villagers++;
         }

@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Util from "../../Util";
+import Cost from "../../server/Cost";
 
 export default class Rogue extends Card {
     intrinsicTypes = ["action","attack"] as const;
@@ -15,8 +16,10 @@ export default class Rogue extends Card {
     cardArt = "/img/card-img/RogueArt.jpg";
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.money += 2;
-        if (player.game.trash.some((a) => a.cost.coin >= 3 && a.cost.coin <= 6)) {
-            const gainCard = await player.chooseCard(Texts.chooseCardToGainFor('rogue'), Util.deduplicateByName(player.game.trash.filter((a) => a.cost.coin >= 3 && a.cost.coin <= 6)));
+        const lowerLimit = Cost.create(3);
+        const upperLimit = Cost.create(6);
+        if (player.game.trash.some((a) => a.cost.isInRange(lowerLimit, upperLimit))) {
+            const gainCard = await player.chooseCard(Texts.chooseCardToGainFor('rogue'), Util.deduplicateByName(player.game.trash.filter((a) => a.cost.isInRange(lowerLimit, upperLimit))));
             if (gainCard) {
                 player.game.trash.splice(player.game.trash.indexOf(gainCard), 1);
                 await player.gain(gainCard.name, gainCard);
@@ -25,7 +28,7 @@ export default class Rogue extends Card {
         else {
             await player.attackOthers(exemptPlayers, async (p) => {
                 const revealed = await p.revealTop(2);
-                const cardChosen = await p.chooseCard(Texts.chooseCardToTrashFor('rogue'), revealed.filter((a) => a.viewCard().cost.coin >= 3 && a.viewCard().cost.coin <= 6).map((a) => a.viewCard()));
+                const cardChosen = await p.chooseCard(Texts.chooseCardToTrashFor('rogue'), revealed.filter((a) => a.viewCard().cost.isInRange(lowerLimit, upperLimit)).map((a) => a.viewCard()));
                 if (cardChosen) {
                     const tracker = revealed.find((a) => a.viewCard().id === cardChosen.id)!;
                     if (tracker.hasTrack) {

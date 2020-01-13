@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Cost from "../../server/Cost";
 
 export default class Forge extends Card {
     intrinsicTypes = ["action"] as const;
@@ -19,7 +20,7 @@ export default class Forge extends Card {
             await player.trash(card);
             money += player.game.getCostOfCard(card.name).coin;
         }
-        const gainedCard = await player.chooseGain(Texts.chooseCardToGainFor('forge'), false, GainRestrictions.instance().setExactCoinCost(money));
+        const gainedCard = await player.chooseGain(Texts.chooseCardToGainFor('forge'), false, GainRestrictions.instance().setExactCost(Cost.create(money)));
         if (gainedCard == null) {
             player.lm('There are no cards costing exactly %s for %p to gain.', money);
         }

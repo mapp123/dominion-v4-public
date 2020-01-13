@@ -21,7 +21,7 @@ export default class Talisman extends Card {
         game.events.on('buy', async (player, cardName) => {
             const cardsInPlay = player.data.playArea.filter((a) => a.name === 'talisman');
             for (let i = 0; i < cardsInPlay.length; i++) {
-                if (!game.getCard(cardName).types.includes("victory")) {
+                if (!game.getCard(cardName).types.includes("victory") && game.getCostOfCard(cardName).coin <= 4) {
                     player.lm('%p gains an extra %s with talisman.', cardName);
                     await player.gain(cardName, undefined, false);
                 }

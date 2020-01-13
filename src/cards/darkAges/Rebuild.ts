@@ -5,6 +5,7 @@ import shuffle from "../../server/util/shuffle";
 import Util from "../../Util";
 import Tracker from "../../server/Tracker";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Cost from "../../server/Cost";
 
 export default class Rebuild extends Card {
     static descriptionSize = 53;
@@ -30,7 +31,7 @@ export default class Rebuild extends Card {
                     if (card[0].hasTrack) {
                         await player.trash(card[0].exercise()!, true);
                     }
-                    await player.chooseGain(Texts.chooseCardToGainFor('rebuild'), false, GainRestrictions.instance().setMaxCoinCost(card[0].viewCard().cost.coin + 3).setMustIncludeType('victory'));
+                    await player.chooseGain(Texts.chooseCardToGainFor('rebuild'), false, GainRestrictions.instance().setUpToCost(card[0].viewCard().cost.augmentBy(Cost.create(3))).setMustIncludeType('victory'));
                     await player.discard(revealedArr.filter((a) => a.hasTrack).map((a) => a.exercise()!));
                     return;
                 }

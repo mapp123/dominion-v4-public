@@ -8,6 +8,10 @@ import {
     StoreEnhancerStoreCreator
 } from "redux";
 import Card from "../cards/Card";
+import Cost from "./Cost";
+import * as iPO from "is-plain-object";
+
+const isPlainObject = typeof iPO === 'function' ? iPO : iPO.default;
 
 type Action = SetAction | ReplaceAction | DeepSetAction | SpliceAction;
 interface SetAction {
@@ -31,6 +35,29 @@ interface SpliceAction {
     deleteCount: number;
     addToArray: any[];
 }
+
+const rehydrateable = {
+    cost: Cost
+};
+
+export function rehydrate<T extends object>(obj: T, iter = 0): T {
+    if (obj == null || typeof obj !== 'object' || !isPlainObject(obj)) return obj;
+    if (typeof obj["_rehydrateWith"] !== 'undefined') {
+        return rehydrateable[obj["_rehydrateWith"]].fromJSON(obj);
+    }
+    try {
+        return Object.fromEntries(Object.entries(obj).map(([key, value]) => {
+            if (Array.isArray(value)) return [key, value.map((a) => rehydrate(a, iter + 1))];
+            if (value == null) return [key, value];
+            if (typeof value === 'object') return [key, rehydrate(value, iter + 1)];
+            return [key, value];
+        }));
+    }
+    // eslint-disable-next-line no-empty
+    catch {}
+    return obj;
+}
+
 function dataManagerReducer<T extends StructDef<{}>>(state: StructForm<{}, T> | undefined, action: Action): StructForm<{}, T> {
     if (state === undefined) {
         // I don't care about this test, it is an impossible case as far as I'm aware.
@@ -41,10 +68,10 @@ function dataManagerReducer<T extends StructDef<{}>>(state: StructForm<{}, T> | 
         case "ACTION_SET":
             return {
                 ...state,
-                [action.key]: action.value
+                [action.key]: rehydrate(action.value)
             };
         case "STATE_REPLACE":
-            return action.value;
+            return rehydrate(action.value);
         case "DEEP_SET":
             const top: any = {...state};
             let currentTarget = top;
@@ -59,7 +86,7 @@ function dataManagerReducer<T extends StructDef<{}>>(state: StructForm<{}, T> | 
                 }
                 currentTarget = currentTarget[key];
             });
-            currentTarget[action.keyMap.slice(-1)[0]] = action.value;
+            currentTarget[action.keyMap.slice(-1)[0]] = rehydrate(action.value);
             return top;
         case "DEEP_SPLICE":
             const topA: any = {...state};
@@ -76,7 +103,7 @@ function dataManagerReducer<T extends StructDef<{}>>(state: StructForm<{}, T> | 
                 currentTargetA = currentTargetA[key];
             });
             const lastKey = action.keyMap.slice(-1)[0];
-            currentTargetA[lastKey] = currentTargetA[lastKey].slice(0, action.start).concat(action.addToArray).concat(currentTargetA[lastKey].slice(action.start + action.deleteCount));
+            currentTargetA[lastKey] = currentTargetA[lastKey].slice(0, action.start).concat(rehydrate(action.addToArray)).concat(currentTargetA[lastKey].slice(action.start + action.deleteCount));
             return topA;
     }
     return state!;

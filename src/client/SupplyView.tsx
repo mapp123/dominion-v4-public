@@ -156,22 +156,17 @@ export default class SupplyView extends React.Component<IProps, IState> {
             if (!def) {
                 return null;
             }
-            const cost = {...def.cost};
-            Object.entries(this.supplyData.costModifiers[def.cardName] || {}).forEach(([key, value]) => {
-                cost[key] += value;
-            });
+            console.log(this.supplyData.costModifiers);
+            const cost = def.cost.augmentBy(this.supplyData.costModifiers[def.cardName]).normalize();
             let types = [...def.types];
             if (this.supplyData.typeModifiers[def.cardName]) {
                 const mod = this.supplyData.typeModifiers[def.cardName];
                 types = types.filter((a) => !mod.toRemove.includes(a)).concat(mod.toAdd);
             }
-            Object.entries(cost).forEach(([key, value]) => {
-                cost[key] = Math.max(0, value);
-            });
             // @ts-ignore
             const HoverDef = class extends def {
                 intrinsicTypes = types as any;
-                cost = cost;
+                intrinsicCost = cost;
             };
             const flash = this.props.flash === pile.identifier;
             const disabled = !flash && (restrictions ? !restrictions.validateCard(cardName) : true);

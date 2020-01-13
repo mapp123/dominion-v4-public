@@ -1,6 +1,7 @@
 import makeTestGame from "../testBed";
 import { expect } from 'chai';
 import {Texts} from "../../src/server/Texts";
+import Cost from "../../src/server/Cost";
 
 describe('PEDDLER', () => {
     it('works normally', (d) => {
@@ -24,9 +25,7 @@ describe('PEDDLER', () => {
         });
         player.testPlayAction('attack');
         player.onBuyPhaseStart(() => {
-            expect(game.getCostOfCard('peddler')).to.deep.equal({
-                coin: 6
-            });
+            expect(game.getCostOfCard('peddler')).to.deep.equal(Cost.create(6));
             done();
         });
         game.start();

@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Tracker from "../../server/Tracker";
 import Util from "../../Util";
+import Cost from "../../server/Cost";
 
 export default abstract class Knight extends Card {
     intrinsicCost = {
@@ -20,9 +21,10 @@ export default abstract class Knight extends Card {
         await player.attackOthers(exemptPlayers, async (p) => {
             let revealed = [await p.deck.pop(), await p.deck.pop()].filter(Util.nonNull);
             revealed = await p.reveal(revealed);
+            const lowerLimit = Cost.create(3);
+            const upperLimit = Cost.create(6);
             const trashable = revealed.filter((a) => {
-                const b = p.game.getCostOfCard(a.name).coin;
-                return b >= 3 && b <= 6;
+                return a.cost.isInRange(lowerLimit, upperLimit);
             });
             const card = await p.chooseCard(Texts.chooseCardToTrashFor(this.name), trashable);
             if (card) {

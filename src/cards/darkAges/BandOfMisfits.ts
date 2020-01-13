@@ -14,7 +14,7 @@ export default class BandOfMisfits extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Band_of_MisfitsArt.jpg";
     async onAction(player: Player): Promise<void> {
-        const cardToPlay = await player.chooseGain(Texts.chooseCardFromSupplyToPlay, false, GainRestrictions.instance().setMaxCoinCost(player.game.getCostOfCard(this.name).coin - 1).addBannedType('command').setMustIncludeType('action'), "none");
+        const cardToPlay = await player.chooseGain(Texts.chooseCardFromSupplyToPlay, false, GainRestrictions.instance().setLessThanCost(this.cost).addBannedType('command').setMustIncludeType('action'), "none");
         if (cardToPlay) {
             const tracker = new Tracker(cardToPlay);
             tracker.loseTrack();

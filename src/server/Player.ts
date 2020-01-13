@@ -12,6 +12,7 @@ import {PlayerEvents} from "./Events";
 import Util from "../Util";
 import Rules from "./Rules";
 import Tracker from "./Tracker";
+import Cost from "./Cost";
 
 export default class Player {
     id = v4();
@@ -189,7 +190,7 @@ export default class Player {
         return this.game.addAdditionalBuyRestrictions(
             this,
             GainRestrictions.instance()
-                .setMaxCoinCost(this.data.money + this.data.coffers)
+                .setUpToCost(Cost.create(this.data.money + this.data.coffers))
                 .setIsCard(false)
         ).build(this.game);
     }

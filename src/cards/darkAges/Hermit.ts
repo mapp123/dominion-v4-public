@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
 import Tracker from "../../server/Tracker";
+import Cost from "../../server/Cost";
 
 export default class Hermit extends Card {
     static descriptionSize = 45;
@@ -27,7 +28,7 @@ export default class Hermit extends Card {
             }
             await player.trash(card);
         }
-        await player.chooseGain(Texts.chooseCardToGainFor('hermit'), false, GainRestrictions.instance().setMaxCoinCost(3));
+        await player.chooseGain(Texts.chooseCardToGainFor('hermit'), false, GainRestrictions.instance().setUpToCost(Cost.create(3)));
     }
 
     async onDiscardFromPlay(player: Player, tracker: Tracker<Card>): Promise<any> {

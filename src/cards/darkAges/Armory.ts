@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Cost from "../../server/Cost";
 
 export default class Armory extends Card {
     intrinsicTypes = ["action"] as const;
@@ -13,6 +14,6 @@ export default class Armory extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ArmoryArt.jpg";
     async onAction(player: Player): Promise<void> {
-        await player.chooseGain(Texts.chooseCardToGainFor('armory'), false, GainRestrictions.instance().setMaxCoinCost(4), 'deck');
+        await player.chooseGain(Texts.chooseCardToGainFor('armory'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)), 'deck');
     }
 }

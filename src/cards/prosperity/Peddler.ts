@@ -30,7 +30,7 @@ export default class Peddler extends Card {
         };
     }
     public static setup(globalCardData: any, game: Game) {
-        game.events.on('buyStart', () => {
+        game.events.on('actionCardPlayed', () => {
             game.updateCostModifiers();
             return true;
         });

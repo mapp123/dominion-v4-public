@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Cost from "../../server/Cost";
 
 export default class Mine extends Card {
     intrinsicTypes = ["action"] as const;
@@ -16,7 +17,7 @@ export default class Mine extends Card {
         const card = await player.chooseCardFromHand(Texts.chooseATreasureToTrashFor('mine'), true, (card) => card.types.includes("treasure"));
         if (card) {
             await player.trash(card);
-            await player.chooseGain(Texts.chooseCardToGainFor('mine'), false, GainRestrictions.instance().setMaxCoinCost(this.game.getCostOfCard(card.name).coin + 3).setMustIncludeType('treasure'), 'hand');
+            await player.chooseGain(Texts.chooseCardToGainFor('mine'), false, GainRestrictions.instance().setUpToCost(card.cost.augmentBy(Cost.create(3))).setMustIncludeType('treasure'), 'hand');
         }
     }
 }

@@ -30,6 +30,6 @@ export default class Catacombs extends Card {
         }
     }
     async onTrashSelf(player: Player): Promise<void> {
-        await player.chooseGain(Texts.chooseCardToGainFor('catacombs'), false, GainRestrictions.instance().setMaxCoinCost(player.game.getCostOfCard(this.name).coin - 1));
+        await player.chooseGain(Texts.chooseCardToGainFor('catacombs'), false, GainRestrictions.instance().setLessThanCost(this.cost));
     }
 }

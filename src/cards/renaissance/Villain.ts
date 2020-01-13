@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import Cost from "../../server/Cost";
 
 export default class Villain extends Card {
     intrinsicTypes = ["action","attack"] as const;
@@ -17,7 +18,8 @@ export default class Villain extends Card {
         player.data.coffers += 2;
         await player.attackOthers(exemptPlayers, async (p) => {
             if (p.data.hand.some((a) => player.game.getCostOfCard(a.name).coin >= 2)) {
-                const card = await p.chooseCard(Texts.chooseCardToDiscardFor('villain'), p.data.hand.filter((a) => p.game.getCostOfCard(a.name).coin >= 2));
+                const lowerLimit = Cost.create(2);
+                const card = await p.chooseCard(Texts.chooseCardToDiscardFor('villain'), p.data.hand.filter((a) => a.cost.isInRange(lowerLimit, null)));
                 if (card) {
                     p.data.hand.splice(p.data.hand.findIndex((a) => a.id === card.id), 1);
                     await p.discard(card, true);

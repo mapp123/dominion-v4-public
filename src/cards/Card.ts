@@ -47,6 +47,9 @@ export default abstract class Card {
     }
     abstract intrinsicCost: {coin: number; potion?: number; debt?: number};
     get cost(): Cost {
+        if (this.game) {
+            return this.game.getCostOfCard(this.name);
+        }
         return Cost.fromJSON(this.intrinsicCost);
     }
     static get cost(): Cost {

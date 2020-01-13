@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Cost from "../../server/Cost";
 
 export default class Improve extends Card {
     static descriptionSize = 59;
@@ -23,7 +24,7 @@ export default class Improve extends Card {
                 player.lm('%p\'s improve activates.');
                 player.data.playArea.splice(player.data.playArea.indexOf(card), 1);
                 await player.trash(card);
-                await player.chooseGain(Texts.chooseCardToGainFor('improve'), false, GainRestrictions.instance().setExactCoinCost(player.game.getCostOfCard(card.name).coin + 1));
+                await player.chooseGain(Texts.chooseCardToGainFor('improve'), false, GainRestrictions.instance().setExactCost(card.cost.augmentBy(Cost.create(1))));
             }
             return false;
         });

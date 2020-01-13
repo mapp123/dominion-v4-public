@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Util from "../../Util";
+import Cost from "../../server/Cost";
 
 export default class Seer extends Card {
     static descriptionSize = 57;
@@ -21,9 +22,10 @@ export default class Seer extends Card {
         let revealed = [await player.deck.pop(), await player.deck.pop(), await player.deck.pop()].filter((a) => a) as Card[];
         player.lm('%p reveals %s.', Util.formatCardList(revealed.map((a) => a.name)));
         revealed = await player.reveal(revealed);
+        const lowerLimit = Cost.create(2);
+        const upperLimit = Cost.create(4);
         revealed = revealed.filter((a) => {
-            const cost = player.game.getCostOfCard(a.name).coin;
-            if (cost <= 4 && cost >= 2) {
+            if (a.cost.isInRange(lowerLimit, upperLimit)) {
                 player.lm('%p takes the %s.', a.name);
                 player.data.hand.push(a);
                 return false;

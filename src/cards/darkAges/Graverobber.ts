@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Cost from "../../server/Cost";
 
 export default class Graverobber extends Card {
     static descriptionSize = 58;
@@ -19,9 +20,10 @@ export default class Graverobber extends Card {
         const chosen = await player.chooseOption(Texts.chooseBenefitFor('graverobber'), benefits);
         switch (chosen) {
             case benefits[0]: // Gain from Trash
+                const lowerRange = Cost.create(3);
+                const upperRange = Cost.create(6);
                 const card = await player.chooseCard(Texts.chooseCardToGainFor('graverobber'), Util.deduplicateByName(player.game.trash), false, (card) => {
-                    const cost = player.game.getCostOfCard(card.name);
-                    return cost.coin >= 3 && cost.coin <= 6;
+                    return card.cost.isInRange(lowerRange, upperRange);
                 });
                 if (card) {
                     player.game.trash.splice(player.game.trash.findIndex((a) => a.id === card.id), 1);
@@ -32,7 +34,7 @@ export default class Graverobber extends Card {
                 const handCard = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('graverobber'), false, (card) => card.types.includes("action"));
                 if (handCard) {
                     await player.trash(handCard);
-                    await player.chooseGain(Texts.chooseCardToGainFor('graverobber'), false, GainRestrictions.instance().setMaxCoinCost(player.game.getCostOfCard(handCard.name).coin + 3));
+                    await player.chooseGain(Texts.chooseCardToGainFor('graverobber'), false, GainRestrictions.instance().setUpToCost(handCard.cost.augmentBy(Cost.create(3))));
                 }
                 break;
         }

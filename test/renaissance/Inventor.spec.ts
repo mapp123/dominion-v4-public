@@ -1,6 +1,7 @@
 import makeTestGame from "../testBed";
 import { expect } from 'chai';
 import {Texts} from "../../src/server/Texts";
+import Cost from "../../src/server/Cost";
 
 describe('INVENTOR', () => {
     it('works normally', (d) => {
@@ -12,9 +13,7 @@ describe('INVENTOR', () => {
         player.testGain('inventor', 'silver');
         player.onBuyPhaseStart(() => {
             expect(player.discardPile).to.have.members(['silver']);
-            expect(game.getCostOfCard('silver')).to.deep.equal({
-                coin: 2
-            });
+            expect(game.getCostOfCard('silver')).to.deep.equal(Cost.create(2));
             done();
         });
         game.start();
@@ -47,16 +46,12 @@ describe('INVENTOR', () => {
         player.testChooseCard(Texts.chooseCardToPlayTwice, 'inventor');
         player.testGain('inventor', 'silver');
         player.testHookNextDecision(() => {
-            expect(game.getCostOfCard('silver')).to.deep.equal({
-                coin: 2
-            });
+            expect(game.getCostOfCard('silver')).to.deep.equal(Cost.create(2));
         });
         player.testGain('inventor', 'silver');
         player.onBuyPhaseStart(() => {
             expect(player.discardPile).to.have.members(['silver', 'silver']);
-            expect(game.getCostOfCard('silver')).to.deep.equal({
-                coin: 1
-            });
+            expect(game.getCostOfCard('silver')).to.deep.equal(Cost.create(1));
             done();
         });
         game.start();

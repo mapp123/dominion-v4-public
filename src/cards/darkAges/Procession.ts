@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 import {GainRestrictions} from "../../server/GainRestrictions";
+import Cost from "../../server/Cost";
 
 export default class Procession extends Card {
     intrinsicTypes = ["action"] as const;
@@ -24,7 +25,7 @@ export default class Procession extends Card {
             if (tracker.hasTrack) {
                 await player.trash(tracker.exercise()!);
             }
-            await player.chooseGain(Texts.chooseCardToGainFor('procession'), false, GainRestrictions.instance().setExactCoinCost(card.cost.coin + 1));
+            await player.chooseGain(Texts.chooseCardToGainFor('procession'), false, GainRestrictions.instance().setExactCost(card.cost.augmentBy(Cost.create(1))));
         }
     }
 }

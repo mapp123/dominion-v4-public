@@ -7,7 +7,7 @@ export default class Thief extends Card {
     static descriptionSize = 55;
     intrinsicTypes = ["action", "attack"] as const;
     name = "thief";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "Each other player reveals the top 2 cards of his deck. If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards.";

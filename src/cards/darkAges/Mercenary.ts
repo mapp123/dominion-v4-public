@@ -6,7 +6,7 @@ export default class Mercenary extends Card {
     static inSupply = false;
     intrinsicTypes = ["action","attack"] as const;
     name = "mercenary";
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     cardText = "You may trash 2 cards from your hand. If you did, +2 Cards, +$2, and each other player discards down to 3 cards in hand.\n" +

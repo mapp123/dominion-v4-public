@@ -7,7 +7,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 export default class Procession extends Card {
     intrinsicTypes = ["action"] as const;
     name = "procession";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "You may play a non-Duration Action card from your hand twice. Trash it. Gain an Action card costing exactly $1 more than it.";

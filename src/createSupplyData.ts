@@ -1,6 +1,7 @@
 import ReduxDataManager from "./server/ReduxDataManager";
 import {Struct, struct} from "superstruct";
 import Card from "./cards/Card";
+import Cost from "./server/Cost";
 
 export default function createSupplyData() {
     return ReduxDataManager({
@@ -15,7 +16,7 @@ export default function createSupplyData() {
         locations: struct.dict(['string', 'string']),
         activatedCards: ["string"],
         globalCardData: struct.dict(['string', 'any']),
-        costModifiers: struct.dict(['string', struct({cost: 'number'})]),
+        costModifiers: struct.dict(['string', struct.instance(Cost)]),
         typeModifiers: struct.dict(['string', struct({toAdd: ['string'], toRemove: ['string']})])
     }, {
         piles: [],

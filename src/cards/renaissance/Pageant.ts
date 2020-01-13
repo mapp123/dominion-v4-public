@@ -6,7 +6,7 @@ export default class Pageant extends Project {
     static descriptionSize = 29;
     cardArt = "/img/card-img/PageantArt.jpg";
     cardText = "At the end of your Buy phase, you may pay $1 for +1 Coffers.";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     features = ["coffers"] as const;

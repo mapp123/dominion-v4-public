@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Count extends Card {
     intrinsicTypes = ["action"] as const;
     name = "count";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "Choose one: Discard 2 cards; or put a card from your hand onto your deck; or gain a Copper.\n" +

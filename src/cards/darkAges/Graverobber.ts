@@ -8,7 +8,7 @@ export default class Graverobber extends Card {
     static descriptionSize = 58;
     intrinsicTypes = ["action"] as const;
     name = "graverobber";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "Choose one: Gain a card from the trash costing from $3 to $6, onto your deck; or trash an Action card from your hand and gain a card costing up to $3 more than it.";

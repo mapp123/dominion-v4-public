@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Bureaucrat extends Card {
     intrinsicTypes = ["action","attack"] as const;
     name = "bureaucrat";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "Gain a Silver onto your deck. Each other player reveals a Victory card from their hand and puts it onto their deck (or reveals a hand with no Victory cards).";

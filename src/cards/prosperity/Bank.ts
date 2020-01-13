@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class Bank extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "bank";
-    cost = {
+    intrinsicCost = {
         coin: 7
     };
     cardText = "When you play this, it’s worth $1 per Treasure card you have in play (counting this).";

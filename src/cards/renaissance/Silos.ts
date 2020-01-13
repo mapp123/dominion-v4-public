@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class Silos extends Project {
     cardArt = "/img/card-img/SilosArt.jpg";
     cardText = "At the start of your turn, discard any number of Coppers, revealed, and draw that many cards.";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     name = "silos";

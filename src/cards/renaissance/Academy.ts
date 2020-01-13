@@ -5,7 +5,7 @@ export default class Academy extends Project {
     cardArt = "/img/card-img/AcademyArt.jpg";
     cardText = "When you gain an Action card,\n" +
         "+1 Villager";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     features = ["villagers"] as const;

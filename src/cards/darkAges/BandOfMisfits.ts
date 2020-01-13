@@ -7,7 +7,7 @@ import Tracker from "../../server/Tracker";
 export default class BandOfMisfits extends Card {
     intrinsicTypes = ["action", "command"] as const;
     name = "band of misfits";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "Play a non-Command Action card from the Supply that costs less than this, leaving it there.";

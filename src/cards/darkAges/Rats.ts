@@ -6,7 +6,7 @@ export default class Rats extends Card {
     static descriptionSize = 54;
     intrinsicTypes = ["action"] as const;
     name = "rats";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Card\n" +

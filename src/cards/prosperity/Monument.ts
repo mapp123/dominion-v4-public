@@ -5,7 +5,7 @@ export default class Monument extends Card {
     intrinsicTypes = ["action"] as const;
     name = "monument";
     features = ["vp"] as const;
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+$2\n" +

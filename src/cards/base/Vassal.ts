@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Vassal extends Card {
     intrinsicTypes = ["action"] as const;
     name = "vassal";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+$2\n" +

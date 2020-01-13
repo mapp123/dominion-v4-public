@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Bandit extends Card {
     intrinsicTypes = ["action","attack"] as const;
     name = "bandit";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "Gain a Gold. Each other player reveals the top 2 cards of their deck, trashes a revealed Treasure other than Copper, and discards the rest.";

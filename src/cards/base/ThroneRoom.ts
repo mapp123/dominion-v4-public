@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class ThroneRoom extends Card {
     intrinsicTypes = ["action"] as const;
     name = "throne room";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "You may play an Action card from your hand twice.";

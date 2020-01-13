@@ -8,7 +8,7 @@ export default class Catacombs extends Card {
     static descriptionSize = 57;
     intrinsicTypes = ["action"] as const;
     name = "catacombs";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "Look at the top 3 cards of your deck. Choose one: Put them into your hand; or discard them and +3 Cards.\n" +

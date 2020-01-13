@@ -7,7 +7,7 @@ import shuffle from "../../server/util/shuffle";
 export default class Mystic extends Card {
     intrinsicTypes = ["action"] as const;
     name = "mystic";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+1 Action\n" +

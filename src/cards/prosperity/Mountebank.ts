@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class Mountebank extends Card {
     intrinsicTypes = ["action","attack"] as const;
     name = "mountebank";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+$2\n" +

@@ -5,7 +5,7 @@ import Util from "../../Util";
 export default class Sage extends Card {
     intrinsicTypes = ["action"] as const;
     name = "sage";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+1 Action\n" +

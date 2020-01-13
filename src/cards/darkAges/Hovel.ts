@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class Hovel extends Card {
     intrinsicTypes = ["reaction","shelter"] as const;
     name = "hovel";
-    cost = {
+    intrinsicCost = {
         coin: 1
     };
     cardText = "When you buy a Victory card, you may trash this from your hand.";

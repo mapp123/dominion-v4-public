@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class OvergrownEstate extends Card {
     intrinsicTypes = ["victory","shelter"] as const;
     name = "overgrown estate";
-    cost = {
+    intrinsicCost = {
         coin: 1
     };
     cardText = "0 VP\n" +

@@ -1,11 +1,12 @@
-import Card, {Cost} from "../Card";
+import Card from "../Card";
+import Cost from '../../server/Cost';
 import Player from "../../server/Player";
 import Game from "../../server/Game";
 
 export default class Quarry extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "quarry";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+$1\n---\nWhile this is in play, Action cards cost $2 less, but not less than $0.";
@@ -27,9 +28,7 @@ export default class Quarry extends Card {
         return activatedCards.reduce((obj, card) => {
             return {
                 ...obj,
-                [card]: {
-                    coin: game.getCard(card).types.includes("action") ? cardsInPlay * -2 : 0
-                }
+                [card]: Cost.create(game.getCard(card).types.includes("action") ? cardsInPlay * -2 : 0)
             };
         }, {});
     }

@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class CargoShip extends Card {
     intrinsicTypes = ["action", "duration"] as const;
     name = "cargo ship";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+$2\n" +

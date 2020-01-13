@@ -6,7 +6,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 export default class Mine extends Card {
     intrinsicTypes = ["action"] as const;
     name = "mine";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "You may trash a Treasure from your hand. Gain a Treasure to your hand costing up to $3 more than it.";

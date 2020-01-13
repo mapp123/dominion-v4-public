@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class MountainVillage extends Card {
     intrinsicTypes = ["action"] as const;
     name = "mountain village";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+2 Actions\n" +

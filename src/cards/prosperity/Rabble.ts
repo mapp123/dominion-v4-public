@@ -7,7 +7,7 @@ export default class Rabble extends Card {
     static descriptionSize = 57;
     intrinsicTypes = ["action","attack"] as const;
     name = "rabble";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+3 Cards\n" +

@@ -6,7 +6,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 export default class Sculptor extends Card {
     intrinsicTypes = ["action"] as const;
     name = "sculptor";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "Gain a card to your hand costing up to $4. If it's a Treasure, \n" +

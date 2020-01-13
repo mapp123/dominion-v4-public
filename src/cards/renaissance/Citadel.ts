@@ -5,7 +5,7 @@ import Card from "../Card";
 export default class Citadel extends Project {
     cardArt = "/img/card-img/CitadelArt.jpg";
     cardText = "The first time you play an Action card during each of your turns, play it again afterwards.";
-    cost = {
+    intrinsicCost = {
         coin: 8
     };
     name = "citadel";

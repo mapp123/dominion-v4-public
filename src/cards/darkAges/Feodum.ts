@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class Feodum extends Card {
     intrinsicTypes = ["victory"] as const;
     name = "feodum";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "Worth 1VP per 3 Silvers you have (round down).";

@@ -7,7 +7,7 @@ export default class Improve extends Card {
     static descriptionSize = 59;
     intrinsicTypes = ["action"] as const;
     name = "improve";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+$2\n" +

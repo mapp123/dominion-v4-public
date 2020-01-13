@@ -5,7 +5,7 @@ export default class Lackeys extends Card {
     intrinsicTypes = ["action"] as const;
     name = "lackeys";
     features = ["villagers"] as const;
-    cost = {
+    intrinsicCost = {
         coin: 2
     };
     cardText = "+2 Cards\n" +

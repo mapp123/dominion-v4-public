@@ -5,7 +5,7 @@ export default class RoadNetwork extends Project {
     cardArt = "/img/card-img/Road_NetworkArt.jpg";
     cardText = "When another player gain a Victory card,\n" +
         "+1 Card";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     name = "road network";

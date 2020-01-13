@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class Innovation extends Project {
     cardArt = "/img/card-img/InnovationArt.jpg";
     cardText = "The first time you gain an Action card in each of your turns, you may set it aside. If you do, play it.";
-    cost = {
+    intrinsicCost = {
         coin: 6
     };
     name = "innovation";

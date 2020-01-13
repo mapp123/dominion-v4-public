@@ -5,7 +5,7 @@ export default class WorkersVillage extends Card {
     static descriptionSize = 57;
     intrinsicTypes = ["action"] as const;
     name = "worker's village";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Card\n" +

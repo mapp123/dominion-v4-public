@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class Scepter extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "scepter";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "When you play this, choose one: $2; or replay an Action card you played this turn that's still in play.";

@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class SinisterPlot extends Project {
     cardArt = "/img/card-img/Sinister_PlotArt.jpg";
     cardText = "At the start of your turn, add a token here, or remove your tokens here to draw that many cards.";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     name = "sinister plot";

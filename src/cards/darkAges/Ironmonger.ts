@@ -6,7 +6,7 @@ export default class Ironmonger extends Card {
     static descriptionSize = 49;
     intrinsicTypes = ["action"] as const;
     name = "ironmonger";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Card\n" +

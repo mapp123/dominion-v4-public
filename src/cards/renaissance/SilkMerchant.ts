@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class SilkMerchant extends Card {
     intrinsicTypes = ["action"] as const;
     name = "silk merchant";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+2 Cards\n" +

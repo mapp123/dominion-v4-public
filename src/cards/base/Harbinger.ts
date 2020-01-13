@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Harbinger extends Card {
     intrinsicTypes = ["action"] as const;
     name = "harbinger";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+1 Card\n" +

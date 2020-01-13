@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class Festival extends Card {
     intrinsicTypes = ["action"] as const;
     name = "festival";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+2 Actions\n" +

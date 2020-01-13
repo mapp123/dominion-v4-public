@@ -1,13 +1,14 @@
-import Card, {Cost} from "../Card";
+import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
 import Game from "../../server/Game";
+import Cost from '../../server/Cost';
 
 export default class Inventor extends Card {
     intrinsicTypes = ["action"] as const;
     name = "inventor";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "Gain a card costing up to $4, then cards cost $1 less this turn (but not less than $0).";
@@ -30,9 +31,7 @@ export default class Inventor extends Card {
             }
             return {
                 ...last,
-                [card]: {
-                    coin: -cardData.number
-                }
+                [card]: Cost.create(-cardData.number)
             };
         }, {});
     }

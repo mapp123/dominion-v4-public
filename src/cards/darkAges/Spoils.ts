@@ -6,7 +6,7 @@ export default class Spoils extends Card {
     randomizable = false;
     intrinsicTypes = ["treasure"] as const;
     name = "spoils";
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     cardText = "$3\n" +

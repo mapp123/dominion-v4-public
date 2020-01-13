@@ -6,7 +6,7 @@ export default class SirMartin extends Knight {
     static typelineSize = 47;
     intrinsicTypes = ["action","attack","knight"] as const;
     name = "sir martin";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+2 Buys\n" +

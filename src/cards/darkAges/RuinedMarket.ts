@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class RuinedMarket extends Card {
     intrinsicTypes = ["action","ruins"] as const;
     name = "ruined market";
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     cardText = "+1 Buy";

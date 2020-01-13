@@ -6,7 +6,7 @@ export default class Research extends Card {
     static descriptionSize = 56;
     intrinsicTypes = ["action","duration"] as const;
     name = "research";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Action\n" +

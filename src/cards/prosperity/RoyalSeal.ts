@@ -6,7 +6,7 @@ import Game from "../../server/Game";
 export default class RoyalSeal extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "royal seal";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+$2\n---\nWhile this is in play, when you gain a card, you may put that card onto your deck.";

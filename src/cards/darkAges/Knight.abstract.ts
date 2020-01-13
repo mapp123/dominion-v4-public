@@ -5,7 +5,7 @@ import Tracker from "../../server/Tracker";
 import Util from "../../Util";
 
 export default abstract class Knight extends Card {
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     supplyCount = 0;

@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class CouncilRoom extends Card {
     intrinsicTypes = ["action"] as const;
     name = "council room";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+4 Cards\n" +

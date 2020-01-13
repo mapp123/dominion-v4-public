@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class Moat extends Card {
     intrinsicTypes = ["action", "reaction"] as const;
     name = "moat";
-    cost = {
+    intrinsicCost = {
         coin: 2
     };
     cardText = "+2 Cards\n" +

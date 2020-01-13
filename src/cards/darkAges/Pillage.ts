@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class Pillage extends Card {
     intrinsicTypes = ["action","attack"] as const;
     name = "pillage";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "Trash this. If you did, gain 2 Spoils, and each other player with 5 or more cards in hand reveals their hand and discards a card that you choose.";

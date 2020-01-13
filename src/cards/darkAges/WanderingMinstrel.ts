@@ -6,7 +6,7 @@ export default class WanderingMinstrel extends Card {
     static nameSize = 66;
     intrinsicTypes = ["action"] as const;
     name = "wandering minstrel";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Card\n" +

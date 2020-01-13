@@ -5,7 +5,7 @@ import shuffle from "../../server/util/shuffle";
 export default class Ruins extends Card {
     intrinsicTypes = ["action", "ruins"] as const;
     name = "ruins";
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     cardText = "Add the ruins pile to the game if any Kingdom card has type Looter.";

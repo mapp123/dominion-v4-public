@@ -16,7 +16,7 @@ export default class DameJosephine extends Knight {
         "---\n" +
         "2 VP";
     cardArt = "/img/card-img/Dame_JosephineArt.jpg";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
 }

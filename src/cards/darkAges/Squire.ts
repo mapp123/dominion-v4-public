@@ -6,7 +6,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 export default class Squire extends Card {
     intrinsicTypes = ["action"] as const;
     name = "squire";
-    cost = {
+    intrinsicCost = {
         coin: 2
     };
     cardText = "+$1\n" +

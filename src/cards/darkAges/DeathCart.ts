@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class DeathCart extends Card {
     intrinsicTypes = ["action","looter"] as const;
     name = "death cart";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "You may trash this or an Action card from your hand, for +$5.\n" +

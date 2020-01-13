@@ -6,7 +6,7 @@ export default class Forager extends Card {
     static descriptionSize = 54;
     intrinsicTypes = ["action"] as const;
     name = "forager";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+1 Action\n" +

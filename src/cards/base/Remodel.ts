@@ -6,7 +6,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 export default class Remodel extends Card {
     intrinsicTypes = ["action"] as const;
     name = "remodel";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "Trash a card from your hand.\n" +

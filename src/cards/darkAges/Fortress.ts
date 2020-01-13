@@ -5,7 +5,7 @@ import Tracker from "../../server/Tracker";
 export default class Fortress extends Card {
     intrinsicTypes = ["action"] as const;
     name = "fortress";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Card\n" +

@@ -7,7 +7,7 @@ import Util from "../../Util";
 export default class Counterfeit extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "counterfeit";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "$1\n" +

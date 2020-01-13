@@ -7,7 +7,7 @@ export default class Beggar extends Card {
     static descriptionSize = 59;
     intrinsicTypes = ["action", "reaction"] as const;
     name = "beggar";
-    cost = {
+    intrinsicCost = {
         coin: 2
     };
     cardText = "Gain 3 Coppers to your hand.\n" +

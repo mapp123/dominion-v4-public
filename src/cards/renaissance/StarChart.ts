@@ -6,7 +6,7 @@ import shuffle from "../../server/util/shuffle";
 export default class StarChart extends Project {
     cardArt = "/img/card-img/Star_ChartArt.jpg";
     cardText = "When you shuffle, you may pick one of the cards to go on top.";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     name = "star chart";

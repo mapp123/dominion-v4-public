@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class Copper extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "copper";
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     cardText = "+$1";

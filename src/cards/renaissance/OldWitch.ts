@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class OldWitch extends Card {
     intrinsicTypes = ["action","attack"] as const;
     name = "old witch";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+3 Cards\n" +

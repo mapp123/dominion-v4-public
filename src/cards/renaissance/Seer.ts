@@ -7,7 +7,7 @@ export default class Seer extends Card {
     static descriptionSize = 57;
     intrinsicTypes = ["action"] as const;
     name = "seer";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+1 Card\n" +

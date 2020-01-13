@@ -5,7 +5,7 @@ export default class Barracks extends Project {
     cardArt = "/img/card-img/BarracksArt.jpg";
     cardText = "At the start of your turn,\n" +
         "+1 Action.";
-    cost = {
+    intrinsicCost = {
         coin: 6
     };
     name = "barracks";

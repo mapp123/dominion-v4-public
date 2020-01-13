@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class HuntingGrounds extends Card {
     intrinsicTypes = ["action"] as const;
     name = "hunting grounds";
-    cost = {
+    intrinsicCost = {
         coin: 6
     };
     cardText = "+4 Cards\n" +

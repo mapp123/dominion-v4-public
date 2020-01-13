@@ -309,7 +309,7 @@ export class TestPlayer extends Player {
 class DrawAttack extends Card {
     randomizable = false;
     cardText = "";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     intrinsicTypes = ["action", "attack"] as const;
@@ -328,7 +328,7 @@ function createEmptySupplyPileCard() {
     return class extends Card {
         randomizable = false;
         cardText = "";
-        cost = {
+        intrinsicCost = {
             coin: 0
         };
         intrinsicTypes = ["action"] as const;

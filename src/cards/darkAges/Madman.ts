@@ -5,7 +5,7 @@ export default class Madman extends Card {
     static inSupply = false;
     intrinsicTypes = ["action"] as const;
     name = "madman";
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     cardText = "+2 Actions\n" +

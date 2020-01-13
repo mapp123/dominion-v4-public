@@ -10,7 +10,7 @@ export default class Rebuild extends Card {
     static descriptionSize = 53;
     intrinsicTypes = ["action"] as const;
     name = "rebuild";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+1 Action\n" +

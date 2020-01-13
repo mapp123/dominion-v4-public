@@ -5,10 +5,8 @@ import Game from "../server/Game";
 import {SupplyData} from "../createSupplyData";
 import {GainRestrictions} from "../server/GainRestrictions";
 import Tracker from "../server/Tracker";
+import Cost from "../server/Cost";
 
-export interface Cost {
-    coin: number;
-}
 export type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact' | 'command';
 export type CardImplementation = (typeof Card) & {new (game: Game | null): Card};
 export default abstract class Card {
@@ -47,13 +45,16 @@ export default abstract class Card {
         // @ts-ignore
         return new this().cardText;
     }
-    abstract cost: Cost;
+    abstract intrinsicCost: {coin: number; potion?: number; debt?: number};
+    get cost(): Cost {
+        return Cost.fromJSON(this.intrinsicCost);
+    }
     static get cost(): Cost {
         if (this === Card) {
             throw new Error("cost is only available on implemented cards.");
         }
         // @ts-ignore
-        return new this().cost;
+        return Cost.fromJSON(new this().intrinsicCost);
     }
     abstract intrinsicTypes: readonly ValidCardTypes[];
     get types() {

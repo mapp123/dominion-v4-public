@@ -5,7 +5,7 @@ export default class Guildhall extends Project {
     cardArt = "/img/card-img/GuildhallArt.jpg";
     cardText = "When you gain a Treasure,\n" +
         "+1 Coffers";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     name = "guildhall";

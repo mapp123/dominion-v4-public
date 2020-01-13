@@ -7,7 +7,7 @@ import Game from "../../server/Game";
 export default class Contraband extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "contraband";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+$3\n" +

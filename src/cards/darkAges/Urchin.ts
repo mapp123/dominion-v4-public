@@ -6,7 +6,7 @@ export default class Urchin extends Card {
     static descriptionSize = 45;
     intrinsicTypes = ["action","attack"] as const;
     name = "urchin";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+1 Card\n" +

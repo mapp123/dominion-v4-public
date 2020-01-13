@@ -7,7 +7,7 @@ export default class Cultist extends Card {
     static descriptionSize = 57;
     intrinsicTypes = ["action","attack","looter"] as const;
     name = "cultist";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+2 Cards\n" +

@@ -6,7 +6,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 export default class Expand extends Card {
     intrinsicTypes = ["action"] as const;
     name = "expand";
-    cost = {
+    intrinsicCost = {
         coin: 7
     };
     cardText = "Trash a card from your hand. Gain a card costing up to $3 more than it.";

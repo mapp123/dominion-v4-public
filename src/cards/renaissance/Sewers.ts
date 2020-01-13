@@ -6,7 +6,7 @@ import Card from "../Card";
 export default class Sewers extends Project {
     cardArt = "/img/card-img/SewersArt.jpg";
     cardText = "When you trash a card other than with this, you may trash a card from your hand.";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     name = "sewers";

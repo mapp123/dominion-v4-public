@@ -6,7 +6,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 export default class Forge extends Card {
     intrinsicTypes = ["action"] as const;
     name = "forge";
-    cost = {
+    intrinsicCost = {
         coin: 7
     };
     cardText = "Trash any number of cards from your hand. Gain a card with cost exactly equal to the total cost in $ of the trashed cards.";

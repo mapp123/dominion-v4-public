@@ -111,7 +111,7 @@ import {Texts} from "../../server/Texts";
 export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('')} extends Card {
     intrinsicTypes = ${JSON.stringify(info.types)} as const;
     name = "${info.name}";
-    cost = {
+    intrinsicCost = {
         coin: ${info.cost.coin}
     };
     cardText = ${cardText}

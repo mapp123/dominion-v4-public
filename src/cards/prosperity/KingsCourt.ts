@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class KingsCourt extends Card {
     intrinsicTypes = ["action"] as const;
     name = "king's court";
-    cost = {
+    intrinsicCost = {
         coin: 7
     };
     cardText = "You may play an Action card from your hand three times.";

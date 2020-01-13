@@ -8,7 +8,7 @@ export default class Goons extends Card {
     intrinsicTypes = ["action","attack"] as const;
     name = "goons";
     features = ["vp"] as const;
-    cost = {
+    intrinsicCost = {
         coin: 6
     };
     cardText = "+1 Buy\n" +

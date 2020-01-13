@@ -5,7 +5,7 @@ import Util from "../../Util";
 export default class Adventurer extends Card {
     intrinsicTypes = ["action"] as const;
     name = "adventurer";
-    cost = {
+    intrinsicCost = {
         coin: 6
     };
     cardText = "Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards into your hand and discard the other revealed cards.";

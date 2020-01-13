@@ -5,7 +5,7 @@ export default class Experiment extends Card {
     static descriptionSize = 57;
     intrinsicTypes = ["action"] as const;
     name = "experiment";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+2 Cards\n" +

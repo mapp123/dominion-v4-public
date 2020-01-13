@@ -5,7 +5,7 @@ import Util from "../../Util";
 export default class Vagrant extends Card {
     intrinsicTypes = ["action"] as const;
     name = "vagrant";
-    cost = {
+    intrinsicCost = {
         coin: 2
     };
     cardText = "+1 Card\n" +

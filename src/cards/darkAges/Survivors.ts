@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Survivors extends Card {
     intrinsicTypes = ["action","ruins"] as const;
     name = "survivors";
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     cardText = "Look at the top 2 cards of your deck. Discard them or put them back in any order.";

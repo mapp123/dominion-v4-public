@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class BanditCamp extends Card {
     intrinsicTypes = ["action"] as const;
     name = "bandit camp";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+1 Card\n" +

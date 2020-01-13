@@ -5,7 +5,7 @@ import Game from "../../server/Game";
 export default class Talisman extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "talisman";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+$1\n" +

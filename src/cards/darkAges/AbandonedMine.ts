@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class AbandonedMine extends Card {
     intrinsicTypes = ["action","ruins"] as const;
     name = "abandoned mine";
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     cardText = "+$1";

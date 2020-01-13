@@ -5,7 +5,7 @@ import Util from "../../Util";
 export default class Piazza extends Project {
     cardArt = "/img/card-img/PiazzaArt.jpg";
     cardText = "At the start of your turn, reveal the top card of your deck. If it's an Action, play it.";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     name = "piazza";

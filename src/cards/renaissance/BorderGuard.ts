@@ -10,7 +10,7 @@ import Tracker from "../../server/Tracker";
 export default class BorderGuard extends Card {
     intrinsicTypes = ["action"] as const;
     name = "border guard";
-    cost = {
+    intrinsicCost = {
         coin: 2
     };
     cardText = "+1 Action\n" +

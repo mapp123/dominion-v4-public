@@ -5,7 +5,7 @@ export default class Exploration extends Project {
     cardArt = "/img/card-img/ExplorationArt.jpg";
     cardText = "At the end of your Buy phase, if you didn't buy any cards,\n" +
         "+1 Coffers, +1 Villager";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     name = "exploration";

@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class Necropolis extends Card {
     intrinsicTypes = ["action","shelter"] as const;
     name = "necropolis";
-    cost = {
+    intrinsicCost = {
         coin: 1
     };
     cardText = "+2 Actions";

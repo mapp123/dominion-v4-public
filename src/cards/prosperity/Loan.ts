@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Loan extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "loan";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+$1\n" +

@@ -7,7 +7,8 @@ import shuffle from "./util/shuffle";
 import {format} from "util";
 import Supply from "./Supply";
 import CardRegistry from "../cards/CardRegistry";
-import Card, {Cost, ValidCardTypes} from "../cards/Card";
+import Cost from '../server/Cost';
+import Card, {ValidCardTypes} from "../cards/Card";
 import {GameEvents} from "./Events";
 import {GainRestrictions} from "./GainRestrictions";
 import Artifact from "../cards/Artifact";
@@ -171,7 +172,7 @@ export default class Game {
     }
     private checkForCostModifier: string[] = [];
     updateCostModifiers() {
-        const mods = {};
+        const mods: {[key: string]: Cost} = {};
         this.checkForCostModifier = this.checkForCostModifier.filter((a) => {
             const modifiers = CardRegistry.getInstance().getCard(a).getCostModifier(this.supply.data.globalCardData[a], this, this.selectedCards);
             if (modifiers) {
@@ -194,11 +195,9 @@ export default class Game {
     }
     getCostOfCard(card: string): Cost {
         if (CardRegistry.getInstance().getCard(card) == null) {
-            return {
-                coin: 0
-            };
+            return Cost.create(0);
         }
-        const cost = {...CardRegistry.getInstance().getCard(card).cost};
+        const cost = CardRegistry.getInstance().getCard(card).cost;
         Object.entries(this.supply.data.costModifiers[card] || {}).forEach(([key, value]) => {
             cost[key] += value;
         });

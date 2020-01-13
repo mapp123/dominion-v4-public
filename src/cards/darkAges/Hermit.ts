@@ -8,7 +8,7 @@ export default class Hermit extends Card {
     static descriptionSize = 45;
     intrinsicTypes = ["action"] as const;
     name = "hermit";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "Look through your discard pile. You may trash a non-Treasure card from your discard pile or hand. Gain a card costing up to $3.\n" +

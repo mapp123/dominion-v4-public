@@ -5,7 +5,7 @@ export default class Patron extends Card {
     static descriptionSize = 18;
     intrinsicTypes = ["action", "reaction"] as const;
     name = "patron";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Villager\n" +

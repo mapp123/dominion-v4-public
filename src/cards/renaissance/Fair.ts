@@ -5,7 +5,7 @@ export default class Fair extends Project {
     cardArt = "/img/card-img/FairArt.jpg";
     cardText = "At the start of your turn,\n" +
         "+1 Buy";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     name = "fair";

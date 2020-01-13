@@ -1,4 +1,5 @@
-import Card, {Cost} from "../Card";
+import Card from "../Card";
+import Cost from '../../server/Cost';
 import Player from "../../server/Player";
 import Game from "../../server/Game";
 
@@ -6,7 +7,7 @@ export default class Peddler extends Card {
     static descriptionSize = 51;
     intrinsicTypes = ["action"] as const;
     name = "peddler";
-    cost = {
+    intrinsicCost = {
         coin: 8
     };
     cardText = "+1 Card\n" +
@@ -25,9 +26,7 @@ export default class Peddler extends Card {
     public static getCostModifier(cardData: any, game: Game): {[card: string]: Cost} | null {
         const actionsInPlay = game.players[game.currentPlayerIndex].data.playArea.filter((a) => a.types.includes("action"));
         return {
-            peddler: {
-                coin: -(actionsInPlay.length * 2)
-            }
+            peddler: Cost.create(-(actionsInPlay.length * 2))
         };
     }
     public static setup(globalCardData: any, game: Game) {

@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class Gardens extends Card {
     intrinsicTypes = ["victory"] as const;
     name = "gardens";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "Worth 1 VP per 10 cards you have (round down).";

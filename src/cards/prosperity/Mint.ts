@@ -6,7 +6,7 @@ import Game from "../../server/Game";
 export default class Mint extends Card {
     intrinsicTypes = ["action"] as const;
     name = "mint";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "You may reveal a Treasure card from your hand. Gain a copy of it.\n" +

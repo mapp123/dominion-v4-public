@@ -7,7 +7,7 @@ export default class TradeRoute extends Card {
     static descriptionSize = 45;
     intrinsicTypes = ["action"] as const;
     name = "trade route";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+1 Buy\n" +

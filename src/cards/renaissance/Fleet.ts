@@ -5,7 +5,7 @@ import Game from "../../server/Game";
 export default class Fleet extends Project {
     cardArt = "/img/card-img/FleetArt.jpg";
     cardText = "After the game ends, there's an extra round of turns just for players with this.";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     name = "fleet";

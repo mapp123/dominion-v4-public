@@ -6,7 +6,7 @@ export default class Ducat extends Card {
     intrinsicTypes = ["treasure"] as const;
     name = "ducat";
     features = ["coffers"] as const;
-    cost = {
+    intrinsicCost = {
         coin: 2
     };
     cardText = "+1 Coffers\n" +

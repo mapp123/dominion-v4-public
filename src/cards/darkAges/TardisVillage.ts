@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class TardisVillage extends Card {
     intrinsicTypes = ["action"] as const;
     name = "tardis village";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+2 Actions\n" +

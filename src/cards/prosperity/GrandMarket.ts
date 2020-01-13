@@ -6,7 +6,7 @@ export default class GrandMarket extends Card {
     static descriptionSize = 54;
     intrinsicTypes = ["action"] as const;
     name = "grand market";
-    cost = {
+    intrinsicCost = {
         coin: 6
     };
     cardText = "+1 Card\n" +

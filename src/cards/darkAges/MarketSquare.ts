@@ -7,7 +7,7 @@ export default class MarketSquare extends Card {
     static descriptionSize = 54;
     intrinsicTypes = ["action","reaction"] as const;
     name = "market square";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "+1 Card\n" +

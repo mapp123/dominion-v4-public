@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Library extends Card {
     intrinsicTypes = ["action"] as const;
     name = "library";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "Draw until you have 7 cards in hand, skipping any Action cards you choose to; set those aside, discarding them afterwards.";

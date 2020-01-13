@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class Hideout extends Card {
     intrinsicTypes = ["action"] as const;
     name = "hideout";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Card\n" +

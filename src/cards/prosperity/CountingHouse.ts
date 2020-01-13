@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class CountingHouse extends Card {
     intrinsicTypes = ["action"] as const;
     name = "counting house";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "Look through your discard pile, reveal any number of Coppers from it, and put them into your hand.";

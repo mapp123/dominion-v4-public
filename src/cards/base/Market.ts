@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class Market extends Card {
     intrinsicTypes = ["action"] as const;
     name = "market";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+1 Card\n" +

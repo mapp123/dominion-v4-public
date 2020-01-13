@@ -7,7 +7,7 @@ export default class Watchtower extends Card {
     static descriptionSize = 57;
     intrinsicTypes = ["action","reaction"] as const;
     name = "watchtower";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     cardText = "Draw until you have 6 cards in hand.\n" +

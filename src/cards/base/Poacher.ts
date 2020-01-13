@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Poacher extends Card {
     intrinsicTypes = ["action"] as const;
     name = "poacher";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Card\n" +

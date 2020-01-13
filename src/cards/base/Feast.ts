@@ -6,7 +6,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 export default class Feast extends Card {
     intrinsicTypes = ["action"] as const;
     name = "feast";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "Trash this card.\n" +

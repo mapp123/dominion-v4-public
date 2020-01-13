@@ -6,7 +6,7 @@ import Util from "../../Util";
 export default class Spy extends Card {
     intrinsicTypes = ["action","attack"] as const;
     name = "spy";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+1 Card\n" +

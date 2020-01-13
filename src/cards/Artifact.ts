@@ -8,7 +8,7 @@ export default abstract class Artifact extends Card {
     intrinsicTypes = ["artifact"] as const;
     randomizable = false;
     supplyCount = 0;
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     belongsToPlayer: Player | null = null;

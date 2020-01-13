@@ -6,7 +6,7 @@ export default class CropRotation extends Project {
     cardArt = "/img/card-img/Crop_RotationArt.jpg";
     cardText = "At the start of your turn, you may discard a Victory card for\n" +
         "+2 Cards";
-    cost = {
+    intrinsicCost = {
         coin: 6
     };
     name = "crop rotation";

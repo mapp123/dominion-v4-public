@@ -5,7 +5,7 @@ export default class Swashbuckler extends Card {
     static descriptionSize = 56;
     intrinsicTypes = ["action"] as const;
     name = "swashbuckler";
-    cost = {
+    intrinsicCost = {
         coin: 5
     };
     cardText = "+3 Cards\n" +

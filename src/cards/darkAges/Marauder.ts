@@ -5,7 +5,7 @@ export default class Marauder extends Card {
     static typelineSize = 48;
     intrinsicTypes = ["action","attack","looter"] as const;
     name = "marauder";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "Gain a Spoils from the Spoils pile. Each other player gains a Ruins.";

@@ -1,13 +1,13 @@
 import Project from "../Project";
 import Player from "../../server/Player";
 import Game from "../../server/Game";
-import {Cost} from "../Card";
+import Cost from "../../server/Cost";
 
 export default class Canal extends Project {
     static descriptionSize = 27;
     cardArt = "/img/card-img/CanalArt.jpg";
     cardText = "During your turns, cards cost $1 less, but not less than $0.";
-    cost = {
+    intrinsicCost = {
         coin: 7
     };
     name = "canal";
@@ -30,17 +30,13 @@ export default class Canal extends Project {
                 if (cardData.starting) {
                     return {
                         ...last,
-                        [a]: {
-                            coin: -1
-                        }
+                        [a]: Cost.create(-1)
                     };
                 }
                 else {
                     return {
                         ...last,
-                        [a]: {
-                            coin: 0
-                        }
+                        [a]: Cost.create(0)
                     };
                 }
             }

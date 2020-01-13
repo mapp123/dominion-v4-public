@@ -5,7 +5,7 @@ import {Texts} from "../../server/Texts";
 export default class Cathedral extends Project {
     cardArt = "/img/card-img/CathedralArt.jpg";
     cardText = "At the start of your turn, trash a card from your hand.";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     name = "cathedral";

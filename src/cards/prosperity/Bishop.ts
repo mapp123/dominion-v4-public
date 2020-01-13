@@ -7,7 +7,7 @@ export default class Bishop extends Card {
     intrinsicTypes = ["action"] as const;
     name = "bishop";
     features = ["vp"] as const;
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+$1\n" +

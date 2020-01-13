@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class Curse extends Card {
     intrinsicTypes = ["curse"] as const;
     name = "curse";
-    cost = {
+    intrinsicCost = {
         coin: 0
     };
     cardText = "-1 VP";

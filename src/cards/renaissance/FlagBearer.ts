@@ -4,7 +4,7 @@ import Player from "../../server/Player";
 export default class FlagBearer extends Card {
     intrinsicTypes = ["action"] as const;
     name = "flag bearer";
-    cost = {
+    intrinsicCost = {
         coin: 4
     };
     cardText = "+$2\n" +

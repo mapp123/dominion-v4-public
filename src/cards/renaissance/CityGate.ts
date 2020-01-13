@@ -8,7 +8,7 @@ export default class CityGate extends Project {
     cardText = "At the start of your turn,\n" +
         "+1 Card,\n" +
         "then put a card from your hand onto your deck.";
-    cost = {
+    intrinsicCost = {
         coin: 3
     };
     name = "city gate";

@@ -19,17 +19,15 @@ export default class BorderGuard extends Card {
     cardArt = "/img/card-img/Border_GuardArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.data.actions += 1;
-        const revealed = [await player.deck.pop(), await player.deck.pop(), (this.getGlobalData().lantern as Lantern).belongsToPlayer === player ? await player.deck.pop() : null].filter((a) => a) as Card[];
-        const kept = await player.reveal(revealed);
-        player.lm('%p reveals %s.', Util.formatCardList(kept.map((a) => a.name)));
-        const card = await player.chooseCard(Texts.chooseCardToTakeFromRevealed, kept, false);
+        const revealed = await player.revealTop((this.getGlobalData().lantern as Lantern).belongsToPlayer === player ? 3 : 2, true);
+        const card = await player.chooseCard(Texts.chooseCardToTakeFromRevealed, revealed.map((a) => a.viewCard()), false);
         if (card) {
             player.lm('%p puts the %s in their hand.', card.name);
-            player.data.hand.push(card);
+            const tracker = revealed.find((a) => a.viewCard().id === card.id)!;
+            player.data.hand.push(tracker.exercise()!);
         }
-        const toDiscard = kept.filter((a) => a != card);
-        await player.discard(toDiscard, true);
-        if (kept.length === ((this.getGlobalData().lantern as Lantern).belongsToPlayer === player ? 3 : 2) && kept.every((a) => a.types.includes("action"))) {
+        await player.discard(Util.filterAndExerciseTrackers(revealed), true);
+        if (revealed.length === ((this.getGlobalData().lantern as Lantern).belongsToPlayer === player ? 3 : 2) && revealed.every((a) => a.viewCard().types.includes("action"))) {
             const choice = await player.chooseOption(Texts.whichArtifactWouldYouLike, ['lantern', 'horn'] as const);
             player.game.giveArtifactTo(choice, player);
         }

@@ -2,6 +2,7 @@ import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Util from "../../Util";
+import Tracker from "../../server/Tracker";
 
 export default class Loan extends Card {
     intrinsicTypes = ["treasure"] as const;
@@ -16,29 +17,31 @@ export default class Loan extends Card {
     intrinsicValue = 1;
     protected async onTreasure(player: Player): Promise<void> {
         player.data.money += 1;
-        let revealedCard: Card | undefined;
-        const revealedCards: Card[] = [];
-        while ((revealedCard = await player.deck.pop()) != null && !revealedCard.types.includes("treasure")) {
-            player.lm('%p reveals %s.', Util.formatCardList([revealedCard.name]));
-            const kept = await player.reveal([revealedCard]);
-            revealedCards.push(...kept);
+        let revealedCard: Tracker<Card> | undefined;
+        const revealedCards: Array<Tracker<Card>> = [];
+        while ((revealedCard = (await player.revealTop(1, true))[0]) != null && !revealedCard.viewCard().types.includes("treasure")) {
+            revealedCards.push(revealedCard);
         }
         if (revealedCard) {
-            const option = await player.chooseOption(Texts.whatToDoWith(revealedCard.name), [Texts.discardIt, Texts.trashIt] as const);
+            const option = await player.chooseOption(Texts.whatToDoWith(revealedCard.viewCard().name), [Texts.discardIt, Texts.trashIt] as const);
             switch (option) {
                 case 'Discard It':
-                    player.lm('%p discards a revealed %s.', revealedCard.name);
-                    await player.discard(revealedCard);
+                    player.lm('%p discards a revealed %s.', revealedCard.viewCard().name);
+                    if (revealedCard.hasTrack) {
+                        await player.discard(revealedCard.exercise()!);
+                    }
                     break;
                 case 'Trash It':
-                    player.lm('%p trashes a revealed %s.', revealedCard.name);
-                    await player.trash(revealedCard, false);
+                    player.lm('%p trashes a revealed %s.', revealedCard.viewCard().name);
+                    if (revealedCard.hasTrack) {
+                        await player.trash(revealedCard.exercise()!, false);
+                    }
                     break;
             }
         }
         else {
             player.lm('%p has no cards left to reveal.');
         }
-        await player.discard(revealedCards);
+        await player.discard(Util.filterAndExerciseTrackers(revealedCards));
     }
 }

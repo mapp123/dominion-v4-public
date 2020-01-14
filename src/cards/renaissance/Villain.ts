@@ -27,7 +27,7 @@ export default class Villain extends Card {
             }
             else {
                 p.lm('%p has no cards costing $2 or more.');
-                await p.reveal(p.data.hand);
+                await player.revealHand();
             }
         });
     }

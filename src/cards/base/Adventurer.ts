@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import Util from "../../Util";
+import Tracker from "../../server/Tracker";
 
 export default class Adventurer extends Card {
     intrinsicTypes = ["action"] as const;
@@ -12,15 +13,14 @@ export default class Adventurer extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/AdventurerArt.jpg";
     async onAction(player: Player): Promise<void> {
-        const revealed: Card[] = [];
-        let revealedCard: Card | undefined;
-        while (revealed.filter((a) => a.types.includes("treasure")).length < 2 && (revealedCard = await player.deck.pop()) != null) {
-            player.lm('%p reveals %s.', Util.formatCardList([revealedCard.name]));
-            const kept = await player.reveal([revealedCard]);
-            revealed.push(...kept);
+        const revealed: Array<Tracker<Card>> = [];
+        while (revealed.filter((a) => a.viewCard().types.includes("treasure")).length < 2) {
+            const revealedCard = await player.revealTop(1);
+            revealed.push(...revealedCard);
         }
+        player.lm('%p reveals %s.', Util.formatCardList(revealed.map((a) => a.viewCard().name)));
         player.lm('%p puts the revealed treasures into their hand, and discards the rest.');
-        player.data.hand.push(...revealed.filter((a) => a.types.includes("treasure")));
-        await player.discard(revealed.filter((a) => !a.types.includes("treasure")));
+        player.data.hand.push(...Util.filterAndExerciseTrackers(revealed.filter((a) => a.viewCard().types.includes("treasure"))));
+        await player.discard(Util.filterAndExerciseTrackers(revealed));
     }
 }

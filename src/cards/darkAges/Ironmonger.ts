@@ -20,24 +20,25 @@ export default class Ironmonger extends Card {
     async onAction(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
-        let card = await player.deck.pop();
+        const card = (await player.revealTop(1, true))[0];
         if (card) {
-            card = (await player.reveal([card]))[0];
-        }
-        if (card) {
-            if (await player.confirmAction(Texts.shouldADiscardTheBOnTopOfTheirDeck('you', card.name))) {
-                await player.discard(card);
+            if (await player.confirmAction(Texts.shouldADiscardTheBOnTopOfTheirDeck('you', card.viewCard().name))) {
+                if (card.hasTrack) {
+                    await player.discard(card.exercise()!);
+                }
             }
             else {
-                player.deck.cards.unshift(card);
+                if (card.hasTrack) {
+                    player.deck.cards.unshift(card.exercise()!);
+                }
             }
-            if (card.types.includes("action")) {
+            if (card.viewCard().types.includes("action")) {
                 player.data.actions++;
             }
-            if (card.types.includes("treasure")) {
+            if (card.viewCard().types.includes("treasure")) {
                 player.data.money++;
             }
-            if (card.types.includes("victory")) {
+            if (card.viewCard().types.includes("victory")) {
                 await player.draw();
             }
         }

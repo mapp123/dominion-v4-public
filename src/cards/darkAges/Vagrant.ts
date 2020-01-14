@@ -16,18 +16,19 @@ export default class Vagrant extends Card {
     async onAction(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
-        let card = await player.deck.pop();
+        const card = (await player.revealTop(1))[0];
         if (card) {
-            card = (await player.reveal([card]))[0];
-        }
-        if (card) {
-            if (card.types.some((a) => ['curse', 'ruins', 'shelter', 'victory'].includes(a))) {
-                player.lm('%p reveals %s, putting it into their hand.', Util.formatCardList([card.name]));
-                player.data.hand.push(card);
+            if (card.viewCard().types.some((a) => ['curse', 'ruins', 'shelter', 'victory'].includes(a))) {
+                player.lm('%p reveals %s, putting it into their hand.', Util.formatCardList([card.viewCard().name]));
+                if (card.hasTrack) {
+                    player.data.hand.push(card.exercise()!);
+                }
             }
             else {
-                player.lm('%p reveals %s.', Util.formatCardList([card.name]));
-                player.deck.setCards([card, ...player.deck.cards]);
+                player.lm('%p reveals %s.', Util.formatCardList([card.viewCard().name]));
+                if (card.hasTrack) {
+                    player.deck.setCards([card.exercise()!, ...player.deck.cards]);
+                }
             }
         }
     }

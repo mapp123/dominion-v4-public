@@ -16,21 +16,18 @@ export default class Thief extends Card {
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
         const chosenCards: Card[] = [];
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
-            let topCards: Card[] = [await p.deck.pop(), await p.deck.pop()].filter((a) => a != null) as Card[];
-            if (topCards.length) {
-                p.lm('%p reveals %s.', Util.formatCardList(topCards.map((a) => a.name)));
-                topCards = await p.reveal(topCards);
-            }
-            const chosen = await player.chooseCard(Texts.chooseATreasureToTrashFor(p.username), topCards, false, (card) => card.types.includes("treasure"));
+            const topCards = await p.revealTop(2, true);
+            const chosen = await player.chooseCard(Texts.chooseATreasureToTrashFor(p.username), topCards.map((a) => a.viewCard()), false, (card) => card.types.includes("treasure"));
             if (chosen) {
-                chosenCards.push(chosen);
-                await p.trash(chosen);
-                if (topCards.length > 1) {
-                    topCards.filter((a) => a != chosen).forEach((card) => p.discard(card));
+                const chosenTracker = topCards.find((a) => a.viewCard().id === chosen.id)!;
+                if (chosenTracker.hasTrack) {
+                    chosenCards.push(chosen);
+                    await p.trash(chosenTracker.exercise()!);
                 }
+                await p.discard(Util.filterAndExerciseTrackers(topCards));
             }
             else {
-                await p.discard(topCards);
+                await p.discard(topCards.filter((a) => a.hasTrack).map((a) => a.exercise()!));
             }
         });
         let chosen;

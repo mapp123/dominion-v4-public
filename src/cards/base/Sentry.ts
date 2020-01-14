@@ -1,7 +1,6 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
-import Util from "../../Util";
 
 export default class Sentry extends Card {
     static descriptionSize = 57;
@@ -18,25 +17,22 @@ export default class Sentry extends Card {
     async onAction(player: Player): Promise<void> {
         await player.draw();
         player.data.actions++;
-        let cards = [await player.deck.pop(), await player.deck.pop()].filter((a) => a) as Card[];
-        if (cards.length) {
-            player.lm('%p reveals %s.', Util.formatCardList(cards.map((a) => a.name)));
-            cards = await player.reveal(cards);
-        }
+        const cards = await player.revealTop(2, true);
         const keptCards: Card[] = [];
         for (const card of cards) {
-            const choice = await player.chooseOption(Texts.whatToDoWith(card.name), [Texts.trashIt, Texts.discardIt, Texts.keepIt] as const);
-            switch (choice) {
-                case "Trash It":
-                    await player.trash(card);
-                    break;
-                case "Discard It":
-                    player.lm('%p discards the %s.', card.name);
-                    await player.discard(card);
-                    break;
-                case "Keep It":
-                    keptCards.push(card);
-                    break;
+            const choice = await player.chooseOption(Texts.whatToDoWith(card.viewCard().name), [Texts.trashIt, Texts.discardIt, Texts.keepIt] as const);
+            if (card.hasTrack) {
+                switch (choice) {
+                    case "Trash It":
+                        await player.trash(card.exercise()!);
+                        break;
+                    case "Discard It":
+                        await player.discard(card.exercise()!, true);
+                        break;
+                    case "Keep It":
+                        keptCards.push(card.exercise()!);
+                        break;
+                }
             }
         }
         const order = await player.chooseOrder(Texts.chooseOrderOfCards, keptCards, 'Top of Deck', 'Rest of Deck');

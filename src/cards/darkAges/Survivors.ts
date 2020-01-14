@@ -14,16 +14,15 @@ export default class Survivors extends Card {
     cardArt = "/img/card-img/SurvivorsArt.jpg";
     randomizable = false;
     async onAction(player: Player): Promise<void> {
-        let cards = [await player.deck.pop(), await player.deck.pop()].filter(Util.nonNull);
-        cards = await player.reveal(cards);
-        const choice = await player.chooseOption(Texts.whatToDoWithCards(Util.formatCardList(cards.map((a) => a.name))), [Texts.discardThem, Texts.putThemOnYourDeck] as const);
+        const cards = await player.revealTop(2);
+        const choice = await player.chooseOption(Texts.whatToDoWithCards(Util.formatCardList(cards.map((a) => a.viewCard().name))), [Texts.discardThem, Texts.putThemOnYourDeck] as const);
         switch (choice) {
             case Texts.discardThem:
-                await player.discard(cards);
+                await player.discard(cards.filter((a) => a.hasTrack).map((a) => a.exercise()!));
                 break;
             case Texts.putThemOnYourDeck:
-                cards = await player.chooseOrder(Texts.chooseOrderOfCards, cards, 'Top of Deck', 'Bottom of Deck');
-                player.deck.cards.unshift(...cards);
+                const cardOrder = await player.chooseOrder(Texts.chooseOrderOfCards, cards.map((a) => a.viewCard()), 'Top of Deck', 'Bottom of Deck');
+                player.deck.cards.unshift(...Util.filterAndExerciseTrackers(cardOrder.map((a) => cards.find((b) => b.viewCard().id === a.id)!)));
                 break;
         }
     }

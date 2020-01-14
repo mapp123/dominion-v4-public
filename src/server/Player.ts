@@ -673,6 +673,25 @@ export default class Player {
         }
         return cardTrackers;
     }
+    async revealWithTracker(cards: Card[]): Promise<Array<Tracker<Card>>> {
+        const cardTrackers = cards.map((a) => new Tracker(a));
+        for (const tracker of cardTrackers) {
+            await tracker.viewCard().onRevealSelf(this, tracker);
+        }
+        return cardTrackers;
+    }
+    async revealHand() {
+        const cardTrackers = this.data.hand.map((a) => {
+            const c = new Tracker(a);
+            c.onExercise(() => {
+                this.data.hand.splice(this.data.hand.findIndex((b) => b.id === a.id), 1);
+            });
+            return c;
+        });
+        for (const tracker of cardTrackers) {
+            await tracker.viewCard().onRevealSelf(this, tracker);
+        }
+    }
     async reveal(cards: Card[]): Promise<Card[]> {
         const keptCards = [] as Card[];
         for (const card of cards) {

@@ -14,8 +14,8 @@ export default class PoorHouse extends Card {
     cardArt = "/img/card-img/Poor_HouseArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.data.money += 4;
-        player.data.hand = await player.reveal(player.data.hand);
-        player.data.money -= player.data.hand.length;
+        await player.revealHand();
+        player.data.money -= player.data.hand.filter((a) => player.game.getTypesOfCard(a.name).includes("treasure")).length;
         player.data.money = Math.max(0, player.data.money);
     }
 }

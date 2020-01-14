@@ -1,8 +1,15 @@
 import nlp = require('compromise');
 import Card from "./cards/Card";
+import Tracker from "./server/Tracker";
 export default class Util {
     static checkTrashSanity(selected: Card, choices: Card[]) {
         return !(selected.cost.coin > 2 && choices.find((a) => selected.cost.coin > a.cost.coin) != null);
+    }
+    static filterAndExerciseTrackers(trackers: Array<Tracker<Card>>): Card[] {
+        return trackers.filter((a) => a.hasTrack).map((a) => a.exercise()!);
+    }
+    static formatTrackerList(trackers: Array<Tracker<Card>>): string {
+        return Util.formatCardList(trackers.map((a) => a.viewCard().name));
     }
     static formatCardList(cards: string[]): string {
         const formattedCards = cards.map((a, i) => {

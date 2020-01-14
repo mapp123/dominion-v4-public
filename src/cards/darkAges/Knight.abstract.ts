@@ -19,22 +19,23 @@ export default abstract class Knight extends Card {
         await this.beforeKnight(player, exemptPlayers, tracker);
         let trashSelf = false;
         await player.attackOthers(exemptPlayers, async (p) => {
-            let revealed = [await p.deck.pop(), await p.deck.pop()].filter(Util.nonNull);
-            revealed = await p.reveal(revealed);
+            const revealed = await p.revealTop(2, true);
             const lowerLimit = Cost.create(3);
             const upperLimit = Cost.create(6);
             const trashable = revealed.filter((a) => {
-                return a.cost.isInRange(lowerLimit, upperLimit);
+                return a.viewCard().cost.isInRange(lowerLimit, upperLimit);
             });
-            const card = await p.chooseCard(Texts.chooseCardToTrashFor(this.name), trashable);
+            const card = await p.chooseCard(Texts.chooseCardToTrashFor(this.name), trashable.map((a) => a.viewCard()));
             if (card) {
-                revealed.splice(revealed.indexOf(card), 1);
-                await p.trash(card);
+                const tracker = revealed.find((a) => a.viewCard().id === card.id)!;
+                if (tracker.hasTrack) {
+                    await p.trash(tracker.exercise()!);
+                }
                 if (card.types.includes("knight")) {
                     trashSelf = true;
                 }
             }
-            await p.discard(revealed);
+            await p.discard(Util.filterAndExerciseTrackers(revealed));
         });
         if (trashSelf && tracker.hasTrack) {
             await player.trash(tracker.exercise()!);

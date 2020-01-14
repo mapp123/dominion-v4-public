@@ -17,13 +17,14 @@ export default class Bureaucrat extends Card {
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             const card = await p.chooseCardFromHand(Texts.chooseVictoryToTopDeckFor('bureaucrat'), false, (card) => card.types.includes("victory"));
             if (card) {
-                if ((await p.reveal([card])).length !== 0) {
+                const tracker = await p.revealWithTracker([card]);
+                if (tracker[0].hasTrack) {
                     p.lm('%p puts %ac on top of their deck.', Util.formatCardList([card.name]));
-                    p.deck.cards.unshift(card);
+                    p.deck.cards.unshift(tracker[0].exercise()!);
                 }
             }
             else {
-                await p.reveal(p.data.hand);
+                await p.revealHand();
             }
         });
     }

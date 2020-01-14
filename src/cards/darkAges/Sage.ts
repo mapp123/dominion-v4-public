@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import Util from "../../Util";
+import Tracker from "../../server/Tracker";
 
 export default class Sage extends Card {
     intrinsicTypes = ["action"] as const;
@@ -14,26 +15,24 @@ export default class Sage extends Card {
     cardArt = "/img/card-img/SageArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.data.actions++;
-        let revealedCards = [] as Card[];
-        let card: Card | undefined;
-        while ((card = await player.deck.pop()) != undefined) {
-            if (card.cost.coin >= 3) {
+        const revealedCards = [] as Array<Tracker<Card>>;
+        let card: Tracker<Card> | undefined;
+        while ((card = (await player.revealTop(1))[0]) != undefined) {
+            if (card.viewCard().cost.coin >= 3) {
                 break;
             }
             revealedCards.push(card);
         }
-        player.lm('%p reveals %s.', Util.formatCardList(revealedCards.map((a) => a.name)));
-        revealedCards = await player.reveal(revealedCards);
+        player.lm('%p reveals %s.', Util.formatCardList(revealedCards.map((a) => a.viewCard().name)));
         if (card === undefined) {
             player.lm('%p has run out of cards to reveal, and draws nothing.');
         }
         else {
-            player.lm('%p reveals and draws %s.', Util.formatCardList([card.name]));
-            card = (await player.reveal([card]))[0];
-            if (card) {
-                player.data.hand.push(card);
+            player.lm('%p reveals and draws %s.', Util.formatCardList([card.viewCard().name]));
+            if (card && card.hasTrack) {
+                player.data.hand.push(card.exercise()!);
             }
         }
-        await player.discard(revealedCards);
+        await player.discard(Util.filterAndExerciseTrackers(revealedCards));
     }
 }

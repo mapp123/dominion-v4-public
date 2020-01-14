@@ -1,7 +1,6 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
-import Util from "../../Util";
 
 export default class Spy extends Card {
     intrinsicTypes = ["action","attack"] as const;
@@ -15,19 +14,19 @@ export default class Spy extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SpyArt.jpg";
     async affectPlayer(player: Player, p: Player) {
-        let topCard = await p.deck.peek();
+        const topCard = (await p.revealTop(1, true))[0];
         if (topCard) {
-            player.lm('%p reveals %s.', Util.formatCardList([topCard.name]));
-            topCard = (await player.reveal([topCard]))[0];
-            if (!topCard) {
-                return;
-            }
-            if (await player.confirmAction(Texts.shouldADiscardTheBOnTopOfTheirDeck(player === p ? "you" : p.username, topCard.name))) {
-                p.lm('%p discards the %s on top of their deck.', topCard.name);
-                await p.discard((await p.deck.pop())!);
+            if (await player.confirmAction(Texts.shouldADiscardTheBOnTopOfTheirDeck(player === p ? "you" : p.username, topCard.viewCard().name))) {
+                p.lm('%p discards the %s on top of their deck.', topCard.viewCard().name);
+                if (topCard.hasTrack) {
+                    await p.discard(topCard.exercise()!);
+                }
             }
             else {
-                p.lm('%p puts the %s back on top of their deck.', topCard.name);
+                p.lm('%p puts the %s back on top of their deck.', topCard.viewCard().name);
+                if (topCard.hasTrack) {
+                    p.deck.cards.unshift(topCard.exercise()!);
+                }
             }
         }
     }

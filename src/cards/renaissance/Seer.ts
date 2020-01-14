@@ -19,21 +19,21 @@ export default class Seer extends Card {
     async onAction(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
-        let revealed = [await player.deck.pop(), await player.deck.pop(), await player.deck.pop()].filter((a) => a) as Card[];
-        player.lm('%p reveals %s.', Util.formatCardList(revealed.map((a) => a.name)));
-        revealed = await player.reveal(revealed);
+        let revealed = await player.revealTop(3, true);
         const lowerLimit = Cost.create(2);
         const upperLimit = Cost.create(4);
         revealed = revealed.filter((a) => {
-            if (a.cost.isInRange(lowerLimit, upperLimit)) {
-                player.lm('%p takes the %s.', a.name);
-                player.data.hand.push(a);
+            if (a.viewCard().cost.isInRange(lowerLimit, upperLimit)) {
+                player.lm('%p takes the %s.', a.viewCard().name);
+                if (a.hasTrack) {
+                    player.data.hand.push(a.exercise()!);
+                }
                 return false;
             }
             return true;
         });
-        revealed = await player.chooseOrder(Texts.chooseOrderOfCards, revealed, 'Top of Deck', 'Bottom of Deck');
+        const cardOrder = await player.chooseOrder(Texts.chooseOrderOfCards, revealed.filter((a) => a.hasTrack).map((a) => a.viewCard()), 'Top of Deck', 'Bottom of Deck');
         player.lm('%p puts the rest back in any order.');
-        player.deck.setCards([...revealed, ...player.deck.cards]);
+        player.deck.setCards([...Util.filterAndExerciseTrackers(cardOrder.map((a) => revealed.find((b) => b.viewCard().id === a.id)!)), ...player.deck.cards]);
     }
 }

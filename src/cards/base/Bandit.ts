@@ -15,17 +15,15 @@ export default class Bandit extends Card {
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.gain('gold');
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
-            let topCards: Card[] = [await p.deck.pop(), await p.deck.pop()].filter((a) => a) as Card[];
-            if (topCards.length) {
-                p.lm('%p reveals %s.', Util.formatCardList(topCards.map((a) => a.name)));
-                topCards = await player.reveal(topCards);
-            }
-            const chosen = await p.chooseCard(Texts.chooseATreasureToTrashFor('bandit'), topCards, false, (card) => card.types.includes("treasure") && card.name !== 'copper');
+            const topCards = await p.revealTop(2, true);
+            const chosen = await p.chooseCard(Texts.chooseATreasureToTrashFor('bandit'), topCards.filter((a) => a.hasTrack).map((a) => a.viewCard()), false, (card) => card.types.includes("treasure") && card.name !== 'copper');
             if (chosen) {
-                await p.trash(chosen);
-                topCards.splice(topCards.indexOf(chosen),  1);
+                const chosenTracker = topCards.find((a) => a.viewCard().id === chosen.id)!;
+                if (chosenTracker.hasTrack) {
+                    await p.trash(chosenTracker.exercise()!);
+                }
             }
-            await p.discard(topCards);
+            await p.discard(Util.filterAndExerciseTrackers(topCards));
         });
     }
 }

@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import Util from "../../Util";
+import Tracker from "../../server/Tracker";
 
 export default class Venture extends Card {
     intrinsicTypes = ["treasure"] as const;
@@ -15,23 +16,20 @@ export default class Venture extends Card {
     intrinsicValue = 1;
     async onTreasure(player: Player): Promise<void> {
         player.data.money += 1;
-        let revealedCard: Card | undefined;
-        const revealedCards: Card[] = [];
-        while ((revealedCard = await player.deck.pop()) != null) {
-            const kept = await player.reveal([revealedCard]);
-            revealedCards.push(...kept);
-            if (revealedCard.types.includes("treasure")) {
-                break;
-            }
+        let revealedCard: Tracker<Card> | undefined;
+        const revealedCards: Array<Tracker<Card>> = [];
+        while ((revealedCard = (await player.revealTop(1))[0]) != null && !revealedCard.viewCard().types.includes("treasure")) {
+            revealedCards.push(revealedCard);
         }
-        if (revealedCards.length) {
-            player.lm('%p reveals %s.', Util.formatCardList(revealedCards.map((a) => a.name)));
-            await player.discard(revealedCard ? revealedCards.slice(0, -1) : revealedCards);
-        }
+        player.lm('%p reveals %s.', Util.formatTrackerList([...revealedCards, revealedCard]));
+        await player.discard(Util.filterAndExerciseTrackers(revealedCards));
         if (revealedCard) {
-            player.lm('%p plays the revealed %s.', revealedCard.name);
-            player.data.playArea.push(revealedCard);
-            await player.playTreasure(revealedCard);
+            player.lm('%p plays the revealed %s.', revealedCard.viewCard().name);
+            if (revealedCard.hasTrack) {
+                player.data.playArea.push(revealedCard.exercise()!);
+                revealedCard = player.getTrackerInPlay(revealedCard.viewCard());
+            }
+            await player.playTreasure(revealedCard.viewCard(), revealedCard);
         }
     }
 }

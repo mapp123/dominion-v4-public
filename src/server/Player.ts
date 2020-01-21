@@ -264,6 +264,7 @@ export default class Player {
         this.data.money = 0;
         this.data.actions = 1;
         this.boughtCards = [];
+        this.gainedCards = [];
         this.lm("%p's turn %s", this.turnNumber);
         this.data.isMyTurn = true;
         await this.events.emit('turnStart');
@@ -391,6 +392,9 @@ export default class Player {
         for (const card of this.data.hand) {
             exempt = (await card.onAttackInHand(this, attacker, attackingCard, exempt)) || exempt;
         }
+        for (const card of this.data.playArea) {
+            exempt = (await card.onAttackInPlay(this, attacker, attackingCard, exempt)) || exempt;
+        }
         return exempt;
     }
     async buyPhase() {
@@ -444,9 +448,11 @@ export default class Player {
             await this.game.alertPlayersToProvinceOrColony(cardName);
         }
     }
+    gainedCards: Card[] = [];
     async gain(cardName: string, realCard?: Card, log = true, destination: "discard" | "hand" | "deck" = 'discard'): Promise<Card | null> {
         const c = realCard ? realCard : this.game.grabNameFromSupply(cardName);
         if (c) {
+            this.gainedCards.push(c);
             if (log) {
                 this.lm('%p gains %s.', Util.formatCardList([c.name]));
             }

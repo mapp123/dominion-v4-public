@@ -3,6 +3,7 @@ import Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class CoinOfTheRealm extends Card {
+    static descriptionSize = 57;
     intrinsicTypes = ["treasure","reserve"] as const;
     name = "coin of the realm";
     intrinsicCost = {

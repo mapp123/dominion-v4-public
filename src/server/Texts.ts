@@ -152,6 +152,9 @@ export class Texts {
     static doYouWantToCall(card: string) {
         return `Do you want to call your ${card}?`;
     }
+    static doYouWantToExchangeXForY(x: string, y: string) {
+        return `Do you want to exchange your ${x} for a ${y}?`;
+    }
     static chooseCardToDiscardFor(card: string) {
         return `Please choose a card to discard for ${card}...`;
     }

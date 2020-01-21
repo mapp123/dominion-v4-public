@@ -6,7 +6,7 @@ const colorFactorLists = {
     "treasure": [0.95, 0.7, 0.2],
     "victory": [0.35, 0.7, 0.15],
     "reaction": [0.2, 0.4, 1.05],
-    "duration": [1.1, 0.3, 0],
+    "duration": [1, 0.4, 0.05],
     "reserve": [0.65, 0.45, 0.2],
     "curse": [0.6, 0.15, 0.6],
     "shelter": [1, 0.1, 0.1],
@@ -70,6 +70,9 @@ function pickTypesFromTypeArray(types: readonly string[]): [string, string | und
     }
     if (types.includes('ruins')) {
         return ['ruins', undefined];
+    }
+    if (types.includes("duration")) {
+        return ['duration', undefined];
     }
     return ['action', undefined];
 }
@@ -198,23 +201,24 @@ class ForceWrappingTextLine extends React.Component<{line: string; x: number; y:
         };
     }
     componentDidMount() {
-        const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
-        const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
-        if (foreignHeight !== desHeight) {
-            window.setTimeout(() => {
-                this.setState({
-                    size: this.state.size - 1
-                });
-            }, 0);
-        }
-        else {
-            sendWindowEvent('typelineResolved');
-        }
+        setTimeout(() => {
+            const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
+            const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
+            if (foreignHeight == null || desHeight == null || foreignHeight < desHeight) {
+                window.setTimeout(() => {
+                    this.setState({
+                        size: this.state.size - 1
+                    });
+                }, 0);
+            } else {
+                sendWindowEvent('typelineResolved');
+            }
+        }, 10);
     }
     componentDidUpdate(): void {
         const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
         const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
-        if (foreignHeight !== desHeight) {
+        if (foreignHeight == null || desHeight == null || foreignHeight < desHeight) {
             window.setTimeout(() => {
                 this.setState({
                     size: this.state.size - 1
@@ -240,8 +244,8 @@ class ForceWrappingTextLine extends React.Component<{line: string; x: number; y:
         return (
             <foreignObject x={this.props.x} y={this.props.y} width={this.props.maxWidth} height={this.props.maxHeight} ref={this.foreignObjectRef}>
                 <div style={{display: "table", position: "absolute", top: 0, left: 0, height: "100%", width: "100%"}}>
-                    <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: this.state.size + Math.floor(this.state.size / 15) + "pt", display: "table-cell", verticalAlign: "middle"}} ref={this.desRef}>
-                        <span style={baseStyle} id={this.props.id}>{this.props.line}</span>
+                    <div style={{width: "100%", height:"fit-content", textAlign: "center", lineHeight: this.state.size + Math.floor(this.state.size / 15) + "pt", display: "table-cell", verticalAlign: "middle"}}>
+                        <span style={baseStyle} id={this.props.id} ref={this.desRef}>{this.props.line}</span>
                     </div>
                 </div>
             </foreignObject>
@@ -332,7 +336,7 @@ class DescriptionLine extends React.Component<{line: string; fontSize: number}, 
             fontStyle: "normal" as "normal" | "italic",
             whiteSpace: "inherit" as "inherit" | "nowrap"
         } as const;
-        const phrases = this.props.line.split(/(\+\d+\s*(?:[a-z]|[A-Z])*)|([+-]?\$\d*)|([+-]?\d+VP)|(---)|(\(This is not in the Supply.\))/g).filter((a) => a);
+        const phrases = this.props.line.split(/(\+\d+\s*(?:[a-z]|[A-Z])*)|([+-]?\$\d*)|([+-]?\d+VP)|(---)|(\([^(]*?This is not in the Supply.\))/g).filter((a) => a);
         return phrases.map((a, i) => {
             const thisStyle = {
                 ...baseStyle
@@ -365,7 +369,7 @@ class DescriptionLine extends React.Component<{line: string; fontSize: number}, 
             if (/---/.test(a)) {
                 return <hr key={i} style={{borderColor: "black", borderWidth: "3px", margin: this.props.fontSize * 0.5 + "pt"}} />;
             }
-            if (/\(This is not in the Supply.\)/.test(a)) {
+            if (/\([^(]*?This is not in the Supply.\)/.test(a)) {
                 thisStyle.fontStyle = "italic";
             }
             return <span key={i} style={thisStyle}>{a}</span>;

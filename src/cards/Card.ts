@@ -169,6 +169,9 @@ export default abstract class Card {
     public async onAttackInHand(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {
         return false;
     }
+    public async onAttackInPlay(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {
+        return false;
+    }
     public static async onBuy(player: Player): Promise<Card | null> {
         await player.game.events.emit('buy', player, this.cardName);
         await player.events.emit('buy', this.cardName);

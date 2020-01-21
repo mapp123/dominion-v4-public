@@ -368,6 +368,7 @@ export default abstract class AIPlayer extends Player {
                 const confirmKeys = {
                     wantTrash: decisionMatcher(decision.helperText, Texts.doYouWantToTrashA),
                     wantCall: decisionMatcher(decision.helperText, Texts.doYouWantToCall),
+                    wantExchange: decisionMatcher(decision.helperText, Texts.doYouWantToExchangeXForY),
                     wantTrashForBenefit: decisionMatcher(decision.helperText, Texts.doYouWantToTrashAToB),
                     wantDeckToDiscard: decisionMatcher(decision.helperText, () => Texts.placeDeckIntoDiscard),
                     wantDraw: decisionMatcher(decision.helperText, Texts.wantToDraw),
@@ -445,6 +446,15 @@ export default abstract class AIPlayer extends Player {
                     switch (confirmKeys.wantCall[0]) {
                         case "coin of the realm":
                             return (this.data.actions === 0 && this.data.hand.filter((a) => a.types.includes("action")).length > 0) as boolean as any;
+                    }
+                }
+                if (confirmKeys.wantExchange) {
+                    // noinspection JSRedundantSwitchStatement
+                    switch (confirmKeys.wantExchange[0]) {
+                        case "hero":
+                            return (this.allCards.find((a) => a.name === "champion") != null) as boolean as any;
+                        default:
+                            return true as any;
                     }
                 }
                 break;

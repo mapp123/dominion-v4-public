@@ -13,6 +13,7 @@ import Util from "../Util";
 import Rules from "./Rules";
 import Tracker from "./Tracker";
 import Cost from "./Cost";
+import {struct} from "superstruct";
 
 export default class Player {
     id = v4();
@@ -24,6 +25,7 @@ export default class Player {
     private decisionCallbacks: {
         [key: string]: Array<(response: any) => any> | undefined;
     } = {};
+    private interruptHooks: {[key: string]: (data) => Promise<any>} = {};
     private pendingDecisions: Decision[] = [];
     private _duplicatedPlayArea: Card[] = [];
     turnNumber = 0;
@@ -45,6 +47,9 @@ export default class Player {
         }
         if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('villagers'))) {
             this.data.dataViews.push('villagers');
+        }
+        if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).types.includes('reserve'))) {
+            this.data.dataViews.push('tavernMat');
         }
     }
     private startDraw() {
@@ -73,7 +78,7 @@ export default class Player {
         }
     }
     get allCards() {
-        return [...this.deck.deckAndDiscard, ...this.data.hand, ...this.data.playArea];
+        return [...this.deck.deckAndDiscard, ...this.data.hand, ...this.data.playArea, ...this.data.tavernMat.map((a) => a.card)];
     }
     get currentSocket() {
         return this._currentSocket;
@@ -99,6 +104,12 @@ export default class Player {
         });
         socket.on('fetchSupply', (returnTo) => {
             socket.emit(returnTo, this.game.supply.data.getState());
+        });
+        socket.on('interrupt', async (hookName, data) => {
+            const interruptedDecisions = this.pendingDecisions;
+            this.pendingDecisions = [];
+            await (this.interruptHooks[hookName])?.(data);
+            this.pendingDecisions = interruptedDecisions;
         });
         socket.on('decisionResponse', (decisionId, response) => {
             const decision = this.pendingDecisions.find((a) => a.id === decisionId);
@@ -144,6 +155,23 @@ export default class Player {
         });
         if (this.pendingDecisions.length) {
             this.emitNextDecision();
+        }
+    }
+    private static reserveStruct = struct({
+        cardId: 'string'
+    });
+    ensureReserveInterrupt() {
+        if (typeof this.interruptHooks["reserve"] === 'undefined') {
+            this.interruptHooks["reserve"] = async (data) => {
+                const newData = Player.reserveStruct(data);
+                const card = this.data.tavernMat.find((a) => a.card.id === newData.cardId);
+                if (card) {
+                    const realCard = card.card;
+                    this.data.tavernMat.splice(this.data.tavernMat.findIndex((a) => a.card.id === card.card.id), 1);
+                    this.data.playArea.push(realCard);
+                    card.card.onCall(this, [], this.getTrackerInPlay(realCard));
+                }
+            };
         }
     }
     makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T['decision']]> {

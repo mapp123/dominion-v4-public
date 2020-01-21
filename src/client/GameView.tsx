@@ -14,6 +14,7 @@ import EndOfGameModel from "./EndOfGameModel";
 import ChooseUsernameModal from "./ChooseUsernameModal";
 import createGameData, {GameData} from "../createGameData";
 import TrashView from "./TrashView";
+import TavernMat from "./TavernMat";
 interface Params {
     gameId: string;
 }
@@ -173,6 +174,10 @@ export default class GameView extends React.Component<RouteComponentProps<Params
         }
     }
 
+    interrupt(interruptName, data) {
+        this.socket.emit('interrupt', interruptName, data);
+    }
+
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         return (
             <div className="container-fluid" style={{height: "calc(100vh-7px)"}}>
@@ -208,6 +213,10 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                                     <span>Trash:</span><br />
                                     <TrashView trash={this.state.gameData.trash} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
                                 </div>
+                                {this.playerData.dataViews.includes('tavernMat') && <div style={{width: "500px", flex: "0 0", alignSelf: "flex-end", border: "2px solid blue", borderRadius: "3px", marginBottom: "7px", padding: "7px"}}>
+                                    <span>Tavern Mat:</span><br />
+                                    <TavernMat tavern={this.state.playerData.tavernMat} onClick={(cardId) => this.interrupt('reserve', {cardId})} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
+                                </div>}
                                 <div id="cardId" style={{display: "flex", flex: "1 1", alignSelf: "flex-end", flexDirection: "column"}}>
                                     {this.state.hoveredCard && <CardGeneratorWrapped card={this.state.hoveredCard} />}
                                 </div>

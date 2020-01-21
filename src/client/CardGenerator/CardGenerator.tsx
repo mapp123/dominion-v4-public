@@ -3,11 +3,11 @@ import {CardImplementation} from "../../cards/Card";
 const colorFactorLists = {
     "action": [1, 1, 1],
     "event": [1, 1, 1],
-    "treasure": [0.9, 0.65, 0.1],
+    "treasure": [0.95, 0.7, 0.2],
     "victory": [0.35, 0.7, 0.15],
     "reaction": [0.2, 0.4, 1.05],
     "duration": [1.1, 0.3, 0],
-    "reserve": [0.9, 0.75, 0.5],
+    "reserve": [0.65, 0.45, 0.2],
     "curse": [0.6, 0.15, 0.6],
     "shelter": [1, 0.1, 0.1],
     "ruins": [0.25, 0.05, 0],
@@ -43,6 +43,15 @@ interface IProps {
 function pickTypesFromTypeArray(types: readonly string[]): [string, string | undefined] {
     if (types.length === 1 && Object.keys(colorFactorLists).includes(types[0])) {
         return [types[0], undefined];
+    }
+    if (types.includes("treasure") && types.includes("reserve")) {
+        return ['reserve', 'treasure'];
+    }
+    if (types.includes('victory') && types.includes('reserve')) {
+        return ['victory', 'reserve'];
+    }
+    if (types.includes('reserve') && types.includes('action')) {
+        return ['reserve', undefined];
     }
     if (types.includes('action') && types.includes('victory')) {
         return ['victory', 'action'];

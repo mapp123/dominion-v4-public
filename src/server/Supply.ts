@@ -27,6 +27,7 @@ export default class Supply {
         activeCards.forEach((card) => {
             this.data.globalCardData[card] = {};
             cardDefs[card].setup(this.data.globalCardData[card], game);
+            cardDefs[card].registerInterrupts(game);
         });
     }
     get gainsToEndGame() {

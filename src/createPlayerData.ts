@@ -14,7 +14,11 @@ export default function createPlayerData() {
         hand: [struct.instance(Card)],
         isMyTurn: 'boolean',
         gameStarted: 'boolean',
-        dataViews: struct.list(['string'])
+        dataViews: struct.list(['string']),
+        tavernMat: [struct({
+            card: struct.instance(Card),
+            canCall: 'boolean'
+        })]
     }, {
         actions: 0,
         buys: 0,
@@ -26,7 +30,8 @@ export default function createPlayerData() {
         hand: [],
         isMyTurn: false,
         gameStarted: false,
-        dataViews: []
+        dataViews: [],
+        tavernMat: []
     });
 }
 

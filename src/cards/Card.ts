@@ -183,6 +183,33 @@ export default abstract class Card {
     public onRevealSelf(player: Player, tracker: Tracker<this>): Promise<void> | void {
 
     }
+    public onCall(player: Player, exemptPlayers: Player[], tracker: Tracker<this>): Promise<void> | void {
+
+    }
+    public call(player: Player) {
+        const card = player.data.tavernMat.find((a) => a.card.id === this.id);
+        if (card) {
+            const realCard = card.card;
+            player.data.tavernMat.splice(player.data.tavernMat.findIndex((a) => a.card.id == card.card.id), 1);
+            player.data.playArea.push(realCard);
+            this.onCall(player, [], player.getTrackerInPlay(realCard) as Tracker<this>);
+        }
+    }
+    protected moveToTavernMat(player: Player, tracker: Tracker<Card>): boolean {
+        if (tracker.hasTrack) {
+            player.data.tavernMat.push({
+                card: tracker.exercise()!,
+                canCall: false
+            });
+            return true;
+        }
+        return false;
+    }
+    public static registerInterrupts(game: Game) {
+        if (this.types.includes("reserve")) {
+            game.players.forEach((player) => player.ensureReserveInterrupt());
+        }
+    }
     protected async onTreasure(player: Player, tracker: Tracker<this>) {
         await player.events.emit('noTreasureImpl', this);
     }

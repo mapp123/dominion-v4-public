@@ -367,6 +367,7 @@ export default abstract class AIPlayer extends Player {
             case "confirm":
                 const confirmKeys = {
                     wantTrash: decisionMatcher(decision.helperText, Texts.doYouWantToTrashA),
+                    wantCall: decisionMatcher(decision.helperText, Texts.doYouWantToCall),
                     wantTrashForBenefit: decisionMatcher(decision.helperText, Texts.doYouWantToTrashAToB),
                     wantDeckToDiscard: decisionMatcher(decision.helperText, () => Texts.placeDeckIntoDiscard),
                     wantDraw: decisionMatcher(decision.helperText, Texts.wantToDraw),
@@ -436,6 +437,14 @@ export default abstract class AIPlayer extends Player {
                         case "cultist":
                             // Playing another cultist is always a net benefit.
                             return true as any;
+                    }
+                }
+                if (confirmKeys.wantCall) {
+                    // We want to keep this switch for when we have future cards.
+                    // noinspection JSRedundantSwitchStatement
+                    switch (confirmKeys.wantCall[0]) {
+                        case "coin of the realm":
+                            return (this.data.actions === 0 && this.data.hand.filter((a) => a.types.includes("action")).length > 0) as boolean as any;
                     }
                 }
                 break;

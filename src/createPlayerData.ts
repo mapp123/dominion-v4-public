@@ -18,7 +18,14 @@ export default function createPlayerData() {
         tavernMat: [struct({
             card: struct.instance(Card),
             canCall: 'boolean'
-        })]
+        } as const)],
+        tokens: {
+            extraCard: struct.union(['string', 'null'] as const),
+            extraAction: struct.union(['string', 'null'] as const),
+            extraBuy: struct.union(['string', 'null'] as const),
+            extraMoney: struct.union(['string', 'null'] as const),
+            minusTwoCost: struct.union(['string', 'null'] as const)
+        }
     }, {
         actions: 0,
         buys: 0,
@@ -31,7 +38,14 @@ export default function createPlayerData() {
         isMyTurn: false,
         gameStarted: false,
         dataViews: [],
-        tavernMat: []
+        tavernMat: [],
+        tokens: {
+            extraCard: null,
+            extraAction: null,
+            extraBuy: null,
+            extraMoney: null,
+            minusTwoCost: null
+        }
     });
 }
 

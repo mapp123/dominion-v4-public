@@ -29,4 +29,7 @@ export default class Survivors extends Card {
     public static createSupplyPiles(): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
         return [];
     }
+    getPileIdentifier(): string {
+        return 'survivors';
+    }
 }

@@ -36,6 +36,9 @@ export default class Knights extends Card {
             inSupply: true
         }];
     }
+    getPileIdentifier(): string {
+        return 'knights';
+    }
     public static onChosen() {
         return knightNames;
     }

@@ -14,6 +14,9 @@ export default abstract class Knight extends Card {
     public static createSupplyPiles() {
         return [];
     }
+    getPileIdentifier(): string {
+        return 'knights';
+    }
     abstract async beforeKnight(player: Player, exemptPlayers: Player[], tracker: Tracker<this>): Promise<void>;
     async onAction(player: Player, exemptPlayers: Player[], tracker: Tracker<this>): Promise<void> {
         await this.beforeKnight(player, exemptPlayers, tracker);

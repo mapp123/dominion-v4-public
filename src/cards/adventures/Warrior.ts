@@ -1,10 +1,8 @@
-import Card from "../Card";
 import Player from "../../server/Player";
-import {Texts} from "../../server/Texts";
 import Cost from "../../server/Cost";
-import Tracker from "../../server/Tracker";
+import Traveller from "./Traveller.abstract";
 
-export default class Warrior extends Card {
+export default class Warrior extends Traveller {
     static descriptionSize = 45;
     static typelineSize = 43;
     intrinsicTypes = ["action","attack","traveller"] as const;
@@ -21,6 +19,7 @@ export default class Warrior extends Card {
     cardArt = "/img/card-img/800px-WarriorArt.jpg";
     randomizable = false;
     static inSupply = false;
+    travellerTarget = "hero";
     async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.draw(2);
         const travellersInPlay = player.data.playArea.filter((a) => a.types.includes("traveller")).length;
@@ -40,15 +39,5 @@ export default class Warrior extends Card {
                 }
             });
         }
-    }
-    async onDiscardFromPlay(player: Player, tracker: Tracker<Card>): Promise<any> {
-        if (tracker.hasTrack && player.game.supply.getPile('warrior')!.length > 0 && await player.confirmAction(Texts.doYouWantToExchangeXForY('warrior', 'hero'))) {
-            await player.lm('%p exchanges a warrior for a hero.');
-            player.game.supply.getPile(this.name)!.push(tracker.exercise()!);
-            player.deck.discard.push(player.game.grabNameFromSupply('hero')!);
-        }
-    }
-    public static onChosen() {
-        return ['hero'];
     }
 }

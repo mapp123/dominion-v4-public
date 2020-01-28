@@ -17,6 +17,8 @@ export class Texts {
     static chooseCardToTakeFromRevealed = 'Please choose a card to put in your hand from the revealed cards...';
     static chooseCardToTakeFromSetAside = 'Please choose a card to take from the set aside cards...';
     static wantBuyCoffers = 'Do you want to buy a Coffers with your extra coin?';
+    static whereDoYouWantToken = 'Where do you want to place your token?';
+    static whichToken = 'Which token would you like to place?';
     static whichArtifactWouldYouLike = 'Which artifact would you like to take?';
     static trashIt = "Trash It";
     static discardIt = "Discard It";
@@ -32,6 +34,10 @@ export class Texts {
     static replayAction = "Replay an Action Card";
     static putACardFromYourHandOnTopOfYourDeck = "Put a card from your hand to your deck";
     static trashYourHand = "Trash Your Hand";
+    static plusOneCard = '+1 Card';
+    static plusOneAction = '+1 Action';
+    static plusOneBuy = '+1 Buy';
+    static plusOneMoney = '+1 Money';
     static addTokenTo(mat: string) {
         return `Add a token to ${mat}`;
     }

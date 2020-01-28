@@ -12,6 +12,9 @@ export default class Hovel extends Card {
     supplyCount = 0;
     cardArt = "/img/card-img/HovelArt.jpg";
     randomizable = false;
+    getPileIdentifier(): string {
+        return 'SPECIAL_NO_PILE';
+    }
     public static createSupplyPiles(): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
         return [];
     }

@@ -1,10 +1,9 @@
 import Card from "../Card";
 import Player from "../../server/Player";
-import {Texts} from "../../server/Texts";
 import Util from "../../Util";
-import Tracker from "../../server/Tracker";
+import Traveller from "./Traveller.abstract";
 
-export default class TreasureHunter extends Card {
+export default class TreasureHunter extends Traveller {
     static descriptionSize = 50;
     intrinsicTypes = ["action","traveller"] as const;
     name = "treasure hunter";
@@ -21,6 +20,7 @@ export default class TreasureHunter extends Card {
     cardArt = "/img/card-img/Treasure_HunterArt.jpg";
     randomizable = false;
     static inSupply = false;
+    travellerTarget = "warrior";
     async onAction(player: Player): Promise<void> {
         player.data.actions++;
         player.data.money += 1;
@@ -43,15 +43,5 @@ export default class TreasureHunter extends Card {
             }
         }
         player.lm('%p gains %s.', Util.formatCardList(gained.map((a) => a.name)));
-    }
-    async onDiscardFromPlay(player: Player, tracker: Tracker<Card>): Promise<any> {
-        if (tracker.hasTrack && player.game.supply.getPile('warrior')!.length > 0 && await player.confirmAction(Texts.doYouWantToExchangeXForY('treasure hunter', 'warrior'))) {
-            await player.lm('%p exchanges a treasure hunter for a warrior.');
-            player.game.supply.getPile(this.name)!.push(tracker.exercise()!);
-            player.deck.discard.push(player.game.grabNameFromSupply('warrior')!);
-        }
-    }
-    public static onChosen() {
-        return ['warrior'];
     }
 }

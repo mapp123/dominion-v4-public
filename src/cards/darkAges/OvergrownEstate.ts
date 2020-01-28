@@ -19,4 +19,7 @@ export default class OvergrownEstate extends Card {
     public static createSupplyPiles(): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
         return [];
     }
+    getPileIdentifier(): string {
+        return 'SPECIAL_NO_PILE';
+    }
 }

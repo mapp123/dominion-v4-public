@@ -156,7 +156,6 @@ export default class SupplyView extends React.Component<IProps, IState> {
             if (!def) {
                 return null;
             }
-            console.log(this.supplyData.costModifiers);
             const cost = def.cost.augmentBy(this.supplyData.costModifiers[def.cardName]).normalize();
             let types = [...def.types];
             if (this.supplyData.typeModifiers[def.cardName]) {

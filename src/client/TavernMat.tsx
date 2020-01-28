@@ -18,7 +18,7 @@ export default class TavernMat extends React.Component<IProps, {}> {
         return (
             <React.Suspense fallback={<span>Loading...</span>}>
                 {this.props.tavern.map(({card, canCall}) => <HandButton cardName={card.name} id={card.id} types={card.types} key={card.id} disabled={!canCall}
-                    onClick={this.props.onClick(card.id)} onHover={this.onHover.bind(this, card)} narrow={true}/>)}
+                    onClick={this.props.onClick.bind(null, card.id)} onHover={this.onHover.bind(this, card)} narrow={true}/>)}
             </React.Suspense>
         );
     }

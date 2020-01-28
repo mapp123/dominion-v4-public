@@ -17,4 +17,7 @@ export default class RuinedMarket extends Card {
     public static createSupplyPiles(): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
         return [];
     }
+    getPileIdentifier(): string {
+        return 'ruins';
+    }
 }

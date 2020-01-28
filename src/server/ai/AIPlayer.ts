@@ -252,6 +252,12 @@ export default abstract class AIPlayer extends Player {
                         choice: await this.chooseOptionFromPriorities(cardList[0], decision.options)
                     } as any;
                 }
+                const whichToken = decisionMatcher(decision.helperText, () => Texts.whichToken);
+                if (whichToken) {
+                    return {
+                        choice: decision.options[0]
+                    } as any;
+                }
                 break;
             case "chooseCard":
                 const keys = {

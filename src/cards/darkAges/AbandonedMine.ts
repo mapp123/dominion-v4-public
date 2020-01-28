@@ -11,6 +11,9 @@ export default class AbandonedMine extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Abandoned_MineArt.jpg";
     randomizable = false;
+    getPileIdentifier(): string {
+        return 'ruins';
+    }
     async onAction(player: Player): Promise<void> {
         player.data.money++;
     }

@@ -14,6 +14,9 @@ export default class Necropolis extends Card {
     public static createSupplyPiles(): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
         return [];
     }
+    getPileIdentifier(): string {
+        return 'SPECIAL_NO_PILE';
+    }
     async onAction(player: Player): Promise<void> {
         player.data.actions += 2;
     }

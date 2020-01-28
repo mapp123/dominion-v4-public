@@ -105,6 +105,15 @@ export default abstract class Card {
         }];
     }
 
+    static getPileIdentifier(): string {
+        // @ts-ignore
+        return new this().getPileIdentifier();
+    }
+
+    public getPileIdentifier(): string {
+        return this.name;
+    }
+
     public static setup(globalCardData: any, game: Game) {
 
     }

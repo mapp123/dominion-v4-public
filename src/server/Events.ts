@@ -48,6 +48,7 @@ type PlayerEvent = {
     cleanupStart: [];
     buyStart: [];
     handDraw: [];
+    decision: [];
     treasureCardPlayed: [Player, Card];
     noActionImpl: [Card, Player[]];
     noTreasureImpl: [Card];

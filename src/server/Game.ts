@@ -173,6 +173,14 @@ export default class Game {
     private checkForCostModifier: string[] = [];
     updateCostModifiers() {
         const mods: {[key: string]: Cost} = {};
+        const minusTwoToken = this.players[this.currentPlayerIndex].data.tokens.minusTwoCost;
+        if (minusTwoToken != null) {
+            this.selectedCards.forEach((cardName) => {
+                if (this.getCard(cardName).getPileIdentifier() === minusTwoToken) {
+                    mods[cardName] = Cost.create(-2);
+                }
+            });
+        }
         this.checkForCostModifier = this.checkForCostModifier.filter((a) => {
             const modifiers = CardRegistry.getInstance().getCard(a).getCostModifier(this.supply.data.globalCardData[a], this, this.selectedCards);
             if (modifiers) {

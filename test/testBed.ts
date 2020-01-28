@@ -93,6 +93,14 @@ export class TestPlayer extends Player {
         this.game.doneFn(new Error(`Failed to find a response for ${JSON.stringify(decision)}`));
         throw new Error("Failed to find a response.");
     }
+    async call(cardName: string, decisions: () => any) {
+        this.testHookNextDecision(async () => {
+            decisions();
+            await this.sendInterrupt('reserve', {
+                cardId: this.data.tavernMat.find((a) => a.card.name === cardName)!.card.id
+            });
+        });
+    }
     testInvalid() {
         let responder = -1;
         const response = {
@@ -132,9 +140,9 @@ export class TestPlayer extends Player {
     testHookNextDecision(cb: (decision: Decision) => any) {
         const response = {
             matcher: (decision) => this.decisionResponses[this.decisionResponses.indexOf(response) + 1].matcher(decision),
-            response: (decision) => {
+            response: async (decision) => {
                 try {
-                    cb(decision);
+                    await cb(decision);
                 }
                 catch (e) {
                     // @ts-ignore

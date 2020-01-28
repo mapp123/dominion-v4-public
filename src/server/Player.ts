@@ -106,15 +106,13 @@ export default class Player {
             socket.emit(returnTo, this.game.supply.data.getState());
         });
         socket.on('interrupt', async (hookName, data) => {
-            const interruptedDecisions = this.pendingDecisions;
-            this.pendingDecisions = [];
-            await (this.interruptHooks[hookName])?.(data);
-            this.pendingDecisions = interruptedDecisions;
+            await this.sendInterrupt(hookName, data);
         });
         socket.on('decisionResponse', (decisionId, response) => {
             const decision = this.pendingDecisions.find((a) => a.id === decisionId);
             if (!decision) {
                 console.log('Attempt to respond to a undefined decision, return');
+                this.emitNextDecision();
                 return;
             }
             let r;
@@ -129,7 +127,7 @@ export default class Player {
                 this.emitNextDecision();
                 return;
             }
-            console.log(`got response to ${decision.decision}: ${JSON.stringify(response)}`);
+            this.events.emit('decision');
             const callbacks = this.decisionCallbacks[decisionId];
             if (callbacks) {
                 callbacks.forEach((a) => {
@@ -157,6 +155,14 @@ export default class Player {
             this.emitNextDecision();
         }
     }
+    async sendInterrupt(hookName: string, data: any) {
+        const interruptedDecisions = this.pendingDecisions;
+        this.pendingDecisions = [];
+        this.waitingForResponse = false;
+        await (this.interruptHooks[hookName])?.(data);
+        this.pendingDecisions = interruptedDecisions;
+        this.emitNextDecision();
+    }
     private static reserveStruct = struct({
         cardId: 'string'
     });
@@ -167,9 +173,9 @@ export default class Player {
                 const card = this.data.tavernMat.find((a) => a.card.id === newData.cardId);
                 if (card) {
                     const realCard = card.card;
-                    this.data.tavernMat.splice(this.data.tavernMat.findIndex((a) => a.card.id === card.card.id), 1);
+                    this.data.tavernMat.splice(this.data.tavernMat.findIndex((a) => a.card.id === realCard.id), 1);
                     this.data.playArea.push(realCard);
-                    card.card.onCall(this, [], this.getTrackerInPlay(realCard));
+                    await realCard.onCall(this, [], this.getTrackerInPlay(realCard));
                 }
             };
         }
@@ -267,6 +273,7 @@ export default class Player {
         this.gainedCards = [];
         this.lm("%p's turn %s", this.turnNumber);
         this.data.isMyTurn = true;
+        this.game.updateCostModifiers();
         await this.events.emit('turnStart');
         await this.actionPhase();
         await this.buyPhase();
@@ -341,6 +348,19 @@ export default class Player {
         await this.events.emit('willPlayAction', card);
         if (tracker == null) {
             tracker = this.getTrackerInPlay(card);
+        }
+        const pile = card.getPileIdentifier();
+        if (this.data.tokens.extraAction === pile) {
+            this.data.actions++;
+        }
+        if (this.data.tokens.extraBuy === pile) {
+            this.data.buys++;
+        }
+        if (this.data.tokens.extraCard === pile) {
+            await this.draw();
+        }
+        if (this.data.tokens.extraMoney === pile) {
+            this.data.money++;
         }
         await card.onAction(this, exemptPlayers, tracker);
         await this.events.emit('actionCardPlayed', card, tracker);

@@ -3,14 +3,8 @@ import {Decision, DecisionResponseType} from "../src/server/Decision";
 import Player from "../src/server/Player";
 import {Server} from "socket.io";
 import {EventEmitter} from "events";
-export class Interrupt {
-    data: any;
-    type: string;
-    constructor(type: string, data: any) {
-        this.type = type;
-        this.data = data;
-    }
-}
+import {Interrupt} from "./Interrupt";
+
 function either<K, T>(one: T, two: K): T | K {
     return one;
 }

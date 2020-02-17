@@ -1,6 +1,6 @@
 import {Server} from "socket.io";
 import {Server as HttpServer} from 'http';
-import ClientTestPlayer, {ClientTestGame, Interrupt, setupClientTestBed} from "./testBed";
+import ClientTestPlayer, {ClientTestGame, setupClientTestBed} from "./testBed";
 import {Builder, By, until, WebDriver} from "selenium-webdriver";
 import {EventEmitter} from "events";
 import {Decision, DecisionResponseType} from "../src/server/Decision";
@@ -8,6 +8,7 @@ import makeTestGame from "../test/testBed";
 import {expect} from "chai";
 import {readdirSync} from "fs";
 import {resolve} from "path";
+import {Interrupt} from "./Interrupt";
 function decisionIsType<T extends keyof DecisionResponseType>(type: T, response: any): asserts response is DecisionResponseType[T] {}
 function assertNever(a: never) {}
 function supplyButton(name: string) {

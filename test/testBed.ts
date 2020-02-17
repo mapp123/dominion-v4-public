@@ -4,7 +4,7 @@ import Card from "../src/cards/Card";
 import CardRegistry from "../src/cards/CardRegistry";
 import {Decision, DecisionDefaults, DecisionResponseType, DecisionValidators} from "../src/server/Decision";
 import {Texts} from "../src/server/Texts";
-import {Interrupt} from "../testClient/testBed";
+import {Interrupt} from "../testClient/Interrupt";
 
 let playerUnderTest: Player | null = null;
 
@@ -82,7 +82,6 @@ export class TestPlayer extends Player {
             if (response instanceof Interrupt) {
                 return response as any;
             }
-            console.log('Responding to ' + JSON.stringify(decision));
             try {
                 DecisionValidators[decision.decision](this.game, decision, response);
             }
@@ -143,12 +142,14 @@ export class TestPlayer extends Player {
         return this;
     }
     testHookNextDecision(cb: (decision: Decision) => any) {
+        let isOptional = false;
         const response = {
             matcher: (decision) => {
                 if (this.decisionResponses[this.decisionResponses.indexOf(response) + 1].matcher(decision)) {
                     return true;
                 }
                 if (this.decisionResponses.slice(this.decisionResponses.indexOf(response) + 1).every((a) => !a.matcher(decision)) && this.optionalDecisionResponses[0]?.matcher(decision)) {
+                    isOptional = true;
                     return true;
                 }
                 return false;
@@ -161,7 +162,13 @@ export class TestPlayer extends Player {
                     // @ts-ignore
                     this.game.doneFn(e);
                 }
-                const r = this.decisionResponses.splice(this.decisionResponses.indexOf(response) + 1, 1)[0];
+                let r;
+                if (!isOptional) {
+                    r = this.decisionResponses.splice(this.decisionResponses.indexOf(response) + 1, 1)[0];
+                }
+                else {
+                    r = this.optionalDecisionResponses.splice(0, 1)[0];
+                }
                 return r.response(decision);
             }
         };

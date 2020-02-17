@@ -11,7 +11,7 @@ export default class StarChart extends Project {
     };
     name = "star chart";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.events.on('shuffle', async (deck) => {
+        player.effects.setupEffect('shuffle', 'star chart', {}, async (remove, deck) => {
             const card = await player.chooseCard(Texts.chooseCardToPutOnDeck, deck.cards.filter((a, i, arr) => arr.findIndex((b) => a.name === b.name) === i), true);
             if (card) {
                 deck.cards.splice(deck.cards.indexOf(card), 1);
@@ -20,7 +20,6 @@ export default class StarChart extends Project {
             else {
                 deck.cards = shuffle(deck.cards);
             }
-            return true;
         });
     }
 }

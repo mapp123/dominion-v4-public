@@ -28,23 +28,22 @@ export default class Urchin extends Card {
                 }
             }
         });
-        this.sub = player.events.on('willPlayAction', async (card) => {
+        this.sub = player.effects.setupEffect('willPlayAction', 'urchin', (other, card) => tracker.hasTrack || !card.types.includes("attack"), async (remove, card) => {
             if (!tracker.hasTrack) {
                 this.sub = null;
-                return false;
+                remove();
             }
-            if (card.id !== this.id && card.types.includes("attack") && await player.confirmAction(Texts.doYouWantToTrashAToB('urchin', 'gain a mercenary'))) {
+            else if (card.id !== this.id && card.types.includes("attack") && await player.confirmAction(Texts.doYouWantToTrashAToB('urchin', 'gain a mercenary'))) {
                 await player.trash(tracker.exercise()!);
                 await player.gain('mercenary');
                 this.sub = null;
-                return false;
+                remove();
             }
-            return true;
         });
     }
     async onDiscardFromPlay(player: Player): Promise<any> {
         if (this.sub) {
-            player.events.off('willPlayAction', this.sub);
+            player.effects.removeEffect('willPlayAction', 'urchin', this.sub);
             this.sub = null;
         }
     }

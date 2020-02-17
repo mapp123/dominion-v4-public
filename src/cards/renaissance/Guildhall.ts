@@ -11,11 +11,10 @@ export default class Guildhall extends Project {
     name = "guildhall";
     features = ["coffers"] as const;
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.events.on('gain', async (tracker) => {
+        player.effects.setupEffect('gain', 'guildhall', () => true, async (remove, tracker) => {
             if (tracker.viewCard().types.includes("treasure")) {
                 player.data.coffers++;
             }
-            return true;
         });
     }
 }

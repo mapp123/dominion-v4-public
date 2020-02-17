@@ -24,12 +24,12 @@ export default class Citadel extends Project {
             }
             return true;
         });
-        player.events.on('actionCardPlayed', async (card, tracker) => {
-            if (card === cardToReplay) {
+        player.effects.setupEffect('actionCardPlayed', 'citadel', {}, async (remove, tracker) => {
+            if (tracker.viewCard() === cardToReplay) {
                 player.lm('The citadel activates for %p.');
-                await player.replayActionCard(card, tracker, true);
+                cardToReplay = null;
+                await player.replayActionCard(tracker.viewCard(), tracker, true);
             }
-            return true;
         });
     }
 }

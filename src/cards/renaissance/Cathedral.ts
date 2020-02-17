@@ -10,7 +10,7 @@ export default class Cathedral extends Project {
     };
     name = "cathedral";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.events.on('turnStart', async () => {
+        player.effects.setupEffect('turnStart', 'cathedral', {}, async () => {
             player.lm('The cathedral activates for %p.');
             let card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('cathedral'));
             while (card && card.cost.coin > 2 && player.data.hand.find((a) => a.cost.coin < card!.cost.coin) != null && !await player.confirmAction(Texts.areYouSureYouWantToTrash(card.name))) {
@@ -20,7 +20,6 @@ export default class Cathedral extends Project {
             if (card) {
                 await player.trash(card);
             }
-            return true;
         });
     }
 }

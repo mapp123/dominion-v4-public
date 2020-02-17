@@ -1,6 +1,7 @@
 import shuffle from "./util/shuffle";
 import Card from "../cards/Card";
 import Player from "./Player";
+import {Texts} from "./Texts";
 
 export default class Deck {
     _cards: Card[] = [];
@@ -42,6 +43,7 @@ export default class Deck {
         this.cards = [...this.cards, ...(this.shouldShuffle ? shuffle(this.discard) : this.discard)];
         this.discard = [];
         await this.player.events.emit('shuffle', this);
+        await this.player.effects.doEffect('shuffle', Texts.chooseAnXEffectToRunNext('on shuffle'), this);
     }
 
     // This is actually used, just suppressed

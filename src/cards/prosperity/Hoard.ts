@@ -18,14 +18,15 @@ export default class Hoard extends Card {
         player.data.money += 2;
     }
     public static setup(globalCardData: any, game: Game) {
-        game.events.on('buy', async (player, card) => {
-            if (game.getTypesOfCard(card).includes("victory")) {
-                const hoardsInPlay = player.data.playArea.filter((a) => a.name === 'hoard');
-                for (let i = 0; i < hoardsInPlay.length; i++) {
-                    await player.gain('gold');
+        game.players.forEach((player) => {
+            player.effects.setupEffect('buy', 'hoard', (other, card) => !game.getTypesOfCard(card).includes("victory") || ['hovel'].includes(other), async (remove, card) => {
+                if (game.getTypesOfCard(card).includes("victory")) {
+                    const hoardsInPlay = player.data.playArea.filter((a) => a.name === 'hoard');
+                    for (let i = 0; i < hoardsInPlay.length; i++) {
+                        await player.gain('gold');
+                    }
                 }
-            }
-            return true;
+            });
         });
     }
 }

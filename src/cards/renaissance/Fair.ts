@@ -10,9 +10,8 @@ export default class Fair extends Project {
     };
     name = "fair";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.events.on('turnStart', () => {
+        player.effects.setupEffect('turnStart', 'fair', () => true, async () => {
             player.data.buys++;
-            return true;
         });
     }
 }

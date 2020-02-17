@@ -23,19 +23,20 @@ export default class MarketSquare extends Card {
         player.data.buys += 1;
     }
     public static setup(globalCardData: any, game: Game) {
-        game.events.on('trash', async (player) => {
-            const marketSquares = player.data.hand.filter((a) => a.name === 'market square');
-            for (const card of marketSquares) {
-                if (await player.confirmAction(Texts.wantToDiscardAForBenefit('market square', 'to gain a Gold'))) {
-                    player.data.hand.splice(player.data.hand.indexOf(card), 1);
-                    await player.discard(card, true);
-                    await player.gain('gold');
+        game.players.forEach((player) => {
+            player.effects.setupEffect('trash', 'market square', (other) => !player.data.hand.some((a) => a.name === 'market square') || ['sewers'].includes(other), async () => {
+                const marketSquares = player.data.hand.filter((a) => a.name === 'market square');
+                for (const card of marketSquares) {
+                    if (await player.confirmAction(Texts.wantToDiscardAForBenefit('market square', 'to gain a Gold'))) {
+                        player.data.hand.splice(player.data.hand.indexOf(card), 1);
+                        await player.discard(card, true);
+                        await player.gain('gold');
+                    }
+                    else {
+                        break;
+                    }
                 }
-                else {
-                    break;
-                }
-            }
-            return true;
+            });
         });
     }
 }

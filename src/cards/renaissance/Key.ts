@@ -4,7 +4,7 @@ import Artifact from "../Artifact";
 export default class Key extends Artifact {
     static descriptionSize = 29;
     cardArt = "/img/card-img/KeyArt.jpg";
-    cardText = "At the start of your turn, $1";
+    cardText = "At the start of your turn, +$1";
     name = "key";
     protected setup() {}
     private cb: any = null;
@@ -12,11 +12,10 @@ export default class Key extends Artifact {
     protected giveToPlayer(player: Player) {
         player.lm('%p takes the key.');
         if (this.cb && this.lastPlayer) {
-            this.lastPlayer.events.off('turnStart', this.cb);
+            this.lastPlayer.effects.removeEffect('turnStart', 'key', this.cb);
         }
-        this.cb = player.events.on('turnStart', async () => {
+        this.cb = player.effects.setupEffect('turnStart', 'key', () => true, async () => {
             player.data.money++;
-            return true;
         });
         this.lastPlayer = player;
     }

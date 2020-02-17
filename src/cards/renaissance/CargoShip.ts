@@ -16,25 +16,24 @@ export default class CargoShip extends Card {
     private cb: any = null;
     async onAction(player: Player): Promise<void> {
         player.data.money += 2;
-        this.cb = player.events.on('gain', async (tracker) => {
+        this.cb = player.effects.setupEffect('gain', 'cargo ship', {}, async (remove, tracker) => {
             if (tracker.hasTrack && await player.confirmAction(Texts.wouldYouLikeToSetAsideThe(tracker.viewCard().name, 'cargo ship'))) {
                 player.lm('%p sets aside the %s with cargo ship.', tracker.viewCard().name);
                 this.holder.addCard(tracker.exercise()!);
-                player.events.on('turnStart', () => {
+                player.effects.setupEffect('turnStart', 'cargo ship', {}, async (remove2) => {
                     if (this.holder.getCards().length) {
                         player.data.hand.push(this.holder.popCard()!);
                     }
-                    return false;
+                    remove2();
                 });
-                return false;
+                remove();
             }
-            return true;
         });
     }
 
     async onDiscardFromPlay(player: Player): Promise<any> {
         if (this.cb) {
-            player.events.off('gain', this.cb);
+            player.effects.removeEffect('gain', 'cargo ship', this.cb);
         }
     }
 

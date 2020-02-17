@@ -21,8 +21,8 @@ export default class Watchtower extends Card {
         }
     }
     static setup(cardData: any, game: Game) {
-        game.events.on('gain', async (player, tracker) => {
-            if (player.data.hand.some((a) => a.name === 'watchtower') && tracker.hasTrack) {
+        game.players.forEach((player) => {
+            player.effects.setupEffect('gain', 'watchtower', () => !player.data.hand.some((a) => a.name === 'watchtower'), async (remove, tracker) => {
                 const option = await player.chooseOption(Texts.whatToDoWithTheGainedAForB(tracker.viewCard().name, 'watchtower'), [Texts.trashIt, Texts.putItOnYourDeck, Texts.doNothing] as const);
                 if (option !== 'Do Nothing') {
                     player.lm('%p reveals a watchtower.');
@@ -36,8 +36,7 @@ export default class Watchtower extends Card {
                             break;
                     }
                 }
-            }
-            return true;
+            });
         });
     }
 }

@@ -22,14 +22,15 @@ export default class Mint extends Card {
         }
     }
     public static setup(globalCardData: any, game: Game) {
-        game.events.on('buy', async (player, card) => {
-            if (card === 'mint') {
-                player.lm('%p trashes all treasures in play.');
-                const cardsToTrash = player.data.playArea.filter((a) => a.types.includes("treasure"));
-                player.data.playArea = player.data.playArea.filter((a) => !cardsToTrash.includes(a));
-                await Promise.all(cardsToTrash.map((a) => player.trash(a, false)));
-            }
-            return true;
+        game.players.forEach((player) => {
+            player.effects.setupEffect('buy', 'mint', (other, card) => card !== 'mint' || ['hovel', 'hoard'].includes(other), async (remove, card) => {
+                if (card === 'mint') {
+                    player.lm('%p trashes all treasures in play.');
+                    const cardsToTrash = player.data.playArea.filter((a) => a.types.includes("treasure"));
+                    player.data.playArea = player.data.playArea.filter((a) => !cardsToTrash.includes(a));
+                    await Promise.all(cardsToTrash.map((a) => player.trash(a, false)));
+                }
+            });
         });
     }
 }

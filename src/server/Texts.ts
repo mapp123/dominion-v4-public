@@ -176,4 +176,7 @@ export class Texts {
     static whatToDoWithCards(cards: string) {
         return `Choose what to do with ${cards}...`;
     }
+    static chooseAnXEffectToRunNext(effect: string) {
+        return `Choose a ${effect} effect to run next...`;
+    }
 }

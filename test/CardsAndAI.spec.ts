@@ -3,6 +3,11 @@ import {resolve} from "path";
 import makeTestGame, {getPlayerUnderTestResults, setPlayerUnderTest} from "./testBed";
 import BigMoney from "../src/server/ai/BigMoney";
 import Game from "../src/server/Game";
+import PlayerEffects from "../src/server/PlayerEffects";
+import chaiSnapshot = require('mocha-chai-snapshot');
+import chai = require('chai');
+const {expect} = chai;
+chai.use(chaiSnapshot);
 
 describe('CARDS', () => {
     before(() => {
@@ -25,6 +30,16 @@ describe('CARDS', () => {
                 process.env.SHOULD_LOG_PRIVATE = 'yes';
                 require(resolve(__dirname, box.name, card));
             });
+        });
+    });
+    describe('EFFECTS', () => {
+        it('has no new cards', function () {
+            // @ts-ignore
+            const effects = PlayerEffects.__testingCards;
+            expect(Object.fromEntries(Object.entries(effects).map(([effect, set]) => {
+                return [effect, [...(set?.values() || [])]];
+                // @ts-ignore
+            }))).to.matchSnapshot(this);
         });
     });
 });

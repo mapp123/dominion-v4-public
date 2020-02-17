@@ -12,13 +12,14 @@ export default class Pageant extends Project {
     features = ["coffers"] as const;
     name = "pageant";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.events.on('cleanupStart', async () => {
+        player.effects.setupEffect('cleanupStart', 'pageant', {
+            improve: true
+        }, async () => {
             player.lm('The pageant activates for %p.');
             if (player.data.money > 0 && await player.confirmAction(Texts.wantBuyCoffers)) {
                 player.data.coffers++;
                 player.data.money--;
             }
-            return true;
         });
     }
 }

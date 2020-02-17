@@ -31,10 +31,11 @@ export default class Goons extends Card {
         });
     }
     public static setup(globalCardData: any, game: Game) {
-        game.events.on('buy', (player) => {
-            const goonsInPlay = player.data.playArea.filter((a) => a.name === 'goons');
-            player.data.vp += goonsInPlay.length;
-            return true;
+        game.players.forEach((player) => {
+            player.effects.setupEffect('buy', 'goons', () => true, async () => {
+                const goonsInPlay = player.data.playArea.filter((a) => a.name === 'goons');
+                player.data.vp += goonsInPlay.length;
+            });
         });
     }
 }

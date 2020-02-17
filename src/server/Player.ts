@@ -14,6 +14,7 @@ import Rules from "./Rules";
 import Tracker from "./Tracker";
 import Cost from "./Cost";
 import {struct} from "superstruct";
+import PlayerEffects from "./PlayerEffects";
 
 export default class Player {
     id = v4();
@@ -31,6 +32,7 @@ export default class Player {
     turnNumber = 0;
     game: Game;
     events: PlayerEvents = new PlayerEvents();
+    effects: PlayerEffects = new PlayerEffects(this);
     private _nextDecisionId = 0;
     get nextDecisionId(): string {
         return "" + this._nextDecisionId++;
@@ -172,13 +174,15 @@ export default class Player {
                 const newData = Player.reserveStruct(data);
                 const card = this.data.tavernMat.find((a) => a.card.id === newData.cardId);
                 if (card) {
-                    const realCard = card.card;
-                    this.data.tavernMat.splice(this.data.tavernMat.findIndex((a) => a.card.id === realCard.id), 1);
-                    this.data.playArea.push(realCard);
-                    await realCard.onCall(this, [], this.getTrackerInPlay(realCard));
+                    await this.callReserve(card.card);
                 }
             };
         }
+    }
+    async callReserve(card: Card) {
+        this.data.tavernMat.splice(this.data.tavernMat.findIndex((a) => a.card.id === card.id), 1);
+        this.data.playArea.push(card);
+        await card.onCall(this, [], this.getTrackerInPlay(card));
     }
     makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T['decision']]> {
         const defaultR = DecisionDefaults[decision.decision](decision);
@@ -258,7 +262,7 @@ export default class Player {
             helperText: Texts.buy
         });
         if (!await this.confirmBuyIfCoffers(response)) {
-            return this.chooseCardOrBuy();
+            return this.chooseBuy();
         }
         else {
             return response;
@@ -275,6 +279,7 @@ export default class Player {
         this.data.isMyTurn = true;
         this.game.updateCostModifiers();
         await this.events.emit('turnStart');
+        await this.effects.doEffect('turnStart', Texts.chooseAnXEffectToRunNext('start of turn'));
         await this.actionPhase();
         await this.buyPhase();
         await this.cleanup();
@@ -283,6 +288,7 @@ export default class Player {
     }
     async cleanup() {
         await this.events.emit('cleanupStart');
+        await this.effects.doEffect('cleanupStart', Texts.chooseAnXEffectToRunNext('on cleanup'));
         await this.data.haltNotifications(async () => {
             for (let i = 0; i < this.data.playArea.length; i++) {
                 const card = this.data.playArea[i];
@@ -306,6 +312,7 @@ export default class Player {
                 await this.discard(card);
             }
             await this.events.emit('handDraw');
+            await this.effects.doEffect('handDraw', Texts.chooseAnXEffectToRunNext('on hand draw'));
             await this.draw(5);
         });
     }
@@ -346,6 +353,7 @@ export default class Player {
         }
         const exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
         await this.events.emit('willPlayAction', card);
+        await this.effects.doEffect('willPlayAction', Texts.chooseAnXEffectToRunNext('before action is played'), card);
         if (tracker == null) {
             tracker = this.getTrackerInPlay(card);
         }
@@ -365,6 +373,7 @@ export default class Player {
         await card.onAction(this, exemptPlayers, tracker);
         await this.events.emit('actionCardPlayed', card, tracker);
         await this.game.events.emit('actionCardPlayed', this, card);
+        await this.effects.doEffect('actionCardPlayed', Texts.chooseAnXEffectToRunNext('on action card played'), tracker);
         return tracker;
     }
 
@@ -420,6 +429,7 @@ export default class Player {
     async buyPhase() {
         await this.events.emit('buyStart');
         await this.game.events.emit('buyStart');
+        await this.effects.doEffect('buyStart', Texts.chooseAnXEffectToRunNext('on buy phase start'));
         while (this.data.buys > 0 && this.data.hand.filter((a) => a.types.includes('treasure')).length > 0) {
             const choice = await this.chooseCardOrBuy();
             if (choice.choice.name === 'End Turn') return;
@@ -433,6 +443,7 @@ export default class Player {
                     this.data.playArea.push(c);
                     this.lm('%p plays %s.', Util.formatCardList([c.name]));
                     await this.playTreasure(c);
+                    await this.effects.doEffect('treasureCardPlayed', Texts.chooseAnXEffectToRunNext('on treasure card played'), c);
                     await this.events.emit('treasureCardPlayed', this, c);
                 }
             }
@@ -449,6 +460,9 @@ export default class Player {
     }
     boughtCards: Card[] = [];
     async buy(cardName: string) {
+        await this.game.events.emit('buy', this, cardName);
+        await this.events.emit('buy', cardName);
+        await this.effects.doEffect('buy', Texts.chooseAnXEffectToRunNext('on buy'), cardName);
         let cofferAmount = this.game.getCostOfCard(cardName).coin - this.data.money;
         if (cofferAmount > 0) {
             this.lm('%p uses %s coffers.', cofferAmount);
@@ -504,6 +518,7 @@ export default class Player {
             await c.onGainSelf(this, tracker);
             await this.events.emit('gain', tracker);
             await this.game.events.emit('gain', this, tracker);
+            await this.effects.doEffect('gain', Texts.chooseAnXEffectToRunNext('on gain'), tracker);
             return c;
         }
         return null;
@@ -631,6 +646,7 @@ export default class Player {
         await card.onTrashSelf(this, tracker);
         await this.events.emit('trash', tracker);
         await this.game.events.emit('trash', this, tracker);
+        await this.effects.doEffect('trash', Texts.chooseAnXEffectToRunNext('on trash'), tracker);
     }
     async chooseOption<T extends readonly string[]>(helperText: string, options: T): Promise<T[number]> {
         const {choice} = await this.makeDecision({

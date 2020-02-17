@@ -11,12 +11,11 @@ export default class TreasureChest extends Artifact {
     protected giveToPlayer(player: Player) {
         player.lm('%p takes the treasure chest.');
         if (this.cb && this.lastPlayer) {
-            this.lastPlayer.events.off('buyStart', this.cb);
+            this.lastPlayer.effects.removeEffect('buyStart', 'treasure chest', this.cb);
         }
-        this.cb = player.events.on('buyStart', async () => {
+        this.cb = player.effects.setupEffect('buyStart', 'treasure chest', () => true, async () => {
             player.lm('The treasure chest activates for %p.');
             await player.gain('gold');
-            return true;
         });
         this.lastPlayer = player;
     }

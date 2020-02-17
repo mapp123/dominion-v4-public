@@ -26,13 +26,13 @@ export default class Research extends Card {
                 this.cards.addCard(card);
             }
         }
-        player.events.on('turnStart', async () => {
+        player.effects.setupEffect('turnStart', 'research', {}, async (remove) => {
             player.lm('%p takes the set aside cards for research.');
             while (this.cards.getCards().length) {
                 const card = this.cards.popCard()!;
                 player.data.hand.push(card);
             }
-            return false;
+            remove();
         });
     }
     shouldDiscardFromPlay(): boolean {

@@ -12,13 +12,14 @@ export default class Capitalism extends Project {
     };
     name = "capitalism";
     async onPlayerJoinProject(player: Player): Promise<any> {
+        // Not an effect, needs to happen first
         player.events.on('turnStart', async () => {
             this.getGlobalData().starting = true;
             player.game.updateTypeModifiers();
-            this.getGlobalData().starting = false;
             return true;
         });
         player.events.on('turnEnd', async () => {
+            this.getGlobalData().starting = false;
             player.game.updateTypeModifiers();
             return true;
         });

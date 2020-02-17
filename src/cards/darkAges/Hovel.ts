@@ -19,14 +19,15 @@ export default class Hovel extends Card {
         return [];
     }
     public static setup(globalCardData: any, game: Game) {
-        game.events.on('buy', async (player, card) => {
-            if (game.getCard(card).types.includes("victory")
-                && player.data.hand.some((a) => a.name === 'hovel')
-                && await player.confirmAction(Texts.doYouWantToTrashA('hovel'))) {
-                const card = player.data.hand.splice(player.data.hand.findIndex((a) => a.name === 'hovel'), 1)[0];
-                await player.trash(card);
-            }
-            return true;
+        game.players.forEach((player) => {
+            player.effects.setupEffect('buy', 'hovel', (card, buyCard) => !game.getCard(buyCard).types.includes("victory"), async (remove, card) => {
+                if (game.getCard(card).types.includes("victory")
+                    && player.data.hand.some((a) => a.name === 'hovel')
+                    && await player.confirmAction(Texts.doYouWantToTrashA('hovel'))) {
+                    const card = player.data.hand.splice(player.data.hand.findIndex((a) => a.name === 'hovel'), 1)[0];
+                    await player.trash(card);
+                }
+            });
         });
     }
 }

@@ -3,6 +3,7 @@ dist/js
 src/**/*.js
 src/**/*.map
 test/**/*.js
+!test/**/__snapshots__/*.js
 test/**/*.map
 testClient/**/*.js
 testClient/**/*.map

@@ -11,7 +11,7 @@ export default class SinisterPlot extends Project {
     name = "sinister plot";
     async onPlayerJoinProject(player: Player): Promise<any> {
         let tokens = 0;
-        player.events.on('turnStart', async () => {
+        player.effects.setupEffect('turnStart', 'sinister plot', {}, async () => {
             const option = await player.chooseOption(Texts.chooseBenefitFor('sinister plot'), [Texts.addTokenTo('sinister plot'), Texts.drawXCards(tokens.toString())]);
             switch (option) {
                 case Texts.addTokenTo('sinister plot'):
@@ -24,7 +24,6 @@ export default class SinisterPlot extends Project {
                     tokens = 0;
                     break;
             }
-            return true;
         });
     }
 }

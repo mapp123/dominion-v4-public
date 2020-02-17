@@ -11,12 +11,11 @@ export default class Flag extends Artifact {
     protected giveToPlayer(player: Player) {
         player.lm('%p takes the flag.');
         if (this.cb && this.lastPlayer) {
-            this.lastPlayer.events.off('handDraw', this.cb);
+            this.lastPlayer.effects.removeEffect('handDraw', 'flag', this.cb);
         }
-        this.cb = player.events.on('handDraw', async () => {
+        this.cb = player.effects.setupEffect('handDraw', 'flag', {}, async () => {
             player.lm('The flag activates for %p.');
             await player.draw(1);
-            return true;
         });
         this.lastPlayer = player;
     }

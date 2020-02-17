@@ -182,8 +182,6 @@ export default abstract class Card {
         return false;
     }
     public static async onBuy(player: Player): Promise<Card | null> {
-        await player.game.events.emit('buy', player, this.cardName);
-        await player.events.emit('buy', this.cardName);
         return await player.gain(this.cardName, undefined, false);
     }
     public onGainSelf(player: Player, tracker: Tracker<this>): Promise<void> | void {

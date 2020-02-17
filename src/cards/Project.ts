@@ -10,7 +10,7 @@ export default abstract class Project extends Card {
     supplyCount = 0;
     isCard = false;
     abstract onPlayerJoinProject(player: Player): Promise<any>;
-    protected playersJoined: Player[] = [];
+    playersJoined: Player[] = [];
     public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean}> {
         return [{
             identifier: this.cardName,

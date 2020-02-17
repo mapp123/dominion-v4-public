@@ -12,21 +12,20 @@ export default class Merchant extends Card {
         "The first time you play a Silver this turn, +$1.";
     supplyCount = 10;
     cardArt = "/img/card-img/MerchantArt.jpg";
-    cb: ((player: Player, card: Card) => boolean | Promise<boolean>) | null = null;
+    cb: any | null = null;
     async onAction(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
-        this.cb = player.events.on('treasureCardPlayed', (player, card) => {
+        this.cb = player.effects.setupEffect('treasureCardPlayed', 'merchant', {}, async (remove, card) => {
             if (card.name === "silver") {
                 player.data.money += 1;
-                return false;
+                remove();
             }
-            return true;
         });
     }
     async onDiscardFromPlay(player: Player): Promise<any> {
         if (this.cb) {
-            player.events.off('treasureCardPlayed', this.cb);
+            player.effects.removeEffect('treasureCardPlayed', 'merchant', this.cb);
         }
     }
 }

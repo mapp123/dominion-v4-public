@@ -15,7 +15,7 @@ export default class Innovation extends Project {
             usedThisTurn = false;
             return true;
         });
-        player.events.on('gain', async (tracker) => {
+        player.effects.setupEffect('gain', 'innovation', (other, tracker) => usedThisTurn || !tracker.viewCard().types.includes("action"), async (remove, tracker) => {
             if (!usedThisTurn && tracker.viewCard().types.includes("action")) {
                 usedThisTurn = true;
                 if (tracker.hasTrack && await player.confirmAction(Texts.wouldYouLikeToSetAsideThe(tracker.viewCard().name, "innovation"))) {
@@ -24,7 +24,6 @@ export default class Innovation extends Project {
                     await player.playActionCard(card, null);
                 }
             }
-            return true;
         });
     }
 }

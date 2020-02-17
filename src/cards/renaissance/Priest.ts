@@ -18,12 +18,11 @@ export default class Priest extends Card {
         if (card) {
             await player.trash(card);
         }
-        const unsub = player.events.on('trash', () => {
+        const unsub = player.effects.setupEffect('trash', 'priest', () => true, async () => {
             player.data.money += 2;
-            return true;
         });
         player.events.on('turnEnd', () => {
-            player.events.off('trash', unsub);
+            player.effects.removeEffect('trash', 'priest', unsub);
             return false;
         });
     }

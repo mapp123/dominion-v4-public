@@ -12,13 +12,14 @@ export default class Canal extends Project {
     };
     name = "canal";
     async onPlayerJoinProject(player: Player): Promise<any> {
+        // Not an effect, needs to be first
         player.events.on('turnStart', async () => {
             this.getGlobalData().starting = true;
             player.game.updateCostModifiers();
-            this.getGlobalData().starting = false;
             return true;
         });
         player.events.on('turnEnd', async () => {
+            this.getGlobalData().starting = false;
             player.game.updateCostModifiers();
             return true;
         });

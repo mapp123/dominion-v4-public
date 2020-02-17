@@ -18,15 +18,18 @@ export default class Talisman extends Card {
         player.data.money += 1;
     }
     public static setup(globalCardData: any, game: Game) {
-        game.events.on('buy', async (player, cardName) => {
-            const cardsInPlay = player.data.playArea.filter((a) => a.name === 'talisman');
-            for (let i = 0; i < cardsInPlay.length; i++) {
-                if (!game.getCard(cardName).types.includes("victory") && game.getCostOfCard(cardName).coin <= 4) {
-                    player.lm('%p gains an extra %s with talisman.', cardName);
-                    await player.gain(cardName, undefined, false);
+        game.players.forEach((player) => {
+            player.effects.setupEffect('buy', 'talisman', (other, card) => {
+                return player.data.playArea.filter((a) => a.name === 'talisman').length === 0 || game.getCard(card).types.includes("victory") || ['hovel', 'hoard', 'mint'].includes(other);
+            }, async (remove, cardName) => {
+                const cardsInPlay = player.data.playArea.filter((a) => a.name === 'talisman');
+                for (let i = 0; i < cardsInPlay.length; i++) {
+                    if (!game.getCard(cardName).types.includes("victory") && game.getCostOfCard(cardName).coin <= 4) {
+                        player.lm('%p gains an extra %s with talisman.', cardName);
+                        await player.gain(cardName, undefined, false);
+                    }
                 }
-            }
-            return true;
+            });
         });
     }
 }

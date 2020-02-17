@@ -34,7 +34,7 @@ export default class Teacher extends Card {
                         }
                     });
                     player.events.on('decision', async () => {
-                        if (player.effects.currentEffect === 'turnStart') {
+                        if (player.isInterrupted) {
                             return true;
                         }
                         player.data.tavernMat.forEach((a) => {

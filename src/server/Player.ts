@@ -34,6 +34,7 @@ export default class Player {
     events: PlayerEvents = new PlayerEvents();
     effects: PlayerEffects = new PlayerEffects(this);
     private _nextDecisionId = 0;
+    isInterrupted = false;
     get nextDecisionId(): string {
         return "" + this._nextDecisionId++;
     }
@@ -158,11 +159,13 @@ export default class Player {
         }
     }
     async sendInterrupt(hookName: string, data: any) {
+        this.isInterrupted = true;
         const interruptedDecisions = this.pendingDecisions;
         this.pendingDecisions = [];
         this.waitingForResponse = false;
         await (this.interruptHooks[hookName])?.(data);
         this.pendingDecisions = interruptedDecisions;
+        this.isInterrupted = false;
         this.emitNextDecision();
     }
     private static reserveStruct = struct({

@@ -4,6 +4,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "urchin"
   ],
   "turnStart": [
+    "ratcatcher",
     "teacher",
     "barracks",
     "cargo ship",

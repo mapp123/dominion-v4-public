@@ -1,7 +1,7 @@
 import {Server} from "socket.io";
 import {Server as HttpServer} from 'http';
-import ClientTestPlayer, {ClientTestGame, setupClientTestBed} from "./testBed";
-import {Builder, By, WebDriver} from "selenium-webdriver";
+import ClientTestPlayer, {ClientTestGame, Interrupt, setupClientTestBed} from "./testBed";
+import {Builder, By, until, WebDriver} from "selenium-webdriver";
 import {EventEmitter} from "events";
 import {Decision, DecisionResponseType} from "../src/server/Decision";
 import makeTestGame from "../test/testBed";
@@ -62,6 +62,16 @@ describe('CLIENT CARDS', () => {
             catch (e) {
                 p.rejectDecisionPromise?.(e);
             }
+            if (response instanceof Interrupt) {
+                console.log("INTERRUPT");
+                switch (response.type) {
+                    case "reserve":
+                        await driver.findElement(By.id(response.data.cardId)).click();
+                        break;
+                }
+                continue;
+            }
+            console.log(`responding with: ${JSON.stringify(response)}`);
             try {
                 switch (decision.decision) {
                     case "confirm":
@@ -158,7 +168,7 @@ describe('CLIENT CARDS', () => {
         });
     });
     afterEach(async () => {
-        await new Promise((f) => setTimeout(f, 250));
+        await new Promise((f) => setTimeout(f, 50));
     });
     after(async () => {
         httpServer.close();

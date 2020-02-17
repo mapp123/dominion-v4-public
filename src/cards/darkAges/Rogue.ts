@@ -5,6 +5,7 @@ import Util from "../../Util";
 import Cost from "../../server/Cost";
 
 export default class Rogue extends Card {
+    static descriptionSize = 49;
     intrinsicTypes = ["action","attack"] as const;
     name = "rogue";
     intrinsicCost = {

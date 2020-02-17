@@ -3,6 +3,17 @@ import {Decision, DecisionResponseType} from "../src/server/Decision";
 import Player from "../src/server/Player";
 import {Server} from "socket.io";
 import {EventEmitter} from "events";
+export class Interrupt {
+    data: any;
+    type: string;
+    constructor(type: string, data: any) {
+        this.type = type;
+        this.data = data;
+    }
+}
+function either<K, T>(one: T, two: K): T | K {
+    return one;
+}
 export default class ClientTestPlayer extends TestPlayer {
     rejectDecisionPromise: ((err: Error) => any) | null = null;
     async makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T["decision"]]> {
@@ -20,6 +31,26 @@ export default class ClientTestPlayer extends TestPlayer {
                 r(err);
             }
         });
+    }
+    async call(cardName: string, decisions: () => any) {
+        const response = {
+            matcher: (decision) => {
+                if (this.decisionResponses[this.decisionResponses.indexOf(response) + 1].matcher(decision)) {
+                    return true;
+                }
+                if (this.decisionResponses.slice(this.decisionResponses.indexOf(response) + 1).every((a) => !a.matcher(decision)) && this.optionalDecisionResponses[0]?.matcher(decision)) {
+                    return true;
+                }
+                return false;
+            },
+            response: async (d) => {
+                decisions();
+                return new Interrupt('reserve', {
+                    cardId: this.data.tavernMat.find((a) => a.card.name === cardName)!.card.id
+                }) as any
+            }
+        }
+        this.decisionResponses.push(response);
     }
     async getDecisionResponse(decision: Decision) {
         return await super.makeDecision(decision);

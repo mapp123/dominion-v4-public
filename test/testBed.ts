@@ -4,6 +4,7 @@ import Card from "../src/cards/Card";
 import CardRegistry from "../src/cards/CardRegistry";
 import {Decision, DecisionDefaults, DecisionResponseType, DecisionValidators} from "../src/server/Decision";
 import {Texts} from "../src/server/Texts";
+import {Interrupt} from "../testClient/testBed";
 
 let playerUnderTest: Player | null = null;
 
@@ -38,7 +39,7 @@ let testPlayerIndex = 1;
 const WELL_KNOWN_STOP_ERROR = 'WELL_KNOWN_STOP_ERROR';
 export class TestPlayer extends Player {
     decisionResponses: Array<DecisionResponse> = [];
-    private optionalDecisionResponses: Array<DecisionResponse> = [];
+    protected optionalDecisionResponses: Array<DecisionResponse> = [];
     username = `Test Player ${testPlayerIndex++}`;
     get hand() {
         return this.data.hand.map((a) => a.name);
@@ -78,6 +79,9 @@ export class TestPlayer extends Player {
         if (rIndex !== -1 || oIndex !== -1) {
             const responder = rIndex !== -1 ? this.decisionResponses.splice(rIndex, 1)[0] : this.optionalDecisionResponses.splice(oIndex, 1)[0];
             const response = await responder.response(decision);
+            if (response instanceof Interrupt) {
+                return response as any;
+            }
             console.log('Responding to ' + JSON.stringify(decision));
             try {
                 DecisionValidators[decision.decision](this.game, decision, response);
@@ -130,7 +134,8 @@ export class TestPlayer extends Player {
                     return res;
                 }
                 else {
-                    return this.makeDecision(decision);
+                    console.log("Task failed successfully, moving on")
+                    return TestPlayer.prototype.makeDecision.apply(this, [decision]);
                 }
             }
         };
@@ -139,7 +144,15 @@ export class TestPlayer extends Player {
     }
     testHookNextDecision(cb: (decision: Decision) => any) {
         const response = {
-            matcher: (decision) => this.decisionResponses[this.decisionResponses.indexOf(response) + 1].matcher(decision),
+            matcher: (decision) => {
+                if (this.decisionResponses[this.decisionResponses.indexOf(response) + 1].matcher(decision)) {
+                    return true;
+                }
+                if (this.decisionResponses.slice(this.decisionResponses.indexOf(response) + 1).every((a) => !a.matcher(decision)) && this.optionalDecisionResponses[0]?.matcher(decision)) {
+                    return true;
+                }
+                return false;
+            },
             response: async (decision) => {
                 try {
                     await cb(decision);
@@ -253,8 +266,25 @@ export class TestPlayer extends Player {
     testEndGame() {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCardOrBuy' || decision.decision === 'buy',
-            response: () => {
+            response: (decision) => {
                 (this.game as TestGame).done = true;
+                if (decision.decision === 'chooseCardOrBuy') {
+                    return {
+                        responseType: 'buy',
+                        choice: {
+                            name: 'End Turn',
+                            id: ''
+                        }
+                    }
+                }
+                if (decision.decision === 'buy') {
+                    return {
+                        choice: {
+                            name: 'End Turn',
+                            id: ''
+                        }
+                    }
+                }
                 return ({responseType: 'buy', choice: {name: 'End Turn', id: ''}});
             }
         });

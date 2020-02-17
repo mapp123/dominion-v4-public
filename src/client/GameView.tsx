@@ -199,7 +199,7 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                         <DataViews playerData={this.state.playerData} />
                         <span style={{fontFamily:"TrajanPro-Bold"}}>{this.state.decision ? this.state.decision.helperText:'Please wait...'}<br /></span>
                         <div style={{flex: 1, display: "flex", flexDirection: "row"}}>
-                            <div id="handGroup" style={{width: "250px"}}>
+                            <div id="handGroup" style={{flexBasis: "250px", flexShrink: 0}}>
                                 <HandView setHoveredCard={(card) => this.setState({hoveredCard: card})} hand={this.state.playerData.hand} decision={this.state.decision} gameView={this}/>
                             </div>
                             <div style={{alignSelf: "flex-start"}}>

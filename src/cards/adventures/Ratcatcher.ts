@@ -49,7 +49,7 @@ export default class Ratcatcher extends Card {
                     });
                 }
                 else {
-                    if (await player.confirmAction(Texts.doYouWantToCall('teacher'))) {
+                    if (await player.confirmAction(Texts.doYouWantToCall('ratcatcher'))) {
                         await player.callReserve(this);
                         remove();
                     }

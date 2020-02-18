@@ -55,7 +55,6 @@ export default class PlayerEffects {
         for (let i = 0; i < list.length; i++) {
             let fullCompat = !ask.includes(list[i]);
             for (let j = i + 1; j < list.length; j++) {
-                if (!fullCompat) break;
                 if (list[i].name === list[j].name) continue;
                 let compatible = false;
                 const compatA = list[i].compatibility;
@@ -82,7 +81,7 @@ export default class PlayerEffects {
             if (fullCompat) {
                 runFirst.push(list[i]);
             }
-            else {
+            else if (!ask.includes(list[i])) {
                 ask.push(list[i]);
             }
         }

@@ -8,10 +8,17 @@ export const UNCOUNTED_EMPTY_SUPPLY_PILE = [];
 
 export default class Supply {
     data = createSupplyData();
+    private unsyncedData: {[key: string]: any} = {};
     public getPile(identifier: string): Card[] | null {
         const pile = this.data.piles.find((a) => a.identifier === identifier);
         if (!pile) return null;
         return pile.pile;
+    }
+    public getMyUnsyncedCardData(card: Card | string): any {
+        return this.unsyncedData[typeof card === 'string' ? card : card.name];
+    }
+    public setMyUnsyncedCardData(card: Card | string, data: any) {
+        this.unsyncedData[typeof card === 'string' ? card : card.name] = data;
     }
     constructor() {
 

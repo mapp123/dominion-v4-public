@@ -65,6 +65,9 @@ function pickTypesFromTypeArray(types: readonly string[]): [string, string | und
     if (types.includes('shelter') && types.includes('victory')) {
         return ['victory', 'shelter'];
     }
+    if (types.includes('duration') && types.includes('reaction')) {
+        return ['reaction', 'duration'];
+    }
     if (types.includes('reaction')) {
         return ['reaction', undefined];
     }
@@ -144,7 +147,7 @@ export default class CardGenerator extends React.Component<IProps, {}> {
                 {this.props.heirloomLine && <image href="/img/card-resources/Heirloom.png" x={97} y={1720} />}
                 {this.props.heirloomLine && <SingleTextLine line={this.props.heirloomLine} x={701} y={1835} maxWidth={1040} initialSize={58} family="Times New Roman" style={"italic"}/>}
                 <SingleTextLine line={this.props.cardName} x={701} y={242} maxWidth={1180} initialSize={this.props.cardNameStart || 75} />
-                <ForceWrappingTextLine line={this.props.cardTypes.map((a, i) => i === 0 ? a : i % 2 === 1 ? "\u00a0-\u00a0" + a : " - " + a).join("")} x={300} y={1865} maxWidth={890} maxHeight={120} initialSize={this.props.typeFontStart || 64} id="typeline"/>
+                <ForceWrappingTextLine line={this.props.cardTypes.map((a, i, l) => i === 0 ? a : (l.length < 4 || i % 2 === 1) ? "\u00a0-\u00a0" + a : " - " + a).join("")} x={300} y={1865} maxWidth={890} maxHeight={120} initialSize={this.props.typeFontStart || 64} id="typeline"/>
                 <image href="/img/CoinHighRes.png" x={129} y={1850} width={150} height={145} />
                 <text x={205} y={1965} textAnchor="middle" style={{fontSize: "86pt", fontFamily: "TrajanPro-Bold"}}>{this.props.costs.coin}</text>
                 <Description
@@ -204,7 +207,9 @@ class ForceWrappingTextLine extends React.Component<{line: string; x: number; y:
         setTimeout(() => {
             const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
             const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
-            if (foreignHeight == null || desHeight == null || foreignHeight < desHeight) {
+            const foreignWidth = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().width;
+            const desWidth = this.desRef.current && this.desRef.current.getBoundingClientRect().width;
+            if (foreignHeight == null || desHeight == null || foreignHeight < desHeight || foreignWidth == null || desWidth == null || foreignWidth < desWidth) {
                 window.setTimeout(() => {
                     this.setState({
                         size: this.state.size - 1
@@ -218,7 +223,9 @@ class ForceWrappingTextLine extends React.Component<{line: string; x: number; y:
     componentDidUpdate(): void {
         const foreignHeight = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().height;
         const desHeight = this.desRef.current && this.desRef.current.getBoundingClientRect().height;
-        if (foreignHeight == null || desHeight == null || foreignHeight < desHeight) {
+        const foreignWidth = this.foreignObjectRef.current && this.foreignObjectRef.current.getBoundingClientRect().width;
+        const desWidth = this.desRef.current && this.desRef.current.getBoundingClientRect().width;
+        if (foreignHeight == null || desHeight == null || foreignHeight < desHeight || foreignWidth == null || desWidth == null || foreignWidth < desWidth) {
             window.setTimeout(() => {
                 this.setState({
                     size: this.state.size - 1

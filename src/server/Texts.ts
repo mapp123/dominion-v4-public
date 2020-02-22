@@ -155,6 +155,9 @@ export class Texts {
     static doYouWantToReveal(card: string) {
         return `Do you want to reveal your ${card}?`;
     }
+    static doYouWantToPlay(card: string) {
+        return `Do you want to play your ${card}?`;
+    }
     static doYouWantToCall(card: string) {
         return `Do you want to call your ${card}?`;
     }

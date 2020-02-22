@@ -387,7 +387,8 @@ export default abstract class AIPlayer extends Player {
                     ensureTrash: decisionMatcher(decision.helperText, Texts.areYouSureYouWantToTrash),
                     wantBuyCoffers: decisionMatcher(decision.helperText, () => Texts.wantBuyCoffers),
                     discardForBenefit: decisionMatcher(decision.helperText, Texts.wantToDiscardAForBenefit),
-                    wantPlayFromHand: decisionMatcher(decision.helperText, Texts.playCardFromHand)
+                    wantPlayFromHand: decisionMatcher(decision.helperText, Texts.playCardFromHand),
+                    wantPlay: decisionMatcher(decision.helperText, Texts.doYouWantToPlay)
                 };
                 if (confirmKeys.wantTrashForBenefit) {
                     return ((await this.trashForBenefit([confirmKeys.wantTrashForBenefit[0]], 1, confirmKeys.wantTrashForBenefit[1])) !== 'No Card') as any;
@@ -459,6 +460,15 @@ export default abstract class AIPlayer extends Player {
                     switch (confirmKeys.wantExchange[0]) {
                         case "hero":
                             return (this.allCards.find((a) => a.name === "champion") != null) as boolean as any;
+                        default:
+                            return true as any;
+                    }
+                }
+                if (confirmKeys.wantPlay) {
+                    // noinspection JSRedundantSwitchStatement
+                    switch (confirmKeys.wantPlay[0]) {
+                        case "caravan guard":
+                            return true as any;
                         default:
                             return true as any;
                     }

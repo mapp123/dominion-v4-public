@@ -421,11 +421,17 @@ export default class Player {
     }
     async onAttack(attacker: Player, attackingCard: Card): Promise<boolean> {
         let exempt = false;
-        for (const card of this.data.hand) {
+        const handledCardsHand: Card[] = [];
+        while (this.data.hand.some((a) => !handledCardsHand.includes(a))) {
+            const card = this.data.hand.find((a) => !handledCardsHand.includes(a))!;
             exempt = (await card.onAttackInHand(this, attacker, attackingCard, exempt)) || exempt;
+            handledCardsHand.push(card);
         }
-        for (const card of this.data.playArea) {
+        const handledCardsPlay: Card[] = [];
+        while (this.data.playArea.some((a) => !handledCardsPlay.includes(a))) {
+            const card = this.data.playArea.find((a) => !handledCardsPlay.includes(a))!;
             exempt = (await card.onAttackInPlay(this, attacker, attackingCard, exempt)) || exempt;
+            handledCardsPlay.push(card);
         }
         return exempt;
     }

@@ -12,7 +12,7 @@ describe('EXPERIMENT', () => {
         player.onBuyPhaseStart(() => {
             expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'silver', 'silver']);
             expect(player.data.actions).to.equal(1);
-            expect(player.data.playArea.length).to.equal(0);
+            expect(player.playArea.length).to.equal(0);
             expect(game.supply.getPile('experiment')!.length).to.equal(11);
             done();
         });
@@ -43,7 +43,7 @@ describe('EXPERIMENT', () => {
         player.onBuyPhaseStart(() => {
             expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'silver', 'silver', 'gold', 'gold']);
             expect(player.data.actions).to.equal(2);
-            expect(player.data.playArea.map((a) => a.name)).to.have.members(['throne room']);
+            expect(player.playArea).to.have.members(['throne room']);
             expect(game.supply.getPile('experiment')!.length).to.equal(11);
             done();
         });

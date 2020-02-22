@@ -47,6 +47,9 @@ export class TestPlayer extends Player {
     get discardPile() {
         return this.deck.discard.map((a) => a.name);
     }
+    get playArea() {
+        return this.data.playArea.map((a) => a.name);
+    }
     async makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T["decision"]]> {
         if (playerUnderTest) {
             playerUnderTest.game = this.game;

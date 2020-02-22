@@ -44,7 +44,7 @@ describe('DEATH CART', () => {
         player.testChooseCard(Texts.trashForBenefit("+$5", 1), 'death cart');
         player.onBuyPhaseStart(() => {
             expect(player.data.money).to.equal(5);
-            expect(player.data.playArea.length).to.equal(0);
+            expect(player.playArea.length).to.equal(0);
             done();
         });
         game.start();
@@ -59,7 +59,7 @@ describe('DEATH CART', () => {
         player.testChooseCard(Texts.trashForBenefit("+$5", 1), 'death cart');
         player.onBuyPhaseStart(() => {
             expect(player.data.money).to.equal(5);
-            expect(player.data.playArea.length).to.equal(1);
+            expect(player.playArea).to.have.members(['throne room']);
             done();
         });
         game.start();

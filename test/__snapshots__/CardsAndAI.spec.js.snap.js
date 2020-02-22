@@ -1,9 +1,6 @@
 exports[`CARDS : EFFECTS : has no new cards 1`] = {
-  "willPlayAction": [
-    "champion",
-    "urchin"
-  ],
   "turnStart": [
+    "amulet",
     "ratcatcher",
     "teacher",
     "barracks",
@@ -17,6 +14,10 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "silos",
     "sinister plot",
     "key"
+  ],
+  "willPlayAction": [
+    "champion",
+    "urchin"
   ],
   "treasureCardPlayed": [
     "merchant"

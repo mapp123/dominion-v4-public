@@ -2,6 +2,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
   "turnStart": [
     "amulet",
     "caravan guard",
+    "dungeon",
     "ratcatcher",
     "teacher",
     "barracks",

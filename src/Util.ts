@@ -11,12 +11,13 @@ export default class Util {
     static formatTrackerList(trackers: Array<Tracker<Card>>): string {
         return Util.formatCardList(trackers.map((a) => a.viewCard().name));
     }
-    static formatCardList(cards: string[]): string {
-        const formattedCards = cards.map((a, i) => {
-            if (cards.indexOf(a) !== i) {
+    static formatCardList(cards: Array<Card | string>): string {
+        const cardStrings = cards.map((a) => typeof a === 'string' ? a : a.name) as string[];
+        const formattedCards = cardStrings.map((a, i) => {
+            if (cardStrings.indexOf(a) !== i) {
                 return undefined;
             }
-            const count = cards.filter((b) => a === b).length;
+            const count = cardStrings.filter((b) => a === b).length;
             if (count === 1) {
                 return this.article(a) + ' ' + a;
             }

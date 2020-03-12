@@ -24,9 +24,10 @@ export default class Dungeon extends Card {
                 await player.discard(card);
             }
         }
-        player.effects.setupEffect('turnStart', 'dungeon', {}, async () => {
+        player.effects.setupEffect('turnStart', 'dungeon', {}, async (unsub) => {
             this.isNextTurn = true;
             await this.doEffect(player);
+            unsub();
         });
         this.isNextTurn = false;
     }

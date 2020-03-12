@@ -227,15 +227,32 @@ export default class Game {
     lm(subject: Player | null, msg: string, ...params: any[]) {
         msg = msg.split("%c").join('%h[card]');
         msg = msg.split("%ac").join("%h[a card]");
-        const unformattedPrivateMsg = msg.replace(/%h\[.*?]/g, '%s');
-        // Count the number of private arguments
-        const argsCount = unformattedPrivateMsg.split("%").length - (unformattedPrivateMsg.split("%%").length * 2);
-        // Pass exactly that number of arguments, anything extra just gets tacked on.
-        const privateMsg = format(unformattedPrivateMsg, ...params.slice(0, argsCount + 1));
-        // Build the message that will be sent everywhere else
-        const unformattedPublicMsg = msg.replace(/%h/g, '%i');
-        const publicMsg = format(unformattedPublicMsg, ...params.slice(0, argsCount + 1))
-            .replace(/NaN\[(.*)]/g, (match, replacement) => replacement);
+        const parts = msg.split(/(%[a-z]{1,2}(?:\[.*?])?)/);
+        const privateMsg = parts.map((part, i) => {
+            if (part[0] !== "%") return part;
+            i = Math.floor(i / 2);
+            if (part === "%l" || part === "%hl") {
+                return Util.formatCardList(params[i]);
+            }
+            if (/%h\[.*?]/.test(part)) {
+                return params[i];
+            }
+            return format(part, params[i]);
+        }).join("");
+        const publicMsg = parts.map((part, i) => {
+            if (part[0] !== "%") return part;
+            i = Math.floor(i / 2);
+            if (part === "%hl") {
+                return `${Util.numeral(params[i].length)} card${params[i].length !== 1 ? "s" : ""}`;
+            }
+            if (part === "%l") {
+                return Util.formatCardList(params[i]);
+            }
+            if (/%h\[.*?]/.test(part)) {
+                return /%h\[(.*?)]/.exec(part)![1];
+            }
+            return format(part, params[i]);
+        }).join("");
         // TODO: Grammar correction
         this.players.forEach((p) => {
             if (p === subject) {

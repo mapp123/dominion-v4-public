@@ -2,6 +2,9 @@ import Card from "../cards/Card";
 
 export default class CardHolder {
     private cards: Card[] = [];
+    public get isEmpty() {
+        return this.cards.length === 0;
+    }
     public getCards() {
         return this.cards;
     }

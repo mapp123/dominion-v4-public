@@ -71,6 +71,9 @@ export class Texts {
     static discardXCards(amount: string) {
         return `Discard ${amount} cards`;
     }
+    static chooseCardToSetAsideFor(card: string) {
+        return `Choose a card to set aside for ${card}...`;
+    }
     static chooseBenefitFor(a: string) {
         return `Choose benefit for ${a}...`;
     }

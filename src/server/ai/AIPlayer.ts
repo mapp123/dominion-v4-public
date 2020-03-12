@@ -283,7 +283,8 @@ export default abstract class AIPlayer extends Player {
                     takeFromAside: decisionMatcher(decision.helperText, () => Texts.chooseCardToTakeFromSetAside),
                     chooseGain: decisionMatcher(decision.helperText, Texts.chooseCardToGainFor),
                     cardToName: decisionMatcher(decision.helperText, Texts.chooseCardToNameFor),
-                    discardForPlayer: decisionMatcher(decision.helperText, Texts.chooseCardForPlayerToDiscard)
+                    discardForPlayer: decisionMatcher(decision.helperText, Texts.chooseCardForPlayerToDiscard),
+                    setAside: decisionMatcher(decision.helperText, Texts.chooseCardToSetAsideFor)
                 };
                 if (keys.discardCard != null) {
                     return this.chooseCardFromPriority(await this.discardPriority(), decision.validChoices) as any;
@@ -365,6 +366,10 @@ export default abstract class AIPlayer extends Player {
                 }
                 if (keys.discardForPlayer) {
                     const choice = this.chooseCardFromPriority((await this.discardPriority()).reverse(), decision.source) as any;
+                    return choice as any;
+                }
+                if (keys.setAside) {
+                    const choice = this.chooseCardFromPriority(await this.discardPriority(), decision.source) as any;
                     return choice as any;
                 }
                 break;

@@ -73,7 +73,7 @@ export default class Player {
             cards.push(card);
         }
         if (cards.length) {
-            this.lm(`%p draws %h[${amount === 1 ? 'a' : Util.numeral(amount)} card${amount === 1 ? '' : 's'}].`, Util.formatCardList(cards.map((a) => a.name)));
+            this.lm('%p draws %hl.', cards);
             this.data.hand.push(...cards);
         }
         else {

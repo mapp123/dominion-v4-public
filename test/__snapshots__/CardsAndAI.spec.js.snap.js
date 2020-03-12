@@ -4,6 +4,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "caravan guard",
     "dungeon",
     "gear",
+    "guide",
     "ratcatcher",
     "teacher",
     "barracks",

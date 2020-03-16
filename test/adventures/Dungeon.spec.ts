@@ -8,6 +8,7 @@ describe('DUNGEON', () => {
             decks: [['dungeon', 'copper', 'copper', 'copper', 'copper', 'silver', 'silver', 'gold']],
             d
         });
+        player.deck.shouldShuffle = false;
         player.testPlayAction('dungeon');
         player.testChooseCard(Texts.chooseCardToDiscardFor('dungeon'), 'copper');
         player.testChooseCard(Texts.chooseCardToDiscardFor('dungeon'), 'copper');
@@ -17,8 +18,12 @@ describe('DUNGEON', () => {
         player.testChooseCard(Texts.chooseCardToDiscardFor('dungeon'), 'copper');
         player.testChooseCard(Texts.chooseCardToDiscardFor('dungeon'), 'copper');
         player.onBuyPhaseStart(() => {
+            expect(player.data.actions).to.equal(1);
             expect(player.hand).to.have.members(['copper', 'copper', 'silver', 'silver', 'gold']);
             expect(player.playArea).to.have.members(['dungeon']);
+        });
+        player.testPlayAction('No Card');
+        player.onBuyPhaseStart(() => {
             done();
         });
         game.start();

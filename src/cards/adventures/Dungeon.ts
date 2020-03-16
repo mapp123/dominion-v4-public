@@ -14,7 +14,6 @@ export default class Dungeon extends Card {
     cardArt = "/img/card-img/800px-DungeonArt.jpg";
     private isNextTurn = false;
     async doEffect(player: Player) {
-        player.data.actions++;
         await player.draw(2);
         let card = await player.chooseCardFromHand(Texts.chooseCardToDiscardFor('dungeon'));
         if (card) {
@@ -24,12 +23,6 @@ export default class Dungeon extends Card {
                 await player.discard(card);
             }
         }
-        player.effects.setupEffect('turnStart', 'dungeon', {}, async (unsub) => {
-            this.isNextTurn = true;
-            await this.doEffect(player);
-            unsub();
-        });
-        this.isNextTurn = false;
     }
 
     shouldDiscardFromPlay(): boolean {
@@ -37,6 +30,13 @@ export default class Dungeon extends Card {
     }
 
     async onAction(player: Player): Promise<void> {
+        player.data.actions++;
         await this.doEffect(player);
+        player.effects.setupEffect('turnStart', 'dungeon', {}, async (unsub) => {
+            this.isNextTurn = true;
+            await this.doEffect(player);
+            unsub();
+        });
+        this.isNextTurn = false;
     }
 }

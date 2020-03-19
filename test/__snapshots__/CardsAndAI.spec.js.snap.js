@@ -23,6 +23,15 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "champion",
     "urchin"
   ],
+  "gain": [
+    "duplicate",
+    "royal seal",
+    "watchtower",
+    "academy",
+    "cargo ship",
+    "guildhall",
+    "innovation"
+  ],
   "treasureCardPlayed": [
     "merchant"
   ],
@@ -37,14 +46,6 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "market square",
     "priest",
     "sewers"
-  ],
-  "gain": [
-    "royal seal",
-    "watchtower",
-    "academy",
-    "cargo ship",
-    "guildhall",
-    "innovation"
   ],
   "actionCardPlayed": [
     "citadel"

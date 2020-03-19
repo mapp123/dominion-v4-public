@@ -51,7 +51,7 @@ export default class PlayerEffects {
         this.currentEffect = effectName;
         const runFirst: Array<EffectDef<T>> = [];
         const ask: Array<EffectDef<T>> = [];
-        const list: Array<EffectDef<T>> = this.effectTable[effectName] as any;
+        const list: Array<EffectDef<T>> = [...this.effectTable[effectName]] as any;
         for (let i = 0; i < list.length; i++) {
             let fullCompat = !ask.includes(list[i]);
             for (let j = i + 1; j < list.length; j++) {
@@ -87,7 +87,7 @@ export default class PlayerEffects {
         }
         this.inCompat = true;
         for (const a of runFirst) {
-            const unsub = () => list.splice(list.findIndex((b) => a.name === b.name), 1);
+            const unsub = () => this.effectTable[effectName].splice(this.effectTable[effectName].findIndex((b) => a.name === b.name), 1);
             await a.effect(unsub, ...effectArgs);
         }
         this.inCompat = false;
@@ -96,7 +96,7 @@ export default class PlayerEffects {
             if (!choice) {
                 break;
             }
-            const unsub = () => list.splice(list.findIndex((b) => b.name === choice), 1);
+            const unsub = () => this.effectTable[effectName].splice(this.effectTable[effectName].findIndex((b) => b.name === choice), 1);
             const index = ask.findIndex((a) => a.name === choice);
             await ask[index].effect(unsub, ...effectArgs);
             ask.splice(index, 1);

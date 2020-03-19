@@ -18,6 +18,9 @@ export default abstract class Card {
     static typelineSize = 64;
     static nameSize = 75;
     static inSupply = true;
+    get inSupply(): (typeof Card)['inSupply'] {
+        return (this.constructor as typeof Card).inSupply;
+    }
     intrinsicValue = 0;
     static get isCard(): typeof Card['isCard'] {
         // @ts-ignore
@@ -196,13 +199,13 @@ export default abstract class Card {
     public onCall(player: Player, exemptPlayers: Player[], tracker: Tracker<this>): Promise<void> | void {
 
     }
-    public call(player: Player) {
+    async call(player: Player) {
         const card = player.data.tavernMat.find((a) => a.card.id === this.id);
         if (card) {
             const realCard = card.card;
             player.data.tavernMat.splice(player.data.tavernMat.findIndex((a) => a.card.id == card.card.id), 1);
             player.data.playArea.push(realCard);
-            this.onCall(player, [], player.getTrackerInPlay(realCard) as Tracker<this>);
+            await this.onCall(player, [], player.getTrackerInPlay(realCard) as Tracker<this>);
         }
     }
     protected moveToTavernMat(player: Player, tracker: Tracker<Card>): boolean {

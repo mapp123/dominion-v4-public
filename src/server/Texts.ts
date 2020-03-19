@@ -164,6 +164,9 @@ export class Texts {
     static doYouWantToCall(card: string) {
         return `Do you want to call your ${card}?`;
     }
+    static doYouWantToCallXForY(card: string, y: string) {
+        return `Do you want to call your ${card} to ${y}?`;
+    }
     static doYouWantToExchangeXForY(x: string, y: string) {
         return `Do you want to exchange your ${x} for a ${y}?`;
     }

@@ -13,7 +13,9 @@ export default class CityGate extends Project {
     };
     name = "city gate";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.effects.setupEffect('turnStart', 'city gate', {}, async () => {
+        player.effects.setupEffect('turnStart', 'city gate', {
+            compatibility: {}
+        }, async () => {
             player.lm('The city gate activates for %p.');
             await player.draw(1);
             const card = await player.chooseCardFromHand(Texts.chooseCardToPutOnDeck);

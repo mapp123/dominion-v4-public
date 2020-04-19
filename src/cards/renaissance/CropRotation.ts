@@ -11,7 +11,10 @@ export default class CropRotation extends Project {
     };
     name = "crop rotation";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.effects.setupEffect('turnStart', 'crop rotation', {}, async () => {
+        player.effects.setupEffect('turnStart', 'crop rotation', {
+            compatibility: {},
+            temporalRelevance: () => player.data.hand.some((a) => a.types.includes('victory'))
+        }, async () => {
             if (player.data.hand.some((a) => a.types.includes("victory"))) {
                 const card = await player.chooseCardFromHand(Texts.discardAForBenefit('victory', 1, 'draw 2 cards'), true, (card) => card.types.includes("victory"));
                 if (card) {

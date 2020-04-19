@@ -10,7 +10,9 @@ export default class Barracks extends Project {
     };
     name = "barracks";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.effects.setupEffect('turnStart', 'barracks', () => true, async () => {
+        player.effects.setupEffect('turnStart', 'barracks', {
+            compatibility: () => true
+        }, async () => {
             player.data.actions++;
         });
     }

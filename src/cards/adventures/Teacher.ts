@@ -52,7 +52,10 @@ export default class Teacher extends Card {
                     }
                 }
             };
-            player.effects.setupEffect('turnStart', 'teacher', (a) => !['piazza'].includes(a), this.cb);
+            player.effects.setupEffect('turnStart', 'teacher', {
+                compatibility: (a) => !['piazza'].includes(a),
+                optional: true
+            }, this.cb);
         }
     }
     async onCall(player: Player): Promise<void> {

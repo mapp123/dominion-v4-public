@@ -1,6 +1,7 @@
 import Card from "../Card";
 import Player from "../../server/Player";
 import Game from "../../server/Game";
+import Cost, {CostResult} from "../../server/Cost";
 
 export default class Talisman extends Card {
     intrinsicTypes = ["treasure"] as const;
@@ -19,16 +20,17 @@ export default class Talisman extends Card {
     }
     public static setup(globalCardData: any, game: Game) {
         game.players.forEach((player) => {
-            player.effects.setupEffect('buy', 'talisman', (other, card) => {
-                return player.data.playArea.filter((a) => a.name === 'talisman').length === 0 || game.getCard(card).types.includes("victory") || ['hovel', 'hoard', 'mint'].includes(other);
+            player.effects.setupEffect('buy', 'talisman', {
+                compatibility: {
+                    hovel: true,
+                    hoard: true,
+                    mint: true
+                },
+                relevant: (card) => player.data.playArea.some((a) => a.name === 'talisman') && !game.getTypesOfCard(card).includes('victory') && game.getCostOfCard(card).compareTo(Cost.create(5)) === CostResult.LESS_THAN,
+                duplicate: () => player.data.playArea.filter((a) => a.name === 'talisman').map((a) => a.id)
             }, async (remove, cardName) => {
-                const cardsInPlay = player.data.playArea.filter((a) => a.name === 'talisman');
-                for (let i = 0; i < cardsInPlay.length; i++) {
-                    if (!game.getCard(cardName).types.includes("victory") && game.getCostOfCard(cardName).coin <= 4) {
-                        player.lm('%p gains an extra %s with talisman.', cardName);
-                        await player.gain(cardName, undefined, false);
-                    }
-                }
+                player.lm('%p gains an extra %s with talisman.', cardName);
+                await player.gain(cardName, undefined, false);
             });
         });
     }

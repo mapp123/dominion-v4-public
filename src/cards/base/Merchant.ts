@@ -16,7 +16,10 @@ export default class Merchant extends Card {
     async onAction(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
-        this.cb = player.effects.setupEffect('treasureCardPlayed', 'merchant', {}, async (remove, card) => {
+        this.cb = player.effects.setupEffect('treasureCardPlayed', 'merchant', {
+            compatibility: {},
+            relevant: (card) => card.name === "silver"
+        }, async (remove, card) => {
             if (card.name === "silver") {
                 player.data.money += 1;
                 remove();

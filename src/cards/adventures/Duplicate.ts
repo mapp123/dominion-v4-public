@@ -23,11 +23,14 @@ export default class Duplicate extends Card {
                 canCall: false
             });
             player.effects.setupEffect('gain', 'duplicate', {
-                "royal seal": true,
-                "watchtower": true,
-                "cargo ship": true,
-                "guildhall": true,
-                "innovation": true
+                compatibility: {
+                    "royal seal": true,
+                    "watchtower": true,
+                    "cargo ship": true,
+                    "guildhall": true,
+                    "innovation": true
+                },
+                relevant: (gainedCard) => gainedCard.viewCard().cost.compareTo(Cost.create(7)) === CostResult.LESS_THAN
             }, async (remove, gainedCard) => {
                 if (gainedCard.viewCard().cost.compareTo(Cost.create(7)) === CostResult.LESS_THAN
                     && gainedCard.viewCard().inSupply

@@ -16,7 +16,9 @@ export default class Amulet extends Card {
         this.isNextTurn = false;
         await this.doEffect(player);
         player.effects.setupEffect('turnStart', 'amulet', {
-            teacher: true
+            compatibility: {
+                teacher: true
+            }
         }, async (unsub) => {
             await this.doEffect(player);
             this.isNextTurn = true;

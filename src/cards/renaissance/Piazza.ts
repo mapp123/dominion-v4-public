@@ -10,7 +10,9 @@ export default class Piazza extends Project {
     };
     name = "piazza";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.effects.setupEffect('turnStart', 'piazza', () => false, async () => {
+        player.effects.setupEffect('turnStart', 'piazza', {
+            compatibility: () => false
+        }, async () => {
             let card = (await player.revealTop(1))[0];
             if (card) {
                 player.lm('The piazza activates for %p, who reveals %s.', Util.formatCardList([card.viewCard().name]));

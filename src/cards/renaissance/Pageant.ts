@@ -13,7 +13,9 @@ export default class Pageant extends Project {
     name = "pageant";
     async onPlayerJoinProject(player: Player): Promise<any> {
         player.effects.setupEffect('cleanupStart', 'pageant', {
-            improve: true
+            compatibility: {
+                improve: true
+            }
         }, async () => {
             player.lm('The pageant activates for %p.');
             if (player.data.money > 0 && await player.confirmAction(Texts.wantBuyCoffers)) {

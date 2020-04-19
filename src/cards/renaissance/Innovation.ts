@@ -15,7 +15,10 @@ export default class Innovation extends Project {
             usedThisTurn = false;
             return true;
         });
-        player.effects.setupEffect('gain', 'innovation', (other, tracker) => usedThisTurn || !tracker.viewCard().types.includes("action"), async (remove, tracker) => {
+        player.effects.setupEffect('gain', 'innovation', {
+            compatibility: {},
+            relevant: (tracker) => !usedThisTurn && tracker.viewCard().types.includes("action")
+        }, async (remove, tracker) => {
             if (!usedThisTurn && tracker.viewCard().types.includes("action")) {
                 usedThisTurn = true;
                 if (tracker.hasTrack && await player.confirmAction(Texts.wouldYouLikeToSetAsideThe(tracker.viewCard().name, "innovation"))) {

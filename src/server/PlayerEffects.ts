@@ -2,6 +2,7 @@ import Player from "./Player";
 import Tracker from "./Tracker";
 import Card from "../cards/Card";
 import Deck from "./Deck";
+import {v4} from 'uuid';
 
 export type Effect = 'turnStart' | 'turnEnd' | 'buy' | 'gain' | 'trash' | 'cleanupStart' | 'buyStart' | 'handDraw' | 'treasureCardPlayed' | 'shuffle' | 'willPlayAction' | 'actionCardPlayed';
 const EffectArgs: {[key in Effect]: any[]} = {
@@ -18,15 +19,28 @@ const EffectArgs: {[key in Effect]: any[]} = {
     willPlayAction: [] as unknown as [Card],
     actionCardPlayed: [] as unknown as [Tracker<Card>]
 };
-type EffectFun<T extends Effect> = (unsub: () => any, ...effectArgs: typeof EffectArgs[T]) => Promise<any> | any;
+type Context<K> = {
+    duplicateKey?: K;
+}
+type Unsub<K> = (() => any) & {ctx: Context<K>; skipDuplicates: () => any};
+type EffectFun<T extends Effect, K> = (unsub: Unsub<K>, ...effectArgs: typeof EffectArgs[T]) => Promise<any> | any;
+type RelevantFun<T extends Effect> = (...effectArgs: typeof EffectArgs[T]) => boolean;
 type CompatFun<T extends Effect> = { [key: string]: boolean } | ((card: string, ...effectArgs: typeof EffectArgs[T]) => boolean);
-type EffectDef<T extends Effect> = {
+type DuplicateFun<T extends Effect, K> = (...effectArgs: typeof EffectArgs[T]) => K[];
+type EffectDef<T extends Effect, K> = {
+    id: string;
     name: string;
-    compatibility: CompatFun<T>;
-    effect: EffectFun<T>;
+    config: {
+        compatibility: CompatFun<T>;
+        optional?: boolean;
+        relevant?: RelevantFun<T>;
+        temporalRelevance?: RelevantFun<T>;
+        duplicate?: DuplicateFun<T, K>;
+    };
+    effect: EffectFun<T, K>;
 }
 export default class PlayerEffects {
-    private effectTable: {[key in Effect]: Array<EffectDef<key>>} = {
+    private effectTable: {[key in Effect]: Array<EffectDef<key, any>>} = {
         turnStart: [],
         turnEnd: [],
         buy: [],
@@ -49,15 +63,36 @@ export default class PlayerEffects {
     }
     async doEffect<T extends Effect>(effectName: T, prompt: string, ...effectArgs: typeof EffectArgs[T]) {
         this.currentEffect = effectName;
-        const runFirst: Array<EffectDef<T>> = [];
-        const ask: Array<EffectDef<T>> = [];
-        const list: Array<EffectDef<T>> = [...this.effectTable[effectName]] as any;
+        let runFirst: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
+        let ask: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
+        const baseList: Array<EffectDef<T, any>> = [...this.effectTable[effectName]] as any;
+        const list: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = baseList.filter((a) => typeof a.config.relevant === 'undefined' || a.config.relevant(...effectArgs)).flatMap((a) => {
+            if (typeof a.config.duplicate === 'undefined') {
+                return a;
+            }
+            const keys = a.config.duplicate(...effectArgs);
+            return keys.map((key) => ({
+                ...a,
+                duplicateKey: key
+            }));
+        }) as any;
+        const genUnsub: (id: string) => Unsub<any> = ((id: string) => {
+            const remove = () => {
+                // @ts-ignore
+                this.effectTable[effectName] = this.effectTable[effectName].filter((a) => a.id !== id);
+            };
+            remove.skipDuplicates = () => {
+                ask = ask.filter((a) => a.id !== id);
+                runFirst = runFirst.filter((a) => a.id !== id);
+            };
+            return remove;
+        }) as any;
         for (let i = 0; i < list.length; i++) {
             let fullCompat = !ask.includes(list[i]);
             for (let j = i + 1; j < list.length; j++) {
                 if (list[i].name === list[j].name) continue;
                 let compatible = false;
-                const compatA = list[i].compatibility;
+                const compatA = list[i].config.compatibility;
                 if (typeof compatA === 'function') {
                     compatible = compatible || compatA(list[j].name, ...effectArgs);
                 }
@@ -65,7 +100,7 @@ export default class PlayerEffects {
                     // noinspection PointlessBooleanExpressionJS
                     compatible = compatible || !!(compatA[list[j].name]);
                 }
-                const compatB = list[j].compatibility;
+                const compatB = list[j].config.compatibility;
                 if (typeof compatB === 'function') {
                     compatible = compatible || compatB(list[i].name, ...effectArgs);
                 }
@@ -86,29 +121,42 @@ export default class PlayerEffects {
             }
         }
         this.inCompat = true;
-        for (const a of runFirst) {
-            const unsub = () => this.effectTable[effectName].splice(this.effectTable[effectName].findIndex((b) => a.name === b.name), 1);
+        while (runFirst.length > 0) {
+            const a = runFirst[0];
+            const unsub = genUnsub(a.id);
+            unsub.ctx = {
+                duplicateKey: a.duplicateKey
+            };
             await a.effect(unsub, ...effectArgs);
+            if (runFirst.length > 0 && runFirst[0].id === a.id) {
+                runFirst.splice(0, 1);
+            }
         }
         this.inCompat = false;
         while (ask.length > 0) {
-            const choice = await this.player.chooseOption(prompt, ask.map((a) => a.name));
+            const choice = await this.player.chooseOption(prompt, ask.filter((a) => typeof a.config.temporalRelevance !== 'function' || a.config.temporalRelevance()).map((a) => a.id));
             if (!choice) {
                 break;
             }
-            const unsub = () => this.effectTable[effectName].splice(this.effectTable[effectName].findIndex((b) => b.name === choice), 1);
-            const index = ask.findIndex((a) => a.name === choice);
+            const unsub = (() => this.effectTable[effectName].splice(this.effectTable[effectName].findIndex((b) => b.name === choice), 1)) as Unsub<any>;
+            const index = ask.findIndex((a) => a.id === choice);
+            unsub.ctx = {
+                duplicateKey: ask[index].duplicateKey
+            };
             await ask[index].effect(unsub, ...effectArgs);
-            ask.splice(index, 1);
+            const removeIndex = ask.findIndex(a => a.id === choice);
+            if (removeIndex !== -1) ask.splice(index, 1);
         }
         this.currentEffect = null;
     }
-    setupEffect<T extends Effect>(effectName: T, cardName: string, compatibility: CompatFun<T>, effect: EffectFun<T>) {
-        this.effectTable[effectName].push({
+    setupEffect<T extends Effect, K>(effectName: T, cardName: string, config: EffectDef<T, K>["config"], effect: EffectFun<T, K>) {
+        const item: EffectDef<T, K> = {
+            id: v4(),
             name: cardName,
-            compatibility,
-            effect: effect as any
-        });
+            config,
+            effect: effect
+        };
+        this.effectTable[effectName].push(item as any);
         if (process.env.IS_TESTING === 'true') {
             if (typeof PlayerEffects.__testingCards[effectName] === 'undefined') {
                 PlayerEffects.__testingCards[effectName] = new Set();
@@ -117,7 +165,7 @@ export default class PlayerEffects {
         }
         return effect;
     }
-    removeEffect<T extends Effect>(effectName: T, cardName: string, effect: EffectFun<T>) {
+    removeEffect<T extends Effect>(effectName: T, cardName: string, effect: EffectFun<T, any>) {
         this.effectTable[effectName].splice(this.effectTable[effectName].findIndex((a) => a.name === cardName && a.effect === effect), 1);
     }
 }

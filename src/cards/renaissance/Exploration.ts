@@ -11,7 +11,10 @@ export default class Exploration extends Project {
     name = "exploration";
     features = ["coffers", "villagers"] as const;
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.effects.setupEffect('cleanupStart', 'exploration', () => true, async () => {
+        player.effects.setupEffect('cleanupStart', 'exploration', {
+            compatibility: () => true,
+            relevant: () => player.boughtCards.every((a) => !a.isCard)
+        }, async () => {
             if (player.boughtCards.every((a) => !a.isCard)) {
                 player.lm('Exploration activates for %p.');
                 player.data.coffers++;

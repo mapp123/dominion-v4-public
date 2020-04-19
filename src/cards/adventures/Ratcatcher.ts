@@ -26,10 +26,13 @@ export default class Ratcatcher extends Card {
                 canCall: false
             });
             this.cb = player.effects.setupEffect('turnStart', 'ratcatcher', {
-                teacher: true,
-                key: true,
-                fair: true,
-                guide: true
+                compatibility: {
+                    teacher: true,
+                    key: true,
+                    fair: true,
+                    guide: true
+                },
+                optional: true
             }, async (remove) => {
                 if (player.effects.inCompat) {
                     player.data.tavernMat.forEach((a) => {

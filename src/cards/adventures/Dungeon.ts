@@ -32,7 +32,9 @@ export default class Dungeon extends Card {
     async onAction(player: Player): Promise<void> {
         player.data.actions++;
         await this.doEffect(player);
-        player.effects.setupEffect('turnStart', 'dungeon', {}, async (unsub) => {
+        player.effects.setupEffect('turnStart', 'dungeon', {
+            compatibility: {}
+        }, async (unsub) => {
             this.isNextTurn = true;
             await this.doEffect(player);
             unsub();

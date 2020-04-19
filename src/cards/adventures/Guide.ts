@@ -51,8 +51,11 @@ export default class Guide extends Card {
                 }
             };
             player.effects.setupEffect('turnStart', 'guide', {
-                teacher: true,
-                ratcatcher: true
+                compatibility: {
+                    teacher: true,
+                    ratcatcher: true
+                },
+                optional: true
             }, this.cb);
         }
     }

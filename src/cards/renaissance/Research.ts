@@ -26,7 +26,9 @@ export default class Research extends Card {
                 this.cards.addCard(card);
             }
         }
-        player.effects.setupEffect('turnStart', 'research', {}, async (remove) => {
+        player.effects.setupEffect('turnStart', 'research', {
+            compatibility: {}
+        }, async (remove) => {
             player.lm('%p takes the set aside cards for research.');
             while (this.cards.getCards().length) {
                 const card = this.cards.popCard()!;

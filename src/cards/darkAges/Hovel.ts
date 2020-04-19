@@ -20,7 +20,10 @@ export default class Hovel extends Card {
     }
     public static setup(globalCardData: any, game: Game) {
         game.players.forEach((player) => {
-            player.effects.setupEffect('buy', 'hovel', (card, buyCard) => !game.getCard(buyCard).types.includes("victory"), async (remove, card) => {
+            player.effects.setupEffect('buy', 'hovel', {
+                compatibility: {},
+                relevant: (cardName) => game.getCard(cardName).types.includes("victory") && player.data.hand.some((a) => a.name === 'hovel')
+            }, async (remove, card) => {
                 if (game.getCard(card).types.includes("victory")
                     && player.data.hand.some((a) => a.name === 'hovel')
                     && await player.confirmAction(Texts.doYouWantToTrashA('hovel'))) {

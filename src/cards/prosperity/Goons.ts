@@ -32,7 +32,10 @@ export default class Goons extends Card {
     }
     public static setup(globalCardData: any, game: Game) {
         game.players.forEach((player) => {
-            player.effects.setupEffect('buy', 'goons', () => true, async () => {
+            player.effects.setupEffect('buy', 'goons', {
+                compatibility: () => true,
+                temporalRelevance: () => player.data.playArea.some((a) => a.name === 'goons')
+            }, async () => {
                 const goonsInPlay = player.data.playArea.filter((a) => a.name === 'goons');
                 player.data.vp += goonsInPlay.length;
             });

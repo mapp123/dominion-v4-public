@@ -13,7 +13,9 @@ export default class Flag extends Artifact {
         if (this.cb && this.lastPlayer) {
             this.lastPlayer.effects.removeEffect('handDraw', 'flag', this.cb);
         }
-        this.cb = player.effects.setupEffect('handDraw', 'flag', {}, async () => {
+        this.cb = player.effects.setupEffect('handDraw', 'flag', {
+            compatibility: {}
+        }, async () => {
             player.lm('The flag activates for %p.');
             await player.draw(1);
         });

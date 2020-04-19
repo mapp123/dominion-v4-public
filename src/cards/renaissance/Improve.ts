@@ -17,7 +17,10 @@ export default class Improve extends Card {
     cardArt = "/img/card-img/ImproveArt.jpg";
     async onAction(player: Player): Promise<void> {
         player.data.money += 2;
-        player.effects.setupEffect('cleanupStart', 'improve', () => !player.data.playArea.some((a) => a.types.includes('action')), async (remove) => {
+        player.effects.setupEffect('cleanupStart', 'improve', {
+            compatibility: {},
+            temporalRelevance: () => player.data.playArea.some((a) => a.types.includes('action'))
+        }, async (remove) => {
             const choices = player.data.playArea.filter((a) => a.types.includes('action') && a.shouldDiscardFromPlay());
             const card = await player.chooseCard(Texts.chooseCardToTrashFor('improve'), choices, true);
             if (card) {

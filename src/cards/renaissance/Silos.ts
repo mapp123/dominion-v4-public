@@ -10,7 +10,9 @@ export default class Silos extends Project {
     };
     name = "silos";
     async onPlayerJoinProject(player: Player): Promise<any> {
-        player.effects.setupEffect('turnStart', 'silos', {}, async () => {
+        player.effects.setupEffect('turnStart', 'silos', {
+            compatibility: {}
+        }, async () => {
             player.lm('The silos activate for %p.');
             let discarded = 0;
             while (player.data.hand.some((a) => a.name === 'copper') && await player.confirmAction(Texts.doYouWantToDiscardAnAForB('copper', 'silos'))) {

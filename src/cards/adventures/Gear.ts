@@ -26,7 +26,9 @@ export default class Gear extends Card {
         if (this.setAside.getCards().length > 0) {
             const cards = this.setAside.getCards();
             player.lm(`%p sets aside %hl.`, cards);
-            player.effects.setupEffect('turnStart', 'gear', {}, async (unsub) => {
+            player.effects.setupEffect('turnStart', 'gear', {
+                compatibility: {}
+            }, async (unsub) => {
                 player.lm('%p takes the set aside cards.');
                 while (!this.setAside.isEmpty) {
                     player.data.hand.push(this.setAside.popCard()!);

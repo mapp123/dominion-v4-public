@@ -14,7 +14,9 @@ export default class Key extends Artifact {
         if (this.cb && this.lastPlayer) {
             this.lastPlayer.effects.removeEffect('turnStart', 'key', this.cb);
         }
-        this.cb = player.effects.setupEffect('turnStart', 'key', () => true, async () => {
+        this.cb = player.effects.setupEffect('turnStart', 'key', {
+            compatibility: () => true
+        }, async () => {
             player.data.money++;
         });
         this.lastPlayer = player;

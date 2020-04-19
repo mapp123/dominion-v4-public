@@ -17,7 +17,9 @@ export default class Champion extends Card {
     static inSupply = false;
     async onAction(player: Player): Promise<void> {
         player.data.actions++;
-        player.effects.setupEffect('willPlayAction', 'champion', () => true, async () => {
+        player.effects.setupEffect('willPlayAction', 'champion', {
+            compatibility: () => true
+        }, async () => {
             player.data.actions++;
         });
     }

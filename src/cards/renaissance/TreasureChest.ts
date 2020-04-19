@@ -13,7 +13,9 @@ export default class TreasureChest extends Artifact {
         if (this.cb && this.lastPlayer) {
             this.lastPlayer.effects.removeEffect('buyStart', 'treasure chest', this.cb);
         }
-        this.cb = player.effects.setupEffect('buyStart', 'treasure chest', () => true, async () => {
+        this.cb = player.effects.setupEffect('buyStart', 'treasure chest', {
+            compatibility: () => true
+        }, async () => {
             player.lm('The treasure chest activates for %p.');
             await player.gain('gold');
         });

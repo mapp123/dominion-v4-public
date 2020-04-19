@@ -28,7 +28,10 @@ export default class Urchin extends Card {
                 }
             }
         });
-        this.sub = player.effects.setupEffect('willPlayAction', 'urchin', (other, card) => tracker.hasTrack || !card.types.includes("attack"), async (remove, card) => {
+        this.sub = player.effects.setupEffect('willPlayAction', 'urchin', {
+            relevant: (card) => tracker.hasTrack && card.types.includes("attack"),
+            compatibility: {}
+        }, async (remove, card) => {
             if (!tracker.hasTrack) {
                 this.sub = null;
                 remove();

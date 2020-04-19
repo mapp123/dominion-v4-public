@@ -24,17 +24,22 @@ export default class MarketSquare extends Card {
     }
     public static setup(globalCardData: any, game: Game) {
         game.players.forEach((player) => {
-            player.effects.setupEffect('trash', 'market square', (other) => !player.data.hand.some((a) => a.name === 'market square') || ['sewers'].includes(other), async () => {
-                const marketSquares = player.data.hand.filter((a) => a.name === 'market square');
-                for (const card of marketSquares) {
-                    if (await player.confirmAction(Texts.wantToDiscardAForBenefit('market square', 'to gain a Gold'))) {
-                        player.data.hand.splice(player.data.hand.indexOf(card), 1);
-                        await player.discard(card, true);
-                        await player.gain('gold');
-                    }
-                    else {
-                        break;
-                    }
+            player.effects.setupEffect('trash', 'market square', {
+                compatibility: {
+                    sewers: true
+                },
+                temporalRelevance: () => player.data.hand.some((a) => a.name === 'market square'),
+                optional: true,
+                duplicate: () => player.data.hand.filter((a) => a.name === 'market square').map((a) => a.id)
+            }, async (ctx) => {
+                const card = player.data.hand.find((a) => a.id === ctx.ctx.duplicateKey);
+                if (card != null && (!player.effects.inCompat || await player.confirmAction(Texts.wantToDiscardAForBenefit('market square', 'to gain a Gold')))) {
+                    player.data.hand.splice(player.data.hand.indexOf(card), 1);
+                    await player.discard(card, true);
+                    await player.gain('gold');
+                }
+                else {
+                    ctx.skipDuplicates();
                 }
             });
         });

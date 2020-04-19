@@ -51,7 +51,7 @@ export default class Player {
         if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('villagers'))) {
             this.data.dataViews.push('villagers');
         }
-        if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).types.includes('reserve'))) {
+        if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).types.includes('reserve') || CardRegistry.getInstance().getCard(card).features.includes('tavernMat'))) {
             this.data.dataViews.push('tavernMat');
         }
     }

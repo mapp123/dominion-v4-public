@@ -38,6 +38,9 @@ export class Texts {
     static plusOneAction = '+1 Action';
     static plusOneBuy = '+1 Buy';
     static plusOneMoney = '+1 Money';
+    static putXOnTavernMap(card: string) {
+        return `Put a ${card} on your tavern mat`;
+    }
     static addTokenTo(mat: string) {
         return `Add a token to ${mat}`;
     }

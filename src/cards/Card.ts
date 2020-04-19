@@ -12,7 +12,7 @@ export type CardImplementation = (typeof Card) & {new (game: Game | null): Card}
 export default abstract class Card {
     id: string;
     game: Game;
-    features: ReadonlyArray<'vp' | 'coffers' | 'villagers'> = [];
+    features: ReadonlyArray<'vp' | 'coffers' | 'villagers' | 'tavernMat'> = [];
     isCard = true;
     static descriptionSize = 60;
     static typelineSize = 64;

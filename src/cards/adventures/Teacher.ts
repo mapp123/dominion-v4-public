@@ -8,6 +8,7 @@ export default class Teacher extends Card {
     static descriptionSize = 45;
     intrinsicTypes = ["action","reserve"] as const;
     name = "teacher";
+    tokens = ["extraCard", "extraMoney", "extraBuy", "extraAction"] as const;
     intrinsicCost = {
         coin: 6
     };
@@ -68,6 +69,7 @@ export default class Teacher extends Card {
             .filter((a) => tokenLocations.includes(a.identifier) || !a.inSupply)
             .map((a) => (a.pile.length > 0 ? a.pile[a.pile.length - 1] : a.identity).name)
             .forEach((a) => restrictions.addBannedCard(a));
+        restrictions.setMustIncludeType("action");
         const card = await player.chooseGain(Texts.whereDoYouWantToken, false, restrictions, 'none');
         if (card) {
             const token = await player.chooseOption(Texts.whichToken, [Texts.plusOneCard, Texts.plusOneAction, Texts.plusOneBuy, Texts.plusOneMoney] as const);

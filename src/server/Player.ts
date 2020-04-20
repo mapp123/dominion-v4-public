@@ -54,6 +54,7 @@ export default class Player {
         if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).types.includes('reserve') || CardRegistry.getInstance().getCard(card).features.includes('tavernMat'))) {
             this.data.dataViews.push('tavernMat');
         }
+        this.data.tokenViews.push(...this.game.selectedCards.flatMap((card) => CardRegistry.getInstance().getCard(card).tokens).filter((a, i, arr) => arr.indexOf(a) === i));
     }
     private startDraw() {
         while (this.data.hand.length < 5 && this.deck.deckAndDiscard.length > 0) {

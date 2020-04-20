@@ -15,6 +15,7 @@ import ChooseUsernameModal from "./ChooseUsernameModal";
 import createGameData, {GameData} from "../createGameData";
 import TrashView from "./TrashView";
 import TavernMat from "./TavernMat";
+import TokenView from "./TokenView";
 interface Params {
     gameId: string;
 }
@@ -216,6 +217,10 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                                 {this.playerData.dataViews.includes('tavernMat') && <div style={{width: "500px", flex: "0 0", alignSelf: "flex-end", border: "2px solid blue", borderRadius: "3px", marginBottom: "7px", padding: "7px"}}>
                                     <span>Tavern Mat:</span><br />
                                     <TavernMat tavern={this.state.playerData.tavernMat} onClick={(cardId) => this.interrupt('reserve', {cardId})} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
+                                </div>}
+                                {(this.playerData.tokenViews.length > 0) && <div style={{width: "500px", flex: "0 0", alignSelf: "flex-end", border: "2px solid blue", borderRadius: "3px", marginBottom: "7px", padding: "7px"}}>
+                                    <span>Tokens:</span><br />
+                                    <TokenView tokens={this.state.playerData.tokens} tokenViews={this.state.playerData.tokenViews} />
                                 </div>}
                                 <div id="cardId" style={{display: "flex", flex: "1 1", alignSelf: "flex-end", flexDirection: "column"}}>
                                     {this.state.hoveredCard && <CardGeneratorWrapped card={this.state.hoveredCard} />}

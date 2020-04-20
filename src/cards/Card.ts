@@ -13,6 +13,7 @@ export default abstract class Card {
     id: string;
     game: Game;
     features: ReadonlyArray<'vp' | 'coffers' | 'villagers' | 'tavernMat'> = [];
+    tokens: ReadonlyArray<'journeyToken' | 'extraCard' | 'extraAction' | 'extraBuy' | 'extraMoney' | 'minusTwoCost'> = [];
     isCard = true;
     static descriptionSize = 60;
     static typelineSize = 64;
@@ -30,6 +31,10 @@ export default abstract class Card {
     static get features(): typeof Card['features'] {
         // @ts-ignore
         return new this().features;
+    }
+    static get tokens(): typeof Card['tokens'] {
+        // @ts-ignore
+        return new this().tokens;
     }
     constructor(game: Game | null) {
         this.id = v4();

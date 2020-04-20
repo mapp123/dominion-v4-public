@@ -15,6 +15,7 @@ export default function createPlayerData() {
         isMyTurn: 'boolean',
         gameStarted: 'boolean',
         dataViews: struct.list(['string']),
+        tokenViews: struct.list(['string']),
         tavernMat: [struct({
             card: struct.instance(Card),
             canCall: 'boolean'
@@ -24,7 +25,8 @@ export default function createPlayerData() {
             extraAction: struct.union(['string', 'null'] as const),
             extraBuy: struct.union(['string', 'null'] as const),
             extraMoney: struct.union(['string', 'null'] as const),
-            minusTwoCost: struct.union(['string', 'null'] as const)
+            minusTwoCost: struct.union(['string', 'null'] as const),
+            journeyToken: struct.enum(['UP', 'DOWN'] as const)
         }
     }, {
         actions: 0,
@@ -38,13 +40,15 @@ export default function createPlayerData() {
         isMyTurn: false,
         gameStarted: false,
         dataViews: [],
+        tokenViews: [],
         tavernMat: [],
         tokens: {
             extraCard: null,
             extraAction: null,
             extraBuy: null,
             extraMoney: null,
-            minusTwoCost: null
+            minusTwoCost: null,
+            journeyToken: 'UP'
         }
     });
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Decision} from "../server/Decision";
+import type {Decision} from "../server/Decision";
 import ConfirmModal from './ConfirmModal';
 export default class DefaultDecision extends React.Component<{decision: Decision | null; respondToDecision: (response: any) => any}, {modalOpen: boolean}> {
     constructor(props) {

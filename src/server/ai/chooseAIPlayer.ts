@@ -1,5 +1,5 @@
-import Game from "../Game";
-import {AIPlayerImplementation} from "./AIPlayer";
+import type Game from "../Game";
+import type {AIPlayerImplementation} from "./AIPlayer";
 import BigMoney from "./BigMoney";
 import DoubleMilitia from "./DoubleMilitia";
 

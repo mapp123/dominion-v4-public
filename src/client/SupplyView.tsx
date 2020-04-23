@@ -1,12 +1,12 @@
 import * as React from 'react';
 import createSupplyData from "../createSupplyData";
-import {Unsubscribe} from "redux";
+import type {Unsubscribe} from "redux";
 import SupplyButton from "./SupplyButton";
 import ClientCardRegistry from "./ClientCardRegistry";
-import {Decision} from "../server/Decision";
-import GameView from "./GameView";
+import type {Decision} from "../server/Decision";
+import type GameView from "./GameView";
 import {GainRestrictions} from "../server/GainRestrictions";
-import {CardImplementation} from "../cards/Card";
+import type {CardImplementation} from "../cards/Card";
 interface IProps {
     socket: SocketIOClient.Socket;
     decision: Decision | null;

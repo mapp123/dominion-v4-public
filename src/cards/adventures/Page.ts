@@ -1,4 +1,4 @@
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import Traveller from "./Traveller.abstract";
 
 export default class Page extends Traveller {

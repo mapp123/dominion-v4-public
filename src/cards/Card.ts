@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import v4 = require("uuid/v4");
-import Player from "../server/Player";
-import Game from "../server/Game";
-import {SupplyData} from "../createSupplyData";
-import {GainRestrictions} from "../server/GainRestrictions";
-import Tracker from "../server/Tracker";
+import type Player from "../server/Player";
+import type Game from "../server/Game";
+import type {SupplyData} from "../createSupplyData";
+import type {GainRestrictions} from "../server/GainRestrictions";
+import type Tracker from "../server/Tracker";
 import Cost from "../server/Cost";
+import type {Effect, EffectDef} from "../server/PlayerEffects";
+import {Texts} from "../server/Texts";
 
 export type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact' | 'command';
 export type CardImplementation = (typeof Card) & {new (game: Game | null): Card};
@@ -204,12 +206,51 @@ export default abstract class Card {
     public onCall(player: Player, exemptPlayers: Player[], tracker: Tracker<this>): Promise<void> | void {
 
     }
+    private callCb: any = null;
+    private callCbEventName: Effect | null = null;
+    protected allowCallAtEvent<T extends Effect, K>(player: Player, tracker: Tracker<this>, eventName: T, config: EffectDef<T, K>['config']) {
+        this.callCbEventName = eventName;
+        this.callCb = async (remove) => {
+            if (player.effects.inCompat) {
+                player.data.tavernMat.forEach((a) => {
+                    if (a.card.id === tracker.viewCard().id) {
+                        a.canCall = true;
+                    }
+                });
+                player.events.on('decision', async () => {
+                    if (player.effects.currentEffect === eventName || player.isInterrupted) {
+                        return true;
+                    }
+                    player.data.tavernMat.forEach((a) => {
+                        if (a.card.id === tracker.viewCard().id) {
+                            a.canCall = false;
+                        }
+                    });
+                    return false;
+                });
+            }
+            else {
+                if (await player.confirmAction(Texts.doYouWantToCall(this.name))) {
+                    await player.callReserve(this);
+                    remove();
+                }
+            }
+        };
+        player.effects.setupEffect(eventName, this.name, {
+            ...config,
+            optional: true
+        }, this.callCb);
+    }
     async call(player: Player) {
         const card = player.data.tavernMat.find((a) => a.card.id === this.id);
         if (card) {
             const realCard = card.card;
             player.data.tavernMat.splice(player.data.tavernMat.findIndex((a) => a.card.id == card.card.id), 1);
             player.data.playArea.push(realCard);
+            if (this.callCb) {
+                player.effects.removeEffect(this.callCbEventName!, this.name, this.callCb);
+                this.callCb = null;
+            }
             await this.onCall(player, [], player.getTrackerInPlay(realCard) as Tracker<this>);
         }
     }

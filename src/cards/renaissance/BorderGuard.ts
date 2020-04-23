@@ -1,11 +1,11 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
-import Game from "../../server/Game";
-import Lantern from "./Lantern";
+import type Game from "../../server/Game";
+import type Lantern from "./Lantern";
 import Util from "../../Util";
-import Horn from "./Horn";
-import Tracker from "../../server/Tracker";
+import type Horn from "./Horn";
+import type Tracker from "../../server/Tracker";
 
 export default class BorderGuard extends Card {
     intrinsicTypes = ["action"] as const;

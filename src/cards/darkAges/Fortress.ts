@@ -1,6 +1,6 @@
 import Card from "../Card";
-import Player from "../../server/Player";
-import Tracker from "../../server/Tracker";
+import type Player from "../../server/Player";
+import type Tracker from "../../server/Tracker";
 
 export default class Fortress extends Card {
     intrinsicTypes = ["action"] as const;

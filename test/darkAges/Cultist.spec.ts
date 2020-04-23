@@ -1,7 +1,7 @@
 import makeTestGame from "../testBed";
 import { expect } from 'chai';
 import {Texts} from "../../src/server/Texts";
-import Card from "../../src/cards/Card";
+import type Card from "../../src/cards/Card";
 
 describe('CULTIST', () => {
     it('works normally', (d) => {

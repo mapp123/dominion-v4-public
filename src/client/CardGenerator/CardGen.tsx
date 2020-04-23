@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {CardGeneratorWrapped} from "./CardGenerator";
-import { RouteComponentProps } from 'react-router';
+import type { RouteComponentProps } from 'react-router';
 import ClientCardRegistry from "../ClientCardRegistry";
-import {CardImplementation} from "../../cards/Card";
+import type {CardImplementation} from "../../cards/Card";
 
 export default class CardGen extends React.Component<RouteComponentProps<{card: string}>, {card: CardImplementation | null; r: number; g: number; b: number}> {
     constructor(props) {

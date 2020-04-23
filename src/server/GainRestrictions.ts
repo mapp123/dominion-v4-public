@@ -1,5 +1,5 @@
-import Game from "./Game";
-import Card from "../cards/Card";
+import type Game from "./Game";
+import type Card from "../cards/Card";
 import Cost, {CostResult} from "./Cost";
 
 export type GainRestrictionsJSON = {

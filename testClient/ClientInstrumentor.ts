@@ -1,5 +1,5 @@
 import {Collector} from 'istanbul';
-import {WebDriver} from "selenium-webdriver";
+import type {WebDriver} from "selenium-webdriver";
 export default class ClientInstrumentor {
     private collector = new Collector();
     private _complete = false;

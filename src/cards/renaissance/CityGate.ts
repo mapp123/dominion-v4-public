@@ -1,5 +1,5 @@
 import Project from "../Project";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 

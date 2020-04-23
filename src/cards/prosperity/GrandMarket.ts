@@ -1,6 +1,6 @@
 import Card from "../Card";
-import Player from "../../server/Player";
-import {GainRestrictions} from "../../server/GainRestrictions";
+import type Player from "../../server/Player";
+import type {GainRestrictions} from "../../server/GainRestrictions";
 
 export default class GrandMarket extends Card {
     static descriptionSize = 54;

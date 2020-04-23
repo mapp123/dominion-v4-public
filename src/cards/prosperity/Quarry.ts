@@ -1,7 +1,7 @@
 import Card from "../Card";
 import Cost from '../../server/Cost';
-import Player from "../../server/Player";
-import Game from "../../server/Game";
+import type Player from "../../server/Player";
+import type Game from "../../server/Game";
 
 export default class Quarry extends Card {
     intrinsicTypes = ["treasure"] as const;

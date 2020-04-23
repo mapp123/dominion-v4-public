@@ -1,4 +1,4 @@
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import Knight from "./Knight.abstract";
 
 export default class SirVander extends Knight {

@@ -1,5 +1,5 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import Util from "../../Util";
 
 export default class Vagrant extends Card {

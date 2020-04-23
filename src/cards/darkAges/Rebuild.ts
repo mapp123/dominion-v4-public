@@ -1,9 +1,9 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import shuffle from "../../server/util/shuffle";
 import Util from "../../Util";
-import Tracker from "../../server/Tracker";
+import type Tracker from "../../server/Tracker";
 import {GainRestrictions} from "../../server/GainRestrictions";
 import Cost from "../../server/Cost";
 

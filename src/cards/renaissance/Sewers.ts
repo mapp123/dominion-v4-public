@@ -1,7 +1,7 @@
 import Project from "../Project";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
-import Card from "../Card";
+import type Card from "../Card";
 
 export default class Sewers extends Project {
     cardArt = "/img/card-img/SewersArt.jpg";

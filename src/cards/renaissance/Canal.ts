@@ -1,6 +1,6 @@
 import Project from "../Project";
-import Player from "../../server/Player";
-import Game from "../../server/Game";
+import type Player from "../../server/Player";
+import type Game from "../../server/Game";
 import Cost from "../../server/Cost";
 
 export default class Canal extends Project {

@@ -1,7 +1,7 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import Util from "../../Util";
-import Tracker from "../../server/Tracker";
+import type Tracker from "../../server/Tracker";
 
 export default class Sage extends Card {
     intrinsicTypes = ["action"] as const;

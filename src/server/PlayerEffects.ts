@@ -1,7 +1,7 @@
-import Player from "./Player";
-import Tracker from "./Tracker";
-import Card from "../cards/Card";
-import Deck from "./Deck";
+import type Player from "./Player";
+import type Tracker from "./Tracker";
+import type Card from "../cards/Card";
+import type Deck from "./Deck";
 import {v4} from 'uuid';
 
 export type Effect = 'turnStart' | 'turnEnd' | 'buy' | 'gain' | 'trash' | 'cleanupStart' | 'buyStart' | 'handDraw' | 'treasureCardPlayed' | 'shuffle' | 'willPlayAction' | 'actionCardPlayed';
@@ -27,7 +27,7 @@ type EffectFun<T extends Effect, K> = (unsub: Unsub<K>, ...effectArgs: typeof Ef
 type RelevantFun<T extends Effect> = (...effectArgs: typeof EffectArgs[T]) => boolean;
 type CompatFun<T extends Effect> = { [key: string]: boolean } | ((card: string, ...effectArgs: typeof EffectArgs[T]) => boolean);
 type DuplicateFun<T extends Effect, K> = (...effectArgs: typeof EffectArgs[T]) => K[];
-type EffectDef<T extends Effect, K> = {
+export type EffectDef<T extends Effect, K> = {
     id: string;
     name: string;
     config: {

@@ -1,6 +1,6 @@
-import Card from "../cards/Card";
+import type Card from "../cards/Card";
 import {Struct, struct} from "superstruct";
-import Game from "./Game";
+import type Game from "./Game";
 import {GainRestrictions, GainRestrictionsJSON} from "./GainRestrictions";
 
 export type Decision = ChooseUsernameDecision | ChooseCardOrBuyDecision | BuyDecision | ChooseCardDecision | ConfirmDecision | GainDecision | OptionDecision | ReorderDecision;

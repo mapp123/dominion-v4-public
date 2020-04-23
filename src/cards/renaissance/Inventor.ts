@@ -1,8 +1,8 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
-import Game from "../../server/Game";
+import type Game from "../../server/Game";
 import Cost from '../../server/Cost';
 
 export default class Inventor extends Card {

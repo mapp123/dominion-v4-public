@@ -77,7 +77,10 @@ module.exports = env => ({
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: 'awesome-typescript-loader'
+                loader: 'awesome-typescript-loader',
+                options: {
+                    configFileName: "tsconfig.react.json"
+                }
             },
             { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
             {

@@ -1,6 +1,6 @@
 import nlp = require('compromise');
-import Card from "./cards/Card";
-import Tracker from "./server/Tracker";
+import type Card from "./cards/Card";
+import type Tracker from "./server/Tracker";
 export default class Util {
     static checkTrashSanity(selected: Card, choices: Card[]) {
         return !(selected.cost.coin > 2 && choices.find((a) => selected.cost.coin > a.cost.coin) != null);

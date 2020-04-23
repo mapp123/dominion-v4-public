@@ -1,6 +1,6 @@
 import * as React from 'react';
 import getColorForButton from "./getColorForButton";
-import {ValidCardTypes} from "../cards/Card";
+import type {ValidCardTypes} from "../cards/Card";
 interface IProps {
     cardName: string;
     id: string;

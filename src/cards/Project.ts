@@ -1,7 +1,7 @@
 import Card from "./Card";
-import Player from "../server/Player";
-import Game from "../server/Game";
-import {GainRestrictions} from "../server/GainRestrictions";
+import type Player from "../server/Player";
+import type Game from "../server/Game";
+import type {GainRestrictions} from "../server/GainRestrictions";
 
 export default abstract class Project extends Card {
     static descriptionSize = 30;

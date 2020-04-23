@@ -1,4 +1,4 @@
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import Artifact from "../Artifact";
 
 export default class Horn extends Artifact {

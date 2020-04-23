@@ -1,6 +1,5 @@
 import Card from "../Card";
-import Player from "../../server/Player";
-import {Texts} from "../../server/Texts";
+import type Player from "../../server/Player";
 
 export default class Guide extends Card {
     intrinsicTypes = ["action","reserve"] as const;
@@ -15,7 +14,6 @@ export default class Guide extends Card {
         "At the start of your turn, you may call this, to discard your hand and draw 5 cards.";
     supplyCount = 10;
     cardArt = "/img/card-img/800px-GuideArt.jpg";
-    cb: any | null = null;
     async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
         await player.draw();
         player.data.actions++;
@@ -24,45 +22,15 @@ export default class Guide extends Card {
                 canCall: false,
                 card: tracker.exercise()!
             });
-            this.cb = async (remove) => {
-                if (player.effects.inCompat) {
-                    player.data.tavernMat.forEach((a) => {
-                        if (a.card.id === tracker.viewCard().id) {
-                            a.canCall = true;
-                        }
-                    });
-                    player.events.on('decision', async () => {
-                        if (player.effects.currentEffect === "turnStart" || player.isInterrupted) {
-                            return true;
-                        }
-                        player.data.tavernMat.forEach((a) => {
-                            if (a.card.id === tracker.viewCard().id) {
-                                a.canCall = false;
-                            }
-                        });
-                        return false;
-                    });
-                }
-                else {
-                    if (await player.confirmAction(Texts.doYouWantToCall('guide'))) {
-                        await player.callReserve(this);
-                        remove();
-                    }
-                }
-            };
-            player.effects.setupEffect('turnStart', 'guide', {
+            this.allowCallAtEvent(player, tracker, 'turnStart', {
                 compatibility: {
                     teacher: true,
                     ratcatcher: true
-                },
-                optional: true
-            }, this.cb);
+                }
+            });
         }
     }
     async onCall(player: Player) {
-        if (this.cb) {
-            player.effects.removeEffect('turnStart', 'ratcatcher', this.cb);
-        }
         await player.discard(player.data.hand);
         player.data.hand = [];
         await player.draw(5);

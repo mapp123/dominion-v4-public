@@ -5,7 +5,7 @@ import {createServer} from "http";
 import {resolve} from "path";
 import Game from "./Game";
 import CardRegistry from "../cards/CardRegistry";
-import {Socket} from "socket.io";
+import type {Socket} from "socket.io";
 const app = express();
 app.use(express.static(resolve(__dirname, "../..", "dist")));
 export const server = createServer(app);

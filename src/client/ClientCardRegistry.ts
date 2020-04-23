@@ -1,4 +1,4 @@
-import {CardImplementation} from "../cards/Card";
+import type {CardImplementation} from "../cards/Card";
 // @ts-ignore
 const context: (module: string) => Promise<{default: CardImplementation}> = require.context(
     '../cards', true, /\.\/(.*?)\/([^.]*?)(?:.?(?!abstract)[^.]*?)\.ts/, 'lazy'

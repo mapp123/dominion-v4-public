@@ -1,5 +1,5 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Amulet extends Card {

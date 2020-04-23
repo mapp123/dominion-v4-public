@@ -1,5 +1,5 @@
 import Project from "../Project";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 
 export default class Guildhall extends Project {
     cardArt = "/img/card-img/GuildhallArt.jpg";

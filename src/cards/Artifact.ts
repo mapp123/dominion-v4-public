@@ -1,6 +1,6 @@
 import Card from "./Card";
-import Player from "../server/Player";
-import Game from "../server/Game";
+import type Player from "../server/Player";
+import type Game from "../server/Game";
 import {UNCOUNTED_EMPTY_SUPPLY_PILE} from "../server/Supply";
 
 export default abstract class Artifact extends Card {

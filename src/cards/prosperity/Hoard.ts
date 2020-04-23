@@ -1,6 +1,6 @@
 import Card from "../Card";
-import Player from "../../server/Player";
-import Game from "../../server/Game";
+import type Player from "../../server/Player";
+import type Game from "../../server/Game";
 
 export default class Hoard extends Card {
     intrinsicTypes = ["treasure"] as const;

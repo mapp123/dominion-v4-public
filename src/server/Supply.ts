@@ -1,8 +1,8 @@
-import Card from "../cards/Card";
+import type Card from "../cards/Card";
 import CardRegistry from "../cards/CardRegistry";
 import createSupplyData from "../createSupplyData";
 import cardSorter from "./cardSorter";
-import Game from "./Game";
+import type Game from "./Game";
 
 export const UNCOUNTED_EMPTY_SUPPLY_PILE = [];
 

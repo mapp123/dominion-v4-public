@@ -1,4 +1,4 @@
-import {StructDef, StructForm} from "superstruct";
+import type {StructDef, StructForm} from "superstruct";
 import {
     applyMiddleware,
     compose,

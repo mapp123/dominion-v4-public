@@ -1,6 +1,6 @@
 import Project from "../Project";
-import Player from "../../server/Player";
-import Card from "../Card";
+import type Player from "../../server/Player";
+import type Card from "../Card";
 
 export default class Citadel extends Project {
     cardArt = "/img/card-img/CitadelArt.jpg";

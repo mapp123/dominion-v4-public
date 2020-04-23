@@ -1,8 +1,8 @@
 import * as React from 'react';
 import HandButton from "./HandButton";
-import {Decision} from "../server/Decision";
-import GameView from "./GameView";
-import Card, {CardImplementation} from "../cards/Card";
+import type {Decision} from "../server/Decision";
+import type GameView from "./GameView";
+import type {default as Card, CardImplementation} from "../cards/Card";
 import Reorder = require('react-reorder');
 import ClientCardRegistry from "./ClientCardRegistry";
 interface IProps {

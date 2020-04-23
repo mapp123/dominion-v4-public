@@ -1,11 +1,11 @@
 import v4 = require("uuid/v4");
 import Deck from "./Deck";
-import {Socket} from "socket.io";
-import Game from "./Game";
+import type {Socket} from "socket.io";
+import type Game from "./Game";
 import createPlayerData from "../createPlayerData";
 import {Decision, DecisionDefaults, DecisionResponseType, DecisionValidators} from "./Decision";
 import {GainRestrictions} from "./GainRestrictions";
-import Card from "../cards/Card";
+import type Card from "../cards/Card";
 import {Texts} from "./Texts";
 import CardRegistry from "../cards/CardRegistry";
 import {PlayerEvents} from "./Events";
@@ -184,9 +184,7 @@ export default class Player {
         }
     }
     async callReserve(card: Card) {
-        this.data.tavernMat.splice(this.data.tavernMat.findIndex((a) => a.card.id === card.id), 1);
-        this.data.playArea.push(card);
-        await card.onCall(this, [], this.getTrackerInPlay(card));
+        await card.call(this);
     }
     makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T['decision']]> {
         const defaultR = DecisionDefaults[decision.decision](decision);

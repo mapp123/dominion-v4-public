@@ -1,6 +1,6 @@
 import Card from "../Card";
-import Player from "../../server/Player";
-import Tracker from "../../server/Tracker";
+import type Player from "../../server/Player";
+import type Tracker from "../../server/Tracker";
 import {Texts} from "../../server/Texts";
 
 export default abstract class Traveller extends Card {

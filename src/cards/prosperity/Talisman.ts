@@ -1,6 +1,6 @@
 import Card from "../Card";
-import Player from "../../server/Player";
-import Game from "../../server/Game";
+import type Player from "../../server/Player";
+import type Game from "../../server/Game";
 import Cost, {CostResult} from "../../server/Cost";
 
 export default class Talisman extends Card {

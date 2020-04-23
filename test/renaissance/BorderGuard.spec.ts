@@ -2,8 +2,8 @@ import makeTestGame from "../testBed";
 import { expect } from 'chai';
 import {Texts} from "../../src/server/Texts";
 import CardRegistry from "../../src/cards/CardRegistry";
-import Lantern from "../../src/cards/renaissance/Lantern";
-import Horn from "../../src/cards/renaissance/Horn";
+import type Lantern from "../../src/cards/renaissance/Lantern";
+import type Horn from "../../src/cards/renaissance/Horn";
 
 describe('BORDER GUARD', () => {
     it('works normally', (d) => {

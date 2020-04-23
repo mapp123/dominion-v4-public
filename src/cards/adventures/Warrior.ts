@@ -1,4 +1,4 @@
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import Cost from "../../server/Cost";
 import Traveller from "./Traveller.abstract";
 

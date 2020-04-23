@@ -1,5 +1,5 @@
-import Card from "../Card";
-import Player from "../../server/Player";
+import type Card from "../Card";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Traveller from "./Traveller.abstract";
 import Util from "../../Util";

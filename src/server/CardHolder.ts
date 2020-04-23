@@ -1,4 +1,4 @@
-import Card from "../cards/Card";
+import type Card from "../cards/Card";
 
 export default class CardHolder {
     private cards: Card[] = [];

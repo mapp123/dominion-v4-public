@@ -1,5 +1,5 @@
 import Knight from "./Knight.abstract";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 
 export default class DameJosephine extends Knight {
     static descriptionSize = 54;

@@ -1,5 +1,5 @@
 import Card from "../Card";
-import Game from "../../server/Game";
+import type Game from "../../server/Game";
 import {Texts} from "../../server/Texts";
 
 export default class Hovel extends Card {

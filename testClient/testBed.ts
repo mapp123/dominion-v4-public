@@ -1,7 +1,7 @@
 import {TestGame, TestPlayer} from "../test/testBed";
-import {Decision, DecisionResponseType} from "../src/server/Decision";
+import type {Decision, DecisionResponseType} from "../src/server/Decision";
 import Player from "../src/server/Player";
-import {Server} from "socket.io";
+import type {Server} from "socket.io";
 import {EventEmitter} from "events";
 import {Interrupt} from "./Interrupt";
 

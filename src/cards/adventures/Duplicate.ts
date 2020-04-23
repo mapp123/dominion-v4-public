@@ -1,5 +1,5 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Cost, {CostResult} from "../../server/Cost";
 import Util from "../../Util";

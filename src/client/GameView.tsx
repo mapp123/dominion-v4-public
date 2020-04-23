@@ -1,15 +1,15 @@
 import * as React from 'react';
 import SupplyView from "./SupplyView";
-import {RouteComponentProps} from "react-router";
+import type {RouteComponentProps} from "react-router";
 import SocketManager from "./SocketManager";
 import createPlayerData, {PlayerData} from "../createPlayerData";
-import {Decision, DecisionResponseType} from "../server/Decision";
+import type {Decision, DecisionResponseType} from "../server/Decision";
 import LogView from "./LogView";
 import HandView from "./HandView";
 import DefaultDecision from "./DefaultDecision";
 import {CardGeneratorWrapped} from "./CardGenerator/CardGenerator";
 import DataViews from "./DataViews";
-import {CardImplementation} from "../cards/Card";
+import type {CardImplementation} from "../cards/Card";
 import EndOfGameModel from "./EndOfGameModel";
 import ChooseUsernameModal from "./ChooseUsernameModal";
 import createGameData, {GameData} from "../createGameData";

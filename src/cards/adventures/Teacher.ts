@@ -1,8 +1,8 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
-import Tracker from "../../server/Tracker";
+import type Tracker from "../../server/Tracker";
 
 export default class Teacher extends Card {
     static descriptionSize = 45;
@@ -20,49 +20,18 @@ export default class Teacher extends Card {
     cardArt = "/img/card-img/TeacherArt.jpg";
     randomizable = false;
     static inSupply = false;
-    cb: ((remove: () => any) => Promise<any>) | null = null;
     async onAction(player: Player, exemptPlayers, tracker: Tracker<this>): Promise<void> {
         if (tracker.hasTrack) {
             player.data.tavernMat.push({
                 card: tracker.exercise()!,
                 canCall: false
             });
-            this.cb = async (remove) => {
-                if (player.effects.inCompat) {
-                    player.data.tavernMat.forEach((a) => {
-                        if (a.card.id === tracker.viewCard().id) {
-                            a.canCall = true;
-                        }
-                    });
-                    player.events.on('decision', async () => {
-                        if (player.effects.currentEffect === "turnStart" || player.isInterrupted) {
-                            return true;
-                        }
-                        player.data.tavernMat.forEach((a) => {
-                            if (a.card.id === tracker.viewCard().id) {
-                                a.canCall = false;
-                            }
-                        });
-                        return false;
-                    });
-                }
-                else {
-                    if (await player.confirmAction(Texts.doYouWantToCall('teacher'))) {
-                        await player.callReserve(this);
-                        remove();
-                    }
-                }
-            };
-            player.effects.setupEffect('turnStart', 'teacher', {
-                compatibility: (a) => !['piazza'].includes(a),
-                optional: true
-            }, this.cb);
+            this.allowCallAtEvent(player, tracker, 'turnStart', {
+                compatibility: (a) => !['piazza'].includes(a)
+            });
         }
     }
     async onCall(player: Player): Promise<void> {
-        if (this.cb) {
-            player.effects.removeEffect('turnStart', 'teacher', this.cb);
-        }
         const tokenLocations = Object.values(player.data.tokens);
         const restrictions = GainRestrictions.instance();
         this.game.supply.data.piles

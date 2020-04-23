@@ -1,4 +1,4 @@
-import {CardImplementation} from "../cards/Card";
+import type {CardImplementation} from "../cards/Card";
 
 const CardOrder = [
     "copper",

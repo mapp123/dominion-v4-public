@@ -1,6 +1,6 @@
 import * as React from 'react';
 import SocketManager from "./SocketManager";
-import { RouteComponentProps } from 'react-router';
+import type { RouteComponentProps } from 'react-router';
 import shuffle from "../server/util/shuffle";
 interface IState {
     cards: string[];

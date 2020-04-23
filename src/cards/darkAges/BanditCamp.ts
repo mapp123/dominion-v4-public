@@ -1,5 +1,5 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 
 export default class BanditCamp extends Card {
     intrinsicTypes = ["action"] as const;

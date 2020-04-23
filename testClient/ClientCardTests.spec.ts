@@ -1,11 +1,9 @@
-import {Server} from "socket.io";
-import {Server as HttpServer} from 'http';
+import type {Server} from "socket.io";
+import type {Server as HttpServer} from 'http';
 import ClientTestPlayer, {ClientTestGame, setupClientTestBed} from "./testBed";
-import {Builder, By, until, WebDriver} from "selenium-webdriver";
-import {EventEmitter} from "events";
-import {Decision, DecisionResponseType} from "../src/server/Decision";
-import makeTestGame from "../test/testBed";
-import {expect} from "chai";
+import {Builder, By, WebDriver} from "selenium-webdriver";
+import type {EventEmitter} from "events";
+import type {Decision, DecisionResponseType} from "../src/server/Decision";
 import {readdirSync} from "fs";
 import {resolve} from "path";
 import {Interrupt} from "./Interrupt";

@@ -1,5 +1,5 @@
 import Card, {CardImplementation} from "../Card";
-import Game from "../../server/Game";
+import type Game from "../../server/Game";
 import shuffle from "../../server/util/shuffle";
 
 export default class Ruins extends Card {

@@ -1,5 +1,5 @@
 import Project from "../Project";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 
 export default class Academy extends Project {
     cardArt = "/img/card-img/AcademyArt.jpg";

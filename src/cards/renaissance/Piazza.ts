@@ -1,5 +1,5 @@
 import Project from "../Project";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import Util from "../../Util";
 
 export default class Piazza extends Project {

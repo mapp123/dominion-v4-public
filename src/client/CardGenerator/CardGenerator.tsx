@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {CardImplementation} from "../../cards/Card";
+import type {CardImplementation} from "../../cards/Card";
 const colorFactorLists = {
     "action": [1, 1, 1],
     "event": [1, 1, 1],

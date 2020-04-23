@@ -1,7 +1,7 @@
-import Card from "../cards/Card";
-import Player from "./Player";
-import Deck from "./Deck";
-import Tracker from "./Tracker";
+import type Card from "../cards/Card";
+import type Player from "./Player";
+import type Deck from "./Deck";
+import type Tracker from "./Tracker";
 
 type BaseEvents = {[event: string]: any[]};
 type Cbs<A extends BaseEvents> = {

@@ -1,8 +1,8 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
-import Tracker from "../../server/Tracker";
+import type Tracker from "../../server/Tracker";
 import Cost from "../../server/Cost";
 
 export default class Hermit extends Card {

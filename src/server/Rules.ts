@@ -1,5 +1,5 @@
 import CardRegistry from "../cards/CardRegistry";
-import {CardImplementation} from "../cards/Card";
+import type {CardImplementation} from "../cards/Card";
 import Copper from "../cards/base/Copper";
 import Estate from "../cards/base/Estate";
 import Hovel from "../cards/darkAges/Hovel";

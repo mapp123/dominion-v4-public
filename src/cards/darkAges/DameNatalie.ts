@@ -1,4 +1,4 @@
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 import Knight from "./Knight.abstract";
 import {GainRestrictions} from "../../server/GainRestrictions";

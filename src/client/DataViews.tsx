@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {PlayerData} from "../createPlayerData";
+import type {PlayerData} from "../createPlayerData";
 interface IProps {
     playerData: PlayerData;
 }

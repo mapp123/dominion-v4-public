@@ -1,7 +1,7 @@
 import Project from "../Project";
-import Player from "../../server/Player";
-import Game from "../../server/Game";
-import {ValidCardTypes} from "../Card";
+import type Player from "../../server/Player";
+import type Game from "../../server/Game";
+import type {ValidCardTypes} from "../Card";
 
 export default class Capitalism extends Project {
     static descriptionSize = 29;

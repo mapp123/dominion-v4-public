@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Card, {CardImplementation} from "../cards/Card";
+import type {default as Card, CardImplementation} from "../cards/Card";
 import ClientCardRegistry from "./ClientCardRegistry";
 import HandButton from "./HandButton";
 

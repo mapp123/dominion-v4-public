@@ -1,10 +1,10 @@
 import Player from "../Player";
 import {Decision, DecisionDefaults, DecisionResponseType} from "../Decision";
 import {Texts} from "../Texts";
-import Card from "../../cards/Card";
+import type Card from "../../cards/Card";
 import Util from "../../Util";
 import nlp = require('compromise');
-import Game from "../Game";
+import type Game from "../Game";
 
 type PossibleAsync<T> = T | Promise<T>;
 

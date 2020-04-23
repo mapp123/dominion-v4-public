@@ -1,7 +1,7 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
-import Game from "../../server/Game";
+import type Game from "../../server/Game";
 
 export default class Watchtower extends Card {
     static descriptionSize = 57;

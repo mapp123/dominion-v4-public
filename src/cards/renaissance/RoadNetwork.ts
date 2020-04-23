@@ -1,5 +1,5 @@
 import Project from "../Project";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 
 export default class RoadNetwork extends Project {
     cardArt = "/img/card-img/Road_NetworkArt.jpg";

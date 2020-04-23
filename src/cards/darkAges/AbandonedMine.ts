@@ -1,5 +1,5 @@
 import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 
 export default class AbandonedMine extends Card {
     intrinsicTypes = ["action","ruins"] as const;

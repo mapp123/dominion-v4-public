@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import {readdirSync} from "fs";
 import {relative, resolve, sep} from "path";
-import {CardImplementation} from "./Card";
+import type {CardImplementation} from "./Card";
 
 export default class CardRegistry {
     private static instance: CardRegistry;

@@ -11,7 +11,8 @@ export default class TokenView extends React.Component<IProps, {}> {
         extraCard: "+1 Card",
         extraMoney: "+$1",
         extraBuy: "+1 Buy",
-        extraAction: "+1 Action"
+        extraAction: "+1 Action",
+        minusOneCoin: "-$1"
     }
     formatValue(value) {
         if (value === 'UP') {
@@ -22,6 +23,9 @@ export default class TokenView extends React.Component<IProps, {}> {
         }
         else if (value == null) {
             return 'Not Set';
+        }
+        else if (typeof value === 'boolean') {
+            return value ? 'You Have' : 'Do Not Have';
         }
         return value;
     }

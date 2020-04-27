@@ -202,4 +202,15 @@ describe('ReduxDataManager', () => {
             halted = false;
         });
     });
+    it('allows hooked modifications', () => {
+        const D = ReduxDataManager({
+            test1: 'number'
+        }, {
+            test1: 1
+        });
+        D.hooks.test1 = [];
+        D.hooks.test1.push((toSet) => toSet + 1);
+        D.test1 = 4;
+        expect(D.test1).to.equal(5);
+    });
 });

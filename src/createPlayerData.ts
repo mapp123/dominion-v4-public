@@ -25,6 +25,7 @@ export default function createPlayerData() {
             extraAction: struct.union(['string', 'null'] as const),
             extraBuy: struct.union(['string', 'null'] as const),
             extraMoney: struct.union(['string', 'null'] as const),
+            minusOneCoin: 'boolean',
             minusTwoCost: struct.union(['string', 'null'] as const),
             journeyToken: struct.enum(['UP', 'DOWN'] as const)
         }
@@ -48,6 +49,7 @@ export default function createPlayerData() {
             extraBuy: null,
             extraMoney: null,
             minusTwoCost: null,
+            minusOneCoin: false,
             journeyToken: 'UP'
         }
     });

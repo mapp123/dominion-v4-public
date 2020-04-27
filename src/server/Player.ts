@@ -54,6 +54,18 @@ export default class Player {
         if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).types.includes('reserve') || CardRegistry.getInstance().getCard(card).features.includes('tavernMat'))) {
             this.data.dataViews.push('tavernMat');
         }
+        if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).tokens.includes('minusOneCoin'))) {
+            if (typeof this.data.hooks.money === 'undefined') {
+                this.data.hooks.money = [];
+            }
+            this.data.hooks.money.push((amount) => {
+                if (this.data.tokens.minusOneCoin && amount > 0) {
+                    this.data.tokens.minusOneCoin = false;
+                    return amount - 1;
+                }
+                return amount;
+            });
+        }
         this.data.tokenViews.push(...this.game.selectedCards.flatMap((card) => CardRegistry.getInstance().getCard(card).tokens).filter((a, i, arr) => arr.indexOf(a) === i));
     }
     private startDraw() {

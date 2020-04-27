@@ -173,9 +173,14 @@ type ReplaceState<T> = {state: T};
 type SubscribeFunction = (action: Action) => boolean;
 type Subscribe = {onAction: (f: SubscribeFunction) => void};
 type HaltNotifications = {haltNotifications: (f: () => Promise<any>) => Promise<any>};
-function makeEnhancer<T extends StructDef<{}>>(keys: T): StoreEnhancer<StructForm<{}, T> & ReplaceState<StructForm<{}, T>> & Subscribe & HaltNotifications, {}> {
+type HookDictionary<T extends StructDef<{}>> = {
+    [key in keyof T]: Array<(oldValue: StructForm<{}, T>[key]) => StructForm<{}, T>[key]> | undefined
+}
+type Hooks<T extends StructDef<{}>> = {hooks: HookDictionary<T>};
+function makeEnhancer<T extends StructDef<{}>>(keys: T): StoreEnhancer<StructForm<{}, T> & ReplaceState<StructForm<{}, T>> & Subscribe & HaltNotifications & Hooks<T>, {}> {
     let subscribers: SubscribeFunction[] = [];
     let halted = false;
+    const hooks: HookDictionary<T> = {} as HookDictionary<T>;
     return compose((creator: StoreEnhancerStoreCreator) => {
         return (reducer, preloadedState) => {
             const store = creator(reducer, preloadedState);
@@ -189,6 +194,11 @@ function makeEnhancer<T extends StructDef<{}>>(keys: T): StoreEnhancer<StructFor
                         return k;
                     },
                     set(value) {
+                        if (typeof hooks[key] !== 'undefined' && hooks[key]!.length > 0) {
+                            for (const hook of hooks[key]!) {
+                                value = hook(value);
+                            }
+                        }
                         return this.dispatch({
                             type: 'ACTION_SET',
                             key,
@@ -196,6 +206,12 @@ function makeEnhancer<T extends StructDef<{}>>(keys: T): StoreEnhancer<StructFor
                         });
                     }
                 });
+            });
+            Object.defineProperty(store, 'hooks', {
+                get: () => {
+                    return hooks;
+                },
+                configurable: false
             });
             Object.defineProperty(store, 'state', {
                 get() {
@@ -262,7 +278,7 @@ function logger({ getState }) {
         return returnValue;
     };
 }
-export default function ReduxDataManager<T extends StructDef<{}>>(keys: T, defaults: StructForm<{}, T>): Store<StructForm<{}, T>, Action> & StructForm<{}, T> & ReplaceState<StructForm<{}, T>> & Subscribe & HaltNotifications {
+export default function ReduxDataManager<T extends StructDef<{}>>(keys: T, defaults: StructForm<{}, T>): Store<StructForm<{}, T>, Action> & StructForm<{}, T> & ReplaceState<StructForm<{}, T>> & Subscribe & HaltNotifications & Hooks<T> {
     // Must be typed this way to avoid blowing up the stack
     return createStore<any, any, any, any>(
         dataManagerReducer,

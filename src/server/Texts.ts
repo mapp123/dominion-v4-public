@@ -104,6 +104,9 @@ export class Texts {
     static chooseCardToNameFor(card: string) {
         return `Please choose a card to name for ${card}...`;
     }
+    static discardCardsForBenefit(benefit: string) {
+        return `Choose a card to discard. You'll get ${benefit} if you do.`;
+    }
     static discardForBenefit(benefit: string, number: number) {
         return `Choose ${number === 1 ? "a" : Util.numeral(number)} card${number > 1 ? "s" : ""} to discard. You'll get ${benefit} if you do.`;
     }

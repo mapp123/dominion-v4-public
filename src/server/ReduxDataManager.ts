@@ -174,7 +174,7 @@ type SubscribeFunction = (action: Action) => boolean;
 type Subscribe = {onAction: (f: SubscribeFunction) => void};
 type HaltNotifications = {haltNotifications: (f: () => Promise<any>) => Promise<any>};
 type HookDictionary<T extends StructDef<{}>> = {
-    [key in keyof T]: Array<(oldValue: StructForm<{}, T>[key]) => StructForm<{}, T>[key]> | undefined
+    [key in keyof T]: Array<(oldValue: StructForm<{}, T>[key], nextValue: StructForm<{}, T>[key]) => StructForm<{}, T>[key]> | undefined
 }
 type Hooks<T extends StructDef<{}>> = {hooks: HookDictionary<T>};
 function makeEnhancer<T extends StructDef<{}>>(keys: T): StoreEnhancer<StructForm<{}, T> & ReplaceState<StructForm<{}, T>> & Subscribe & HaltNotifications & Hooks<T>, {}> {
@@ -194,9 +194,10 @@ function makeEnhancer<T extends StructDef<{}>>(keys: T): StoreEnhancer<StructFor
                         return k;
                     },
                     set(value) {
+                        const oldValue = store.getState()[key];
                         if (typeof hooks[key] !== 'undefined' && hooks[key]!.length > 0) {
                             for (const hook of hooks[key]!) {
-                                value = hook(value);
+                                value = hook(oldValue, value);
                             }
                         }
                         return this.dispatch({

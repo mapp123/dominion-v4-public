@@ -58,8 +58,8 @@ export default class Player {
             if (typeof this.data.hooks.money === 'undefined') {
                 this.data.hooks.money = [];
             }
-            this.data.hooks.money.push((amount) => {
-                if (this.data.tokens.minusOneCoin && amount > 0) {
+            this.data.hooks.money.push((oldValue, amount) => {
+                if (this.data.tokens.minusOneCoin && (amount - oldValue) > 0) {
                     this.data.tokens.minusOneCoin = false;
                     return amount - 1;
                 }

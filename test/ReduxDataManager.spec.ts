@@ -209,7 +209,11 @@ describe('ReduxDataManager', () => {
             test1: 1
         });
         D.hooks.test1 = [];
-        D.hooks.test1.push((toSet) => toSet + 1);
+        D.hooks.test1.push((oldValue, toSet) => {
+            expect(oldValue).to.equal(1);
+            expect(toSet).to.equal(4);
+            return toSet + 1;
+        });
         D.test1 = 4;
         expect(D.test1).to.equal(5);
     });

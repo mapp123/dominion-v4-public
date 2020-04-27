@@ -105,7 +105,7 @@ function infoToTemplate(info: {name: string; types: string[]; cost: {coin: numbe
     return (
         // eslint-disable-next-line @typescript-eslint/indent
 `import Card from "../Card";
-import Player from "../../server/Player";
+import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('')} extends Card {

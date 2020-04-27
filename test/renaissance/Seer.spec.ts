@@ -5,14 +5,14 @@ import {Texts} from "../../src/server/Texts";
 describe('SEER', () => {
     it('works normally', (d) => {
         const [game, [player], done] = makeTestGame({
-            decks: [['seer', 'copper', 'copper', 'copper', 'copper', 'silver', 'silver', 'copper', 'copper']],
+            decks: [['seer', 'copper', 'copper', 'copper', 'copper', 'silver', 'silver', 'copper', 'curse']],
             d
         });
         player.testPlayAction('seer');
         player.testReorderSame(Texts.chooseOrderOfCards);
         player.onBuyPhaseStart(() => {
             expect(player.data.actions).to.equal(1);
-            expect(player.deck.cards.map((a) => a.name)).to.have.members(['copper', 'copper']);
+            expect(player.deck.cards.map((a) => a.name)).to.have.members(['copper', 'curse']);
             expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'silver', 'silver']);
             done();
         });
@@ -20,7 +20,7 @@ describe('SEER', () => {
     });
     it('can be throne roomed', (d) => {
         const [game, [player], done] = makeTestGame({
-            decks: [['throne room', 'seer', 'copper', 'copper', 'copper', 'silver', 'silver', 'copper', 'copper', 'silver', 'gold']],
+            decks: [['throne room', 'seer', 'copper', 'copper', 'copper', 'silver', 'silver', 'copper', 'curse', 'silver', 'gold']],
             d
         });
         player.testPlayAction('throne room');
@@ -29,7 +29,7 @@ describe('SEER', () => {
         player.testReorderSame(Texts.chooseOrderOfCards);
         player.onBuyPhaseStart(() => {
             expect(player.data.actions).to.equal(2);
-            expect(player.deck.cards.map((a) => a.name)).to.have.members(['copper', 'gold']);
+            expect(player.deck.cards.map((a) => a.name)).to.have.members(['curse', 'gold']);
             expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'silver', 'silver', 'copper', 'silver']);
             done();
         });

@@ -23,7 +23,7 @@ type Context<K> = {
     duplicateKey?: K;
 }
 type Unsub<K> = (() => any) & {ctx: Context<K>; skipDuplicates: () => any};
-type EffectFun<T extends Effect, K> = (unsub: Unsub<K>, ...effectArgs: typeof EffectArgs[T]) => Promise<any> | any;
+export type EffectFun<T extends Effect, K> = (unsub: Unsub<K>, ...effectArgs: typeof EffectArgs[T]) => Promise<any> | any;
 type RelevantFun<T extends Effect> = (...effectArgs: typeof EffectArgs[T]) => boolean;
 type CompatFun<T extends Effect> = { [key: string]: boolean } | ((card: string, ...effectArgs: typeof EffectArgs[T]) => boolean);
 type DuplicateFun<T extends Effect, K> = (...effectArgs: typeof EffectArgs[T]) => K[];
@@ -138,7 +138,7 @@ export default class PlayerEffects {
             if (!choice) {
                 break;
             }
-            const unsub = (() => this.effectTable[effectName].splice(this.effectTable[effectName].findIndex((b) => b.name === choice), 1)) as Unsub<any>;
+            const unsub = genUnsub(this.effectTable[effectName].find((b) => b.name === choice)!.id);
             const index = ask.findIndex((a) => a.id === choice);
             unsub.ctx = {
                 duplicateKey: ask[index].duplicateKey
@@ -149,7 +149,7 @@ export default class PlayerEffects {
         }
         this.currentEffect = null;
     }
-    setupEffect<T extends Effect, K>(effectName: T, cardName: string, config: EffectDef<T, K>["config"], effect: EffectFun<T, K>) {
+    setupEffect<T extends Effect, K = undefined>(effectName: T, cardName: string, config: EffectDef<T, K>["config"], effect: EffectFun<T, K>) {
         const item: EffectDef<T, K> = {
             id: v4(),
             name: cardName,

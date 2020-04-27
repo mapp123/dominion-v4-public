@@ -678,7 +678,7 @@ export default class Player {
         return choice;
     }
     async chooseOrder(helperText: string, cards: Card[], topText: string, bottomText: string): Promise<Card[]> {
-        if (cards.length < 2) {
+        if (cards.length < 2 || Util.deduplicateByName(cards).length < 2) {
             return cards;
         }
         const {order} = await this.makeDecision({

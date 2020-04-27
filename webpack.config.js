@@ -42,6 +42,10 @@ const removeCompromiseInClient = new webpack.NormalModuleReplacementPlugin(
     /compromise/,
     './ClientCompromise.ts'
 );
+const transformRegistry = new webpack.NormalModuleReplacementPlugin(
+    /[\/|^](?!Client)CardRegistry/,
+    '../../client/ClientCardRegistry.ts'
+);
 let istanbul = {
     test: /\.tsx?$/,
     use: {
@@ -71,7 +75,8 @@ module.exports = env => ({
         extractSass,
         chunkNames,
         removeSupplyInClient,
-        removeCompromiseInClient
+        removeCompromiseInClient,
+        transformRegistry
     ],
     module: {
         rules: [

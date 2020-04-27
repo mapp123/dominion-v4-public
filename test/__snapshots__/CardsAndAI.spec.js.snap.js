@@ -6,6 +6,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "dungeon",
     "gear",
     "guide",
+    "haunted woods",
     "ratcatcher",
     "teacher",
     "transmogrify",
@@ -34,15 +35,16 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "guildhall",
     "innovation"
   ],
-  "treasureCardPlayed": [
-    "merchant"
-  ],
   "buy": [
+    "haunted woods",
     "hovel",
     "goons",
     "hoard",
     "mint",
     "talisman"
+  ],
+  "treasureCardPlayed": [
+    "merchant"
   ],
   "trash": [
     "market square",

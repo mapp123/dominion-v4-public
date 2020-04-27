@@ -639,7 +639,7 @@ export default class Player {
             currentPlayerIndex %= this.game.players.length;
         }
     }
-    async attackOthersInSteps<T>(exemptPlayers: Player[], steps: [(player: Player) => Promise<T>, (player: Player, result: T) => Promise<any>]): Promise<void> {
+    async attackOthersInSteps<T>(exemptPlayers: Player[], steps: readonly [(player: Player) => Promise<T>, (player: Player, result: T) => Promise<any>]): Promise<void> {
         const currentPlayerIndex = this.game.players.indexOf(this);
         let attacked = this.game.players.slice(currentPlayerIndex + 1, this.game.players.length).concat(this.game.players.slice(0, currentPlayerIndex));
         attacked = attacked.filter((a) => !exemptPlayers.includes(a));

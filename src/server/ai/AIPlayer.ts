@@ -284,7 +284,8 @@ export default abstract class AIPlayer extends Player {
                     chooseGain: decisionMatcher(decision.helperText, Texts.chooseCardToGainFor),
                     cardToName: decisionMatcher(decision.helperText, Texts.chooseCardToNameFor),
                     discardForPlayer: decisionMatcher(decision.helperText, Texts.chooseCardForPlayerToDiscard),
-                    setAside: decisionMatcher(decision.helperText, Texts.chooseCardToSetAsideFor)
+                    setAside: decisionMatcher(decision.helperText, Texts.chooseCardToSetAsideFor),
+                    playFor: decisionMatcher(decision.helperText, Texts.chooseCardToPlayFor)
                 };
                 if (keys.discardCard != null) {
                     return this.chooseCardFromPriority(await this.discardPriority(), decision.validChoices) as any;
@@ -371,6 +372,14 @@ export default abstract class AIPlayer extends Player {
                 if (keys.setAside) {
                     const choice = this.chooseCardFromPriority(await this.discardPriority(), decision.source) as any;
                     return choice as any;
+                }
+                if (keys.playFor) {
+                    switch (keys.playFor[0]) {
+                        case "storyteller":
+                            const averageMoney = this.allCards.reduce((sum, next) => sum + (next.intrinsicValue || 0), 0) / this.allCards.length;
+                            const wantToPlay = decision.source.filter((a) => a.name !== 'No Card' && a.types.includes("treasure") && (a.intrinsicValue || 0) < averageMoney);
+                            return wantToPlay.length === 0 ? decision.source.find((a) => a.name === 'No Card') : wantToPlay[0] as any;
+                    }
                 }
                 break;
             case "chooseUsername":

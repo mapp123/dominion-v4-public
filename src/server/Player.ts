@@ -60,6 +60,7 @@ export default class Player {
             }
             this.data.hooks.money.push((oldValue, amount) => {
                 if (this.data.tokens.minusOneCoin && (amount - oldValue) > 0) {
+                    this.lm("(%p loses their -$1 token.)");
                     this.data.tokens.minusOneCoin = false;
                     return amount - 1;
                 }
@@ -80,6 +81,11 @@ export default class Player {
         }
     }
     async draw(amount = 1) {
+        if (amount > 0 && this.data.tokens.minusOneCard) {
+            this.lm("(%p loses their -1 Card token.)");
+            this.data.tokens.minusOneCard = false;
+            amount--;
+        }
         const cards: Card[] = [];
         let card: Card | undefined;
         while (cards.length < amount && (card = await this.deck.pop()) !== undefined) {

@@ -40,7 +40,9 @@ interface IProps {
     typeFontStart?: number;
     cardNameStart?: number;
 }
+const noColor = ["attack"];
 function pickTypesFromTypeArray(types: readonly string[]): [string, string | undefined] {
+    types = types.filter((a) => !noColor.includes(a));
     if (types.length === 1 && Object.keys(colorFactorLists).includes(types[0])) {
         return [types[0], undefined];
     }

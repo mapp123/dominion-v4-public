@@ -28,6 +28,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
   ],
   "cardPlayed": [
     "coin of the realm",
+    "royal carriage",
     "merchant",
     "citadel"
   ],

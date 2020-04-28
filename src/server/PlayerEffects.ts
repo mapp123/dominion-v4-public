@@ -132,8 +132,8 @@ export default class PlayerEffects {
         }
         this.inCompat = false;
         while (ask.length > 0) {
-            const choice = await this.player.chooseOption(prompt, ask.filter((a) => typeof a.config.temporalRelevance !== 'function' || a.config.temporalRelevance()).map((a) => a.id));
-            if (!choice) {
+            const choice = await this.player.chooseOption(prompt, [...ask.filter((a) => typeof a.config.temporalRelevance !== 'function' || a.config.temporalRelevance()).map((a) => a.id), ...(ask.every((a) => a.config.optional) ? ['No Effect'] : [])]);
+            if (!choice || choice === 'No Effect') {
                 break;
             }
             const unsub = genUnsub(this.effectTable[effectName].find((b) => b.name === choice)!.id);

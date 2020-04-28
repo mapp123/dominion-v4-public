@@ -459,6 +459,8 @@ export default abstract class AIPlayer extends Player {
                     switch (confirmKeys.wantCall[0]) {
                         case "coin of the realm":
                             return (this.data.actions === 0 && this.data.hand.filter((a) => a.types.includes("action")).length > 0) as boolean as any;
+                        case "royal carriage":
+                            return true as boolean as any;
                     }
                 }
                 if (confirmKeys.wantCallFor) {

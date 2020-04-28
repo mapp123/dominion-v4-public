@@ -2,6 +2,7 @@ import Card from "../Card";
 import type Player from "../../server/Player";
 
 export default class Magpie extends Card {
+    static descriptionSize = 56;
     intrinsicTypes = ["action"] as const;
     name = "magpie";
     intrinsicCost = {

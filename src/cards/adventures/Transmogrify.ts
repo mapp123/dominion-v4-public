@@ -5,6 +5,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 import Cost from "../../server/Cost";
 
 export default class Transmogrify extends Card {
+    static descriptionSize = 51;
     intrinsicTypes = ["action","reserve"] as const;
     name = "transmogrify";
     intrinsicCost = {

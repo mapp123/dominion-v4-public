@@ -5,6 +5,7 @@ import Traveller from "./Traveller.abstract";
 
 export default class Hero extends Traveller {
     static descriptionSize = 56;
+    static typelineSize = 63;
     intrinsicTypes = ["action","traveller"] as const;
     name = "hero";
     intrinsicCost = {

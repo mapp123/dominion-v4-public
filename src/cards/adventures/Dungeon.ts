@@ -3,6 +3,7 @@ import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Dungeon extends Card {
+    static typelineSize = 63;
     intrinsicTypes = ["action","duration"] as const;
     name = "dungeon";
     intrinsicCost = {

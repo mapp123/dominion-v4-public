@@ -4,6 +4,7 @@ import Util from "../../Util";
 import Traveller from "./Traveller.abstract";
 
 export default class TreasureHunter extends Traveller {
+    static typelineSize = 63;
     static descriptionSize = 50;
     intrinsicTypes = ["action","traveller"] as const;
     name = "treasure hunter";

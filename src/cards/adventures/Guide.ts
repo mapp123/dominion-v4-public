@@ -2,6 +2,7 @@ import Card from "../Card";
 import type Player from "../../server/Player";
 
 export default class Guide extends Card {
+    static descriptionSize = 57;
     intrinsicTypes = ["action","reserve"] as const;
     name = "guide";
     intrinsicCost = {

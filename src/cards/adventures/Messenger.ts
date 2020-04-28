@@ -5,6 +5,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 import Cost from "../../server/Cost";
 
 export default class Messenger extends Card {
+    static descriptionSize = 48;
     intrinsicTypes = ["action"] as const;
     name = "messenger";
     intrinsicCost = {

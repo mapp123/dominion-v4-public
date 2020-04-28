@@ -5,6 +5,7 @@ import {GainRestrictions} from "../../server/GainRestrictions";
 import Tracker from "../../server/Tracker";
 
 export default class BandOfMisfits extends Card {
+    static typelineSize = 62;
     intrinsicTypes = ["action", "command"] as const;
     name = "band of misfits";
     intrinsicCost = {

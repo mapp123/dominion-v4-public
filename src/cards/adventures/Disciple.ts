@@ -6,6 +6,7 @@ import Util from "../../Util";
 
 export default class Disciple extends Traveller {
     static descriptionSize = 51;
+    static typelineSize = 63;
     intrinsicTypes = ["action","traveller"] as const;
     name = "disciple";
     intrinsicCost = {

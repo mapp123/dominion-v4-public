@@ -3,6 +3,7 @@ import {Texts} from "../../server/Texts";
 import Traveller from "./Traveller.abstract";
 
 export default class Fugitive extends Traveller {
+    static typelineSize = 63;
     static descriptionSize = 50;
     intrinsicTypes = ["action","traveller"] as const;
     name = "fugitive";

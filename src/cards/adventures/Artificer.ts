@@ -5,6 +5,7 @@ import Cost from "../../server/Cost";
 import {GainRestrictions} from "../../server/GainRestrictions";
 
 export default class Artificer extends Card {
+    static descriptionSize = 55;
     intrinsicTypes = ["action"] as const;
     name = "artificer";
     intrinsicCost = {

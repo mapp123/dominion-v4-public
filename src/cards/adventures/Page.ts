@@ -2,6 +2,7 @@ import type Player from "../../server/Player";
 import Traveller from "./Traveller.abstract";
 
 export default class Page extends Traveller {
+    static typelineSize = 63;
     intrinsicTypes = ["action","traveller"] as const;
     name = "page";
     intrinsicCost = {

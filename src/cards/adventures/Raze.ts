@@ -3,6 +3,7 @@ import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
 
 export default class Raze extends Card {
+    static descriptionSize = 56;
     intrinsicTypes = ["action"] as const;
     name = "raze";
     intrinsicCost = {

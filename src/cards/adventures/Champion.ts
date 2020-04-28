@@ -3,6 +3,7 @@ import type Player from "../../server/Player";
 
 export default class Champion extends Card {
     static descriptionSize = 50;
+    static typelineSize = 63;
     intrinsicTypes = ["action","duration"] as const;
     name = "champion";
     intrinsicCost = {

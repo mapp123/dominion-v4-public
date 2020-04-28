@@ -3,6 +3,7 @@ import type Game from "../../server/Game";
 import {Texts} from "../../server/Texts";
 
 export default class Hovel extends Card {
+    static typelineSize = 62;
     intrinsicTypes = ["reaction","shelter"] as const;
     name = "hovel";
     intrinsicCost = {

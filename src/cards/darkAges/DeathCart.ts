@@ -14,7 +14,7 @@ export default class DeathCart extends Card {
         "When you gain this, gain 2 Ruins.";
     supplyCount = 10;
     cardArt = "/img/card-img/800px-Death_CartArt.jpg";
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         const card = await player.chooseCard(Texts.trashForBenefit('+$5', 1), [...player.data.hand, tracker.hasTrack ? tracker.viewCard() : null].filter(Util.nonNull), true, (card) => card.types.includes("action"), true);
         if (card) {
             if (card.id === tracker.viewCard().id) {

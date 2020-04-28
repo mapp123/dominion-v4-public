@@ -14,13 +14,13 @@ export default class BandOfMisfits extends Card {
     cardText = "Play a non-Command Action card from the Supply that costs less than this, leaving it there.";
     supplyCount = 10;
     cardArt = "/img/card-img/Band_of_MisfitsArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const cardToPlay = await player.chooseGain(Texts.chooseCardFromSupplyToPlay, false, GainRestrictions.instance().setLessThanCost(this.cost).addBannedType('command').setMustIncludeType('action'), "none");
         if (cardToPlay) {
             const tracker = new Tracker(cardToPlay);
             tracker.loseTrack();
             player.lm('%p chooses and plays the %s.', cardToPlay.name);
-            await player.playActionCard(cardToPlay, tracker, false);
+            await player.playCard(cardToPlay, tracker, false);
         }
     }
 }

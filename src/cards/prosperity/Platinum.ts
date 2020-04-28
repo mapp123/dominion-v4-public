@@ -12,7 +12,7 @@ export default class Platinum extends Card {
     supplyCount = 30;
     cardArt = "/img/card-img/PlatinumArt.jpg";
     intrinsicValue = 5;
-    protected async onTreasure(player: Player) {
+    async onPlay(player: Player) {
         player.data.money += 5;
     }
 }

@@ -16,7 +16,7 @@ export default class Ratcatcher extends Card {
         "At the start of your turn, you may call this, to trash a card from your hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/800px-RatcatcherArt.jpg";
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         await player.draw();
         player.data.actions++;
         if (tracker.hasTrack) {

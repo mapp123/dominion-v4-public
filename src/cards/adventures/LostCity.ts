@@ -13,7 +13,7 @@ export default class LostCity extends Card {
         "When you gain this, each other player draws a card.";
     supplyCount = 10;
     cardArt = "/img/card-img/Lost_CityArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(2);
         player.data.actions += 2;
     }

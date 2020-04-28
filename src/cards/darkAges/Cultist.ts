@@ -16,7 +16,7 @@ export default class Cultist extends Card {
         "When you trash this, +3 Cards.";
     supplyCount = 10;
     cardArt = "/img/card-img/CultistArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.draw(2);
         await player.attackOthers(exemptPlayers, async (p) => {
             await p.gain('ruins');
@@ -24,7 +24,7 @@ export default class Cultist extends Card {
         if (player.data.hand.find((a) => a.name === 'cultist') && await player.confirmAction(Texts.playCardFromHand('cultist'))) {
             const card = player.data.hand.splice(player.data.hand.findIndex((a) => a.name === 'cultist'), 1)[0];
             player.data.playArea.push(card);
-            await player.playActionCard(card, null);
+            await player.playCard(card, null);
         }
     }
     async onTrashSelf(player: Player): Promise<void> {

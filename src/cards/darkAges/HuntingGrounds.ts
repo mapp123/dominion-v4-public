@@ -13,7 +13,7 @@ export default class HuntingGrounds extends Card {
         "When you trash this, gain a Duchy or 3 Estates.";
     supplyCount = 10;
     cardArt = "/img/card-img/686px-Hunting_GroundsArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(4);
     }
     async onTrashSelf(player: Player): Promise<void> {

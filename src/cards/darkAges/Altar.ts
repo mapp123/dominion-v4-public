@@ -13,7 +13,7 @@ export default class Altar extends Card {
     cardText = "Trash a card from your hand. Gain a card costing up to $5.";
     supplyCount = 10;
     cardArt = "/img/card-img/AltarArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('altar'));
         if (card) {
             await player.trash(card);

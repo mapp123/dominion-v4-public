@@ -14,13 +14,13 @@ export default class Procession extends Card {
     cardText = "You may play a non-Duration Action card from your hand twice. Trash it. Gain an Action card costing exactly $1 more than it.";
     supplyCount = 10;
     cardArt = "/img/card-img/ProcessionArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseCardToPlayTwice, true, (card) => !card.types.includes("duration"));
         if (card) {
             player.lm('%p chooses %s.', Util.formatCardList([card.name]));
             player.data.playArea.push(card);
             const tracker = player.getTrackerInPlay(card);
-            await player.playActionCard(card, tracker);
+            await player.playCard(card, tracker);
             await player.replayActionCard(card, tracker);
             if (tracker.hasTrack) {
                 await player.trash(tracker.exercise()!);

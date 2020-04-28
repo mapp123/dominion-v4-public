@@ -18,7 +18,7 @@ export default class Goons extends Card {
         "While this is in play, when you buy a card, +1 VP.";
     supplyCount = 10;
     cardArt = "/img/card-img/GoonsArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.buys++;
         player.data.money += 2;
         await player.attackOthers(exemptPlayers, async (player) => {

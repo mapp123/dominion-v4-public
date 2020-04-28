@@ -14,7 +14,7 @@ export default class Mint extends Card {
         "When you buy this, trash all Treasures you have in play.";
     supplyCount = 10;
     cardArt = "/img/card-img/MintArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCard(Texts.chooseAToDuplicateWithB('treasure', 'mint'), player.data.hand, true, (card) => card.types.includes("treasure"));
         if (card) {
             await player.reveal([card]);

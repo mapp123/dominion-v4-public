@@ -14,7 +14,7 @@ export default class Madman extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/MadmanArt.jpg";
     randomizable = false;
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         player.data.actions += 2;
         if (tracker.hasTrack) {
             player.game.supply.getPile('madman')?.unshift(tracker.exercise()!);

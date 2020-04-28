@@ -23,14 +23,14 @@ export default class Disciple extends Traveller {
     private _duplicateCard: Card | null = null;
     randomizable = false;
     static inSupply = false;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseCardToPlayTwice, true, (card) => card.types.includes('action'));
         if (card) {
             this._originalCard = card;
             player.lm('%p chooses %s.', Util.formatCardList([card.name]));
             player.data.playArea.push(card);
             const tracker = player.getTrackerInPlay(card);
-            await player.playActionCard(card, tracker);
+            await player.playCard(card, tracker);
             this._duplicateCard = await player.replayActionCard(card, tracker);
             if ((card.constructor as typeof Card).inSupply) {
                 await player.gain(card.name);

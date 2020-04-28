@@ -16,7 +16,7 @@ export default class Catacombs extends Card {
         "When you trash this, gain a cheaper card.";
     supplyCount = 10;
     cardArt = "/img/card-img/CatacombsArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const top3 = [await player.deck.pop(), await player.deck.pop(), await player.deck.pop()].filter((a) => a != null) as Card[];
         player.lm('%p reveals %s.', Util.formatCardList(top3.map((a) => a.name)));
         if (await player.chooseOption(Texts.whatToDoWithCards(Util.formatCardList(top3.map((a) => a.name))), [Texts.keepThem, Texts.discardThemForBenefit('+3 Cards')]) === Texts.keepThem) {

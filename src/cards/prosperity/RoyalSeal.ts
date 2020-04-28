@@ -13,7 +13,7 @@ export default class RoyalSeal extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Royal_SealArt.jpg";
     intrinsicValue = 2;
-    async onTreasure(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 2;
     }
     public static setup(globalCardData: any, game: Game) {

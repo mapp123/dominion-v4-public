@@ -15,7 +15,7 @@ export default class Squire extends Card {
         "When you trash this, gain an Attack card.";
     supplyCount = 10;
     cardArt = "/img/card-img/SquireArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 1;
         const choice = await player.chooseOption(Texts.chooseBenefitFor('squire'), [Texts.extraActions("2"), Texts.extraBuys("2"), Texts.gain(['silver'])] as const);
         switch (choice) {

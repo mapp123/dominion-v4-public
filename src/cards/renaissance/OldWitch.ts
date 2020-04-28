@@ -12,7 +12,7 @@ export default class OldWitch extends Card {
         "Each other player gains a Curse and may trash a Curse from their hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/Old_WitchArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.draw(3);
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             await p.gain('curse');

@@ -13,7 +13,7 @@ export default class Survivors extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SurvivorsArt.jpg";
     randomizable = false;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const cards = await player.revealTop(2);
         const choice = await player.chooseOption(Texts.whatToDoWithCards(Util.formatCardList(cards.map((a) => a.viewCard().name))), [Texts.discardThem, Texts.putThemOnYourDeck] as const);
         switch (choice) {

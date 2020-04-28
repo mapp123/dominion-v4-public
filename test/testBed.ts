@@ -364,7 +364,7 @@ class DrawAttack extends Card {
     name = "attack";
     supplyCount = 10;
     cardArt = "";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.attackOthersInOrder(exemptPlayers, async (player) => {
             await player.draw(1);
         });
@@ -383,7 +383,7 @@ function createEmptySupplyPileCard() {
         name = name;
         supplyCount = 0;
         cardArt = "";
-        async onAction(): Promise<void> {
+        async onPlay(): Promise<void> {
 
         }
     }

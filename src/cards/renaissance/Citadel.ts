@@ -17,14 +17,14 @@ export default class Citadel extends Project {
             cardToReplay = null;
             return true;
         });
-        player.events.on('willPlayAction', async (card) => {
-            if (!usedThisTurn) {
+        player.events.on('willPlayCard', async (card) => {
+            if (card.types.includes("action") && !usedThisTurn) {
                 cardToReplay = card;
                 usedThisTurn = true;
             }
             return true;
         });
-        player.effects.setupEffect('actionCardPlayed', 'citadel', {
+        player.effects.setupEffect('cardPlayed', 'citadel', {
             compatibility: {},
             relevant: (tracker) => tracker.viewCard() === cardToReplay
         }, async (remove, tracker) => {

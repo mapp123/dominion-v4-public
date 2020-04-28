@@ -17,7 +17,7 @@ export default class BorderGuard extends Card {
         "Reveal the top 2 cards of your deck. Put one into your hand and discard the other. If both were Actions, take the Lantern or Horn.";
     supplyCount = 10;
     cardArt = "/img/card-img/Border_GuardArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions += 1;
         const revealed = await player.revealTop((this.getGlobalData().lantern as Lantern).belongsToPlayer === player ? 3 : 2, true);
         const card = await player.chooseCard(Texts.chooseCardToTakeFromRevealed, revealed.map((a) => a.viewCard()), false);

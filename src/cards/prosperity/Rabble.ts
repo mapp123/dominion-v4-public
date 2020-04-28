@@ -14,7 +14,7 @@ export default class Rabble extends Card {
         "Each other player reveals the top 3 cards of their deck, discards the Actions and Treasures, and puts the rest back in any order they choose.";
     supplyCount = 10;
     cardArt = "/img/card-img/RabbleArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.draw(3);
         await player.attackOthers(exemptPlayers, async (p) => {
             const cards = await p.revealTop(3, true);

@@ -21,7 +21,7 @@ export default class Fugitive extends Traveller {
     travellerTarget = "disciple";
     randomizable = false;
     static inSupply = false;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(2);
         player.data.actions++;
         const card = await player.chooseCardFromHand(Texts.chooseCardToDiscardFor('fugitive'));

@@ -14,7 +14,7 @@ export default class Artisan extends Card {
         "Put a card from your hand onto your deck.";
     supplyCount = 10;
     cardArt = "/img/card-img/ArtisanArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.chooseGain(Texts.chooseCardToGainFor('artisan'), false, GainRestrictions.instance().setUpToCost(Cost.create(5)), 'hand');
         const card = await player.chooseCardFromHand(Texts.chooseCardToPutOnDeck);
         if (card) {

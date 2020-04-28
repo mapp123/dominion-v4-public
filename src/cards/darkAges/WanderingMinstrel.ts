@@ -14,7 +14,7 @@ export default class WanderingMinstrel extends Card {
         "Reveal the top 3 cards of your deck. Put the Action cards back in any order and discard the rest.";
     supplyCount = 10;
     cardArt = "/img/card-img/Wandering_MinstrelArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions += 2;
         const cards = await player.revealTop(3);

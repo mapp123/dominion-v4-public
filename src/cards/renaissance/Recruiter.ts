@@ -15,7 +15,7 @@ export default class Recruiter extends Card {
     features = ["villagers"] as const;
     supplyCount = 10;
     cardArt = "/img/card-img/RecruiterArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(2);
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('recruiter'));
         if (card) {

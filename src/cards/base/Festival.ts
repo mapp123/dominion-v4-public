@@ -12,7 +12,7 @@ export default class Festival extends Card {
         "+$2";
     supplyCount = 10;
     cardArt = "/img/card-img/FestivalArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions += 2;
         player.data.buys += 1;
         player.data.money += 2;

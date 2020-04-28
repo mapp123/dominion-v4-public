@@ -13,7 +13,7 @@ export default class Sage extends Card {
         "Reveal cards from the top of your deck until you reveal one costing $3 or more. Put that card into your hand and discard the rest.";
     supplyCount = 10;
     cardArt = "/img/card-img/SageArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions++;
         const revealedCards = [] as Array<Tracker<Card>>;
         let card: Tracker<Card> | undefined;

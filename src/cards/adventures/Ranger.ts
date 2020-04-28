@@ -12,7 +12,7 @@ export default class Ranger extends Card {
         "Turn your Journey token over (it starts face up). Then if it's face up, +5 Cards.";
     supplyCount = 10;
     cardArt = "/img/card-img/RangerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.buys++;
         if (player.data.tokens.journeyToken === 'UP') {
             player.data.tokens.journeyToken = 'DOWN';

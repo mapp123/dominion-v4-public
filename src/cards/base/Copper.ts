@@ -12,7 +12,7 @@ export default class Copper extends Card {
     cardArt = "/img/card-img/CopperArt.jpg";
     intrinsicValue = 1;
     supplyCount = (players) => 60 - (players * 7);
-    protected async onTreasure(player: Player) {
+    async onPlay(player: Player) {
         player.data.money += 1;
     }
 }

@@ -15,7 +15,7 @@ export default class Page extends Traveller {
     supplyCount = 10;
     cardArt = "/img/card-img/PageArt.jpg";
     travellerTarget = "treasure hunter";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions++;
     }

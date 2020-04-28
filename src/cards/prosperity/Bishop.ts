@@ -15,7 +15,7 @@ export default class Bishop extends Card {
         "Trash a card from your hand.+1 VP per $2 it costs (round down). Each other player may trash a card from their hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/BishopArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 1;
         player.data.vp += 1;
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('bishop'));

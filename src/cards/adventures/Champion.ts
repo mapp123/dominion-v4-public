@@ -16,12 +16,13 @@ export default class Champion extends Card {
     cardArt = "/img/card-img/ChampionArt.jpg";
     randomizable = false;
     static inSupply = false;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions++;
-        player.effects.setupEffect('willPlayAction', 'champion', {
-            compatibility: () => true
-        }, async () => {
-            player.data.actions++;
+        player.effects.setupEffect('willPlayCard', 'champion', {
+            compatibility: () => true,
+            relevant: (card) => card.types.includes("action")
+        }, async (remove, card) => {
+            if (card.types.includes("action")) player.data.actions++;
         });
     }
     shouldDiscardFromPlay(): boolean {

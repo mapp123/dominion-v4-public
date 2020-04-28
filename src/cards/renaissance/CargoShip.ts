@@ -15,7 +15,7 @@ export default class CargoShip extends Card {
     cardArt = "/img/card-img/Cargo_ShipArt.jpg";
     holder = this.game && this.game.getCardHolder();
     private cb: any = null;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 2;
         this.cb = player.effects.setupEffect('gain', 'cargo ship', {
             compatibility: {}

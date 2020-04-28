@@ -12,7 +12,7 @@ export default class Miser extends Card {
     cardText = "Choose one: Put a Copper from your hand onto your Tavern mat; or +$1 per Copper on your Tavern mat.";
     supplyCount = 10;
     cardArt = "/img/card-img/MiserArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const coins = player.data.tavernMat.filter((a) => a.card.name === 'copper').length;
         const options = [Texts.putXOnTavernMap('copper from your hand'), Texts.extraMoney(coins + '')];
         const choice = await player.chooseOption(Texts.chooseBenefitFor('miser'), options);

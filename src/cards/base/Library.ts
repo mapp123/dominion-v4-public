@@ -12,7 +12,7 @@ export default class Library extends Card {
     cardText = "Draw until you have 7 cards in hand, skipping any Action cards you choose to; set those aside, discarding them afterwards.";
     supplyCount = 10;
     cardArt = "/img/card-img/LibraryArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         let nextCard: Card | undefined;
         const setAside: Card[] = [];
         while (player.data.hand.length < 7 && (nextCard = await player.deck.pop()) != null) {

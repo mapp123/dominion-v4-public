@@ -13,7 +13,7 @@ export default class SilkMerchant extends Card {
         "When you gain or trash this, +1 Coffers and +1 Villager.";
     supplyCount = 10;
     cardArt = "/img/card-img/Silk_MerchantArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(2);
         player.data.buys += 1;
     }

@@ -14,7 +14,7 @@ export default class Scepter extends Card {
     private _duplicateCard: Card | null = null;
     private _isUnderThroneRoom = false;
     intrinsicValue = 2;
-    async onTreasure(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const choice = await player.chooseOption(Texts.chooseBenefitFor('scepter'), [Texts.extraMoney("2"), Texts.replayAction] as const);
         switch (choice) {
             case Texts.extraMoney("2"):

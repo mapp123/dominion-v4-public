@@ -13,7 +13,7 @@ export default class Lackeys extends Card {
         "When you gain this, +2 Villagers.";
     supplyCount = 10;
     cardArt = "/img/card-img/LackeysArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(2);
     }
     onGainSelf(player: Player): Promise<void> | void {

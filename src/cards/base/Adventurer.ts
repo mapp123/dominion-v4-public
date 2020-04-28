@@ -12,7 +12,7 @@ export default class Adventurer extends Card {
     cardText = "Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards into your hand and discard the other revealed cards.";
     supplyCount = 10;
     cardArt = "/img/card-img/AdventurerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const revealed: Array<Tracker<Card>> = [];
         while (revealed.filter((a) => a.viewCard().types.includes("treasure")).length < 2) {
             const revealedCard = await player.revealTop(1);

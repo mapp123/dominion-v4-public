@@ -12,7 +12,7 @@ export default class Mountebank extends Card {
         "Each other player may discard a Curse. If they don't, they gain a Curse and a Copper.";
     supplyCount = 10;
     cardArt = "/img/card-img/800px-MountebankArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.money += 2;
         await player.attackOthersInSteps<boolean>(exemptPlayers, [
             async (p) => {

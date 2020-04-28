@@ -13,7 +13,7 @@ export default class Forge extends Card {
     cardText = "Trash any number of cards from your hand. Gain a card with cost exactly equal to the total cost in $ of the trashed cards.";
     supplyCount = 10;
     cardArt = "/img/card-img/ForgeArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         let card: Card | null;
         let money = 0;
         while ((card = await player.chooseCardFromHand(Texts.chooseCardToTrashForge(money), true)) != null) {

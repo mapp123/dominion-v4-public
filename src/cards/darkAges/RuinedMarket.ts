@@ -11,7 +11,7 @@ export default class RuinedMarket extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Ruined_MarketArt.jpg";
     randomizable = false;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.buys++;
     }
     public static createSupplyPiles(): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {

@@ -15,7 +15,7 @@ export default class Graverobber extends Card {
     cardText = "Choose one: Gain a card from the trash costing from $3 to $6, onto your deck; or trash an Action card from your hand and gain a card costing up to $3 more than it.";
     supplyCount = 10;
     cardArt = "/img/card-img/GraverobberArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const benefits = ["Gain a card from the trash", Texts.trashA('action card') + " and gain a card costing up to $3 more"] as const;
         const chosen = await player.chooseOption(Texts.chooseBenefitFor('graverobber'), benefits);
         switch (chosen) {

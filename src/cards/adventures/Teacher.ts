@@ -20,7 +20,7 @@ export default class Teacher extends Card {
     cardArt = "/img/card-img/TeacherArt.jpg";
     randomizable = false;
     static inSupply = false;
-    async onAction(player: Player, exemptPlayers, tracker: Tracker<this>): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker: Tracker<this>): Promise<void> {
         if (tracker.hasTrack) {
             player.data.tavernMat.push({
                 card: tracker.exercise()!,

@@ -15,7 +15,7 @@ export default class Peasant extends Traveller {
     supplyCount = 10;
     cardArt = "/img/card-img/PeasantArt.jpg";
     travellerTarget = "soldier";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.buys++;
         player.data.money++;
     }

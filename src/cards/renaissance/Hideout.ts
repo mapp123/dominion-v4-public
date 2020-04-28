@@ -13,7 +13,7 @@ export default class Hideout extends Card {
         "Trash a card from your hand. If it's a Victory card, gain a Curse.";
     supplyCount = 10;
     cardArt = "/img/card-img/HideoutArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions += 2;
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('hideout'));

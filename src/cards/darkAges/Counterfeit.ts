@@ -16,7 +16,7 @@ export default class Counterfeit extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/CounterfeitArt.jpg";
     intrinsicValue = 1;
-    async onTreasure(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 1;
         player.data.buys += 1;
         const card = await player.chooseCardFromHand(Texts.chooseCardToPlayTwice, true, (card) => card.types.includes("treasure"));
@@ -24,9 +24,9 @@ export default class Counterfeit extends Card {
             player.data.playArea.push(card);
             const tracker = new Tracker(card);
             player.lm('%p chooses and plays %s.', Util.formatCardList([card.name]));
-            await player.playTreasure(card, tracker);
+            await player.playCard(card, tracker, false);
             player.lm('%p replays %s.', card.name);
-            await player.playTreasure(card, tracker);
+            await player.playCard(card, tracker, false);
             if (tracker.hasTrack) {
                 player.data.playArea.splice(player.data.playArea.indexOf(tracker.viewCard()), 1);
                 await player.trash(tracker.exercise()!);

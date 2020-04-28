@@ -13,7 +13,7 @@ export default class Vassal extends Card {
         "Discard the top card of your deck. If it is an Action card, you may play it.";
     supplyCount = 10;
     cardArt = "/img/card-img/VassalArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 2;
         const card = await player.deck.pop();
         if (card) {
@@ -25,7 +25,7 @@ export default class Vassal extends Card {
                 player.deck.discard.pop();
                 player.data.playArea.push(card);
                 player.lm('%p plays the discarded %s.', card.name);
-                await player.playActionCard(card, null, false);
+                await player.playCard(card, null, false);
             }
         }
     }

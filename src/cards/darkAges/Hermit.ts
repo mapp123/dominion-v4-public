@@ -17,7 +17,7 @@ export default class Hermit extends Card {
         "When you discard this from play, if you didn't buy any cards this turn, trash this and gain a Madman from the Madman pile.";
     supplyCount = 10;
     cardArt = "/img/card-img/HermitArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCard(Texts.chooseCardToTrashFor('hermit'), [...player.data.hand, ...player.deck.discard].filter((a) => !a.types.includes('treasure')), true);
         if (card) {
             if (player.data.hand.some((a) => a.id === card.id)) {

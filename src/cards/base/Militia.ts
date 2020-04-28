@@ -13,7 +13,7 @@ export default class Militia extends Card {
         "Each other player discards down to 3 cards in hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/MilitiaArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.money += 2;
         await player.attackOthers(exemptPlayers, async (p) => {
             while (p.data.hand.length > 3) {

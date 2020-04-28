@@ -12,7 +12,7 @@ export default class PoorHouse extends Card {
         "(You can't go below $0.)";
     supplyCount = 10;
     cardArt = "/img/card-img/Poor_HouseArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 4;
         await player.revealHand();
         player.data.money -= player.data.hand.filter((a) => player.game.getTypesOfCard(a.name).includes("treasure")).length;

@@ -12,7 +12,7 @@ export default class Amulet extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/AmuletArt.jpg";
     private isNextTurn = false;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         this.isNextTurn = false;
         await this.doEffect(player);
         player.effects.setupEffect('turnStart', 'amulet', {

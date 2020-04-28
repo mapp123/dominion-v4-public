@@ -13,7 +13,7 @@ export default class Market extends Card {
         "+$1";
     supplyCount = 10;
     cardArt = "/img/card-img/MarketArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions += 1;
         player.data.buys += 1;

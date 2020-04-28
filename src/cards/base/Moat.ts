@@ -13,7 +13,7 @@ export default class Moat extends Card {
         "When another player plays an Attack card, you may first reveal this from your hand, to be unaffected by it.";
     supplyCount = 10;
     cardArt = "/img/card-img/MoatArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(2);
     }
     async onAttackInHand(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {

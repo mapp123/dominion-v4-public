@@ -18,7 +18,7 @@ export default class Transmogrify extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/800px-TransmogrifyArt.jpg";
     cb: any = null;
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         player.data.actions++;
         if (tracker.hasTrack) {
             player.data.tavernMat.push({

@@ -13,14 +13,16 @@ export default class Merchant extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/MerchantArt.jpg";
     cb: any | null = null;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
-        this.cb = player.effects.setupEffect('treasureCardPlayed', 'merchant', {
-            compatibility: {},
-            relevant: (card) => card.name === "silver"
-        }, async (remove, card) => {
-            if (card.name === "silver") {
+        this.cb = player.effects.setupEffect('cardPlayed', 'merchant', {
+            compatibility: {
+                citadel: true
+            },
+            relevant: (card) => card.viewCard().name === "silver"
+        }, async (remove, cardTracker) => {
+            if (cardTracker.viewCard().name === "silver") {
                 player.data.money += 1;
                 remove();
             }
@@ -28,7 +30,7 @@ export default class Merchant extends Card {
     }
     async onDiscardFromPlay(player: Player): Promise<any> {
         if (this.cb) {
-            player.effects.removeEffect('treasureCardPlayed', 'merchant', this.cb);
+            player.effects.removeEffect('cardPlayed', 'merchant', this.cb);
         }
     }
 }

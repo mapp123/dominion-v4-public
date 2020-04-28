@@ -13,7 +13,7 @@ export default class Vagrant extends Card {
         "Reveal the top card of your deck. If it's a Curse, Ruins, Shelter, or Victory card, put it into your hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/VagrantArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
         const card = (await player.revealTop(1))[0];

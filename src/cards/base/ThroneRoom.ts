@@ -14,14 +14,14 @@ export default class ThroneRoom extends Card {
     cardArt = "/img/card-img/Throne_RoomArt.jpg";
     private _originalCard: Card | null = null;
     private _duplicateCard: Card | null = null;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseCardToPlayTwice, true, (card) => card.types.includes('action'));
         if (card) {
             player.lm('%p chooses %s.', Util.formatCardList([card.name]));
             player.data.playArea.push(card);
             this._originalCard = card;
             const tracker = player.getTrackerInPlay(card);
-            await player.playActionCard(card, tracker);
+            await player.playCard(card, tracker);
             this._duplicateCard = await player.replayActionCard(card, tracker);
         }
     }

@@ -13,7 +13,7 @@ export default class WorkersVillage extends Card {
         "+1 Buy";
     supplyCount = 10;
     cardArt = "/img/card-img/Workers_VillageArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions += 2;
         player.data.buys += 1;

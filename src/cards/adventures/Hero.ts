@@ -21,7 +21,7 @@ export default class Hero extends Traveller {
     randomizable = false;
     static inSupply = false;
     travellerTarget = "champion";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 2;
         await player.chooseGain(Texts.chooseCardToGainFor('hero'), false, GainRestrictions.instance().setMustIncludeType('treasure'));
     }

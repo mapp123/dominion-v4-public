@@ -16,7 +16,7 @@ export default class Contraband extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ContrabandArt.jpg";
     intrinsicValue = 3;
-    async onTreasure(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 3;
         player.data.buys += 1;
         let playerToLeft = player.game.players.indexOf(player) - 1;

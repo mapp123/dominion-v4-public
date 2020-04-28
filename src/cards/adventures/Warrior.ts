@@ -20,7 +20,7 @@ export default class Warrior extends Traveller {
     randomizable = false;
     static inSupply = false;
     travellerTarget = "hero";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.draw(2);
         const travellersInPlay = player.data.playArea.filter((a) => a.types.includes("traveller")).length;
         const lowerBound = Cost.create(3);

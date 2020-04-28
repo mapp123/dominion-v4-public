@@ -18,7 +18,7 @@ export default class TradeRoute extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Trade_RouteArt.jpg";
     static smallText = true;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.buys++;
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('trade route'));
         if (card) {

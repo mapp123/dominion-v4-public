@@ -17,7 +17,7 @@ export default class Necropolis extends Card {
     getPileIdentifier(): string {
         return 'SPECIAL_NO_PILE';
     }
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions += 2;
     }
 }

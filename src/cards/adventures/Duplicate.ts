@@ -16,7 +16,7 @@ export default class Duplicate extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/DuplicateArt.jpg";
     private gainedCard: Card | null = null;
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         if (tracker.hasTrack) {
             player.data.tavernMat.push({
                 card: tracker.exercise()!,

@@ -15,7 +15,7 @@ export default class Ducat extends Card {
         "When you gain this, you may trash a Copper from your hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/DucatArt.jpg";
-    async onTreasure(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.coffers += 1;
         player.data.buys += 1;
     }

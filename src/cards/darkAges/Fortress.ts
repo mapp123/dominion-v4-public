@@ -14,7 +14,7 @@ export default class Fortress extends Card {
         "When you trash this, put it into your hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/800px-FortressArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions += 2;
     }

@@ -16,15 +16,23 @@ export default class CoinOfTheRealm extends Card {
         "Directly after you finish playing an Action card, you may call this, for +2 Actions.";
     supplyCount = 10;
     cardArt = "/img/card-img/Coin_of_the_RealmArt.jpg";
-    async onTreasure(player: Player, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         player.data.money += 1;
         this.moveToTavernMat(player, tracker);
-        player.events.on('actionCardPlayed', async () => {
-            if (player.data.actions === 0 && player.data.hand.some((a) => a.types.includes("action")) && await player.confirmAction(Texts.doYouWantToCall('coin of the realm'))) {
-                this.call(player);
-                return false;
+        player.effects.setupEffect('cardPlayed', 'coin of the realm', {
+            compatibility: {
+                merchant: true
+            },
+            relevant: (cardTracker) => cardTracker.viewCard().types.includes("action") && player.data.actions === 0 && player.data.hand.some((a) => a.types.includes("action"))
+        }, async (remove) => {
+            if (!player.data.tavernMat.some((a) => a.card.id === this.id)) {
+                remove();
+                return;
             }
-            return player.data.tavernMat.some((a) => a.card.id === this.id);
+            if (player.data.actions === 0 && player.data.hand.some((a) => a.types.includes("action")) && await player.confirmAction(Texts.doYouWantToCall('coin of the realm'))) {
+                await this.call(player);
+                remove();
+            }
         });
     }
     async onCall(player: Player) {

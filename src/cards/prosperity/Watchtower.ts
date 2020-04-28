@@ -15,7 +15,7 @@ export default class Watchtower extends Card {
         "When you gain a card, you may reveal this from your hand, to either trash that card or put it onto your deck.";
     supplyCount = 10;
     cardArt = "/img/card-img/WatchtowerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         while (player.data.hand.length < 6 && await player.deck.peek()) {
             await player.draw();
         }

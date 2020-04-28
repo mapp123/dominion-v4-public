@@ -11,7 +11,7 @@ export default class Moneylender extends Card {
     cardText = "You may trash a Copper from your hand for +$3.";
     supplyCount = 10;
     cardArt = "/img/card-img/MoneylenderArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseAnAToTrashForB('copper', 'moneylender'), true, (card) => card.name === 'copper');
         if (card) {
             await player.trash(card);

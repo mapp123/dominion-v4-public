@@ -16,7 +16,7 @@ export default class HauntedWoods extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/HauntedWoodsArt.jpg";
     private isSecondTurn = false;
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         this.isSecondTurn = false;
         const cbs: Array<[Player, EffectFun<'buy', any>]> = [];
         await player.attackOthers(exemptPlayers, async (p) => {

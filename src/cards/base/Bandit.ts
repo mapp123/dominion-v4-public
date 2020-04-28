@@ -12,7 +12,7 @@ export default class Bandit extends Card {
     cardText = "Gain a Gold. Each other player reveals the top 2 cards of their deck, trashes a revealed Treasure other than Copper, and discards the rest.";
     supplyCount = 10;
     cardArt = "/img/card-img/BanditArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.gain('gold');
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             const topCards = await p.revealTop(2, true);

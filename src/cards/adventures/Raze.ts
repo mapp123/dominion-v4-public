@@ -13,7 +13,7 @@ export default class Raze extends Card {
         "Trash this or a card from your hand. Look at one card from the top of your deck per $1 the trashed card costs. Put one of them into your hand and discard the rest.";
     supplyCount = 10;
     cardArt = "/img/card-img/RazeArt.jpg";
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         player.data.actions++;
         const card = await player.chooseCard(Texts.chooseCardToTrashFor('raze'), [...player.data.hand, this], false, undefined, true);
         if (!card) {

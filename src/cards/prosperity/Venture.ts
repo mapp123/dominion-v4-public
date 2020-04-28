@@ -14,7 +14,7 @@ export default class Venture extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/VentureArt.jpg";
     intrinsicValue = 1;
-    async onTreasure(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 1;
         let revealedCard: Tracker<Card> | undefined;
         const revealedCards: Array<Tracker<Card>> = [];
@@ -29,7 +29,7 @@ export default class Venture extends Card {
                 player.data.playArea.push(revealedCard.exercise()!);
                 revealedCard = player.getTrackerInPlay(revealedCard.viewCard());
             }
-            await player.playTreasure(revealedCard.viewCard(), revealedCard);
+            await player.playCard(revealedCard.viewCard(), revealedCard, false);
         }
     }
 }

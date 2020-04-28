@@ -15,7 +15,7 @@ export default class Loan extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/LoanArt.jpg";
     intrinsicValue = 1;
-    protected async onTreasure(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 1;
         let revealedCard: Tracker<Card> | undefined;
         const revealedCards: Array<Tracker<Card>> = [];

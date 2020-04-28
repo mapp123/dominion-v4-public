@@ -13,7 +13,7 @@ export default class Count extends Card {
         "Choose one: +$3; or trash your hand; or gain a Duchy.";
     supplyCount = 10;
     cardArt = "/img/card-img/CountArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         switch (await player.chooseOption(Texts.chooseBenefitFor('count'), [Texts.discardXCards("2"), Texts.putACardFromYourHandOnTopOfYourDeck, Texts.gain(['copper'])] as const)) {
             case Texts.discardXCards("2"):
                 let card = await player.chooseCardFromHand(Texts.chooseCardToDiscardFor('count'));

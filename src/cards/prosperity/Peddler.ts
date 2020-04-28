@@ -18,7 +18,7 @@ export default class Peddler extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/PeddlerArt.jpg";
     static smallText = true;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions += 1;
         player.data.money += 1;
@@ -30,7 +30,7 @@ export default class Peddler extends Card {
         };
     }
     public static setup(globalCardData: any, game: Game) {
-        game.events.on('actionCardPlayed', () => {
+        game.events.on('cardPlayed', () => {
             game.updateCostModifiers();
             return true;
         });

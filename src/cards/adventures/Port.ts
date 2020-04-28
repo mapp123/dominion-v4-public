@@ -13,7 +13,7 @@ export default class Port extends Card {
         "When you buy this, gain another Port.";
     supplyCount = 10;
     cardArt = "/img/card-img/PortArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions += 2;
     }

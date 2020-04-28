@@ -14,7 +14,7 @@ export default class Forager extends Card {
         "Trash a card from your hand, then +$1 per differently named Treasure in the trash.";
     supplyCount = 10;
     cardArt = "/img/card-img/ForagerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions++;
         player.data.buys++;
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('forager'));

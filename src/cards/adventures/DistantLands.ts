@@ -14,7 +14,7 @@ export default class DistantLands extends Card {
     public static onScore(player) {
         return player.data.tavernMat.filter((a) => a.card.name === 'distant lands').length * 4;
     }
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         if (tracker.hasTrack) {
             player.lm('%p puts a distant lands on their tavern mat.');
             player.data.tavernMat.push({

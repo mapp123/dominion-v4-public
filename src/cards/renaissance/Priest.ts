@@ -12,7 +12,7 @@ export default class Priest extends Card {
         "Trash a card from your hand. For the rest of this turn, when you trash a card, +$2.";
     supplyCount = 10;
     cardArt = "/img/card-img/PriestArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 2;
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('priest'));
         if (card) {

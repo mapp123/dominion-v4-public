@@ -46,7 +46,7 @@ export default class Ruins extends Card {
             'survivors'
         ];
     }
-    async onAction(): Promise<void> {
+    async onPlay(): Promise<void> {
 
     }
 }

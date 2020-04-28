@@ -16,14 +16,14 @@ export default class KingsCourt extends Card {
     private _duplicateCard1: Card | null = null;
     private _duplicateCard2: Card | null = null;
     private _isUnderThroneRoom = false;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseCardToPlayThrice, true, (card) => card.types.includes('action'));
         if (card) {
             player.lm('%p chooses %s.', Util.formatCardList([card.name]));
             player.data.playArea.push(card);
             this._originalCard = card;
             const tracker = player.getTrackerInPlay(card);
-            await player.playActionCard(card, tracker);
+            await player.playCard(card, tracker);
             this._duplicateCard1 = await player.replayActionCard(card, tracker);
             this._duplicateCard2 = await player.replayActionCard(card, tracker);
         }

@@ -13,7 +13,7 @@ export default class Giant extends Card {
     cardText = "Turn your Journey token over (it starts face up). If it's face down, +$1. If it's face up, +$5, and each other player reveals the top card of his deck, trashes it if it costs from $3 to $6, and otherwise discards it and gains a Curse.";
     supplyCount = 10;
     cardArt = "/img/card-img/800px-GiantArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.tokens.journeyToken = player.data.tokens.journeyToken === 'UP' ? 'DOWN' : 'UP';
         if (player.data.tokens.journeyToken === 'DOWN') {
             player.data.money += 1;

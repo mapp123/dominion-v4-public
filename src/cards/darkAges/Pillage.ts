@@ -11,7 +11,7 @@ export default class Pillage extends Card {
     cardText = "Trash this. If you did, gain 2 Spoils, and each other player with 5 or more cards in hand reveals their hand and discards a card that you choose.";
     supplyCount = 10;
     cardArt = "/img/card-img/PillageArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[], tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[], tracker): Promise<void> {
         if (tracker.hasTrack) {
             await player.trash(tracker.exercise()!);
             await player.gain('spoils');

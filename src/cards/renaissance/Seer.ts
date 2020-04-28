@@ -16,7 +16,7 @@ export default class Seer extends Card {
         "Reveal the top 3 cards of your deck. Put the ones costing from $2 to $4 into your hand. Put the rest back in any order.";
     supplyCount = 10;
     cardArt = "/img/card-img/SeerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
         let revealed = await player.revealTop(3, true);

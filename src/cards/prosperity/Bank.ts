@@ -10,7 +10,7 @@ export default class Bank extends Card {
     cardText = "When you play this, it’s worth $1 per Treasure card you have in play (counting this).";
     supplyCount = 10;
     cardArt = "/img/card-img/BankArt.jpg";
-    async onTreasure(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += player.data.playArea.filter((a) => a.types.includes("treasure")).length;
     }
 }

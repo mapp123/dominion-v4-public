@@ -17,7 +17,7 @@ export default class GrandMarket extends Card {
         "You can’t buy this if you have any Coppers in play.";
     supplyCount = 10;
     cardArt = "/img/card-img/Grand_MarketArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions++;
         player.data.buys++;

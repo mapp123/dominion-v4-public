@@ -17,7 +17,7 @@ export default class Artificer extends Card {
         "Discard any number of cards. You may gain a card onto your deck costing exactly $1 per card discarded.";
     supplyCount = 10;
     cardArt = "/img/card-img/800px-ArtificerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions += 1;
         player.data.money += 1;

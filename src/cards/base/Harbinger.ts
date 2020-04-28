@@ -14,7 +14,7 @@ export default class Harbinger extends Card {
         "Look through your discard pile. You may put a card from it onto your deck.";
     supplyCount = 10;
     cardArt = "/img/card-img/HarbingerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
         const card = await player.chooseCardFromDiscard(Texts.chooseCardToMoveFromDiscardToDeck('harbinger'), true);

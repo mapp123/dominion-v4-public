@@ -13,7 +13,7 @@ export default class Thief extends Card {
     cardText = "Each other player reveals the top 2 cards of his deck. If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards.";
     supplyCount = 10;
     cardArt = "/img/card-img/ThiefArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         const chosenCards: Card[] = [];
         await player.attackOthersInOrder(exemptPlayers, async (p) => {
             const topCards = await p.revealTop(2, true);

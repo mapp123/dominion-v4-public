@@ -16,7 +16,7 @@ export default class Rats extends Card {
         "When you trash this, +1 Card.";
     supplyCount = 20;
     cardArt = "/img/card-img/RatsArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions += 1;
         await player.gain('rats');

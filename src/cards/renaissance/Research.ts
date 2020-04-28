@@ -15,7 +15,7 @@ export default class Research extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ResearchArt.jpg";
     cards = this.game && this.game.getCardHolder();
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions++;
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('research'));
         if (card) {

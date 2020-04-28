@@ -13,7 +13,7 @@ export default class Mine extends Card {
     cardText = "You may trash a Treasure from your hand. Gain a Treasure to your hand costing up to $3 more than it.";
     supplyCount = 10;
     cardArt = "/img/card-img/MineArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseATreasureToTrashFor('mine'), true, (card) => card.types.includes("treasure"));
         if (card) {
             await player.trash(card);

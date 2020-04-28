@@ -20,7 +20,7 @@ export default class Soldier extends Traveller {
     travellerTarget = "fugitive";
     randomizable = false;
     static inSupply = false;
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.money += 2;
         player.data.money += player.data.playArea.filter((a) => a.types.includes('attack') && a.id !== this.id).length;
         await player.attackOthers(exemptPlayers, async (p) => {

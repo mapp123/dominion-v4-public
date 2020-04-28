@@ -18,7 +18,7 @@ export default abstract class Knight extends Card {
         return 'knights';
     }
     abstract async beforeKnight(player: Player, exemptPlayers: Player[], tracker: Tracker<this>): Promise<void>;
-    async onAction(player: Player, exemptPlayers: Player[], tracker: Tracker<this>): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[], tracker: Tracker<this>): Promise<void> {
         await this.beforeKnight(player, exemptPlayers, tracker);
         let trashSelf = false;
         await player.attackOthers(exemptPlayers, async (p) => {

@@ -345,7 +345,7 @@ export default class Player {
                     this.data.actions--;
                 }
                 this.data.playArea.push(card);
-                await this.playActionCard(card, null);
+                await this.playCard(card, null);
             }
             else {
                 break;
@@ -361,13 +361,13 @@ export default class Player {
      * @param tracker
      * @param log
      */
-    async playActionCard(card: Card, tracker: Tracker<Card> | null, log = true): Promise<Tracker<Card>> {
+    async playCard(card: Card, tracker: Tracker<Card> | null, log = true): Promise<Tracker<Card>> {
         if (log) {
             this.lm('%p plays %s.', Util.formatCardList([card.name]));
         }
         const exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
-        await this.events.emit('willPlayAction', card);
-        await this.effects.doEffect('willPlayAction', Texts.chooseAnXEffectToRunNext('before action is played'), card);
+        await this.events.emit('willPlayCard', card);
+        await this.effects.doEffect('willPlayCard', Texts.chooseAnXEffectToRunNext('before card is played'), card);
         if (tracker == null) {
             tracker = this.getTrackerInPlay(card);
         }
@@ -384,10 +384,10 @@ export default class Player {
         if (this.data.tokens.extraMoney === pile) {
             this.data.money++;
         }
-        await card.onAction(this, exemptPlayers, tracker);
-        await this.events.emit('actionCardPlayed', card, tracker);
-        await this.game.events.emit('actionCardPlayed', this, card);
-        await this.effects.doEffect('actionCardPlayed', Texts.chooseAnXEffectToRunNext('on action card played'), tracker);
+        await card.onPlay(this, exemptPlayers, tracker);
+        await this.events.emit('cardPlayed', tracker);
+        await this.game.events.emit('cardPlayed', this, tracker);
+        await this.effects.doEffect('cardPlayed', Texts.chooseAnXEffectToRunNext('on action card played'), tracker);
         return tracker;
     }
 
@@ -417,7 +417,7 @@ export default class Player {
             (duplicateCard as any)._isUnderThroneRoom = true;
         }
         this._duplicatedPlayArea.push(duplicateCard);
-        await this.playActionCard(duplicateCard, tracker, false);
+        await this.playCard(duplicateCard, tracker, false);
         return duplicateCard;
     }
     async getExemptPlayers(attackingCard: Card): Promise<Player[]> {
@@ -461,10 +461,7 @@ export default class Player {
                     }
                     const c = this.data.hand.splice(handIndex, 1)[0];
                     this.data.playArea.push(c);
-                    this.lm('%p plays %s.', Util.formatCardList([c.name]));
-                    await this.playTreasure(c);
-                    await this.effects.doEffect('treasureCardPlayed', Texts.chooseAnXEffectToRunNext('on treasure card played'), c);
-                    await this.events.emit('treasureCardPlayed', this, c);
+                    await this.playCard(c, null);
                 }
             }
             else {
@@ -542,9 +539,6 @@ export default class Player {
             return c;
         }
         return null;
-    }
-    async playTreasure(card: Card, tracker?: Tracker<Card>) {
-        await card.doTreasure(this, tracker || this.getTrackerInPlay(card));
     }
     async discard(card: Card | Card[], log = false) {
         if (log && (!Array.isArray(card) || card.length > 0)) {

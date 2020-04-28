@@ -15,7 +15,7 @@ export default class Poacher extends Card {
         "Discard a card per empty supply pile.";
     supplyCount = 10;
     cardArt = "/img/card-img/PoacherArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions += 1;
         player.data.money += 1;

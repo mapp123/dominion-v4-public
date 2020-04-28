@@ -13,7 +13,7 @@ export default class Vault extends Card {
         "Each other player may discard 2 cards, to draw a card.";
     supplyCount = 10;
     cardArt = "/img/card-img/VaultArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(2);
         let card: Card | null;
         while ((card = await player.chooseCardFromHand(Texts.discardForBenefit('+1 Money', 1), true)) != null) {

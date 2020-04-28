@@ -22,7 +22,7 @@ export default class Piazza extends Project {
                     player.data.playArea.push(card.exercise()!);
                     card = player.getTrackerInPlay(card.viewCard());
                 }
-                await player.playActionCard(card.viewCard(), card, true);
+                await player.playCard(card.viewCard(), card, true);
             }
             else if (card && card.hasTrack) {
                 player.deck.cards.unshift(card.exercise()!);

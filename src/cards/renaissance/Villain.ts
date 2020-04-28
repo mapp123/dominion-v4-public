@@ -14,7 +14,7 @@ export default class Villain extends Card {
     supplyCount = 10;
     features = ["coffers"] as const;
     cardArt = "/img/card-img/VillainArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.coffers += 2;
         await player.attackOthers(exemptPlayers, async (p) => {
             if (p.data.hand.some((a) => player.game.getCostOfCard(a.name).coin >= 2)) {

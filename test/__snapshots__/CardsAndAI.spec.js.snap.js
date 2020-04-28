@@ -22,9 +22,14 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "sinister plot",
     "key"
   ],
-  "willPlayAction": [
+  "willPlayCard": [
     "champion",
     "urchin"
+  ],
+  "cardPlayed": [
+    "coin of the realm",
+    "merchant",
+    "citadel"
   ],
   "gain": [
     "duplicate",
@@ -43,16 +48,10 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "mint",
     "talisman"
   ],
-  "treasureCardPlayed": [
-    "merchant"
-  ],
   "trash": [
     "market square",
     "priest",
     "sewers"
-  ],
-  "actionCardPlayed": [
-    "citadel"
   ],
   "cleanupStart": [
     "exploration",

@@ -13,7 +13,7 @@ export default class Cellar extends Card {
         "Discard any number of cards, then draw that many.";
     supplyCount = 10;
     cardArt = "/img/card-img/CellarArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions++;
         let card;
         let cardsToDraw = 0;

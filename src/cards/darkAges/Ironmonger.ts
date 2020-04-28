@@ -17,7 +17,7 @@ export default class Ironmonger extends Card {
         "Victory card, +1 Card";
     supplyCount = 10;
     cardArt = "/img/card-img/IronmongerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions++;
         const card = (await player.revealTop(1, true))[0];

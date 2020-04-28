@@ -49,12 +49,11 @@ type PlayerEvent = {
     buyStart: [];
     handDraw: [];
     decision: [];
-    treasureCardPlayed: [Player, Card];
     noActionImpl: [Card, Player[]];
     noTreasureImpl: [Card];
     shuffle: [Deck];
-    willPlayAction: [Card];
-    actionCardPlayed: [Card, Tracker<Card>];
+    willPlayCard: [Card];
+    cardPlayed: [Tracker<Card>];
 }
 export class PlayerEvents extends Events<PlayerEvent> {}
 type GameEvent = {
@@ -64,8 +63,8 @@ type GameEvent = {
     trash: [Player, Tracker<Card>];
     buy: [Player, string];
     buyStart: [];
-    actionCardPlayed: [Player, Card];
     turnStart: [Player];
     turnEnd: [Player];
+    cardPlayed: [Player, Tracker<Card>];
 };
 export class GameEvents extends Events<GameEvent> {}

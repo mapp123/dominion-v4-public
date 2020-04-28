@@ -15,7 +15,7 @@ export default class Sculptor extends Card {
     features = ["villagers"] as const;
     supplyCount = 10;
     cardArt = "/img/card-img/SculptorArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseGain(Texts.chooseCardToGainFor('sculptor'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)));
         if (card && card.types.includes("treasure")) {
             player.data.villagers++;

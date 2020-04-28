@@ -18,7 +18,7 @@ export default class Messenger extends Card {
         "When this is your first buy in a turn, gain a card costing up to $4, and each other player gains a copy of it.";
     supplyCount = 10;
     cardArt = "/img/card-img/MessengerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.buys++;
         player.data.money += 2;
         if (await player.confirmAction(Texts.placeDeckIntoDiscard)) {

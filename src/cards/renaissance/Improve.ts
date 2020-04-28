@@ -15,7 +15,7 @@ export default class Improve extends Card {
         "At the start of Clean-up, you may trash an Action card you would discard from play this turn, to gain a card costing exactly $1 more than it.";
     supplyCount = 10;
     cardArt = "/img/card-img/ImproveArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 2;
         player.effects.setupEffect('cleanupStart', 'improve', {
             compatibility: {},

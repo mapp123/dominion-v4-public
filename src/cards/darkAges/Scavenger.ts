@@ -12,7 +12,7 @@ export default class Scavenger extends Card {
         "You may put your deck into your discard pile. Look through your discard pile and put one card from it onto your deck.";
     supplyCount = 10;
     cardArt = "/img/card-img/ScavengerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 2;
         if (await player.confirmAction(Texts.placeDeckIntoDiscard)) {
             const cards = [...player.deck.cards];

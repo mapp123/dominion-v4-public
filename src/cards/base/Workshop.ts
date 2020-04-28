@@ -13,7 +13,7 @@ export default class Workshop extends Card {
     cardText = "Gain a card costing up to $4.";
     supplyCount = 10;
     cardArt = "/img/card-img/WorkshopArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.chooseGain(Texts.chooseCardToGainFor('workshop'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)));
     }
 }

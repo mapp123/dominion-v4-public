@@ -12,7 +12,7 @@ export default class ActingTroupe extends Card {
     features = ["villagers"] as const;
     supplyCount = 10;
     cardArt = "/img/card-img/Acting_TroupeArt.jpg";
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         player.data.villagers += 4;
         if (tracker.hasTrack) {
             await player.trash(tracker.exercise()!);

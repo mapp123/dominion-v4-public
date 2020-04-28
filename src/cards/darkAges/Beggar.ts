@@ -14,7 +14,7 @@ export default class Beggar extends Card {
         "When another player plays an Attack card, you may first discard this to gain 2 Silvers, putting one onto your deck.";
     supplyCount = 10;
     cardArt = "/img/card-img/BeggarArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const cards = [
             await player.gain('copper', undefined, false, 'hand'),
             await player.gain('copper', undefined, false, 'hand'),

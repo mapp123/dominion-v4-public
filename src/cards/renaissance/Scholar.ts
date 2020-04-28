@@ -11,7 +11,7 @@ export default class Scholar extends Card {
         "+7 Cards.";
     supplyCount = 10;
     cardArt = "/img/card-img/ScholarArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const cards = player.data.hand.slice(0);
         player.data.hand = [];
         await player.discard(cards);

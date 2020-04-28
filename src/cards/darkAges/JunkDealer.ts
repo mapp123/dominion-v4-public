@@ -14,7 +14,7 @@ export default class JunkDealer extends Card {
         "Trash a card from your hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/800px-Junk_DealerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions += 1;
         player.data.money += 1;

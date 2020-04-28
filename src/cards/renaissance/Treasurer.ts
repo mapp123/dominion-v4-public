@@ -12,7 +12,7 @@ export default class Treasurer extends Card {
         "Choose one: Trash a Treasure from your hand; or gain a Treasure from the trash to your hand; or take the Key.";
     supplyCount = 10;
     cardArt = "/img/card-img/TreasurerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 3;
         const option = await player.chooseOption(Texts.chooseBenefitFor('treasurer'), [
             Texts.trashA('treasure'),

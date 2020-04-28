@@ -10,7 +10,7 @@ export default class Smithy extends Card {
     cardText = "+3 Cards";
     supplyCount = 10;
     cardArt = "/img/card-img/SmithyArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(3);
     }
 }

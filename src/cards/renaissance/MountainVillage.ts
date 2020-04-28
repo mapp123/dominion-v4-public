@@ -14,7 +14,7 @@ export default class MountainVillage extends Card {
         "+1 Card.";
     supplyCount = 10;
     cardArt = "/img/card-img/Mountain_VillageArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions += 2;
         const card = await player.chooseCardFromDiscard(Texts.chooseCardToTakeFromDiscard, false);
         if (card) {

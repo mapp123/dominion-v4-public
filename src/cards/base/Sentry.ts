@@ -14,7 +14,7 @@ export default class Sentry extends Card {
         "Look at the top 2 cards of your deck. Trash and/or discard any number of them. Put the rest back on top in any order.";
     supplyCount = 10;
     cardArt = "/img/card-img/SentryArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw();
         player.data.actions++;
         const cards = await player.revealTop(2, true);

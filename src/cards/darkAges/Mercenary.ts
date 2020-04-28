@@ -14,7 +14,7 @@ export default class Mercenary extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/MercenaryArt.jpg";
     randomizable = false;
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         let card = await player.chooseCardFromHand(Texts.trashForBenefit('+2 Cards, +$2', 2), true);
         if (card) {
             await player.trash(card);

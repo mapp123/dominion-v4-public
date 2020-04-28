@@ -14,7 +14,7 @@ export default class Gear extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/GearArt.jpg";
     private setAside = this.game && this.game.getCardHolder();
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(2);
         let card = await player.chooseCardFromHand(Texts.chooseCardToSetAsideFor('gear'), true);
         if (card) {

@@ -18,7 +18,7 @@ export default class BridgeTroll extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/BridgeTrollArt.jpg";
     private isSecondTurn = false;
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         this.isSecondTurn = false;
         await player.attackOthers(exemptPlayers, async (p) => {
             p.data.tokens.minusOneCoin = true;

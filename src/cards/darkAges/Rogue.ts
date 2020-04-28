@@ -15,7 +15,7 @@ export default class Rogue extends Card {
         "If there are any cards in the trash costing from $3 to $6, gain one of them. Otherwise, each other player reveals the top 2 cards of their deck, trashes one of them costing from $3 to $6, and discards the rest.";
     supplyCount = 10;
     cardArt = "/img/card-img/RogueArt.jpg";
-    async onAction(player: Player, exemptPlayers: Player[]): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.money += 2;
         const lowerLimit = Cost.create(3);
         const upperLimit = Cost.create(6);

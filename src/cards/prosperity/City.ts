@@ -12,7 +12,7 @@ export default class City extends Card {
         "If there are one or more empty Supply piles, +1 Card. If there are two or more, +1 Buy and +$1.";
     supplyCount = 10;
     cardArt = "/img/card-img/CityArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(player.game.supply.pilesEmpty > 0 ? 2 : 1);
         player.data.actions += 2;
         if (player.game.supply.pilesEmpty > 1) {

@@ -12,7 +12,7 @@ export default class CouncilRoom extends Card {
         "Each other player draws a card.";
     supplyCount = 10;
     cardArt = "/img/card-img/Council_RoomArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(4);
         player.data.buys += 1;
         await player.affectOthersInOrder(async (p) => {

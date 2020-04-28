@@ -15,7 +15,7 @@ export default class Experiment extends Card {
         "When you gain this, gain another Experiment (that doesn't come with another).";
     supplyCount = 10;
     cardArt = "/img/card-img/ExperimentArt.jpg";
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         await player.draw(2);
         player.data.actions++;
         if (tracker.hasTrack) {

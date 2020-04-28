@@ -19,7 +19,7 @@ export default class CaravanGuard extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Caravan_GuardArt.jpg";
     private isNextTurn = false;
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         this.isNextTurn = false;
         await player.draw();
         player.data.actions++;
@@ -40,7 +40,7 @@ export default class CaravanGuard extends Card {
             player.data.hand.splice(player.data.hand.indexOf(this), 1);
             player.data.playArea.push(this);
             player.lm('%p reveals and plays a caravan guard.');
-            await player.playActionCard(this, player.getTrackerInPlay(this), false);
+            await player.playCard(this, player.getTrackerInPlay(this), false);
         }
         else {
             player.game.supply.setMyUnsyncedCardData(this, [attacker, attackingCard]);

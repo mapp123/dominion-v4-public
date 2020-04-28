@@ -14,7 +14,7 @@ export default class Remodel extends Card {
         "Gain a card costing up to $2 more than it.";
     supplyCount = 10;
     cardArt = "/img/card-img/RemodelArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('remodel'));
         if (card) {
             await player.trash(card);

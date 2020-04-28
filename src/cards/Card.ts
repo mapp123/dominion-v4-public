@@ -162,9 +162,6 @@ export default abstract class Card {
     public static getSupplyMarkers(cardData: any, piles: SupplyData['piles']): {[card: string]: string[]} | null {
         return null;
     }
-    public async doTreasure(player: Player, tracker: Tracker<this>) {
-        return await this.onTreasure(player, tracker);
-    }
     public static onScore(player: Player): number {
         return 0;
     }
@@ -182,8 +179,9 @@ export default abstract class Card {
     public async onDiscardFromPlay(player: Player, tracker: Tracker<Card>) {
 
     }
-    public async onAction(player: Player, exemptPlayers: Player[], tracker: Tracker<this>) {
+    public async onPlay(player: Player, exemptPlayers: Player[], tracker: Tracker<this>) {
         await player.events.emit('noActionImpl', this, exemptPlayers);
+        throw new Error("onPlay should be implemented for all cards");
     }
     public async onAttackInHand(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {
         return false;
@@ -268,9 +266,6 @@ export default abstract class Card {
         if (this.types.includes("reserve")) {
             game.players.forEach((player) => player.ensureReserveInterrupt());
         }
-    }
-    protected async onTreasure(player: Player, tracker: Tracker<this>) {
-        await player.events.emit('noTreasureImpl', this);
     }
     protected getGlobalData() {
         return (this.game || {supply: {data: {globalCardData: {[this.name]: {}}}}}).supply.data.globalCardData[this.name];

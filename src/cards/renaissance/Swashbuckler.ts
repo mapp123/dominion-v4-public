@@ -15,7 +15,7 @@ export default class Swashbuckler extends Card {
     features = ["coffers"] as const;
     supplyCount = 10;
     cardArt = "/img/card-img/800px-SwashbucklerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(3);
         if (player.deck.discard.length > 0) {
             player.data.coffers++;

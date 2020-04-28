@@ -117,7 +117,7 @@ export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase
     cardText = ${cardText}
     supplyCount = 10;
     cardArt = "${info.artwork}";
-    async onAction(player: Player${info.types.includes("attack") ? ", exemptPlayers: Player[]" : ""}): Promise<void> {
+    async onPlay(player: Player${info.types.includes("attack") ? ", exemptPlayers: Player[]" : ""}): Promise<void> {
         
     }
 }

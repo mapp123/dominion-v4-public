@@ -15,7 +15,7 @@ export default class Mystic extends Card {
         "Name a card, then reveal the top card of your deck. If you named it, put it into your hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/MysticArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.actions += 1;
         player.data.money += 2;
         const card = await player.chooseCard(Texts.chooseCardToNameFor('mystic'), shuffle(Util.deduplicateByName(player.allCards)));

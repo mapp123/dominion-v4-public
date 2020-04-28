@@ -17,7 +17,7 @@ export default class MarketSquare extends Card {
         "When one of your cards is trashed, you may discard this from your hand to gain a Gold.";
     supplyCount = 10;
     cardArt = "/img/card-img/Market_SquareArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.draw(1);
         player.data.actions += 1;
         player.data.buys += 1;

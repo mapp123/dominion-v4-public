@@ -14,7 +14,7 @@ export default class Feast extends Card {
         "Gain a card costing up to $5.";
     supplyCount = 10;
     cardArt = "/img/card-img/FeastArt.jpg";
-    async onAction(player: Player, exemptPlayers, tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         if (tracker.hasTrack) {
             await player.trash(tracker.exercise()!);
         }

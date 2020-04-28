@@ -12,7 +12,7 @@ export default class FlagBearer extends Card {
         "When you gain or trash this, take the Flag.";
     supplyCount = 10;
     cardArt = "/img/card-img/Flag_BearerArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.money += 2;
     }
     onTrashSelf(player: Player): Promise<void> | void {

@@ -17,7 +17,7 @@ export default class Urchin extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/UrchinArt.jpg";
     private sub: any = null;
-    async onAction(player: Player, exemptPlayers: Player[], tracker): Promise<void> {
+    async onPlay(player: Player, exemptPlayers: Player[], tracker): Promise<void> {
         await player.draw(1);
         player.data.actions++;
         await player.attackOthers(exemptPlayers, async (p) => {
@@ -28,7 +28,7 @@ export default class Urchin extends Card {
                 }
             }
         });
-        this.sub = player.effects.setupEffect('willPlayAction', 'urchin', {
+        this.sub = player.effects.setupEffect('willPlayCard', 'urchin', {
             relevant: (card) => tracker.hasTrack && card.types.includes("attack"),
             compatibility: {}
         }, async (remove, card) => {
@@ -46,7 +46,7 @@ export default class Urchin extends Card {
     }
     async onDiscardFromPlay(player: Player): Promise<any> {
         if (this.sub) {
-            player.effects.removeEffect('willPlayAction', 'urchin', this.sub);
+            player.effects.removeEffect('willPlayCard', 'urchin', this.sub);
             this.sub = null;
         }
     }

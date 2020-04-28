@@ -24,7 +24,7 @@ export default class Innovation extends Project {
                 if (tracker.hasTrack && await player.confirmAction(Texts.wouldYouLikeToSetAsideThe(tracker.viewCard().name, "innovation"))) {
                     const card = tracker.exercise()!;
                     player.data.playArea.push(card);
-                    await player.playActionCard(card, null);
+                    await player.playCard(card, null);
                 }
             }
         });

@@ -13,7 +13,7 @@ export default class Armory extends Card {
     cardText = "Gain a card onto your deck costing up to $4.";
     supplyCount = 10;
     cardArt = "/img/card-img/ArmoryArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         await player.chooseGain(Texts.chooseCardToGainFor('armory'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)), 'deck');
     }
 }

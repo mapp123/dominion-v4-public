@@ -12,7 +12,7 @@ export default class Storeroom extends Card {
         "Discard any number of cards, then draw that many. Then discard any number of cards for +$1 each.";
     supplyCount = 10;
     cardArt = "/img/card-img/StoreroomArt.jpg";
-    async onAction(player: Player): Promise<void> {
+    async onPlay(player: Player): Promise<void> {
         player.data.buys += 1;
         let card: Card | null;
         let cards = 0;

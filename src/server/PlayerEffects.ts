@@ -5,27 +5,27 @@ import type Deck from "./Deck";
 import {v4} from 'uuid';
 
 export type Effect = 'turnStart' | 'turnEnd' | 'buy' | 'gain' | 'trash' | 'cleanupStart' | 'buyStart' | 'handDraw' | 'shuffle' | 'cardPlayed' | 'willPlayCard';
-const EffectArgs: {[key in Effect]: any[]} = {
-    turnStart: [],
-    turnEnd: [],
-    buy: ['hi'] as [string],
-    gain: [] as unknown as [Tracker<Card>],
-    trash: [] as unknown as [Tracker<Card>],
-    cleanupStart: [],
-    buyStart: [],
-    handDraw: [],
-    shuffle: [] as unknown as [Deck],
-    cardPlayed: [] as unknown as [Tracker<Card>],
-    willPlayCard: [] as unknown as [Card]
-};
+type EffectArgs = {
+    turnStart: [];
+    turnEnd: [];
+    buy: [string];
+    gain: [Tracker<Card>];
+    trash: [Tracker<Card>];
+    cleanupStart: [];
+    buyStart: [];
+    handDraw: [];
+    shuffle: [Deck];
+    cardPlayed: [Tracker<Card>];
+    willPlayCard: [Card];
+}
 type Context<K> = {
     duplicateKey?: K;
 }
 type Unsub<K> = (() => any) & {ctx: Context<K>; skipDuplicates: () => any};
-export type EffectFun<T extends Effect, K> = (unsub: Unsub<K>, ...effectArgs: typeof EffectArgs[T]) => Promise<any> | any;
-type RelevantFun<T extends Effect> = (...effectArgs: typeof EffectArgs[T]) => boolean;
-type CompatFun<T extends Effect> = { [key: string]: boolean } | ((card: string, ...effectArgs: typeof EffectArgs[T]) => boolean);
-type DuplicateFun<T extends Effect, K> = (...effectArgs: typeof EffectArgs[T]) => K[];
+export type EffectFun<T extends Effect, K> = (unsub: Unsub<K>, ...effectArgs: EffectArgs[T]) => (Promise<any> | any);
+type RelevantFun<T extends Effect> = (...effectArgs: EffectArgs[T]) => boolean;
+type CompatFun<T extends Effect> = { [key: string]: boolean } | ((card: string, ...effectArgs: EffectArgs[T]) => boolean);
+type DuplicateFun<T extends Effect, K> = (...effectArgs: EffectArgs[T]) => K[];
 export type EffectDef<T extends Effect, K> = {
     id: string;
     name: string;
@@ -55,11 +55,11 @@ export default class PlayerEffects {
     player: Player;
     currentEffect: Effect | null = null;
     inCompat = false;
-    private static __testingCards: {[key in Effect]: Set<string> | undefined} = {} as any;
+    private static __testingCards: {[key in Effect]: Array<EffectDef<key, any> & {lastArgs?: EffectArgs[key]}> | undefined} = {} as any;
     constructor(player: Player) {
         this.player = player;
     }
-    async doEffect<T extends Effect>(effectName: T, prompt: string, ...effectArgs: typeof EffectArgs[T]) {
+    async doEffect<T extends Effect>(effectName: T, prompt: string, ...effectArgs: EffectArgs[T]) {
         this.currentEffect = effectName;
         let runFirst: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
         let ask: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
@@ -118,6 +118,15 @@ export default class PlayerEffects {
                 ask.push(list[i]);
             }
         }
+        if (process.env.IS_TESTING === 'true') {
+            if (typeof PlayerEffects.__testingCards[effectName] !== 'undefined') {
+                PlayerEffects.__testingCards[effectName]!.forEach((def) => {
+                    if (list.some((a) => a.effect === def.effect)) {
+                        def.lastCall = effectArgs;
+                    }
+                });
+            }
+        }
         this.inCompat = true;
         while (runFirst.length > 0) {
             const a = runFirst[0];
@@ -132,11 +141,11 @@ export default class PlayerEffects {
         }
         this.inCompat = false;
         while (ask.length > 0) {
-            const choice = await this.player.chooseOption(prompt, [...ask.filter((a) => typeof a.config.temporalRelevance !== 'function' || a.config.temporalRelevance()).map((a) => a.id), ...(ask.every((a) => a.config.optional) ? ['No Effect'] : [])]);
+            const choice = await this.player.chooseOption(prompt, [...ask.filter((a) => typeof a.config.temporalRelevance !== 'function' || a.config.temporalRelevance(...effectArgs)).map((a) => a.id), ...(ask.every((a) => a.config.optional) ? ['No Effect'] : [])]);
             if (!choice || choice === 'No Effect') {
                 break;
             }
-            const unsub = genUnsub(this.effectTable[effectName].find((b) => b.name === choice)!.id);
+            const unsub = genUnsub((this.effectTable[effectName] as any).find((b) => b.name === choice)!.id);
             const index = ask.findIndex((a) => a.id === choice);
             unsub.ctx = {
                 duplicateKey: ask[index].duplicateKey
@@ -157,9 +166,9 @@ export default class PlayerEffects {
         this.effectTable[effectName].push(item as any);
         if (process.env.IS_TESTING === 'true') {
             if (typeof PlayerEffects.__testingCards[effectName] === 'undefined') {
-                PlayerEffects.__testingCards[effectName] = new Set();
+                PlayerEffects.__testingCards[effectName] = [];
             }
-            PlayerEffects.__testingCards[effectName]!.add(cardName);
+            PlayerEffects.__testingCards[effectName]!.push(item as any);
         }
         return effect;
     }

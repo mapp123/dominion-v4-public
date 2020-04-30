@@ -8,6 +8,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "guide",
     "haunted woods",
     "ratcatcher",
+    "swamp hag",
     "teacher",
     "transmogrify",
     "barracks",
@@ -43,6 +44,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
   ],
   "buy": [
     "haunted woods",
+    "swamp hag",
     "hovel",
     "goons",
     "hoard",

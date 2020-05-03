@@ -7,6 +7,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "gear",
     "guide",
     "haunted woods",
+    "hireling",
     "ratcatcher",
     "swamp hag",
     "teacher",

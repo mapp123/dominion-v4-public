@@ -18,10 +18,11 @@ import {chooseAIPlayer} from "./ai/chooseAIPlayer";
 import createGameData from "../createGameData";
 export default class Game {
     players: Player[] = [];
-    io: Namespace;
+    io: Namespace | null;
     id: string = v4();
     name?: string;
     host?: Player;
+    removeShortcut?: (id: string) => any;
     started = false;
     data = createGameData();
     get trash() {
@@ -36,9 +37,10 @@ export default class Game {
     events = new GameEvents();
     currentPlayerIndex = 0;
     aiNumber = 1;
-    constructor(io: Server) {
+    constructor(io: Server, removeShortcut?: (id: string) => any) {
         this.io = io.of('/' + this.id);
         this.io.on('connection', this.onConnect.bind(this));
+        this.removeShortcut = removeShortcut;
     }
     private registerEvent(socket: Socket, event: string, handler: (socket: Socket, ...args: any[]) => any) {
         socket.on(event, (...args: any[]) => {
@@ -96,9 +98,9 @@ export default class Game {
     async alertPlayersToProvinceOrColony(card: string) {
         if (!this.hasAlerted) {
             this.hasAlerted = true;
-            this.io.emit('endGameSound', card);
+            this.io?.emit('endGameSound', card);
             await Util.wait(5000);
-            this.io.emit('stopFlash');
+            this.io?.emit('stopFlash');
         }
     }
     giveArtifactTo(artifact: string, player: Player) {
@@ -263,7 +265,7 @@ export default class Game {
             }
         });
         if (process.env.SHOULD_LOG_PRIVATE === 'yes') {
-            this.io.emit('log', privateMsg);
+            this.io?.emit('log', privateMsg);
         }
     }
     async forAllPlayers(cb: (player: Player) => Promise<any>) {
@@ -342,6 +344,20 @@ export default class Game {
         this.lmg('%s wins!', scores[scores.length - 1][0].username);
         this.ended = true;
         await this.events.emit('gameEnd');
+        setTimeout(() => this.disconnectFromHooks(), 5000);
+    }
+
+    disconnectFromHooks() {
+        this.io?.removeAllListeners();
+        // @ts-ignore
+        this.io = null;
+        this.players.forEach((player) => {
+            if (player.currentSocket) {
+                player.currentSocket.removeAllListeners();
+                player.currentSocket = null;
+            }
+        });
+        this.removeShortcut?.(this.id);
     }
 
     nameAvailableInSupply(cardName: string) {

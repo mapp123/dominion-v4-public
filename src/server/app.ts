@@ -16,7 +16,14 @@ const shortcuts: {[key: string]: string} = {};
 const listeners: Map<Socket, string> = new Map<Socket, string>();
 sockets.on('connection', (socket) => {
     socket.on('createGame', (returnTo) => {
-        const game = new Game(sockets);
+        const game = new Game(sockets, (id) => {
+            const shortcut = Object.entries(shortcuts).find(([, gameId]) => gameId === id);
+            if (shortcut) {
+                delete shortcuts[shortcut[0]];
+            }
+            delete games[id];
+            delete sockets.nsps[`/${id}`];
+        });
         games[game.id] = game;
         socket.emit(returnTo, game.id);
     });

@@ -91,7 +91,7 @@ function sendWindowEvent(name: string) {
 }
 export default class CardGenerator extends React.Component<IProps, {}> {
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
-        if (this.props.cardTypes.includes("project") || this.props.cardTypes.includes("artifact")) {
+        if (this.props.cardTypes.includes("project") || this.props.cardTypes.includes("artifact") || this.props.cardTypes.includes("event")) {
             return this.renderLandscape();
         }
         else {

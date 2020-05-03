@@ -40,6 +40,7 @@ export default class Supply {
     get gainsToEndGame() {
         const threePiles = this.data.piles
             .filter((a) => (a.pile as any).__underlyingValue !== UNCOUNTED_EMPTY_SUPPLY_PILE)
+            .filter((a) => a.countForEmpty !== false)
             .sort((a, b) => a.pile.length - b.pile.length)
             .slice(0, 3)
             .reduce((sum, next) => sum + next.pile.length, 0);
@@ -47,6 +48,8 @@ export default class Supply {
         return Math.min(provinces, threePiles);
     }
     get pilesEmpty() {
-        return this.data.piles.filter((a) => a.pile.length === 0 && (a.pile as any).__underlyingValue !== UNCOUNTED_EMPTY_SUPPLY_PILE).length;
+        return this.data.piles
+            .filter((a) => a.pile.length === 0 && (a.pile as any).__underlyingValue !== UNCOUNTED_EMPTY_SUPPLY_PILE)
+            .filter((a) => a.countForEmpty !== false).length;
     }
 }

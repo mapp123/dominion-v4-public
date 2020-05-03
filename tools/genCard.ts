@@ -1,3 +1,4 @@
+import 'source-map-support/register';
 import * as program from 'commander';
 import {get} from "http";
 import {createWriteStream, writeFileSync} from "fs";
@@ -55,7 +56,7 @@ async function parsePage(p: string) {
         infoBox.childNodes.forEach((a) => {
             const row = a as HTMLElement;
             if (row.tagName !== 'tr') return;
-            if (onlyHTMLNode(row.childNodes)[0].innerHTML === 'Card text') {
+            if (onlyHTMLNode(row.childNodes)[0].innerHTML === 'Card text' || onlyHTMLNode(row.childNodes)[0].innerHTML === 'Event text') {
                 nextCardText = true;
                 return;
             }
@@ -70,7 +71,7 @@ async function parsePage(p: string) {
             }
             if (row.querySelector('.coin-icon')) {
                 // Is it cost?
-                if (row.childNodes.find((a) => a.childNodes.find((a) => (a as HTMLElement).attributes.href === "/index.php/Cost") != null)) {
+                if (row.childNodes.find((a) => a.childNodes.find((a) => (a as HTMLElement).attributes?.href === "/index.php/Cost") != null)) {
                     info.cost.coin = parseInt((/\$(\d*)/.exec(row.querySelector('img').attributes.alt) || ["", "0"])[1]);
                     return;
                 }
@@ -93,8 +94,8 @@ async function parsePage(p: string) {
         return info;
     }
 }
-function infoToTemplate(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
-    let cardText = info.text
+function formatCardText(text: string): string {
+    return text
         .replace(/<img [^>]*?alt="(\$\d*?)"[^>]*?>/g, (match, money) => money)
         .replace(/"/g, '\\"')
         .replace(/(\S)(\$\d+)/g, (match, pre, money) => pre + " " + money)
@@ -102,6 +103,9 @@ function infoToTemplate(info: {name: string; types: string[]; cost: {coin: numbe
         .split('\n')
         .map((a, i, arr) => "\"" + a + (i + 1 === arr.length ? "" : "\\n") + "\"")
         .join(" +\n        ") + ";";
+}
+function infoToTemplate(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
+    let cardText = formatCardText(info.text);
     return (
         // eslint-disable-next-line @typescript-eslint/indent
 `import Card from "../Card";
@@ -124,6 +128,28 @@ export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase
 `
     // eslint-disable-next-line @typescript-eslint/indent
 );
+}
+function infoToEventTemplate(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
+    let cardText = formatCardText(info.text);
+    const oncePer = info.text.includes("Once per turn:") ? "\n    static oncePerTurn = true" : info.text.includes("Once per game:") ? "\n    static oncePerGame = true" : "";
+    return (
+        // eslint-disable-next-line @typescript-eslint/indent
+`import type Player from "../../server/Player";
+import Event from "../Event";
+import {Texts} from "../../server/Texts";
+
+export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('')} extends Event {
+    cardArt = "${info.artwork}";
+    cardText = ${cardText}
+    intrinsicCost = {
+        coin: ${info.cost.coin}
+    };
+    name = "${info.name}";${oncePer}
+    async onPurchase(player: Player): Promise<any> {
+        
+    }
+}`
+    );
 }
 function infoToTest(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
     return (
@@ -159,6 +185,28 @@ describe('${info.name.toUpperCase()}', () => {
 });
 `);
 }
+function infoToEventTest(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
+    return (
+`import makeTestGame from "../testBed";
+import { expect } from 'chai';
+
+describe('${info.name.toUpperCase()}', () => {
+    it('works normally', (d) => {
+        const [game, [player], done] = makeTestGame({
+            decks: [[]],
+            activateCards: ['${info.name}'],
+            d
+        });
+        player.testBuy('${info.name}');
+        player.testHookEndTurn(() => {
+            done();
+        });
+        game.start();
+    });
+});
+`
+    )
+}
 function flattenChildren(children: Node[]): Node[] {
     return children.reduce((arr, node) => {
         return [...arr, node, ...flattenChildren(node.childNodes)];
@@ -188,10 +236,10 @@ function htmlToString(node: HTMLElement): string {
 fetchPage(`/index.php/${program.card.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('_')}`).then((page) => {
     parsePage(page).then((a) => {
         if (a) {
-            const klass = infoToTemplate(a);
+            const klass = a.types.includes("event") ? infoToEventTemplate(a) : infoToTemplate(a);
             const filename = a.name.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('');
             writeFileSync(resolve(__dirname, "..", "src/cards", a.set, filename + ".ts"), klass);
-            const test = infoToTest(a);
+            const test = a.types.includes("event") ? infoToEventTest(a) : infoToTest(a);
             writeFileSync(resolve(__dirname, "..", "test", a.set, filename + ".spec.ts"), test);
         }
     });

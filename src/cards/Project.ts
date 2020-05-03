@@ -11,14 +11,15 @@ export default abstract class Project extends Card {
     isCard = false;
     abstract onPlayerJoinProject(player: Player): Promise<any>;
     playersJoined: Player[] = [];
-    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean}> {
+    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; countForEmpty?: boolean}> {
         return [{
             identifier: this.cardName,
             // @ts-ignore
             pile: [new this(game)],
             // @ts-ignore
             identity: new this(game),
-            displayCount: false
+            displayCount: false,
+            countForEmpty: false
         }];
     }
     protected static getInstance(player: Player): Project {

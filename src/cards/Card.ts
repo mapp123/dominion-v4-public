@@ -9,7 +9,7 @@ import Cost from "../server/Cost";
 import type {Effect, EffectDef} from "../server/PlayerEffects";
 import {Texts} from "../server/Texts";
 
-export type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact' | 'command';
+export type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact' | 'command' | 'event';
 export type CardImplementation = (typeof Card) & {new (game: Game | null): Card};
 export default abstract class Card {
     id: string;
@@ -98,7 +98,7 @@ export default abstract class Card {
         // @ts-ignore
         return new this().cardArt;
     }
-    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean; inSupply?: boolean}> {
+    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean; inSupply?: boolean; countForEmpty?: boolean}> {
         const pile: Card[] = [];
         const supplyCount = typeof this.supplyCount === 'function' ? this.supplyCount(playerCount) : this.supplyCount;
         for (let i = 0; i < supplyCount; i++) {

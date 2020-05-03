@@ -14,7 +14,7 @@ export default abstract class Artifact extends Card {
     belongsToPlayer: Player | null = null;
     protected abstract setup(game: Game);
     protected abstract giveToPlayer(player: Player);
-    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
+    public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean; countForEmpty?: boolean}> {
         return [{
             identifier: this.cardName,
             // @ts-ignore
@@ -22,7 +22,8 @@ export default abstract class Artifact extends Card {
             // @ts-ignore
             identity: new this(game),
             displayCount: false,
-            hideCost: true
+            hideCost: true,
+            countForEmpty: false
         }];
     }
     private static getInstance(player: Player): Artifact {

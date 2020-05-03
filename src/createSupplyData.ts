@@ -11,7 +11,8 @@ export default function createSupplyData() {
             identity: struct.instance(Card),
             displayCount: 'boolean',
             hideCost: 'boolean?',
-            inSupply: 'boolean?'
+            inSupply: 'boolean?',
+            countForEmpty: 'boolean?'
         } as const],
         locations: struct.dict(['string', 'string']),
         activatedCards: ["string"],

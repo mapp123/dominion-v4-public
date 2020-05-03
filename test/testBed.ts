@@ -158,19 +158,19 @@ export class TestPlayer extends Player {
                 return false;
             },
             response: async (decision) => {
-                try {
-                    await cb(decision);
-                }
-                catch (e) {
-                    // @ts-ignore
-                    this.game.doneFn(e);
-                }
                 let r;
                 if (!isOptional) {
                     r = this.decisionResponses.splice(this.decisionResponses.indexOf(response) + 1, 1)[0];
                 }
                 else {
                     r = this.optionalDecisionResponses.splice(0, 1)[0];
+                }
+                try {
+                    await cb(decision);
+                }
+                catch (e) {
+                    // @ts-ignore
+                    this.game.doneFn(e);
                 }
                 return r.response(decision);
             }

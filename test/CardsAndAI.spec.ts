@@ -48,7 +48,7 @@ describe('CARDS', () => {
                 // We'll re-throw this, as we want the test to fail, but we probably want some diagnostic information as well.
                 const old = snapshots['CARDS : EFFECTS : has no new cards 1'];
                 const bad = Object.entries(effectObj).map(([effectName, cards]) => {
-                    return [effectName, cards.filter((a) => !old[effectName].includes(a))] as const;
+                    return [effectName, cards.filter((a) => !old[effectName]?.includes(a))] as const;
                 }).filter(([, cards]) => cards.length > 0);
                 bad.forEach(([effectName, cards]) => {
                     cards.forEach((card) => {

@@ -4,7 +4,7 @@ import type Card from "../cards/Card";
 import type Deck from "./Deck";
 import {v4} from 'uuid';
 
-export type Effect = 'turnStart' | 'turnEnd' | 'buy' | 'gain' | 'trash' | 'cleanupStart' | 'buyStart' | 'handDraw' | 'shuffle' | 'cardPlayed' | 'willPlayCard';
+export type Effect = 'turnStart' | 'turnEnd' | 'buy' | 'gain' | 'trash' | 'cleanupStart' | 'buyStart' | 'handDraw' | 'shuffle' | 'cardPlayed' | 'willPlayCard' | 'buyEnd';
 type EffectArgs = {
     turnStart: [];
     turnEnd: [];
@@ -17,6 +17,7 @@ type EffectArgs = {
     shuffle: [Deck];
     cardPlayed: [Tracker<Card>];
     willPlayCard: [Card];
+    buyEnd: [];
 }
 type Context<K> = {
     duplicateKey?: K;
@@ -50,7 +51,8 @@ export default class PlayerEffects {
         handDraw: [],
         shuffle: [],
         cardPlayed: [],
-        willPlayCard: []
+        willPlayCard: [],
+        buyEnd: []
     };
     player: Player;
     currentEffect: Effect | null = null;

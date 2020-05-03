@@ -403,7 +403,8 @@ export default abstract class AIPlayer extends Player {
                     wantBuyCoffers: decisionMatcher(decision.helperText, () => Texts.wantBuyCoffers),
                     discardForBenefit: decisionMatcher(decision.helperText, Texts.wantToDiscardAForBenefit),
                     wantPlayFromHand: decisionMatcher(decision.helperText, Texts.playCardFromHand),
-                    wantPlay: decisionMatcher(decision.helperText, Texts.doYouWantToPlay)
+                    wantPlay: decisionMatcher(decision.helperText, Texts.doYouWantToPlay),
+                    wantDiscardFromTavernMat: decisionMatcher(decision.helperText, Texts.doYouWantToRemoveFromTavernMat)
                 };
                 if (confirmKeys.wantTrashForBenefit) {
                     return ((await this.trashForBenefit([confirmKeys.wantTrashForBenefit[0]], 1, confirmKeys.wantTrashForBenefit[1])) !== 'No Card') as any;
@@ -501,6 +502,9 @@ export default abstract class AIPlayer extends Player {
                         default:
                             return true as any;
                     }
+                }
+                if (confirmKeys.wantDiscardFromTavernMat) {
+                    return true as any;
                 }
                 break;
             case "gain":

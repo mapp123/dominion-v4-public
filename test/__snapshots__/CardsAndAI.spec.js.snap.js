@@ -51,6 +51,9 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "mint",
     "talisman"
   ],
+  "buyEnd": [
+    "wine merchant"
+  ],
   "trash": [
     "market square",
     "priest",

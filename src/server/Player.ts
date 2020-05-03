@@ -456,30 +456,32 @@ export default class Player {
         await this.events.emit('buyStart');
         await this.game.events.emit('buyStart');
         await this.effects.doEffect('buyStart', Texts.chooseAnXEffectToRunNext('on buy phase start'));
-        while (this.data.buys > 0 && this.data.hand.filter((a) => a.types.includes('treasure')).length > 0) {
-            const choice = await this.chooseCardOrBuy();
-            if (choice.choice.name === 'End Turn') return;
-            if (choice.responseType === "playCard") {
-                const handIndex = this.data.hand.findIndex((a) => a.id === choice.choice.id);
-                if (handIndex !== -1) {
-                    if (this.data.hand[handIndex].types.indexOf("treasure") === -1) {
-                        continue;
+        chooseBuy: {
+            while (this.data.buys > 0 && this.data.hand.filter((a) => a.types.includes('treasure')).length > 0) {
+                const choice = await this.chooseCardOrBuy();
+                if (choice.choice.name === 'End Turn') break chooseBuy;
+                if (choice.responseType === "playCard") {
+                    const handIndex = this.data.hand.findIndex((a) => a.id === choice.choice.id);
+                    if (handIndex !== -1) {
+                        if (this.data.hand[handIndex].types.indexOf("treasure") === -1) {
+                            continue;
+                        }
+                        const c = this.data.hand.splice(handIndex, 1)[0];
+                        this.data.playArea.push(c);
+                        await this.playCard(c, null);
                     }
-                    const c = this.data.hand.splice(handIndex, 1)[0];
-                    this.data.playArea.push(c);
-                    await this.playCard(c, null);
+                } else {
+                    await this.buy(choice.choice.name);
+                    break;
                 }
             }
-            else {
+            while (this.data.buys > 0) {
+                const choice = await this.chooseBuy();
+                if (choice.choice.name === 'End Turn') break;
                 await this.buy(choice.choice.name);
-                break;
             }
         }
-        while (this.data.buys > 0) {
-            const choice = await this.chooseBuy();
-            if (choice.choice.name === 'End Turn') return;
-            await this.buy(choice.choice.name);
-        }
+        await this.effects.doEffect('buyEnd', Texts.chooseAnXEffectToRunNext('end of Buy phase'));
     }
     boughtCards: Card[] = [];
     async buy(cardName: string) {

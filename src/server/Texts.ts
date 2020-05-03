@@ -173,6 +173,9 @@ export class Texts {
     static doYouWantToCall(card: string) {
         return `Do you want to call your ${card}?`;
     }
+    static doYouWantToRemoveFromTavernMat(card: string) {
+        return `Do you want to remove ${card} from your tavern mat?`;
+    }
     static doYouWantToCallXForY(card: string, y: string) {
         return `Do you want to call your ${card} to ${y}?`;
     }

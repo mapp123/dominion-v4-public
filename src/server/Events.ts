@@ -54,6 +54,7 @@ type PlayerEvent = {
     shuffle: [Deck];
     willPlayCard: [Card];
     cardPlayed: [Tracker<Card>];
+    test_turnEndHooks: [];
 }
 export class PlayerEvents extends Events<PlayerEvent> {}
 type GameEvent = {

@@ -304,6 +304,8 @@ export default class Player {
         await this.buyPhase();
         await this.cleanup();
         await this.events.emit('turnEnd');
+        await this.effects.doEffect('turnEnd', Texts.chooseAnXEffectToRunNext('turnEnd'));
+        await this.events.emit('test_turnEndHooks');
         this.data.isMyTurn = false;
     }
     async cleanup() {

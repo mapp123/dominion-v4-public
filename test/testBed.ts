@@ -250,7 +250,7 @@ export class TestPlayer extends Player {
         }
         const oldResponse = lastDecision.response;
         lastDecision.response = (decision) => {
-            this.events.on('turnEnd', () => {
+            this.events.on('test_turnEndHooks', () => {
                 try {
                     cb();
                 }

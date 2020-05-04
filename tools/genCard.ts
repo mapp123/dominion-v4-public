@@ -189,6 +189,7 @@ function infoToEventTest(info: {name: string; types: string[]; cost: {coin: numb
     return (
 `import makeTestGame from "../testBed";
 import { expect } from 'chai';
+import {Texts} from "../../src/server/Texts";
 
 describe('${info.name.toUpperCase()}', () => {
     it('works normally', (d) => {

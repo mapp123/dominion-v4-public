@@ -47,6 +47,9 @@ export class Texts {
     static trashA(type: string) {
         return `Trash A ${type}`;
     }
+    static discardA(type: string) {
+        return `Discard ${Util.article(type)} ${type}`;
+    }
     static gainAFromB(a: string, b: string) {
         return `Gain a ${a} from ${b}`;
     }
@@ -73,6 +76,12 @@ export class Texts {
     }
     static discardXCards(amount: string) {
         return `Discard ${amount} cards`;
+    }
+    static discardXYs(amount: string, type: string) {
+        return `Discard ${amount} ${type}`;
+    }
+    static chooseOptionFor(card: string) {
+        return `Choose an option for ${card}...`;
     }
     static chooseCardToPlayFor(card: string) {
         return `Choose a card to play for ${card}...`;

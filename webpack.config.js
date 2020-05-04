@@ -121,7 +121,7 @@ module.exports = env => ({
             chunks: "all",
             cacheGroups: {
                 util: {
-                    test: /Texts|Util|Artifact|(?:.*?\.abstract)|Project|ClientSupply|ClientCompromise|Tracker/,
+                    test: /Texts|Util|Artifact|(?:.*?\.abstract)|Project|Event|ClientSupply|ClientCompromise|Tracker/,
                     name: 'util',
                     chunks: 'all'
                 }

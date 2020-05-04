@@ -258,6 +258,15 @@ export default abstract class AIPlayer extends Player {
                         choice: decision.options[0]
                     } as any;
                 }
+                const chooseOption = decisionMatcher(decision.helperText, Texts.chooseOptionFor);
+                if (chooseOption) {
+                    switch (chooseOption[0]) {
+                        case "quest":
+                            return {
+                                choice: decision.options[0]
+                            } as any;
+                    }
+                }
                 break;
             case "chooseCard":
                 const keys = {

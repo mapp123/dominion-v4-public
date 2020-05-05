@@ -24,7 +24,7 @@ export default class Util {
             return this.numeral(count) + ' ' + this.plural(a);
         }).filter((a) => a != null) as string[];
         if (formattedCards.length === 0) {
-            return '';
+            return 'nothing';
         }
         if (formattedCards.length === 1) {
             return formattedCards[0];

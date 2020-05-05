@@ -44,6 +44,10 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "guildhall",
     "innovation"
   ],
+  "handDraw": [
+    "expedition",
+    "flag"
+  ],
   "buy": [
     "haunted woods",
     "swamp hag",
@@ -68,9 +72,6 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "exploration",
     "improve",
     "pageant"
-  ],
-  "handDraw": [
-    "flag"
   ],
   "shuffle": [
     "star chart"

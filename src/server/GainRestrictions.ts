@@ -15,6 +15,7 @@ export class GainRestrictions {
     bannedTypes: string[] = [];
     banned: string[] = [];
     isCard = true;
+    cardAvailable = true;
     private constructor() {
 
     }
@@ -33,7 +34,7 @@ export class GainRestrictions {
         return this.allowedCards.includes(card);
     }
     private isCardAllowed(game: Game, card: string) {
-        return (!this.inSupply || game.nameAvailableInSupply(card))
+        return (!this.cardAvailable || game.nameAvailable(card, this.inSupply))
             && this.mustHaveTypes.reduce((last, type) => last && game.getTypesOfCard(card).includes(type as any), true)
             && this.bannedTypes.reduce((last, type) => last && !game.getTypesOfCard(card).includes(type as any), true)
             && !this.banned.includes(card)
@@ -46,7 +47,7 @@ export class GainRestrictions {
         this.allowedCards = [];
         game.supply.data.piles.forEach((pile) => {
             let card: Card;
-            if (pile.pile.length === 0 && this.inSupply) {
+            if (pile.pile.length === 0 && this.inSupply && this.cardAvailable) {
                 return;
             }
             else if (pile.pile.length === 0) {
@@ -103,6 +104,10 @@ export class GainRestrictions {
     }
     setIsCard(isCard: boolean) {
         this.isCard = isCard;
+        return this;
+    }
+    setIsAvailable(available: boolean) {
+        this.cardAvailable = available;
         return this;
     }
 }

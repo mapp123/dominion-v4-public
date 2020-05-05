@@ -360,8 +360,8 @@ export default class Game {
         this.removeShortcut?.(this.id);
     }
 
-    nameAvailableInSupply(cardName: string) {
-        return this.supply.data.piles.find((a) => a.inSupply !== false && a.pile.length > 0 && a.pile[a.pile.length - 1].name === cardName) != null;
+    nameAvailable(cardName: string, inSupply = true) {
+        return this.supply.data.piles.find((a) => (!inSupply || a.inSupply !== false) && a.pile.length > 0 && a.pile[a.pile.length - 1].name === cardName) != null;
     }
 
     grabNameFromSupply(cardName: string) {

@@ -113,6 +113,9 @@ export class Texts {
     static chooseCardToTrashForge(money: string | number) {
         return `Please choose a card to trash for forge. You are currently at ${money} Money.`;
     }
+    static whereWantXToken(token: string) {
+        return `Where would you like to place your ${token} token?`;
+    }
     static chooseCardToNameFor(card: string) {
         return `Please choose a card to name for ${card}...`;
     }

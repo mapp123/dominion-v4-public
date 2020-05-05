@@ -50,6 +50,9 @@ export class TestPlayer extends Player {
     get playArea() {
         return this.data.playArea.map((a) => a.name);
     }
+    get allCardsTest() {
+        return this.allCards.map((a) => a.name);
+    }
     async makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T["decision"]]> {
         if (playerUnderTest) {
             playerUnderTest.game = this.game;

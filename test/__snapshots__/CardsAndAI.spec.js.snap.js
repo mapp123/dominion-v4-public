@@ -50,6 +50,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
   ],
   "buy": [
     "haunted woods",
+    "plan",
     "swamp hag",
     "hovel",
     "goons",

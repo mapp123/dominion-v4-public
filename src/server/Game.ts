@@ -349,7 +349,7 @@ export default class Game {
     }
 
     disconnectFromHooks() {
-        this.io?.removeAllListeners();
+        this.io?.removeAllListeners?.();
         // @ts-ignore
         this.io = null;
         this.players.forEach((player) => {

@@ -14,7 +14,7 @@
     "genCard": "node tools/genCard.js",
     "lint": "npm run lintFile \"src/**/*.ts\" \"src/**/*.tsx\"",
     "lintFile": "eslint --rulesdir lint",
-    "test-azure": "nyc --reporter=cobertura mocha --reporter mocha-junit-reporter"
+    "test-azure": "c8 --reporter=cobertura mocha --reporter mocha-junit-reporter"
   },
   "keywords": [],
   "author": "",
@@ -74,6 +74,7 @@
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/experimental-utils": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
+    "c8": "^7.1.2",
     "chai": "^4.2.0",
     "commander": "^4.0.1",
     "eslint": "^6.8.0",
@@ -84,6 +85,23 @@
     "node-html-parser": "^1.1.16",
     "ts-node": "^8.5.4",
     "webpack-cli": "^3.3.10"
+  },
+  "c8": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src/**/*"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "dist/**/*"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "all": true
   },
   "nyc": {
     "extension": [

@@ -58,6 +58,9 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "mint",
     "talisman"
   ],
+  "afterTurn": [
+    "mission"
+  ],
   "turnEnd": [
     "save"
   ],

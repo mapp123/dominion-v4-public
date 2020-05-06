@@ -288,14 +288,15 @@ export default class Player {
             return response;
         }
     }
-    async playTurn() {
+    lastTurnMine = false;
+    async playTurn(logExtra = "") {
         this.turnNumber++;
         this.data.buys = 1;
         this.data.money = 0;
         this.data.actions = 1;
         this.boughtCards = [];
         this.gainedCards = [];
-        this.lm("%p's turn %s", this.turnNumber);
+        this.lm(`%p's turn %s%s`, this.turnNumber, logExtra);
         this.data.isMyTurn = true;
         this.game.updateCostModifiers();
         await this.events.emit('turnStart');
@@ -306,6 +307,8 @@ export default class Player {
         await this.events.emit('turnEnd');
         await this.effects.doEffect('turnEnd', Texts.chooseAnXEffectToRunNext('turnEnd'));
         await this.events.emit('test_turnEndHooks');
+        this.lastTurnMine = true;
+        await this.effects.doEffect('afterTurn', Texts.chooseAnXEffectToRunNext('after turn'));
         this.data.isMyTurn = false;
     }
     async cleanup() {

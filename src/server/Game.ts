@@ -295,6 +295,7 @@ export default class Game {
         while (!this.gameEnded()) {
             await this.events.emit('turnStart', this.players[this.currentPlayerIndex]);
             await this.players[this.currentPlayerIndex].playTurn();
+            this.players[this.currentPlayerIndex].lastTurnMine = false;
             await this.events.emit('turnEnd', this.players[this.currentPlayerIndex]);
             this.runAccountability();
             this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;

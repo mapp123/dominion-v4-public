@@ -345,7 +345,7 @@ class DescriptionLine extends React.Component<{line: string; fontSize: number}, 
             fontStyle: "normal" as "normal" | "italic",
             whiteSpace: "inherit" as "inherit" | "nowrap"
         } as const;
-        const phrases = this.props.line.split(/(\+\d+\s*(?:[a-z]|[A-Z])*)|([+-]?\$\d*)|([+-]?\d+VP)|(---)|(\([^(]*?This is not in the Supply.\))|(\(i[^(]*?\))/g).filter((a) => a);
+        const phrases = this.props.line.split(/(\+\d+\s*(?:[a-z]|[A-Z])*)|([+-]?\$\d*)|([+-]?\d+VP)|(---)|(\([^(]*?This is not in the Supply.\))|(i\([^(]*?\))/g).filter((a) => a);
         return phrases.map((a, i) => {
             const thisStyle = {
                 ...baseStyle
@@ -381,9 +381,9 @@ class DescriptionLine extends React.Component<{line: string; fontSize: number}, 
             if (/\([^(]*?This is not in the Supply.\)/.test(a)) {
                 thisStyle.fontStyle = "italic";
             }
-            if (/\(i[^(]*?\)/.test(a)) {
+            if (/i\([^(]*?\)/.test(a)) {
                 thisStyle.fontStyle = "italic";
-                a = `(${/\(i([^(]*)?\)/.exec(a)![1]})`;
+                a = `(${/i\(([^(]*)?\)/.exec(a)![1]})`;
             }
             return <span key={i} style={thisStyle}>{a}</span>;
         }).concat([phrases.length === 1 && phrases[0] === "---" ? <span key={phrases.length} /> : <br key={phrases.length} />]);

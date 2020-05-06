@@ -10,7 +10,7 @@ export default class Hireling extends Card {
     };
     cardText = "At the start of each of your turns for the rest of the game: \n" +
         "+1 Card\n" +
-        "(iThis stays in play.)";
+        "i(This stays in play.)";
     supplyCount = 10;
     cardArt = "/img/card-img/HirelingArt.jpg";
     async onPlay(player: Player): Promise<void> {

@@ -134,6 +134,7 @@ export default class Player {
             const decision = this.pendingDecisions.find((a) => a.id === decisionId);
             if (!decision) {
                 console.log('Attempt to respond to a undefined decision, return');
+                this.waitingForResponse = false;
                 this.emitNextDecision();
                 return;
             }

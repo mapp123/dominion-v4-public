@@ -1,6 +1,7 @@
 import Card from "../Card";
 import type Player from "../../server/Player";
 import {Texts} from "../../server/Texts";
+import type CardHolder from "../../server/CardHolder";
 
 export default class CargoShip extends Card {
     static typelineSize = 63;
@@ -13,20 +14,23 @@ export default class CargoShip extends Card {
         "Once this turn, when you gain a card, you may set it aside face up (on this). At the start of your next turn, put it into your hand.";
     supplyCount = 10;
     cardArt = "/img/card-img/Cargo_ShipArt.jpg";
-    holder = this.game && this.game.getCardHolder();
+    holder: CardHolder | null = null;
     private cb: any = null;
     async onPlay(player: Player): Promise<void> {
         player.data.money += 2;
         this.cb = player.effects.setupEffect('gain', 'cargo ship', {
             compatibility: {}
         }, async (remove, tracker) => {
+            if (this.holder == null) {
+                this.holder = this.game.getCardHolder(player);
+            }
             if (tracker.hasTrack && await player.confirmAction(Texts.wouldYouLikeToSetAsideThe(tracker.viewCard().name, 'cargo ship'))) {
                 player.lm('%p sets aside the %s with cargo ship.', tracker.viewCard().name);
                 this.holder.addCard(tracker.exercise()!);
                 player.effects.setupEffect('turnStart', 'cargo ship', {
                     compatibility: {}
                 }, async (remove2) => {
-                    if (this.holder.getCards().length) player.data.hand.push(this.holder.popCard()!);
+                    if (this.holder?.getCards().length) player.data.hand.push(this.holder.popCard()!);
                     remove2();
                 });
                 remove();
@@ -41,6 +45,6 @@ export default class CargoShip extends Card {
     }
 
     shouldDiscardFromPlay(): boolean {
-        return this.holder.getCards().length === 0;
+        return !!this.holder?.getCards().length;
     }
 }

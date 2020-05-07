@@ -15,6 +15,7 @@ import Tracker from "./Tracker";
 import Cost from "./Cost";
 import {struct} from "superstruct";
 import PlayerEffects from "./PlayerEffects";
+import type CardHolder from "./CardHolder";
 
 export default class Player {
     id = v4();
@@ -35,6 +36,7 @@ export default class Player {
     effects: PlayerEffects = new PlayerEffects(this);
     private _nextDecisionId = 0;
     isInterrupted = false;
+    cardHolders: CardHolder[] = [];
     get nextDecisionId(): string {
         return "" + this._nextDecisionId++;
     }
@@ -100,7 +102,7 @@ export default class Player {
         }
     }
     get allCards() {
-        return [...this.deck.deckAndDiscard, ...this.data.hand, ...this.data.playArea, ...this.data.tavernMat.map((a) => a.card)];
+        return [...this.deck.deckAndDiscard, ...this.data.hand, ...this.data.playArea, ...this.data.tavernMat.map((a) => a.card), ...this.cardHolders.flatMap((a) => a.getCards())];
     }
     get currentSocket() {
         return this._currentSocket;

@@ -12,6 +12,9 @@ describe('CARGO SHIP', () => {
         player.testPlayTreasure('copper');
         player.testBuy('silver');
         player.testConfirm(Texts.wouldYouLikeToSetAsideThe('silver', 'cargo ship'), true);
+        player.testHookEndTurn(() => {
+            expect(player.allCardsTest).to.have.members(['cargo ship', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'copper', 'silver']);
+        });
         player.onBuyPhaseStart(() => {
             expect(player.hand).to.have.members(['copper', 'copper', 'copper', 'copper', 'copper', 'silver']);
             done();

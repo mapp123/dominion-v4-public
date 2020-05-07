@@ -482,9 +482,14 @@ export default class Game {
             this.onAccountabilityFailure(missing, extra);
         }
     }
-    getCardHolder() {
+    getCardHolder(player: Player | null) {
         const ch = new CardHolder();
-        this.accountabilityHelpers.push(ch);
+        if (player != null) {
+            player.cardHolders.push(ch);
+        }
+        else {
+            this.accountabilityHelpers.push(ch);
+        }
         return ch;
     }
     onAccountabilityFailure(missingIds: string[], extraIds: string[]) {

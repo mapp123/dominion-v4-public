@@ -15,7 +15,7 @@ export default abstract class Card {
     id: string;
     game: Game;
     features: ReadonlyArray<'vp' | 'coffers' | 'villagers' | 'tavernMat'> = [];
-    tokens: ReadonlyArray<'journeyToken' | 'extraCard' | 'extraAction' | 'extraBuy' | 'extraMoney' | 'minusTwoCost' | 'minusOneCoin' | 'minusOneCard' | 'trashing'> = [];
+    tokens: ReadonlyArray<'journeyToken' | 'extraCard' | 'extraAction' | 'extraBuy' | 'extraMoney' | 'minusTwoCost' | 'minusOneCoin' | 'minusOneCard' | 'trashing' | 'estate'> = [];
     isCard = true;
     static descriptionSize = 60;
     static typelineSize = 64;

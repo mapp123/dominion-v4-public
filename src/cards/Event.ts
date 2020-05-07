@@ -25,7 +25,7 @@ export default abstract class Event extends Card {
             countForEmpty: false
         }];
     }
-    protected static getInstance(player: Player): Event {
+    static getInstance(player: Player): Event {
         return player.game.supply.data.piles.find((a) => a.identifier === this.cardName)!.identity as Event;
     }
     public static async onBuy(player: Player): Promise<Card | null> {

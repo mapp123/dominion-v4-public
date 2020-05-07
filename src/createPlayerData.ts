@@ -29,7 +29,8 @@ export default function createPlayerData() {
             minusOneCoin: 'boolean',
             minusOneCard: 'boolean',
             minusTwoCost: struct.union(['string', 'null'] as const),
-            journeyToken: struct.enum(['UP', 'DOWN'] as const)
+            journeyToken: struct.enum(['UP', 'DOWN'] as const),
+            estate: struct.union(['string', 'null'] as const)
         }
     }, {
         actions: 0,
@@ -54,7 +55,8 @@ export default function createPlayerData() {
             minusTwoCost: null,
             minusOneCoin: false,
             minusOneCard: false,
-            journeyToken: 'UP'
+            journeyToken: 'UP',
+            estate: null
         }
     });
 }

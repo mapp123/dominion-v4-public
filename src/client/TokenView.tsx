@@ -14,7 +14,8 @@ export default class TokenView extends React.Component<IProps, {}> {
         extraAction: "+1 Action",
         minusOneCoin: "-$1",
         minusOneCard: "-1 Card",
-        minusTwoCost: "-$2 cost"
+        minusTwoCost: "-$2 cost",
+        estate: "Estate"
     }
     formatValue(value) {
         if (value === 'UP') {

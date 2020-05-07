@@ -86,14 +86,6 @@ export default class Game {
                 }
             });
         }
-        for (let i = 0; i < this.selectedCards.length; i++) {
-            const extras = CardRegistry.getInstance().getCard(this.selectedCards[i]).registerOtherCards();
-            extras.forEach((extra) => {
-                if (!this.selectedCards.includes(extra)) {
-                    this.selectedCards.push(extra);
-                }
-            });
-        }
         this.checkForCostModifier = [...this.selectedCards];
         this.checkForTypeModifier = [...this.selectedCards];
         this.checkForRestrictionModifier = [...this.selectedCards];

@@ -129,7 +129,7 @@ export default abstract class Card {
     }
 
     /**
-     * Use this function to determine your dependant piles. For example, you might add 'ruins' here, but not 'ruined library'.
+     * Use this function to determine your dependant piles. For example, you might add 'ruined library'
      * This has a default implementation to use if, for example, you have the type of 'looter', so make sure to call `super.onChosen()`.
      */
     public static onChosen(): string[] {
@@ -138,13 +138,6 @@ export default abstract class Card {
             def.push("ruins");
         }
         return def;
-    }
-
-    /**
-     * Use this function to lay out the cards you use in this pile. For example, 'ruins' would add 'ruined library', 'ruined village', etc.
-     */
-    public static registerOtherCards(): string[] {
-        return [];
     }
 
     public static getExtraRestrictions(cardData: any, player: Player, restrictions: GainRestrictions): GainRestrictions {

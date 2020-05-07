@@ -32,4 +32,31 @@ describe('GAME', () => {
         socket.emit('setAIPlayers', 1);
         expect(game.players[0]).to.be.instanceOf(AIPlayer);
     });
+    it('allows join as a new player', (done) => {
+        const socket = io.createFakeSocket();
+        io.connectFakeSocket(socket);
+        socket.waitFor('test_newPlayerCallback').then((result) => {
+            expect(typeof result).to.equal('string');
+            expect(game.players[0].currentSocket).to.equal(socket);
+            done();
+        });
+        socket.emit('joinAsNewPlayer', 'test_newPlayerCallback');
+    });
+    it('allows join as a existing player', (done) => {
+        const socket = io.createFakeSocket();
+        const socket2 = io.createFakeSocket();
+        io.connectFakeSocket(socket);
+        socket.waitFor('test_newPlayerCallback').then((result) => {
+            expect(typeof result).to.equal('string');
+            expect(game.players[0].currentSocket).to.equal(socket);
+            io.connectFakeSocket(socket2);
+            socket2.emit('joinAsPlayer', result, 'test_existingPlayerCallback');
+        });
+        socket2.waitFor('test_existingPlayerCallback').then((result) => {
+            expect(typeof result).to.equal('string');
+            expect(game.players[0].currentSocket).to.equal(socket2);
+            done();
+        });
+        socket.emit('joinAsNewPlayer', 'test_newPlayerCallback');
+    });
 })

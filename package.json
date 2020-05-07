@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "main": "src/server/app.js",
-    "test": "npm run buildServer && nyc mocha && npm run lint",
+    "test": "npm run buildServer && c8 mocha && npm run lint",
     "buildClientW": "webpack --mode=development --watch --env=development",
     "buildClientCoverage": "webpack --mode=development --env=coverage",
     "buildClient": "webpack --mode=production --env=production",

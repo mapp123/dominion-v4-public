@@ -21,7 +21,7 @@ describe('CARDS', () => {
     const dir = readdirSync(__dirname, {
         withFileTypes: true
     });
-    dir.filter((a) => a.isDirectory()).forEach((box) => {
+    dir.filter((a) => a.isDirectory()).filter((a) => !a.name.startsWith("__") && a.name !== "server").forEach((box) => {
         describe(box.name.replace(/([A-Z])/g, " $1").toUpperCase(), () => {
             const cards = readdirSync(resolve(__dirname, box.name));
             cards.filter((a) => /.*\.spec\.js$/.test(a)).forEach((card) => {

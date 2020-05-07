@@ -48,7 +48,11 @@ export default class Game {
                 handler.call(this, socket, ...args);
             }
             catch (e) {
-                console.error(e);
+                /* istanbul ignore next 3 */
+                /* c8 ignore next 3 */
+                if (process.env.NODE_ENV === 'development') {
+                    console.error(e);
+                }
                 socket.emit('invalidMsg', event, ...args);
             }
         });
@@ -68,7 +72,7 @@ export default class Game {
         }
     }
     private cardsValidator = struct.list(['string']);
-    randomizedCards: string[] | undefined;
+    randomizedCards: string[] = [];
     setCards(socket: Socket, ...args: any[]) {
         this.selectedCards = this.cardsValidator(args[0]);
         this.randomizedCards = this.selectedCards.slice(0);

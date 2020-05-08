@@ -17,7 +17,7 @@ export default class Inheritance extends Event {
     static oncePerGame = true;
     cardHolder: Map<Player, CardHolder> = new Map();
     async onPurchase(player: Player): Promise<any> {
-        const takenCard = await player.chooseGain(Texts.whereWantXToken('estate'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)).setMustIncludeType('action'), 'none');
+        const takenCard = await player.chooseGain(Texts.whereWantXToken('estate'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)).setMustIncludeType('action').addBannedType('command'), 'none');
         if (takenCard) {
             const grabbed = player.game.grabCard(takenCard.id, 'supply', true);
             if (!grabbed) {

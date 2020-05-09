@@ -4,9 +4,11 @@ import Card from "./cards/Card";
 
 export default function createGameData() {
     return ReduxDataManager({
-        trash: [struct.instance(Card)]
+        trash: [struct.instance(Card)],
+        ways: [struct.instance(Card)]
     }, {
-        trash: []
+        trash: [],
+        ways: []
     });
 }
 

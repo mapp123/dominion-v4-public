@@ -267,6 +267,16 @@ export default abstract class AIPlayer extends Player {
                             } as any;
                     }
                 }
+                const effectRunNext = decisionMatcher(decision.helperText, Texts.chooseAnXEffectToRunNext);
+                if (effectRunNext) {
+                    switch (effectRunNext[0]) {
+                        case 'on play':
+                            return {
+                                // Dumb, but avoid ways because they should only really be used in advanced strategies.
+                                choice: decision.options.filter((a) => !a.startsWith('way'))[0]
+                            } as any;
+                    }
+                }
                 break;
             case "chooseCard":
                 const keys = {

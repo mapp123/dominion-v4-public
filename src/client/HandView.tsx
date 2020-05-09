@@ -5,11 +5,13 @@ import type GameView from "./GameView";
 import type {default as Card, CardImplementation} from "../cards/Card";
 import Reorder = require('react-reorder');
 import ClientCardRegistry from "./ClientCardRegistry";
+import type {GameData} from "../createGameData";
 interface IProps {
     hand: Card[];
     decision: Decision | null;
     gameView: GameView;
     setHoveredCard: (card: CardImplementation| null) => any;
+    gameData: GameData;
 }
 export default class HandView extends React.Component<IProps, {}> {
     list: Card[] = [];
@@ -18,7 +20,13 @@ export default class HandView extends React.Component<IProps, {}> {
         this.state = {};
     }
 
-    onClick(name: string, id: string) {
+    onClick(name: string, id: string, way?: string) {
+        if (way) {
+            this.props.gameView.interrupt('way', {
+                cardId: id,
+                asWay: way
+            });
+        }
         if (this.props.decision && this.props.decision.decision === 'chooseCardOrBuy') {
             this.props.gameView.respondToDecision<'chooseCardOrBuy'>({
                 responseType: 'playCard',
@@ -114,7 +122,7 @@ export default class HandView extends React.Component<IProps, {}> {
             <React.Suspense fallback={<div>Loading...</div>}>
                 {decision}
                 {decision && <><hr style={{borderColor: "black", borderWidth: "3px", width: "100%"}} /><span>Your Hand:</span><br /></>}
-                {[...this.props.hand, ...extras].map((card) => <HandButton id={card.id} onHover={this.onHover.bind(this)} key={card.id} cardName={card.name} types={card.types || []} onClick={decision ? () => {} : this.onClick.bind(this, card.name, card.id)}/>)}
+                {[...this.props.hand, ...extras].map((card) => <HandButton withWays={decision ? undefined : ((this.props.decision as any)?.waysAvailable || this.props.decision?.decision === "chooseCardOrBuy") ? this.props.gameData.ways.map((a) => a.name) : undefined} id={card.id} onHover={this.onHover.bind(this)} key={card.id} cardName={card.name} types={card.types || []} onClick={decision ? () => {} : this.onClick.bind(this, card.name, card.id)}/>)}
             </React.Suspense>
         );
     }

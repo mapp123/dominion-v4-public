@@ -72,6 +72,9 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "priest",
     "sewers"
   ],
+  "play": [
+    "way of the pig"
+  ],
   "cleanupStart": [
     "exploration",
     "improve",

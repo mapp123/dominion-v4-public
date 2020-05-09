@@ -186,6 +186,29 @@ export class TestPlayer extends Player {
             response: (decision) => decision.source.find((a) => a.name === actionName) as any
         })
     }
+    testPlayWay(wayName: string, actionToUse: string) {
+        this.decisionResponses.push({
+            matcher: (decision) => (decision.decision === 'chooseCard' && decision.waysAvailable) || (decision.decision === 'chooseCardOrBuy'),
+            response: async (decision) => {
+                const card = decision.source.find((a) => a.name === actionToUse)!;
+                await this.sendInterrupt('way', {
+                    cardId: card.id,
+                    asWay: wayName
+                });
+                return card as any;
+            }
+        });
+    }
+    testConfirmWay(wayName: string) {
+        this.decisionResponses.push({
+            matcher: (decision) => decision.decision === 'chooseOption' && decision.helperText === Texts.chooseAnXEffectToRunNext('on play'),
+            response: (decision) => {
+                return {
+                    choice: decision.options.find((a) => a === wayName)
+                };
+            }
+        });
+    }
     testChooseCard(text: string, card: string) {
         this.decisionResponses.push({
             matcher: (decision) => decision.decision === 'chooseCard' && decision.helperText === text,

@@ -79,12 +79,16 @@ export default class Game {
         this.selectedCards = Rules.chooseBasicCards(this.selectedCards);
         this.selectedCards = [...this.selectedCards, ...Rules.getStartingCards(this.randomizedCards).map((a) => a.cardName)].filter((a, i, arr) => arr.indexOf(a) === i);
         for (let i = 0; i < this.selectedCards.length; i++) {
-            const extras = CardRegistry.getInstance().getCard(this.selectedCards[i]).onChosen();
+            const card = CardRegistry.getInstance().getCard(this.selectedCards[i]);
+            const extras = card.onChosen();
             extras.forEach((extra) => {
                 if (!this.selectedCards.includes(extra)) {
                     this.selectedCards.push(extra);
                 }
             });
+            if (card.types.includes("way")) {
+                this.data.ways.push(new card(this));
+            }
         }
         this.checkForCostModifier = [...this.selectedCards];
         this.checkForTypeModifier = [...this.selectedCards];

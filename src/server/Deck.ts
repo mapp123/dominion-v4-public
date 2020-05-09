@@ -43,7 +43,7 @@ export default class Deck {
         this.cards = [...this.cards, ...(this.shouldShuffle ? shuffle(this.discard) : this.discard)];
         this.discard = [];
         await this.player.events.emit('shuffle', this);
-        await this.player.effects.doEffect('shuffle', Texts.chooseAnXEffectToRunNext('on shuffle'), this);
+        await this.player.effects.doEffect('shuffle', Texts.chooseAnXEffectToRunNext('on shuffle'), [], this);
     }
 
     // This is actually used, just suppressed

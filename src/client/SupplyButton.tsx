@@ -63,7 +63,7 @@ export default class SupplyButton extends React.Component<IProps, {}> {
         else {
             animation = {};
         }
-        const isDisabled = this.props.disabled && !this.props.cardTypes.includes("artifact");
+        const isDisabled = this.props.disabled && !(this.props.cardTypes.includes("artifact") || this.props.cardTypes.includes("way"));
         return (
             <button
                 className={"btn btn-"+getColorForButton(this.props.cardTypes)+(isDisabled ? " btn-disabled" : "")}

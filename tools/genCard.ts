@@ -151,6 +151,24 @@ export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase
 }`
     );
 }
+function infoToWayTemplate(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
+    let cardText = formatCardText(info.text);
+    return (
+`import type Player from "../../server/Player";
+import Way from "../Way";
+import type Tracker from "../../server/Tracker";
+import type Card from "../Card";
+
+export default class WayOfThePig extends Way {
+    cardArt = "${info.artwork}";
+    cardText = ${cardText};
+    name = "${info.name}";
+    async onWay(player: Player, exemptPlayers: Player[], tracker: Tracker<Card>): Promise<void> {
+        
+    }
+}`
+    );
+}
 function infoToTest(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
     return (
         // eslint-disable-next-line @typescript-eslint/indent
@@ -208,6 +226,44 @@ describe('${info.name.toUpperCase()}', () => {
 `
     )
 }
+function infoToWayTest(info: {name: string; types: string[]; cost: {coin: number}; text: string; artwork: string}): string {
+    return (
+        `import makeTestGame from "../testBed";
+import { expect } from 'chai';
+import {Texts} from "../../src/Server/Texts";
+
+describe('${info.name.toUpperCase()}', () => {
+    it('works normally', (d) => {
+        const [game, [player], done] = makeTestGame({
+            decks: [['smithy']],
+            activateCards: ['${info.name}'],
+            d
+        });
+        player.testPlayWay('${info.name}', 'smithy');
+        player.onBuyPhaseStart(() => {
+            done();
+        });
+        game.start();
+    });
+    it('can be throne roomed', (d) => {
+        const [game, [player], done] = makeTestGame({
+            decks: [['throne room', 'smithy']],
+            activateCards: ['${info.name}'],
+            d
+        });
+        player.testPlayAction('throne room');
+        player.testChooseCard(Texts.chooseCardToPlayTwice, 'smithy');
+        player.testConfirmWay('${info.name}');
+        player.testConfirmWay('${info.name}');
+        player.onBuyPhaseStart(() => {
+            done();
+        });
+        game.start();
+    });
+});
+`
+    )
+}
 function flattenChildren(children: Node[]): Node[] {
     return children.reduce((arr, node) => {
         return [...arr, node, ...flattenChildren(node.childNodes)];
@@ -237,10 +293,10 @@ function htmlToString(node: HTMLElement): string {
 fetchPage(`/index.php/${program.card.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('_')}`).then((page) => {
     parsePage(page).then((a) => {
         if (a) {
-            const klass = a.types.includes("event") ? infoToEventTemplate(a) : infoToTemplate(a);
+            const klass = a.types.includes("event") ? infoToEventTemplate(a) : a.types.includes("way") ? infoToWayTemplate(a) : infoToTemplate(a);
             const filename = a.name.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('');
             writeFileSync(resolve(__dirname, "..", "src/cards", a.set, filename + ".ts"), klass);
-            const test = a.types.includes("event") ? infoToEventTest(a) : infoToTest(a);
+            const test = a.types.includes("event") ? infoToEventTest(a) : a.types.includes("way") ? infoToWayTest(a) : infoToTest(a);
             writeFileSync(resolve(__dirname, "..", "test", a.set, filename + ".spec.ts"), test);
         }
     });

@@ -9,7 +9,7 @@ import Cost from "../server/Cost";
 import type {Effect, EffectDef} from "../server/PlayerEffects";
 import {Texts} from "../server/Texts";
 
-export type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact' | 'command' | 'event';
+export type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact' | 'command' | 'event' | 'way';
 export type CardImplementation = (typeof Card) & {new (game: Game | null): Card};
 export default abstract class Card {
     id: string;
@@ -176,6 +176,9 @@ export default abstract class Card {
         await player.events.emit('noActionImpl', this, exemptPlayers);
         throw new Error("onPlay should be implemented for all cards");
     }
+    public async onWay(player: Player, exemptPlayers: Player[], tracker: Tracker<Card>) {
+        throw new Error("onWay not implemented for Way-like card");
+    }
     public async onAttackInHand(player: Player, attacker: Player, attackingCard: Card, playerAlreadyExempt: boolean): Promise<boolean> {
         return false;
     }
@@ -258,6 +261,9 @@ export default abstract class Card {
     public static registerInterrupts(game: Game) {
         if (this.types.includes("reserve")) {
             game.players.forEach((player) => player.ensureReserveInterrupt());
+        }
+        if (this.types.includes("way")) {
+            game.players.forEach((player) => player.ensureWayInterrupt());
         }
     }
     protected getGlobalData() {

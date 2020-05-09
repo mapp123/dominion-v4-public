@@ -4,7 +4,7 @@ import type Card from "../cards/Card";
 import type Deck from "./Deck";
 import {v4} from 'uuid';
 
-export type Effect = 'turnStart' | 'turnEnd' | 'buy' | 'gain' | 'trash' | 'cleanupStart' | 'buyStart' | 'handDraw' | 'shuffle' | 'cardPlayed' | 'willPlayCard' | 'buyEnd' | 'afterTurn';
+export type Effect = 'turnStart' | 'turnEnd' | 'buy' | 'gain' | 'trash' | 'cleanupStart' | 'buyStart' | 'handDraw' | 'shuffle' | 'cardPlayed' | 'willPlayCard' | 'buyEnd' | 'afterTurn' | 'play';
 type EffectArgs = {
     turnStart: [];
     turnEnd: [];
@@ -19,11 +19,12 @@ type EffectArgs = {
     willPlayCard: [Card];
     buyEnd: [];
     afterTurn: [];
+    play: [Tracker<Card>, boolean];
 }
 type Context<K> = {
     duplicateKey?: K;
 }
-type Unsub<K> = (() => any) & {ctx: Context<K>; skipDuplicates: () => any};
+type Unsub<K> = (() => any) & {ctx: Context<K>; skipDuplicates: () => any; consumed: boolean};
 export type EffectFun<T extends Effect, K> = (unsub: Unsub<K>, ...effectArgs: EffectArgs[T]) => (Promise<any> | any);
 type RelevantFun<T extends Effect> = (...effectArgs: EffectArgs[T]) => boolean;
 type CompatFun<T extends Effect> = { [key: string]: boolean } | ((card: string, ...effectArgs: EffectArgs[T]) => boolean);
@@ -37,6 +38,7 @@ export type EffectDef<T extends Effect, K> = {
         relevant?: RelevantFun<T>;
         temporalRelevance?: RelevantFun<T>;
         duplicate?: DuplicateFun<T, K>;
+        requiresUnconsumed?: boolean;
     };
     effect: EffectFun<T, K>;
 }
@@ -54,7 +56,8 @@ export default class PlayerEffects {
         cardPlayed: [],
         willPlayCard: [],
         buyEnd: [],
-        afterTurn: []
+        afterTurn: [],
+        play: []
     };
     player: Player;
     currentEffect: Effect | null = null;
@@ -63,11 +66,11 @@ export default class PlayerEffects {
     constructor(player: Player) {
         this.player = player;
     }
-    async doEffect<T extends Effect>(effectName: T, prompt: string, ...effectArgs: EffectArgs[T]) {
+    async doEffect<T extends Effect>(effectName: T, prompt: string, additionalConfigs: Array<EffectDef<T, any>>, ...effectArgs: EffectArgs[T]) {
         this.currentEffect = effectName;
         let runFirst: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
         let ask: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
-        const baseList: Array<EffectDef<T, any>> = [...this.effectTable[effectName]] as any;
+        const baseList: Array<EffectDef<T, any>> = [...this.effectTable[effectName], ...additionalConfigs] as any;
         const list: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = baseList.filter((a) => typeof a.config.relevant === 'undefined' || a.config.relevant(...effectArgs)).flatMap((a) => {
             if (typeof a.config.duplicate === 'undefined') {
                 return a;
@@ -78,7 +81,8 @@ export default class PlayerEffects {
                 duplicateKey: key
             }));
         }) as any;
-        const genUnsub: (id: string) => Unsub<any> = ((id: string) => {
+        const genUnsub: (id: string, consumed: {value: boolean}) => Unsub<any> = ((id: string, consumed: {value: boolean}) => {
+            const consume = () => consumed.value = true;
             const remove = () => {
                 // @ts-ignore
                 this.effectTable[effectName] = this.effectTable[effectName].filter((a) => a.id !== id);
@@ -87,6 +91,14 @@ export default class PlayerEffects {
                 ask = ask.filter((a) => a.id !== id);
                 runFirst = runFirst.filter((a) => a.id !== id);
             };
+            Object.defineProperty(remove, 'consumed', {
+                get(): any {
+                    return consumed.value;
+                },
+                set() {
+                    consume();
+                }
+            });
             return remove;
         }) as any;
         for (let i = 0; i < list.length; i++) {
@@ -131,26 +143,33 @@ export default class PlayerEffects {
                 });
             }
         }
+        const consumed = {value: false};
         this.inCompat = true;
         while (runFirst.length > 0) {
             const a = runFirst[0];
-            const unsub = genUnsub(a.id);
-            unsub.ctx = {
-                duplicateKey: a.duplicateKey
-            };
-            await a.effect(unsub, ...effectArgs);
+            if (!a.config.requiresUnconsumed || !consumed.value) {
+                const unsub = genUnsub(a.id, consumed);
+                unsub.ctx = {
+                    duplicateKey: a.duplicateKey
+                };
+                await a.effect(unsub, ...effectArgs);
+            }
             if (runFirst.length > 0 && runFirst[0].id === a.id) {
                 runFirst.splice(0, 1);
             }
         }
         this.inCompat = false;
         while (ask.length > 0) {
-            const choice = await this.player.chooseOption(prompt, [...ask.filter((a) => typeof a.config.temporalRelevance !== 'function' || a.config.temporalRelevance(...effectArgs)).map((a) => a.id), ...(ask.every((a) => a.config.optional) ? ['No Effect'] : [])]);
+            const options = ask.filter((a) => (typeof a.config.temporalRelevance !== 'function' || a.config.temporalRelevance(...effectArgs)) && (!a.config.requiresUnconsumed || !consumed.value));
+            if (options.length === 0) {
+                break;
+            }
+            const choice = await this.player.chooseOption(prompt, [...options.map((a) => a.name), ...(ask.every((a) => a.config.optional) ? ['No Effect'] : [])]);
             if (!choice || choice === 'No Effect') {
                 break;
             }
-            const unsub = genUnsub((this.effectTable[effectName] as any).find((b) => b.name === choice)!.id);
-            const index = ask.findIndex((a) => a.id === choice);
+            const unsub = genUnsub(ask.find((b) => b.name === choice)!.id, consumed);
+            const index = ask.findIndex((a) => a.name === choice);
             unsub.ctx = {
                 duplicateKey: ask[index].duplicateKey
             };

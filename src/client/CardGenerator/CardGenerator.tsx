@@ -17,7 +17,8 @@ const colorFactorLists = {
     "hex": [0.75, 0.6, 2.1, 0, 0, 0, 0.8, 0.8, 0.8, 1.0, 0.75, 2.1],
     "state": [1.1, 1.3, 1.3, 0.6, 0.15, 0, 1.55, 1.15, 1.05, 1.4, 0.65, 0.45],
     "artifact": [2, 0.75, 0.2, 0.3, 0.15, 0.05],
-    "project": [1.9, 0.6, 0.8, 0.4, 0.2, 0.15]
+    "project": [1.9, 0.6, 0.8, 0.4, 0.2, 0.15],
+    "way": [0.6, 1.1, 1.75]
 };
 const genericCustomAccentColors = [
     [0, 0, 0, 0, 0, 0, 1, 1, 1, 1.2, 0.8, 0.5],
@@ -79,6 +80,9 @@ function pickTypesFromTypeArray(types: readonly string[]): [string, string | und
     if (types.includes("duration")) {
         return ['duration', undefined];
     }
+    if (types.includes("way")) {
+        return ['way', undefined];
+    }
     return ['action', undefined];
 }
 function sendWindowEvent(name: string) {
@@ -91,7 +95,7 @@ function sendWindowEvent(name: string) {
 }
 export default class CardGenerator extends React.Component<IProps, {}> {
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
-        if (this.props.cardTypes.includes("project") || this.props.cardTypes.includes("artifact") || this.props.cardTypes.includes("event")) {
+        if (this.props.cardTypes.includes("project") || this.props.cardTypes.includes("artifact") || this.props.cardTypes.includes("event") || this.props.cardTypes.includes("way")) {
             return this.renderLandscape();
         }
         else {
@@ -105,7 +109,7 @@ export default class CardGenerator extends React.Component<IProps, {}> {
         return (
             <svg viewBox={'0 0 1887 730'} style={{display: "flex", flex: 1, height: "100%"}}>
                 <image href={this.props.cardArtUrl} x={455} y={112} width={980} height={382} preserveAspectRatio="xMidYMin slice"/>
-                <RecolorFilter factors={colorFactorLists[this.props.cardTypes[0]]} name={'color0'} />
+                <RecolorFilter factors={this.props.factorOverrides || colorFactorLists[this.props.cardTypes[0]]} name={'color0'} />
                 <image href="/img/card-resources/EventColorOne.png" x={0} y={0} width={1887} height={730} filter="url(#color0)" />
                 <image href="/img/card-resources/EventBrown.png" x={0} y={0} width={1887} height={730} />
                 <image href="/img/card-resources/EventBrown2.png" x={0} y={0} width={1887} height={730} />

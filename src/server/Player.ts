@@ -16,6 +16,7 @@ import Cost from "./Cost";
 import {struct} from "superstruct";
 import PlayerEffects from "./PlayerEffects";
 import type CardHolder from "./CardHolder";
+import type Way from "../cards/Way";
 
 export default class Player {
     id = v4();
@@ -204,6 +205,22 @@ export default class Player {
             };
         }
     }
+    private static wayStruct = struct({
+        cardId: 'string',
+        asWay: 'string'
+    });
+    private nextAsWay: {id: string; way: string} | null = null;
+    ensureWayInterrupt() {
+        if (typeof this.interruptHooks["way"] === 'undefined') {
+            this.interruptHooks["way"] = async (data) => {
+                const newData = Player.wayStruct(data);
+                this.nextAsWay = {
+                    id: newData.cardId,
+                    way: newData.asWay
+                };
+            };
+        }
+    }
     async callReserve(card: Card) {
         await card.call(this);
     }
@@ -303,20 +320,20 @@ export default class Player {
         this.data.isMyTurn = true;
         this.game.updateCostModifiers();
         await this.events.emit('turnStart');
-        await this.effects.doEffect('turnStart', Texts.chooseAnXEffectToRunNext('start of turn'));
+        await this.effects.doEffect('turnStart', Texts.chooseAnXEffectToRunNext('start of turn'), []);
         await this.actionPhase();
         await this.buyPhase();
         await this.cleanup();
         await this.events.emit('turnEnd');
-        await this.effects.doEffect('turnEnd', Texts.chooseAnXEffectToRunNext('turnEnd'));
+        await this.effects.doEffect('turnEnd', Texts.chooseAnXEffectToRunNext('turnEnd'), []);
         await this.events.emit('test_turnEndHooks');
         this.lastTurnMine = true;
-        await this.effects.doEffect('afterTurn', Texts.chooseAnXEffectToRunNext('after turn'));
+        await this.effects.doEffect('afterTurn', Texts.chooseAnXEffectToRunNext('after turn'), []);
         this.data.isMyTurn = false;
     }
     async cleanup() {
         await this.events.emit('cleanupStart');
-        await this.effects.doEffect('cleanupStart', Texts.chooseAnXEffectToRunNext('on cleanup'));
+        await this.effects.doEffect('cleanupStart', Texts.chooseAnXEffectToRunNext('on cleanup'), []);
         await this.data.haltNotifications(async () => {
             for (let i = 0; i < this.data.playArea.length; i++) {
                 const card = this.data.playArea[i];
@@ -340,13 +357,13 @@ export default class Player {
                 await this.discard(card);
             }
             await this.events.emit('handDraw');
-            await this.effects.doEffect('handDraw', Texts.chooseAnXEffectToRunNext('on hand draw'));
+            await this.effects.doEffect('handDraw', Texts.chooseAnXEffectToRunNext('on hand draw'), []);
             await this.draw(5);
         });
     }
     async actionPhase() {
         while ((this.data.actions + this.data.villagers) > 0 && this.data.hand.filter((a) => a.types.includes('action')).length > 0) {
-            const card = await this.chooseCardFromHand(Texts.chooseActionToPlay, true, (card) => card.types.includes("action"));
+            const card = await this.chooseCardFromHand(Texts.chooseActionToPlay, true, (card) => card.types.includes("action"), true);
             if (card) {
                 if (this.data.actions === 0 && !await this.confirmAction(Texts.playActionWillUseVillagers(card.name))) {
                     this.data.hand.push(card);
@@ -359,7 +376,7 @@ export default class Player {
                     this.data.actions--;
                 }
                 this.data.playArea.push(card);
-                await this.playCard(card, null);
+                await this.playCard(card, null, true, true);
             }
             else {
                 break;
@@ -374,14 +391,22 @@ export default class Player {
      * @param card
      * @param tracker
      * @param log
+     * @param naturalPlay - This is a weirdly named parameter, but it's the best I could come up with. Essentially, did the player choose this card to play
+     * directly (over something like a Way), or did something like Throne Room play it instead? If it's the latter, we need to prompt on EACH PLAY whether to use
+     * the Way or not. Very important.
      */
-    async playCard(card: Card, tracker: Tracker<Card> | null, log = true): Promise<Tracker<Card>> {
+    async playCard(card: Card, tracker: Tracker<Card> | null, log = true, naturalPlay = false): Promise<Tracker<Card>> {
         if (log) {
-            this.lm('%p plays %s.', Util.formatCardList([card.name]));
+            if (this.nextAsWay && this.nextAsWay.id === card.id) {
+                this.lm('%p plays %s as %s.', Util.formatCardList([card.name]), this.nextAsWay.way);
+            }
+            else {
+                this.lm('%p plays %s.', Util.formatCardList([card.name]));
+            }
         }
         const exemptPlayers = card.types.includes("attack") ? await this.getExemptPlayers(card): [] as Player[];
         await this.events.emit('willPlayCard', card);
-        await this.effects.doEffect('willPlayCard', Texts.chooseAnXEffectToRunNext('before card is played'), card);
+        await this.effects.doEffect('willPlayCard', Texts.chooseAnXEffectToRunNext('before card is played'), [], card);
         if (tracker == null) {
             tracker = this.getTrackerInPlay(card);
         }
@@ -398,10 +423,29 @@ export default class Player {
         if (this.data.tokens.extraMoney === pile) {
             this.data.money++;
         }
-        await card.onPlay(this, exemptPlayers, tracker);
+        let way;
+        if (card.types.includes("action") && this.nextAsWay && this.nextAsWay.id === card.id && (way = this.game.getCard(this.nextAsWay.way)) != null && way.types.includes("way")) {
+            await (way as unknown as typeof Way).getInstance(this).onWay(this, exemptPlayers, tracker);
+        }
+        else {
+            await this.effects.doEffect('play', Texts.chooseAnXEffectToRunNext('on play'), [
+                {
+                    config: {
+                        compatibility: {},
+                        requiresUnconsumed: true
+                    },
+                    effect: async (remove, tracker) => {
+                        remove.consumed = true;
+                        await card.onPlay(this, exemptPlayers, tracker);
+                    },
+                    id: v4(),
+                    name: card.name
+                }
+            ], tracker, naturalPlay);
+        }
         await this.events.emit('cardPlayed', tracker);
         await this.game.events.emit('cardPlayed', this, tracker);
-        await this.effects.doEffect('cardPlayed', Texts.chooseAnXEffectToRunNext('on action card played'), tracker);
+        await this.effects.doEffect('cardPlayed', Texts.chooseAnXEffectToRunNext('on action card played'), [], tracker);
         return tracker;
     }
 
@@ -463,7 +507,7 @@ export default class Player {
     async buyPhase() {
         await this.events.emit('buyStart');
         await this.game.events.emit('buyStart');
-        await this.effects.doEffect('buyStart', Texts.chooseAnXEffectToRunNext('on buy phase start'));
+        await this.effects.doEffect('buyStart', Texts.chooseAnXEffectToRunNext('on buy phase start'), []);
         chooseBuy: {
             while (this.data.buys > 0 && this.data.hand.filter((a) => a.types.includes('treasure')).length > 0) {
                 const choice = await this.chooseCardOrBuy();
@@ -476,7 +520,7 @@ export default class Player {
                         }
                         const c = this.data.hand.splice(handIndex, 1)[0];
                         this.data.playArea.push(c);
-                        await this.playCard(c, null);
+                        await this.playCard(c, null, true, true);
                     }
                 } else {
                     await this.buy(choice.choice.name);
@@ -489,13 +533,13 @@ export default class Player {
                 await this.buy(choice.choice.name);
             }
         }
-        await this.effects.doEffect('buyEnd', Texts.chooseAnXEffectToRunNext('end of Buy phase'));
+        await this.effects.doEffect('buyEnd', Texts.chooseAnXEffectToRunNext('end of Buy phase'), []);
     }
     boughtCards: Card[] = [];
     async buy(cardName: string) {
         await this.game.events.emit('buy', this, cardName);
         await this.events.emit('buy', cardName);
-        await this.effects.doEffect('buy', Texts.chooseAnXEffectToRunNext('on buy'), cardName);
+        await this.effects.doEffect('buy', Texts.chooseAnXEffectToRunNext('on buy'), [], cardName);
         let cofferAmount = this.game.getCostOfCard(cardName).coin - this.data.money;
         if (cofferAmount > 0) {
             this.lm('%p uses %s coffers.', cofferAmount);
@@ -551,7 +595,7 @@ export default class Player {
             await c.onGainSelf(this, tracker);
             await this.events.emit('gain', tracker);
             await this.game.events.emit('gain', this, tracker);
-            await this.effects.doEffect('gain', Texts.chooseAnXEffectToRunNext('on gain'), tracker);
+            await this.effects.doEffect('gain', Texts.chooseAnXEffectToRunNext('on gain'), [], tracker);
             return c;
         }
         return null;
@@ -576,7 +620,7 @@ export default class Player {
         });
         return score;
     }
-    async chooseCard(helperText: string, source: Card[], optional = false, filter?: (card: Card) => boolean, sourceIsHand?: boolean): Promise<Card | null> {
+    async chooseCard(helperText: string, source: Card[], optional = false, filter?: (card: Card) => boolean, sourceIsHand?: boolean, waysAvailable?: boolean): Promise<Card | null> {
         const optionalSource: Card[] = optional ? [{name: 'No Card', id: 'nocard'}] as Card[] : [];
         let result;
         let foundCard;
@@ -592,6 +636,7 @@ export default class Player {
             id: v4(),
             helperText,
             sourceIsHand,
+            waysAvailable,
             validChoices: [...source.filter((a) => filter ? filter(a) : true), ...optionalSource]
         })) != null && ((foundCard = source.find((a) => a.id === result.id && a.name === result.name)) != null) && (filter && !filter(foundCard))) {
             console.log("Failed tests");
@@ -601,8 +646,8 @@ export default class Player {
         }
         return foundCard;
     }
-    async chooseCardFromHand(helperText: string, optional = false, filter?: (card: Card) => boolean): Promise<Card | null> {
-        const foundCard = await this.chooseCard(helperText, this.data.hand, optional, filter, true);
+    async chooseCardFromHand(helperText: string, optional = false, filter?: (card: Card) => boolean, waysAvailable?: boolean): Promise<Card | null> {
+        const foundCard = await this.chooseCard(helperText, this.data.hand, optional, filter, true, waysAvailable);
         if (foundCard == null) {
             return null;
         }
@@ -676,7 +721,7 @@ export default class Player {
         await card.onTrashSelf(this, tracker);
         await this.events.emit('trash', tracker);
         await this.game.events.emit('trash', this, tracker);
-        await this.effects.doEffect('trash', Texts.chooseAnXEffectToRunNext('on trash'), tracker);
+        await this.effects.doEffect('trash', Texts.chooseAnXEffectToRunNext('on trash'), [], tracker);
     }
     async chooseOption<T extends readonly string[]>(helperText: string, options: T): Promise<T[number]> {
         const {choice} = await this.makeDecision({

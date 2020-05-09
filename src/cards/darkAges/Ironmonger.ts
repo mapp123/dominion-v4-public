@@ -18,7 +18,7 @@ export default class Ironmonger extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/IronmongerArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
         player.data.actions++;
         const card = (await player.revealTop(1, true))[0];
         if (card) {
@@ -39,7 +39,7 @@ export default class Ironmonger extends Card {
                 player.data.money++;
             }
             if (card.viewCard().types.includes("victory")) {
-                await player.draw();
+                await player.draw(1, true);
             }
         }
     }

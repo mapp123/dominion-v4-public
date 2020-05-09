@@ -14,7 +14,7 @@ export default class Hideout extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/HideoutArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions += 2;
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('hideout'));
         if (card) {

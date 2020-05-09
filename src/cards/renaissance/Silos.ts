@@ -21,7 +21,7 @@ export default class Silos extends Project {
                 discarded++;
             }
             if (discarded) {
-                await player.draw(discarded);
+                await player.draw(discarded, false);
             }
         });
     }

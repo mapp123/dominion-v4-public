@@ -22,7 +22,7 @@ export default class Fugitive extends Traveller {
     randomizable = false;
     static inSupply = false;
     async onPlay(player: Player): Promise<void> {
-        await player.draw(2);
+        await player.draw(2, true);
         player.data.actions++;
         const card = await player.chooseCardFromHand(Texts.chooseCardToDiscardFor('fugitive'));
         if (card) {

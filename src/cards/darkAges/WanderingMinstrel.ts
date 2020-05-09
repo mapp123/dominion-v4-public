@@ -15,7 +15,7 @@ export default class WanderingMinstrel extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Wandering_MinstrelArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions += 2;
         const cards = await player.revealTop(3);
         const actions = cards.filter((a) => a.viewCard().types.includes("action"));

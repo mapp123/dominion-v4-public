@@ -14,7 +14,7 @@ export default class WorkersVillage extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Workers_VillageArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions += 2;
         player.data.buys += 1;
     }

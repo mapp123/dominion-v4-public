@@ -22,6 +22,6 @@ export default class Cellar extends Card {
             await player.discard(card);
             cardsToDraw++;
         }
-        await player.draw(cardsToDraw);
+        await player.draw(cardsToDraw, false);
     }
 }

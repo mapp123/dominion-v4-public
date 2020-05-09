@@ -17,7 +17,7 @@ export default class Flag extends Artifact {
             compatibility: {}
         }, async () => {
             player.lm('The flag activates for %p.');
-            await player.draw(1);
+            await player.draw(1, true);
         });
         this.lastPlayer = player;
     }

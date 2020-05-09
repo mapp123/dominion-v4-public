@@ -17,7 +17,7 @@ export default class Rats extends Card {
     supplyCount = 20;
     cardArt = "/img/card-img/RatsArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions += 1;
         await player.gain('rats');
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('rats'), false, (a) => a.name != 'rats');
@@ -29,6 +29,6 @@ export default class Rats extends Card {
         }
     }
     async onTrashSelf(player: Player): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
     }
 }

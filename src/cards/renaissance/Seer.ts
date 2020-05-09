@@ -17,7 +17,7 @@ export default class Seer extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SeerArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
         player.data.actions++;
         let revealed = await player.revealTop(3, true);
         const lowerLimit = Cost.create(2);

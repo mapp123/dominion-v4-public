@@ -15,7 +15,7 @@ export default class Dungeon extends Card {
     cardArt = "/img/card-img/800px-DungeonArt.jpg";
     private isNextTurn = false;
     async doEffect(player: Player) {
-        await player.draw(2);
+        await player.draw(2, true);
         let card = await player.chooseCardFromHand(Texts.chooseCardToDiscardFor('dungeon'));
         if (card) {
             await player.discard(card);

@@ -26,7 +26,7 @@ export default class Catacombs extends Card {
         else {
             player.lm('%p discards them.');
             await player.discard(top3);
-            await player.draw(3);
+            await player.draw(3, true);
         }
     }
     async onTrashSelf(player: Player): Promise<void> {

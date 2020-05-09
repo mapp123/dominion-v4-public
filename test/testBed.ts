@@ -392,7 +392,7 @@ class DrawAttack extends Card {
     cardArt = "";
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         await player.attackOthersInOrder(exemptPlayers, async (player) => {
-            await player.draw(1);
+            await player.draw(1, false);
         });
     }
 }

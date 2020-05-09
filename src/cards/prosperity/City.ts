@@ -13,7 +13,7 @@ export default class City extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/CityArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(player.game.supply.pilesEmpty > 0 ? 2 : 1);
+        await player.draw(player.game.supply.pilesEmpty > 0 ? 2 : 1, true);
         player.data.actions += 2;
         if (player.game.supply.pilesEmpty > 1) {
             player.data.buys += 1;

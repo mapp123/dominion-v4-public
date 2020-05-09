@@ -18,7 +18,7 @@ export default class MarketSquare extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Market_SquareArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
         player.data.actions += 1;
         player.data.buys += 1;
     }

@@ -25,7 +25,7 @@ export default class Storyteller extends Card {
             player.data.playArea.push(card);
             await player.playCard(card, null);
         }
-        await player.draw(player.data.money);
+        await player.draw(player.data.money, false);
         player.data.money = 0;
     }
 }

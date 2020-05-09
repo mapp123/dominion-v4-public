@@ -17,7 +17,7 @@ export default class Cultist extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/CultistArt.jpg";
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
-        await player.draw(2);
+        await player.draw(2, true);
         await player.attackOthers(exemptPlayers, async (p) => {
             await p.gain('ruins');
         });
@@ -28,6 +28,6 @@ export default class Cultist extends Card {
         }
     }
     async onTrashSelf(player: Player): Promise<void> {
-        await player.draw(3);
+        await player.draw(3, true);
     }
 }

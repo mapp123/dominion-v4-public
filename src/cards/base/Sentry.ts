@@ -15,7 +15,7 @@ export default class Sentry extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SentryArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions++;
         const cards = await player.revealTop(2, true);
         const keptCards: Card[] = [];

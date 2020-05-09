@@ -15,7 +15,7 @@ export default class Harbinger extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/HarbingerArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
         player.data.actions++;
         const card = await player.chooseCardFromDiscard(Texts.chooseCardToMoveFromDiscardToDeck('harbinger'), true);
         if (card) {

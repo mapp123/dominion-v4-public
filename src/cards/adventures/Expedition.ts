@@ -14,7 +14,7 @@ export default class Expedition extends Event {
                 flag: true
             }
         }, async (remove) => {
-            await player.draw(2);
+            await player.draw(2, false);
             remove();
         });
     }

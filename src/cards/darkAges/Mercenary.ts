@@ -21,7 +21,7 @@ export default class Mercenary extends Card {
             card = await player.chooseCardFromHand(Texts.trashForBenefit('+2 Cards, +$2', 1));
             if (card) {
                 await player.trash(card);
-                await player.draw(2);
+                await player.draw(2, true);
                 player.data.money += 2;
                 await player.attackOthers(exemptPlayers, async (p) => {
                     while (p.data.hand.length > 3) {

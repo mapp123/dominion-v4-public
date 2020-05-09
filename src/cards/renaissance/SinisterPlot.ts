@@ -22,7 +22,7 @@ export default class SinisterPlot extends Project {
                     break;
                 case Texts.drawXCards(tokens.toString()):
                     player.lm('%p removes %s token%s from their sinister plot, drawing %s card%s.', tokens, tokens === 1 ? '' : 's', tokens, tokens === 1 ? '' : 's');
-                    await player.draw(tokens);
+                    await player.draw(tokens, false);
                     tokens = 0;
                     break;
             }

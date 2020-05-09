@@ -18,7 +18,7 @@ export default class Madman extends Card {
         player.data.actions += 2;
         if (tracker.hasTrack) {
             player.game.supply.getPile('madman')?.unshift(tracker.exercise()!);
-            await player.draw(player.data.hand.length);
+            await player.draw(player.data.hand.length, true);
         }
     }
 }

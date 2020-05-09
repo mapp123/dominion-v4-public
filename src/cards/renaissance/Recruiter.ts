@@ -16,7 +16,7 @@ export default class Recruiter extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/RecruiterArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(2);
+        await player.draw(2, true);
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('recruiter'));
         if (card) {
             await player.trash(card);

@@ -16,7 +16,7 @@ export default class Experiment extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ExperimentArt.jpg";
     async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
-        await player.draw(2);
+        await player.draw(2, true);
         player.data.actions++;
         if (tracker.hasTrack) {
             this.game.supply.getPile('experiment')!.push(tracker.exercise()!);

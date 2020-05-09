@@ -21,7 +21,7 @@ export default class CaravanGuard extends Card {
     private isNextTurn = false;
     async onPlay(player: Player): Promise<void> {
         this.isNextTurn = false;
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions++;
         player.effects.setupEffect('turnStart', 'caravan guard', {
             compatibility: () => true

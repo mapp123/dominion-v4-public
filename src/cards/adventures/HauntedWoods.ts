@@ -44,7 +44,7 @@ export default class HauntedWoods extends Card {
             cbs.forEach(([p, cb]) => {
                 p.effects.removeEffect('buy', 'haunted woods', cb);
             });
-            await player.draw(3);
+            await player.draw(3, true);
             remove();
         });
     }

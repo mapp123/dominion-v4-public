@@ -18,7 +18,7 @@ export default class Artificer extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/800px-ArtificerArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
         player.data.actions += 1;
         player.data.money += 1;
         let discardedCards = 0;

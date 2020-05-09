@@ -14,7 +14,7 @@ export default class HuntingGrounds extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/686px-Hunting_GroundsArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(4);
+        await player.draw(4, true);
     }
     async onTrashSelf(player: Player): Promise<void> {
         const choices = [Texts.gain(['duchy']), Texts.gain(['estate', 'estate', 'estate'])];

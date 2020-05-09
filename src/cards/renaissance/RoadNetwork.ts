@@ -14,7 +14,7 @@ export default class RoadNetwork extends Project {
             // Must be other player
             if (player !== p && tracker.viewCard().types.includes("victory")) {
                 player.lm('Road Network activates for %p.');
-                await player.draw(1);
+                await player.draw(1, true);
             }
             return true;
         });

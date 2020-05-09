@@ -20,7 +20,7 @@ export default class Ranger extends Card {
         }
         else {
             player.data.tokens.journeyToken = 'UP';
-            await player.draw(5);
+            await player.draw(5, true);
         }
     }
 }

@@ -16,7 +16,7 @@ export default class Guide extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/800px-GuideArt.jpg";
     async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions++;
         if (tracker.hasTrack) {
             player.data.tavernMat.push({
@@ -34,6 +34,6 @@ export default class Guide extends Card {
     async onCall(player: Player) {
         await player.discard(player.data.hand);
         player.data.hand = [];
-        await player.draw(5);
+        await player.draw(5, false);
     }
 }

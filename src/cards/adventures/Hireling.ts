@@ -22,7 +22,7 @@ export default class Hireling extends Card {
                 'sinister plot': true
             }
         }, async () => {
-            await player.draw();
+            await player.draw(1, false);
         });
     }
     shouldDiscardFromPlay(): boolean {

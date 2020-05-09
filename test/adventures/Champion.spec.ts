@@ -18,7 +18,7 @@ describe('CHAMPION', () => {
         q.onBuyPhaseStart(() => {
             expect(player.hand).to.have.length(5);
             if (!player.hand.includes("smithy")) {
-                player.draw();
+                player.draw(1, false);
             }
         });
         player.testPlayAction('smithy');
@@ -44,7 +44,7 @@ describe('CHAMPION', () => {
         q.onBuyPhaseStart(() => {
             expect(player.hand).to.have.length(5);
             if (!player.hand.includes("smithy")) {
-                player.draw();
+                player.draw(1, false);
             }
         });
         player.testPlayAction('smithy');

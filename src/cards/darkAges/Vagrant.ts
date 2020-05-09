@@ -14,7 +14,7 @@ export default class Vagrant extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/VagrantArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
         player.data.actions++;
         const card = (await player.revealTop(1))[0];
         if (card) {

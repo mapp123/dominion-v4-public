@@ -17,7 +17,7 @@ export default class Ratcatcher extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/800px-RatcatcherArt.jpg";
     async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions++;
         if (tracker.hasTrack) {
             player.data.tavernMat.push({

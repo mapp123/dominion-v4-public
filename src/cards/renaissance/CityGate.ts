@@ -17,7 +17,7 @@ export default class CityGate extends Project {
             compatibility: {}
         }, async () => {
             player.lm('The city gate activates for %p.');
-            await player.draw(1);
+            await player.draw(1, true);
             const card = await player.chooseCardFromHand(Texts.chooseCardToPutOnDeck);
             if (card) {
                 player.lm('%p topdecks %s.', Util.formatCardList([card.name]));

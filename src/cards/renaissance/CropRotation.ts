@@ -19,7 +19,7 @@ export default class CropRotation extends Project {
                 const card = await player.chooseCardFromHand(Texts.discardAForBenefit('victory', 1, 'draw 2 cards'), true, (card) => card.types.includes("victory"));
                 if (card) {
                     await player.discard(card, true);
-                    await player.draw(2);
+                    await player.draw(2, true);
                 }
             }
         });

@@ -15,7 +15,7 @@ export default class Rabble extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/RabbleArt.jpg";
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
-        await player.draw(3);
+        await player.draw(3, true);
         await player.attackOthers(exemptPlayers, async (p) => {
             const cards = await p.revealTop(3, true);
             await p.discard(Util.filterAndExerciseTrackers(cards.filter((a) => a.viewCard().types.includes("action") || a.viewCard().types.includes("treasure"))));

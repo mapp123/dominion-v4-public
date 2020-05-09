@@ -18,7 +18,7 @@ export default class Urchin extends Card {
     cardArt = "/img/card-img/UrchinArt.jpg";
     private sub: any = null;
     async onPlay(player: Player, exemptPlayers: Player[], tracker): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
         player.data.actions++;
         await player.attackOthers(exemptPlayers, async (p) => {
             while (p.data.hand.length > 4) {

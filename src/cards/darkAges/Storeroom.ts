@@ -20,7 +20,7 @@ export default class Storeroom extends Card {
             await player.discard(card);
             cards++;
         }
-        await player.draw(cards);
+        await player.draw(cards, false);
         while ((card = await player.chooseCardFromHand(Texts.discardForBenefit(Texts.extraMoney("1"), 1), true)) != null) {
             await player.discard(card);
             player.data.money += 1;

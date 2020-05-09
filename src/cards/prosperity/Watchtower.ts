@@ -17,7 +17,7 @@ export default class Watchtower extends Card {
     cardArt = "/img/card-img/WatchtowerArt.jpg";
     async onPlay(player: Player): Promise<void> {
         while (player.data.hand.length < 6 && await player.deck.peek()) {
-            await player.draw();
+            await player.draw(1, false);
         }
     }
     static setup(cardData: any, game: Game) {

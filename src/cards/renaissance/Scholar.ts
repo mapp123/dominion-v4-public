@@ -15,6 +15,6 @@ export default class Scholar extends Card {
         const cards = player.data.hand.slice(0);
         player.data.hand = [];
         await player.discard(cards);
-        await player.draw(7);
+        await player.draw(7, true);
     }
 }

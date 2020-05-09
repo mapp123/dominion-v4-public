@@ -14,7 +14,7 @@ export default class Lackeys extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/LackeysArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(2);
+        await player.draw(2, true);
     }
     onGainSelf(player: Player): Promise<void> | void {
         player.data.villagers += 2;

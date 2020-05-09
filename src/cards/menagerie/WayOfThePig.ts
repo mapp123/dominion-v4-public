@@ -9,7 +9,7 @@ export default class WayOfThePig extends Way {
     };
     name = "way of the pig";
     async onWay(player: Player): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
         player.data.actions++;
     }
 }

@@ -14,7 +14,7 @@ export default class Magpie extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/800px-MagpieArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions++;
         const [card] = await player.revealTop(1, true);
         if (card) {

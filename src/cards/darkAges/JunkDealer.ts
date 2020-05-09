@@ -15,7 +15,7 @@ export default class JunkDealer extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/800px-Junk_DealerArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions += 1;
         player.data.money += 1;
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('junk dealer'));

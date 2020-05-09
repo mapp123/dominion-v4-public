@@ -13,7 +13,7 @@ export default class BanditCamp extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Bandit_CampArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions += 2;
         await player.gain('spoils');
     }

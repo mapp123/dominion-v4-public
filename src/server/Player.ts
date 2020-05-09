@@ -83,7 +83,10 @@ export default class Player {
             this.data.hand.push(card);
         }
     }
-    async draw(amount = 1) {
+
+    // I don't want to program Way of the Chameleon quite yet.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async draw(amount: number, plusCards: boolean) {
         if (amount > 0 && this.data.tokens.minusOneCard) {
             this.lm("(%p loses their -1 Card token.)");
             this.data.tokens.minusOneCard = false;
@@ -358,7 +361,7 @@ export default class Player {
             }
             await this.events.emit('handDraw');
             await this.effects.doEffect('handDraw', Texts.chooseAnXEffectToRunNext('on hand draw'), []);
-            await this.draw(5);
+            await this.draw(5, false);
         });
     }
     async actionPhase() {
@@ -418,7 +421,7 @@ export default class Player {
             this.data.buys++;
         }
         if (this.data.tokens.extraCard === pile) {
-            await this.draw();
+            await this.draw(1, true);
         }
         if (this.data.tokens.extraMoney === pile) {
             this.data.money++;

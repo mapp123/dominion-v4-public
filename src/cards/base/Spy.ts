@@ -31,7 +31,7 @@ export default class Spy extends Card {
         }
     }
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
-        await player.draw();
+        await player.draw(1, true);
         player.data.actions += 1;
         await this.affectPlayer(player, player);
         await player.attackOthersInOrder(exemptPlayers, async (p) => {

@@ -14,10 +14,10 @@ export default class LostCity extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Lost_CityArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(2);
+        await player.draw(2, true);
         player.data.actions += 2;
     }
     async onGainSelf(player: Player): Promise<void> {
-        await player.affectOthers(async (p) => await p.draw());
+        await player.affectOthers(async (p) => await p.draw(1, false));
     }
 }

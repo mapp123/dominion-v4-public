@@ -14,7 +14,7 @@ export default class OvergrownEstate extends Card {
     cardArt = "/img/card-img/800px-Overgrown_EstateArt.jpg";
     randomizable = false;
     async onTrashSelf(player: Player): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
     }
     public static createSupplyPiles(): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
         return [];

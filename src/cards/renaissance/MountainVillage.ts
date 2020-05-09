@@ -22,7 +22,7 @@ export default class MountainVillage extends Card {
             player.data.hand.push(card);
         }
         else {
-            await player.draw(1);
+            await player.draw(1, true);
         }
     }
 }

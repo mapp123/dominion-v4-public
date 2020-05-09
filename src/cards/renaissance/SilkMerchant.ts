@@ -14,7 +14,7 @@ export default class SilkMerchant extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Silk_MerchantArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        await player.draw(2);
+        await player.draw(2, true);
         player.data.buys += 1;
     }
     onGainSelf(player: Player): Promise<void> | void {

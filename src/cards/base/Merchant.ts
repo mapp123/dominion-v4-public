@@ -14,7 +14,7 @@ export default class Merchant extends Card {
     cardArt = "/img/card-img/MerchantArt.jpg";
     cb: any | null = null;
     async onPlay(player: Player): Promise<void> {
-        await player.draw(1);
+        await player.draw(1, true);
         player.data.actions++;
         this.cb = player.effects.setupEffect('cardPlayed', 'merchant', {
             compatibility: {

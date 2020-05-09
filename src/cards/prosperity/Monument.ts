@@ -13,7 +13,7 @@ export default class Monument extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/MonumentArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         player.data.vp += 1;
     }
 }

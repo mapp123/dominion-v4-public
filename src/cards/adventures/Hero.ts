@@ -22,7 +22,7 @@ export default class Hero extends Traveller {
     static inSupply = false;
     travellerTarget = "champion";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         await player.chooseGain(Texts.chooseCardToGainFor('hero'), false, GainRestrictions.instance().setMustIncludeType('treasure'));
     }
 }

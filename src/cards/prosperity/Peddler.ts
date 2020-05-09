@@ -21,7 +21,7 @@ export default class Peddler extends Card {
     async onPlay(player: Player): Promise<void> {
         await player.draw(1, true);
         player.data.actions += 1;
-        player.data.money += 1;
+        await player.addMoney(1);
     }
     public static getCostModifier(cardData: any, game: Game): {[card: string]: Cost} | null {
         const actionsInPlay = game.players[game.currentPlayerIndex].data.playArea.filter((a) => a.types.includes("action"));

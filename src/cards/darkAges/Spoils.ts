@@ -15,7 +15,7 @@ export default class Spoils extends Card {
     supplyCount = 15;
     cardArt = "/img/card-img/SpoilsArt.jpg";
     async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
-        player.data.money += 3;
+        await player.addMoney(3);
         if (tracker.hasTrack) {
             const card = tracker.exercise();
             if (card) {

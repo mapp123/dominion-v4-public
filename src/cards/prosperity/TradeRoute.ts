@@ -24,7 +24,7 @@ export default class TradeRoute extends Card {
         if (card) {
             await player.trash(card);
         }
-        player.data.money += this.getGlobalData().coins || 0;
+        await player.addMoney(this.getGlobalData().coins || 0);
     }
     static setup(globalCardData, game: Game) {
         globalCardData.tokens = {};

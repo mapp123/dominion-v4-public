@@ -16,7 +16,7 @@ export default class Improve extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ImproveArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         player.effects.setupEffect('cleanupStart', 'improve', {
             compatibility: {},
             temporalRelevance: () => player.data.playArea.some((a) => a.types.includes('action'))

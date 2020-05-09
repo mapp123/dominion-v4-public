@@ -17,7 +17,7 @@ export default class Spices extends Card {
     cardArt = "/img/card-img/SpicesArt.jpg";
     intrinsicValue = 2;
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         player.data.buys += 1;
     }
     onGainSelf(player: Player): Promise<void> | void {

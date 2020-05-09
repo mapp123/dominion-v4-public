@@ -21,6 +21,6 @@ export default class Forager extends Card {
         if (card) {
             await player.trash(card);
         }
-        player.data.money += player.game.trash.filter((a, i) => player.game.trash.findIndex((b) => b.name === a.name) === i).filter((a) => a.types.includes('treasure')).length;
+        await player.addMoney(player.game.trash.filter((a, i) => player.game.trash.findIndex((b) => b.name === a.name) === i).filter((a) => a.types.includes('treasure')).length);
     }
 }

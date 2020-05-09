@@ -14,7 +14,7 @@ export default class Militia extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/MilitiaArt.jpg";
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         await player.attackOthers(exemptPlayers, async (p) => {
             while (p.data.hand.length > 3) {
                 const card = await p.chooseCardFromHand(Texts.chooseCardToDiscardFor('militia'));

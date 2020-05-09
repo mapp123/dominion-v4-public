@@ -13,6 +13,6 @@ export default class Copper extends Card {
     intrinsicValue = 1;
     supplyCount = (players) => 60 - (players * 7);
     async onPlay(player: Player) {
-        player.data.money += 1;
+        await player.addMoney(1);
     }
 }

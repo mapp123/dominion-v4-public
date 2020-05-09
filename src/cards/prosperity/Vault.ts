@@ -18,7 +18,7 @@ export default class Vault extends Card {
         let card: Card | null;
         while ((card = await player.chooseCardFromHand(Texts.discardForBenefit('+1 Money', 1), true)) != null) {
             await player.discard(card, true);
-            player.data.money += 1;
+            await player.addMoney(1);
         }
         await player.affectOthers(async (p) => {
             const card = await p.chooseCardFromHand(Texts.discardForBenefit('to draw a card', 2), true);

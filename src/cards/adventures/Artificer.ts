@@ -20,7 +20,7 @@ export default class Artificer extends Card {
     async onPlay(player: Player): Promise<void> {
         await player.draw(1, true);
         player.data.actions += 1;
-        player.data.money += 1;
+        await player.addMoney(1);
         let discardedCards = 0;
         let card: Card | null;
         while ((card = await player.chooseCardFromHand(Texts.discardCardsForBenefit('gain a card worth $1 per card discarded'), true)) != null) {

@@ -13,6 +13,6 @@ export default class Silver extends Card {
     cardArt = "/img/card-img/SilverArt.jpg";
     intrinsicValue = 2;
     async onPlay(player: Player) {
-        player.data.money += 2;
+        await player.addMoney(2);
     }
 }

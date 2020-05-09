@@ -24,7 +24,7 @@ export default class TreasureHunter extends Traveller {
     travellerTarget = "warrior";
     async onPlay(player: Player): Promise<void> {
         player.data.actions++;
-        player.data.money += 1;
+        await player.addMoney(1);
         if (player.game.players.length === 1) {
             return;
         }

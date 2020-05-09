@@ -16,7 +16,7 @@ export default class Squire extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/SquireArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 1;
+        await player.addMoney(1);
         const choice = await player.chooseOption(Texts.chooseBenefitFor('squire'), [Texts.extraActions("2"), Texts.extraBuys("2"), Texts.gain(['silver'])] as const);
         switch (choice) {
             case Texts.extraActions("2"):

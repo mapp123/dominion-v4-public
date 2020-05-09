@@ -84,6 +84,17 @@ export default class Player {
         }
     }
 
+    async addMoney(amount: number) {
+        this.data.money += amount;
+    }
+
+    async removeMoney(amount: number) {
+        if (this.data.money < amount) {
+            throw new Error("Tried to remove more money than we have.");
+        }
+        this.data.money -= amount;
+    }
+
     // I don't want to program Way of the Chameleon quite yet.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async draw(amount: number, plusCards: boolean) {

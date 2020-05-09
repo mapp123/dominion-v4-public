@@ -16,7 +16,7 @@ export default class Storyteller extends Card {
     cardArt = "/img/card-img/StorytellerArt.jpg";
     async onPlay(player: Player): Promise<void> {
         player.data.actions++;
-        player.data.money++;
+        await player.addMoney(1);
         for (let i = 0; i < 3; i++) {
             const card = await player.chooseCardFromHand(Texts.chooseCardToPlayFor(this.name), true, (card) => card.types.includes("treasure"));
             if (card == null) {
@@ -26,6 +26,6 @@ export default class Storyteller extends Card {
             await player.playCard(card, null);
         }
         await player.draw(player.data.money, false);
-        player.data.money = 0;
+        await player.removeMoney(player.data.money);
     }
 }

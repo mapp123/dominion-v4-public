@@ -37,7 +37,7 @@ export default class Count extends Card {
         }
         switch (await player.chooseOption(Texts.chooseBenefitFor('count'), [Texts.extraMoney("3"), Texts.trashYourHand, Texts.gain(['duchy'])])) {
             case Texts.extraMoney("3"):
-                player.data.money += 3;
+                await player.addMoney(3);
                 break;
             case Texts.trashYourHand:
                 const cards = [...player.data.hand];

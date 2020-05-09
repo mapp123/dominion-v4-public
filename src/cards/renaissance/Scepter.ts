@@ -18,7 +18,7 @@ export default class Scepter extends Card {
         const choice = await player.chooseOption(Texts.chooseBenefitFor('scepter'), [Texts.extraMoney("2"), Texts.replayAction] as const);
         switch (choice) {
             case Texts.extraMoney("2"):
-                player.data.money += 2;
+                await player.addMoney(2);
                 break;
             case Texts.replayAction:
                 const card = await player.chooseCard(Texts.chooseCardToReplay, player.data.playArea.filter((a) => a.types.includes("action")));

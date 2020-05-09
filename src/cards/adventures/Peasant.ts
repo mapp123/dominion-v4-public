@@ -17,6 +17,6 @@ export default class Peasant extends Traveller {
     travellerTarget = "soldier";
     async onPlay(player: Player): Promise<void> {
         player.data.buys++;
-        player.data.money++;
+        await player.addMoney(1);
     }
 }

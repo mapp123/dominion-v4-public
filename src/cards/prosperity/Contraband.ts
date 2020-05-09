@@ -17,7 +17,7 @@ export default class Contraband extends Card {
     cardArt = "/img/card-img/ContrabandArt.jpg";
     intrinsicValue = 3;
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 3;
+        await player.addMoney(3);
         player.data.buys += 1;
         let playerToLeft = player.game.players.indexOf(player) - 1;
         if (playerToLeft < 0) {

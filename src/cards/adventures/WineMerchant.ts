@@ -18,7 +18,7 @@ export default class WineMerchant extends Card {
     cardArt = "/img/card-img/WineMerchantArt.jpg";
     async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         player.data.buys++;
-        player.data.money += 4;
+        await player.addMoney(4);
         if (tracker.hasTrack) {
             player.data.tavernMat.push({
                 card: tracker.exercise()!,

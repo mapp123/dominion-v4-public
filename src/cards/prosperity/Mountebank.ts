@@ -13,7 +13,7 @@ export default class Mountebank extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/800px-MountebankArt.jpg";
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         await player.attackOthersInSteps<boolean>(exemptPlayers, [
             async (p) => {
                 if (p.data.hand.find((a) => a.name === 'curse') != null && await p.confirmAction(Texts.doYouWantToDiscardAnAForB('curse', 'mountebank'))) {

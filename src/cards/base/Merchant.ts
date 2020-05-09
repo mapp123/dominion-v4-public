@@ -23,7 +23,7 @@ export default class Merchant extends Card {
             relevant: (card) => card.viewCard().name === "silver"
         }, async (remove, cardTracker) => {
             if (cardTracker.viewCard().name === "silver") {
-                player.data.money += 1;
+                await player.addMoney(1);
                 remove();
             }
         });

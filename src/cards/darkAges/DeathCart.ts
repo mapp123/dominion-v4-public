@@ -24,7 +24,7 @@ export default class DeathCart extends Card {
                 const c = player.data.hand.splice(player.data.hand.findIndex((a) => a.id === card.id), 1)[0];
                 await player.trash(c);
             }
-            player.data.money += 5;
+            await player.addMoney(5);
         }
     }
     async onGainSelf(player: Player): Promise<void> {

@@ -13,6 +13,6 @@ export default class Gold extends Card {
     cardArt = "/img/card-img/GoldArt.jpg";
     intrinsicValue = 3;
     async onPlay(player: Player) {
-        player.data.money += 3;
+        await player.addMoney(3);
     }
 }

@@ -16,7 +16,7 @@ export default class Talisman extends Card {
     cardArt = "/img/card-img/TalismanArt.jpg";
     intrinsicValue = 1;
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 1;
+        await player.addMoney(1);
     }
     public static setup(globalCardData: any, game: Game) {
         game.players.forEach((player) => {

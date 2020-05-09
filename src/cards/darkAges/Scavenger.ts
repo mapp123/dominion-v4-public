@@ -13,7 +13,7 @@ export default class Scavenger extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ScavengerArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         if (await player.confirmAction(Texts.placeDeckIntoDiscard)) {
             const cards = [...player.deck.cards];
             player.deck.cards = [];

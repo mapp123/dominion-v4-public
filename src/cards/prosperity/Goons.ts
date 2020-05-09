@@ -20,7 +20,7 @@ export default class Goons extends Card {
     cardArt = "/img/card-img/GoonsArt.jpg";
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.buys++;
-        player.data.money += 2;
+        await player.addMoney(2);
         await player.attackOthers(exemptPlayers, async (player) => {
             while (player.data.hand.length > 3) {
                 const card = await player.chooseCardFromHand(Texts.chooseCardToDiscardFor('goons'));

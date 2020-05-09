@@ -17,7 +17,7 @@ export default class Key extends Artifact {
         this.cb = player.effects.setupEffect('turnStart', 'key', {
             compatibility: () => true
         }, async () => {
-            player.data.money++;
+            await player.addMoney(1);
         });
         this.lastPlayer = player;
     }

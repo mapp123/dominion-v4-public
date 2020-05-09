@@ -12,7 +12,7 @@ export default class TreasureTrove extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Treasure_TroveArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         await player.gain('gold');
         await player.gain('copper');
     }

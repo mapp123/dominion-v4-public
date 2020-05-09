@@ -13,7 +13,7 @@ export default class FlagBearer extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Flag_BearerArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
     }
     onTrashSelf(player: Player): Promise<void> | void {
         player.game.giveArtifactTo('flag', player);

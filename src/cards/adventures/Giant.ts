@@ -16,10 +16,10 @@ export default class Giant extends Card {
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
         player.data.tokens.journeyToken = player.data.tokens.journeyToken === 'UP' ? 'DOWN' : 'UP';
         if (player.data.tokens.journeyToken === 'DOWN') {
-            player.data.money += 1;
+            await player.addMoney(1);
             return;
         }
-        player.data.money += 5;
+        await player.addMoney(5);
         await player.attackOthersInSteps<Card | undefined>(exemptPlayers, [async (p) => {
             const topCards = await p.revealTop(1, true);
             return topCards.length === 0 || !topCards[0].hasTrack ? undefined : topCards[0].exercise()!;

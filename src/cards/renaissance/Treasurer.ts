@@ -13,7 +13,7 @@ export default class Treasurer extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/TreasurerArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 3;
+        await player.addMoney(3);
         const option = await player.chooseOption(Texts.chooseBenefitFor('treasurer'), [
             Texts.trashA('treasure'),
             Texts.gainAFromB('treasure', 'the trash'),

@@ -15,7 +15,7 @@ export default class Hoard extends Card {
     cardArt = "/img/card-img/HoardArt.jpg";
     intrinsicValue = 2;
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
     }
     public static setup(globalCardData: any, game: Game) {
         game.players.forEach((player) => {

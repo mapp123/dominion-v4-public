@@ -17,7 +17,7 @@ export default class City extends Card {
         player.data.actions += 2;
         if (player.game.supply.pilesEmpty > 1) {
             player.data.buys += 1;
-            player.data.money += 1;
+            await player.addMoney(1);
         }
     }
 }

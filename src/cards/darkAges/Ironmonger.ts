@@ -36,7 +36,7 @@ export default class Ironmonger extends Card {
                 player.data.actions++;
             }
             if (card.viewCard().types.includes("treasure")) {
-                player.data.money++;
+                await player.addMoney(1);
             }
             if (card.viewCard().types.includes("victory")) {
                 await player.draw(1, true);

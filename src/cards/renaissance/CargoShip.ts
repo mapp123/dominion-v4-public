@@ -17,7 +17,7 @@ export default class CargoShip extends Card {
     holder: CardHolder | null = null;
     private cb: any = null;
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         this.cb = player.effects.setupEffect('gain', 'cargo ship', {
             compatibility: {}
         }, async (remove, tracker) => {

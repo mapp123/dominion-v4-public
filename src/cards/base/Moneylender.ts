@@ -15,7 +15,7 @@ export default class Moneylender extends Card {
         const card = await player.chooseCardFromHand(Texts.chooseAnAToTrashForB('copper', 'moneylender'), true, (card) => card.name === 'copper');
         if (card) {
             await player.trash(card);
-            player.data.money += 3;
+            await player.addMoney(3);
         }
     }
 }

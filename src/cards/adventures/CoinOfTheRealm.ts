@@ -17,7 +17,7 @@ export default class CoinOfTheRealm extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/Coin_of_the_RealmArt.jpg";
     async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
-        player.data.money += 1;
+        await player.addMoney(1);
         this.moveToTavernMat(player, tracker);
         player.effects.setupEffect('cardPlayed', 'coin of the realm', {
             compatibility: {

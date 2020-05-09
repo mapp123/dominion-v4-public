@@ -20,7 +20,7 @@ export default class Pageant extends Project {
             player.lm('The pageant activates for %p.');
             if (player.data.money > 0 && await player.confirmAction(Texts.wantBuyCoffers)) {
                 player.data.coffers++;
-                player.data.money--;
+                await player.removeMoney(1);
             }
         });
     }

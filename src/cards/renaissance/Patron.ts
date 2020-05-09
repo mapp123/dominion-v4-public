@@ -18,7 +18,7 @@ export default class Patron extends Card {
     cardArt = "/img/card-img/PatronArt.jpg";
     async onPlay(player: Player): Promise<void> {
         player.data.villagers++;
-        player.data.money += 2;
+        await player.addMoney(2);
     }
     onRevealSelf(player: Player): Promise<void> | void {
         player.data.coffers++;

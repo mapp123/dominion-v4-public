@@ -38,7 +38,7 @@ export default class SwampHag extends Card {
             cbs.forEach(([p, cb]) => {
                 p.effects.removeEffect('buy', this.name, cb);
             });
-            player.data.money += 3;
+            await player.addMoney(3);
             remove();
         });
     }

@@ -11,6 +11,6 @@ export default class Bank extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/BankArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += player.data.playArea.filter((a) => a.types.includes("treasure")).length;
+        await player.addMoney(player.data.playArea.filter((a) => a.types.includes("treasure")).length);
     }
 }

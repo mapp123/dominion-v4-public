@@ -33,7 +33,7 @@ export default class Miser extends Card {
                 break;
             case options[1]:
                 player.lm(`%p takes the money from miser. (+$${coins})`);
-                player.data.money += coins;
+                await player.addMoney(coins);
                 break;
         }
     }

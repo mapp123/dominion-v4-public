@@ -21,7 +21,7 @@ export default class GrandMarket extends Card {
         await player.draw(1, true);
         player.data.actions++;
         player.data.buys++;
-        player.data.money += 2;
+        await player.addMoney(2);
     }
     public static getExtraRestrictions(cardData: any, player: Player, restrictions: GainRestrictions): GainRestrictions {
         if (player.data.playArea.find((a) => a.name === 'copper') != null) {

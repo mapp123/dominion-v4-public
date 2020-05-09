@@ -15,6 +15,6 @@ export default class Festival extends Card {
     async onPlay(player: Player): Promise<void> {
         player.data.actions += 2;
         player.data.buys += 1;
-        player.data.money += 2;
+        await player.addMoney(2);
     }
 }

@@ -13,6 +13,6 @@ export default class DameSylvia extends Knight {
         "Each other player reveals the top 2 cards of their deck, trashes one of them costing from $3 to $6, and discards the rest. If a Knight is trashed by this, trash this.";
     cardArt = "/img/card-img/Dame_SylviaArt.jpg";
     async beforeKnight(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
     }
 }

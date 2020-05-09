@@ -27,7 +27,7 @@ export default class CaravanGuard extends Card {
             compatibility: () => true
         }, async (unsub) => {
             this.isNextTurn = true;
-            player.data.money++;
+            await player.addMoney(1);
             unsub();
         });
     }

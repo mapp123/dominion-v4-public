@@ -17,6 +17,6 @@ export default class Market extends Card {
         await player.draw(1, true);
         player.data.actions += 1;
         player.data.buys += 1;
-        player.data.money += 1;
+        await player.addMoney(1);
     }
 }

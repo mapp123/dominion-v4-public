@@ -15,7 +15,7 @@ export default class Venture extends Card {
     cardArt = "/img/card-img/VentureArt.jpg";
     intrinsicValue = 1;
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 1;
+        await player.addMoney(1);
         let revealedCard: Tracker<Card> | undefined;
         const revealedCards: Array<Tracker<Card>> = [];
         while ((revealedCard = (await player.revealTop(1))[0]) != null && !revealedCard.viewCard().types.includes("treasure")) {

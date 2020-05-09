@@ -17,7 +17,7 @@ export default class Counterfeit extends Card {
     cardArt = "/img/card-img/CounterfeitArt.jpg";
     intrinsicValue = 1;
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 1;
+        await player.addMoney(1);
         player.data.buys += 1;
         const card = await player.chooseCardFromHand(Texts.chooseCardToPlayTwice, true, (card) => card.types.includes("treasure"));
         if (card) {

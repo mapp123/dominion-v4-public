@@ -13,7 +13,7 @@ export default class Chancellor extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/ChancellorArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         if (await player.confirmAction(Texts.placeDeckIntoDiscard)) {
             player.lm('%p puts their deck into their discard.');
             player.deck.discard = [...player.deck.discard, ...player.deck.cards];

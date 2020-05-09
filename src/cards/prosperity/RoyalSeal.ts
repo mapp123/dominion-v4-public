@@ -14,7 +14,7 @@ export default class RoyalSeal extends Card {
     cardArt = "/img/card-img/Royal_SealArt.jpg";
     intrinsicValue = 2;
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
     }
     public static setup(globalCardData: any, game: Game) {
         game.players.forEach((player) => {

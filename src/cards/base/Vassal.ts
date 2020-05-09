@@ -14,7 +14,7 @@ export default class Vassal extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/VassalArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         const card = await player.deck.pop();
         if (card) {
             player.lm('%p discards %s.', Util.formatCardList([card.name]));

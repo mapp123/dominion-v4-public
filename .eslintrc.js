@@ -54,6 +54,7 @@ module.exports = {
         "@typescript-eslint/no-empty-function": "off",
         "no-case-declarations": "off",
         "no-vp-without-feature": ["error"],
+        "no-direct-money-access": ["error"],
         "no-fallthrough": "off"
     }
 };

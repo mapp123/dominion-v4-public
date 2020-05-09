@@ -32,7 +32,7 @@ export default class Amulet extends Card {
         const effect = await player.chooseOption(Texts.chooseBenefitFor('amulet'), [Texts.extraMoney('1'), Texts.trashA('card from your hand'), Texts.gain(['silver'])]);
         switch (effect) {
             case Texts.extraMoney('1'):
-                player.data.money++;
+                await player.addMoney(1);
                 break;
             case Texts.trashA('card from your hand'):
                 const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('amulet'));

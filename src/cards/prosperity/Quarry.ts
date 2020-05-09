@@ -14,7 +14,7 @@ export default class Quarry extends Card {
     cardArt = "/img/card-img/QuarryArt.jpg";
     intrinsicValue = 1;
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 1;
+        await player.addMoney(1);
         player.game.updateCostModifiers();
     }
     async onDiscardFromPlay(player: Player): Promise<any> {

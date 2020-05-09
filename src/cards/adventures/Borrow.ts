@@ -14,7 +14,7 @@ export default class Borrow extends Event {
         player.data.buys += 1;
         if (player.data.tokens.minusOneCard === false) {
             player.data.tokens.minusOneCard = true;
-            player.data.money += 1;
+            await player.addMoney(1);
         }
     }
 }

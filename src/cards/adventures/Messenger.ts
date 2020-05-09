@@ -20,7 +20,7 @@ export default class Messenger extends Card {
     cardArt = "/img/card-img/MessengerArt.jpg";
     async onPlay(player: Player): Promise<void> {
         player.data.buys++;
-        player.data.money += 2;
+        await player.addMoney(2);
         if (await player.confirmAction(Texts.placeDeckIntoDiscard)) {
             player.lm('%p puts their deck into their discard.');
             player.deck.discard = [...player.deck.discard, ...player.deck.cards];

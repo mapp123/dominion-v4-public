@@ -12,7 +12,7 @@ export default class Relic extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/RelicArt.jpg";
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         await player.attackOthers(exemptPlayers, async (p) => {
             if (!p.data.tokens.minusOneCard) {
                 p.lm('%p takes their -1 Card token.');

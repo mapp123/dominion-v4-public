@@ -16,7 +16,7 @@ export default class Rogue extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/RogueArt.jpg";
     async onPlay(player: Player, exemptPlayers: Player[]): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         const lowerLimit = Cost.create(3);
         const upperLimit = Cost.create(6);
         if (player.game.trash.some((a) => a.cost.isInRange(lowerLimit, upperLimit))) {

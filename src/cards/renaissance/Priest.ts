@@ -13,7 +13,7 @@ export default class Priest extends Card {
     supplyCount = 10;
     cardArt = "/img/card-img/PriestArt.jpg";
     async onPlay(player: Player): Promise<void> {
-        player.data.money += 2;
+        await player.addMoney(2);
         const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor('priest'));
         if (card) {
             await player.trash(card);
@@ -21,7 +21,7 @@ export default class Priest extends Card {
         const unsub = player.effects.setupEffect('trash', 'priest', {
             compatibility: () => true
         }, async () => {
-            player.data.money += 2;
+            await player.addMoney(2);
         });
         player.events.on('turnEnd', () => {
             player.effects.removeEffect('trash', 'priest', unsub);

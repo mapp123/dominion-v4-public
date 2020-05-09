@@ -22,7 +22,7 @@ export default class Mercenary extends Card {
             if (card) {
                 await player.trash(card);
                 await player.draw(2, true);
-                player.data.money += 2;
+                await player.addMoney(2);
                 await player.attackOthers(exemptPlayers, async (p) => {
                     while (p.data.hand.length > 3) {
                         const card = await p.chooseCardFromHand(Texts.chooseCardToDiscardFor('mercenary'));

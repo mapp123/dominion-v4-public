@@ -15,7 +15,7 @@ export default class AbandonedMine extends Card {
         return 'ruins';
     }
     async onPlay(player: Player): Promise<void> {
-        player.data.money++;
+        await player.addMoney(1);
     }
     public static createSupplyPiles(): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; hideCost?: boolean}> {
         return [];

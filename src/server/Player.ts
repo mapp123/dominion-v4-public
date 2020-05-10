@@ -54,6 +54,25 @@ export default class Player {
         if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('villagers'))) {
             this.data.dataViews.push('villagers');
         }
+        if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).features.includes('exile'))) {
+            this.data.dataViews.push('exile');
+            this.effects.setupEffect('gain', 'exile', {
+                compatibility: {
+                    duplicate: true,
+                    'travelling fair': true,
+                    'royal seal': true,
+                    watchtower: true,
+                    'cargo ship': true,
+                    innovation: true
+                },
+                relevant: (card) => this.data.exile.find((a) => a.name === card.viewCard().name) != null
+            }, async (remove, cardTracker) => {
+                if (await this.confirmAction(Texts.wantDiscardFromExile(cardTracker.viewCard().name))) {
+                    await this.discard(this.data.exile.filter((a) => a.name === cardTracker.viewCard().name), true);
+                    this.data.exile = this.data.exile.filter((a) => a.name !== cardTracker.viewCard().name);
+                }
+            });
+        }
         if (this.game.selectedCards.some((card) => CardRegistry.getInstance().getCard(card).types.includes('reserve') || CardRegistry.getInstance().getCard(card).features.includes('tavernMat'))) {
             this.data.dataViews.push('tavernMat');
         }
@@ -117,7 +136,7 @@ export default class Player {
         }
     }
     get allCards() {
-        return [...this.deck.deckAndDiscard, ...this.data.hand, ...this.data.playArea, ...this.data.tavernMat.map((a) => a.card), ...this.cardHolders.flatMap((a) => a.getCards())];
+        return [...this.deck.deckAndDiscard, ...this.data.hand, ...this.data.playArea, ...this.data.tavernMat.map((a) => a.card), ...this.cardHolders.flatMap((a) => a.getCards()), ...this.data.exile];
     }
     get currentSocket() {
         return this._currentSocket;

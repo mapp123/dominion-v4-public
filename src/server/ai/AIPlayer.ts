@@ -423,7 +423,8 @@ export default abstract class AIPlayer extends Player {
                     discardForBenefit: decisionMatcher(decision.helperText, Texts.wantToDiscardAForBenefit),
                     wantPlayFromHand: decisionMatcher(decision.helperText, Texts.playCardFromHand),
                     wantPlay: decisionMatcher(decision.helperText, Texts.doYouWantToPlay),
-                    wantDiscardFromTavernMat: decisionMatcher(decision.helperText, Texts.doYouWantToRemoveFromTavernMat)
+                    wantDiscardFromTavernMat: decisionMatcher(decision.helperText, Texts.doYouWantToRemoveFromTavernMat),
+                    wantDiscardFromExile: decisionMatcher(decision.helperText, Texts.wantDiscardFromExile)
                 };
                 if (confirmKeys.wantTrashForBenefit) {
                     return ((await this.trashForBenefit([confirmKeys.wantTrashForBenefit[0]], 1, confirmKeys.wantTrashForBenefit[1])) !== 'No Card') as any;
@@ -524,6 +525,9 @@ export default abstract class AIPlayer extends Player {
                 }
                 if (confirmKeys.wantDiscardFromTavernMat) {
                     return true as any;
+                }
+                if (confirmKeys.wantDiscardFromExile) {
+                    return this.wantCardOverNothing(await this.gainPriority(), confirmKeys.wantDiscardFromExile[0]) as boolean as any;
                 }
                 break;
             case "gain":

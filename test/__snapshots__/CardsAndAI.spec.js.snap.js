@@ -37,6 +37,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
   "gain": [
     "duplicate",
     "travelling fair",
+    "exile",
     "royal seal",
     "watchtower",
     "academy",
@@ -74,6 +75,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
   ],
   "play": [
     "way of the butterfly",
+    "way of the camel",
     "way of the pig"
   ],
   "cleanupStart": [

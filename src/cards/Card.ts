@@ -14,7 +14,7 @@ export type CardImplementation = (typeof Card) & {new (game: Game | null): Card}
 export default abstract class Card {
     id: string;
     game: Game;
-    features: ReadonlyArray<'vp' | 'coffers' | 'villagers' | 'tavernMat'> = [];
+    features: ReadonlyArray<'vp' | 'coffers' | 'villagers' | 'tavernMat' | 'exile'> = [];
     tokens: ReadonlyArray<'journeyToken' | 'extraCard' | 'extraAction' | 'extraBuy' | 'extraMoney' | 'minusTwoCost' | 'minusOneCoin' | 'minusOneCard' | 'trashing' | 'estate'> = [];
     isCard = true;
     static descriptionSize = 60;

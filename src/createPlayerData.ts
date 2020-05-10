@@ -20,6 +20,7 @@ export default function createPlayerData() {
             card: struct.instance(Card),
             canCall: 'boolean'
         } as const)],
+        exile: [struct.instance(Card)],
         tokens: {
             extraCard: struct.union(['string', 'null'] as const),
             extraAction: struct.union(['string', 'null'] as const),
@@ -46,6 +47,7 @@ export default function createPlayerData() {
         dataViews: [],
         tokenViews: [],
         tavernMat: [],
+        exile: [],
         tokens: {
             extraCard: null,
             extraAction: null,

@@ -120,7 +120,7 @@ export default abstract class Card {
         return new this().getPileIdentifier();
     }
 
-    public getPileIdentifier(): string {
+    public getPileIdentifier(): string | null {
         return this.name;
     }
 

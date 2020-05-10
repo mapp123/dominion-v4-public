@@ -4,6 +4,7 @@ import {get} from "http";
 import {createWriteStream, writeFileSync} from "fs";
 import {basename, resolve} from "path";
 import {HTMLElement, Node, parse} from "node-html-parser";
+import {debug} from "webpack";
 program.version('1.0.0');
 program.option('-c, --card <card>', 'what card to fetch');
 program.parse(process.argv);
@@ -56,7 +57,7 @@ async function parsePage(p: string) {
         infoBox.childNodes.forEach((a) => {
             const row = a as HTMLElement;
             if (row.tagName !== 'tr') return;
-            if (onlyHTMLNode(row.childNodes)[0].innerHTML === 'Card text' || onlyHTMLNode(row.childNodes)[0].innerHTML === 'Event text') {
+            if (onlyHTMLNode(row.childNodes)[0].innerHTML === 'Card text' || onlyHTMLNode(row.childNodes)[0].innerHTML === 'Event text' || onlyHTMLNode(row.childNodes)[0].innerHTML === 'Way text') {
                 nextCardText = true;
                 return;
             }
@@ -76,6 +77,9 @@ async function parsePage(p: string) {
                     return;
                 }
                 throw new Error("Unrecognized coin icon");
+            }
+            if (row.childNodes.find((a) => a.childNodes.find((b) => b.rawText === 'Set') != null)) {
+                info.set = row.querySelector('a').innerHTML.toLowerCase().split(' ').map((a, i) => i === 0 ? a : a.slice(0, 1).toUpperCase() + a.slice(1)).join('');
             }
             const links = onlyHTMLNode(flattenChildren(row.childNodes), 'a');
             if (links.find((a) => a.attributes.href === "/index.php/Card_types") != null) {
@@ -159,9 +163,9 @@ import Way from "../Way";
 import type Tracker from "../../server/Tracker";
 import type Card from "../Card";
 
-export default class WayOfThePig extends Way {
+export default class ${info.name.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('')} extends Way {
     cardArt = "${info.artwork}";
-    cardText = ${cardText};
+    cardText = ${cardText}
     name = "${info.name}";
     async onWay(player: Player, exemptPlayers: Player[], tracker: Tracker<Card>): Promise<void> {
         
@@ -230,7 +234,7 @@ function infoToWayTest(info: {name: string; types: string[]; cost: {coin: number
     return (
         `import makeTestGame from "../testBed";
 import { expect } from 'chai';
-import {Texts} from "../../src/Server/Texts";
+import {Texts} from "../../src/server/Texts";
 
 describe('${info.name.toUpperCase()}', () => {
     it('works normally', (d) => {
@@ -290,7 +294,14 @@ function htmlToString(node: HTMLElement): string {
     });
     return text;
 }
-fetchPage(`/index.php/${program.card.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('_')}`).then((page) => {
+let cardPathPart;
+if (program.card.startsWith("way of the")) {
+    cardPathPart = "Way_of_the_" + program.card.split(" ")[3].slice(0, 1).toUpperCase() + program.card.split(" ")[3].slice(1);
+}
+else {
+    cardPathPart = program.card.split(' ').map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join('_');
+}
+fetchPage(`/index.php/${cardPathPart}`).then((page) => {
     parsePage(page).then((a) => {
         if (a) {
             const klass = a.types.includes("event") ? infoToEventTemplate(a) : a.types.includes("way") ? infoToWayTemplate(a) : infoToTemplate(a);

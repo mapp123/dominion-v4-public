@@ -73,6 +73,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "sewers"
   ],
   "play": [
+    "way of the butterfly",
     "way of the pig"
   ],
   "cleanupStart": [

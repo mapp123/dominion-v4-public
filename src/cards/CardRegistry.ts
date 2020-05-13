@@ -68,7 +68,8 @@ export default class CardRegistry {
                 ...sets,
                 [setName]: Object.keys(set).filter((a) => set[a].randomizable),
                 [setName + "_SUBSET_projects"]: Object.keys(set).filter((a) => set[a].types.includes("project")),
-                [setName + "_SUBSET_events"]: Object.keys(set).filter((a) => set[a].types.includes("event"))
+                [setName + "_SUBSET_events"]: Object.keys(set).filter((a) => set[a].types.includes("event")),
+                [setName + "_SUBSET_ways"]: Object.keys(set).filter((a) => set[a].types.includes("way"))
             };
         }, {});
     }

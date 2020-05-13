@@ -11,13 +11,13 @@ export default class Plan extends Event {
         coin: 3
     };
     name = "plan";
-    private cb: Map<Player, any | null> = new Map<Player, any>();
+    private cb: Map<string, any | null> = new Map<string, any>();
     async onPurchase(player: Player): Promise<any> {
         const card = await player.chooseGain(Texts.whereWantXToken('trashing'), false, GainRestrictions.instance().setIsAvailable(false).setMustIncludeType('action'), 'none');
         if (card) {
             player.data.tokens.trashing = card.getPileIdentifier();
-            if (this.cb.has(player)) {
-                player.effects.removeEffect('buy', this.name, this.cb.get(player));
+            if (this.cb.has(player.id)) {
+                player.effects.removeEffect('buy', this.name, this.cb.get(player.id));
             }
             const cb = player.effects.setupEffect('buy', this.name, {
                 compatibility: {
@@ -30,7 +30,7 @@ export default class Plan extends Event {
                     await player.trash(card);
                 }
             });
-            this.cb.set(player, cb);
+            this.cb.set(player.id, cb);
         }
     }
 }

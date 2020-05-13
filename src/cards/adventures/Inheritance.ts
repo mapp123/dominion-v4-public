@@ -15,7 +15,7 @@ export default class Inheritance extends Event {
     };
     name = "inheritance";
     static oncePerGame = true;
-    cardHolder: Map<Player, CardHolder> = new Map();
+    cardHolder: Map<string, CardHolder> = new Map();
     async onPurchase(player: Player): Promise<any> {
         const takenCard = await player.chooseGain(Texts.whereWantXToken('estate'), false, GainRestrictions.instance().setUpToCost(Cost.create(4)).setMustIncludeType('action').addBannedType('command'), 'none');
         if (takenCard) {
@@ -24,11 +24,11 @@ export default class Inheritance extends Event {
                 console.error("Unable to grab after chooseGain, BAD!!!");
                 return;
             }
-            if (!this.cardHolder.has(player)) {
-                this.cardHolder.set(player, player.game.getCardHolder(player));
+            if (!this.cardHolder.has(player.id)) {
+                this.cardHolder.set(player.id, player.game.getCardHolder(player));
             }
             player.lm('%p sets aside %l for inheritance.', [grabbed]);
-            this.cardHolder.get(player)!.addCard(grabbed);
+            this.cardHolder.get(player.id)!.addCard(grabbed);
             player.data.tokens.estate = grabbed.name;
 
             player.events.on('turnStart', async () => {

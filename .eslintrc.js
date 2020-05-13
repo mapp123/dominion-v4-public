@@ -55,6 +55,7 @@ module.exports = {
         "no-case-declarations": "off",
         "no-vp-without-feature": ["error"],
         "no-direct-money-access": ["error"],
+        "no-player-maps": ["error"],
         "no-fallthrough": "off"
     }
 };

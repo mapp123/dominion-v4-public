@@ -19,7 +19,7 @@ export default class Estate extends Card {
     async onPlay(player: Player, exemptPlayers, tracker): Promise<void> {
         if (player.data.tokens.estate) {
             const card = await ((player.game.getCard('inheritance') as typeof Inheritance).getInstance(player) as Inheritance)
-                .cardHolder.get(player)!.getCards()[0];
+                .cardHolder.get(player.id)!.getCards()[0];
             const tracker = new Tracker(card);
             tracker.loseTrack();
             player.lm('(Inheritance plays %l.)', [card]);

@@ -13,7 +13,7 @@ export default abstract class Event extends Card {
     static oncePerTurn = false;
     static oncePerGame = false;
     playersBoughtThisGame: Player[] = [];
-    boughtOnTurn: Map<Player, number> = new Map<Player, number>();
+    boughtOnTurn: Map<string, number> = new Map<string, number>();
     public static createSupplyPiles(playerCount: number, game: Game): Array<{identifier: string; pile: Card[]; identity: Card; displayCount: boolean; countForEmpty?: boolean}> {
         return [{
             identifier: this.cardName,
@@ -35,7 +35,7 @@ export default abstract class Event extends Card {
             instance.playersBoughtThisGame.push(player);
         }
         else if (this.oncePerTurn) {
-            instance.boughtOnTurn.set(player, player.turnNumber);
+            instance.boughtOnTurn.set(player.id, player.turnNumber);
         }
         return null;
     }
@@ -43,7 +43,7 @@ export default abstract class Event extends Card {
         if (this.oncePerGame && this.getInstance(player).playersBoughtThisGame.includes(player)) {
             restrictions.addBannedCard(this.cardName);
         }
-        else if (this.oncePerTurn && this.getInstance(player).boughtOnTurn.get(player) === player.turnNumber) {
+        else if (this.oncePerTurn && this.getInstance(player).boughtOnTurn.get(player.id) === player.turnNumber) {
             restrictions.addBannedCard(this.cardName);
         }
         return restrictions;

@@ -114,9 +114,9 @@ export default class Player {
         this.data.money -= amount;
     }
 
-    // I don't want to program Way of the Chameleon quite yet.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async draw(amount: number, plusCards: boolean) {
+
+    // noinspection JSUnusedLocalSymbols
+    async draw(amount: number, plusCards: boolean) { // eslint-disable-line @typescript-eslint/no-unused-vars
         if (amount > 0 && this.data.tokens.minusOneCard) {
             this.lm("(%p loses their -1 Card token.)");
             this.data.tokens.minusOneCard = false;
@@ -376,12 +376,29 @@ export default class Player {
                     if (dupCard.length) {
                         this._duplicatedPlayArea = this._duplicatedPlayArea.filter((a) => a.id !== card.id);
                     }
+                    await this.discard(card, false, false);
                     const tracker = new Tracker(card);
-                    await card.onDiscardFromPlay(this, tracker);
+                    tracker.canExercise(() => this.deck.discard[this.deck.discard.length - 1].id === card.id);
+                    tracker.onExercise(() => {
+                        this.deck.discard.pop();
+                    });
+                    await this.effects.doMultiEffect(['discard', 'discardFromPlay'], Texts.chooseAnXEffectToRunNext('on discard'), [
+                        {
+                            effectName: 'discardFromPlay',
+                            effect: async (unsub, tracker) => {
+                                unsub();
+                                await card.onDiscardFromPlay(this, tracker);
+                            },
+                            config: {
+                                // If nothing is happening during this card's onDiscardFromPlay, don't bother
+                                // @ts-ignore
+                                compatibility: card.onDiscardFromPlay.__original ? () => true : {}
+                            },
+                            id: v4(),
+                            name: card.name
+                        }
+                    ], tracker);
                     i--;
-                    if (tracker.hasTrack) {
-                        await this.discard(tracker.exercise()!);
-                    }
                 }
             }
             const hand = [...this.data.hand];
@@ -471,6 +488,7 @@ export default class Player {
                         remove.consumed = true;
                         await card.onPlay(this, exemptPlayers, tracker);
                     },
+                    effectName: 'play',
                     id: v4(),
                     name: card.name
                 }
@@ -633,15 +651,25 @@ export default class Player {
         }
         return null;
     }
-    async discard(card: Card | Card[], log = false) {
+    async discard(card: Card | Card[], log = false, runHooks = true) {
         if (log && (!Array.isArray(card) || card.length > 0)) {
             this.lm('%p discards %s.', Util.formatCardList((Array.isArray(card) ? card : [card]).map((a) => a.name)));
         }
         if (Array.isArray(card)) {
-            this.deck.discard.push(...card);
+            for (const c of card) {
+                this.deck.discard.push(c);
+                if (runHooks) {
+                    const tracker = new Tracker(c);
+                    tracker.onExercise(() => {
+                        this.deck.discard.pop();
+                    });
+                    tracker.canExercise(() => this.deck.discard[this.deck.discard.length - 1].id === c.id);
+                    await this.effects.doEffect('discard', Texts.chooseAnXEffectToRunNext('on discard'), [], tracker);
+                }
+            }
         }
         else {
-            this.deck.discard.push(card);
+            await this.discard([card], false, runHooks);
         }
     }
     score() {

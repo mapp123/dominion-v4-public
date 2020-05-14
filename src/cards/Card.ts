@@ -11,6 +11,9 @@ import {Texts} from "../server/Texts";
 
 export type ValidCardTypes = 'action' | 'treasure' | 'victory' | 'curse' | 'attack' | 'duration' | 'reaction' | 'castle' | 'doom' | 'fate' | 'gathering' | 'heirloom' | 'knight' | 'looter' | 'night' | 'prize' | 'reserve' | 'ruins' | 'shelter' | 'spirit' | 'traveller' | 'zombie' | 'project' | 'artifact' | 'command' | 'event' | 'way';
 export type CardImplementation = (typeof Card) & {new (game: Game | null): Card};
+export function original(target: any, key: string) {
+    target[key].__original = true;
+}
 export default abstract class Card {
     id: string;
     game: Game;
@@ -169,6 +172,7 @@ export default abstract class Card {
         this.trackers.forEach((t) => t.loseTrack());
         this.trackers = [];
     }
+    @original
     public async onDiscardFromPlay(player: Player, tracker: Tracker<Card>) {
 
     }
@@ -188,15 +192,19 @@ export default abstract class Card {
     public static async onBuy(player: Player): Promise<Card | null> {
         return await player.gain(this.cardName, undefined, false);
     }
+    @original
     public onGainSelf(player: Player, tracker: Tracker<this>): Promise<void> | void {
 
     }
+    @original
     public onTrashSelf(player: Player, tracker: Tracker<this>): Promise<void> | void {
 
     }
+    @original
     public onRevealSelf(player: Player, tracker: Tracker<this>): Promise<void> | void {
 
     }
+    @original
     public onCall(player: Player, exemptPlayers: Player[], tracker: Tracker<this>): Promise<void> | void {
 
     }
@@ -212,7 +220,7 @@ export default abstract class Card {
                     }
                 });
                 player.events.on('decision', async () => {
-                    if (player.effects.currentEffect === eventName || player.isInterrupted) {
+                    if (player.effects.currentEffects?.includes(eventName) || player.isInterrupted) {
                         return true;
                     }
                     player.data.tavernMat.forEach((a) => {

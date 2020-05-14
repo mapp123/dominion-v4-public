@@ -4,10 +4,12 @@ import type Card from "../cards/Card";
 import type Deck from "./Deck";
 import {v4} from 'uuid';
 
-export type Effect = 'turnStart' | 'turnEnd' | 'buy' | 'gain' | 'trash' | 'cleanupStart' | 'buyStart' | 'handDraw' | 'shuffle' | 'cardPlayed' | 'willPlayCard' | 'buyEnd' | 'afterTurn' | 'play';
+export type Effect = 'turnStart' | 'turnEnd' | 'buy' | 'gain' | 'trash' | 'cleanupStart' | 'buyStart' | 'handDraw' | 'shuffle' | 'cardPlayed' | 'willPlayCard' | 'buyEnd' | 'afterTurn' | 'play' | 'discard' | 'discardFromPlay';
 type EffectArgs = {
     turnStart: [];
     turnEnd: [];
+    discard: [Tracker<Card>];
+    discardFromPlay: [Tracker<Card>];
     buy: [string];
     gain: [Tracker<Card>];
     trash: [Tracker<Card>];
@@ -40,6 +42,7 @@ export type EffectDef<T extends Effect, K> = {
         duplicate?: DuplicateFun<T, K>;
         requiresUnconsumed?: boolean;
     };
+    effectName: Effect;
     effect: EffectFun<T, K>;
 }
 export default class PlayerEffects {
@@ -57,20 +60,25 @@ export default class PlayerEffects {
         willPlayCard: [],
         buyEnd: [],
         afterTurn: [],
-        play: []
+        play: [],
+        discard: [],
+        discardFromPlay: []
     };
     player: Player;
-    currentEffect: Effect | null = null;
+    currentEffects: Effect[] | null = null;
     inCompat = false;
     private static __testingCards: {[key in Effect]: Array<EffectDef<key, any> & {lastArgs?: EffectArgs[key]}> | undefined} = {} as any;
     constructor(player: Player) {
         this.player = player;
     }
     async doEffect<T extends Effect>(effectName: T, prompt: string, additionalConfigs: Array<EffectDef<T, any>>, ...effectArgs: EffectArgs[T]) {
-        this.currentEffect = effectName;
+        return this.doMultiEffect([effectName], prompt, additionalConfigs, ...effectArgs);
+    }
+    async doMultiEffect<T extends Effect>(effectNames: T[], prompt: string, additionalConfigs: Array<EffectDef<T, any>>, ...effectArgs: EffectArgs[T]) {
+        this.currentEffects = effectNames;
         let runFirst: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
         let ask: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
-        const baseList: Array<EffectDef<T, any>> = [...this.effectTable[effectName], ...additionalConfigs] as any;
+        const baseList: Array<EffectDef<T, any>> = [...effectNames.flatMap((a) => this.effectTable[a]), ...additionalConfigs] as any;
         const list: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = baseList.filter((a) => typeof a.config.relevant === 'undefined' || a.config.relevant(...effectArgs)).flatMap((a) => {
             if (typeof a.config.duplicate === 'undefined') {
                 return a;
@@ -81,7 +89,7 @@ export default class PlayerEffects {
                 duplicateKey: key
             }));
         }) as any;
-        const genUnsub: (id: string, consumed: {value: boolean}) => Unsub<any> = ((id: string, consumed: {value: boolean}) => {
+        const genUnsub: (id: string, effectName: string, consumed: {value: boolean}) => Unsub<any> = ((id: string, effectName: string, consumed: {value: boolean}) => {
             const consume = () => consumed.value = true;
             const remove = () => {
                 // @ts-ignore
@@ -135,20 +143,22 @@ export default class PlayerEffects {
             }
         }
         if (process.env.IS_TESTING === 'true') {
-            if (typeof PlayerEffects.__testingCards[effectName] !== 'undefined') {
-                PlayerEffects.__testingCards[effectName]!.forEach((def) => {
-                    if (list.some((a) => a.effect === def.effect)) {
-                        def.lastCall = effectArgs;
-                    }
-                });
-            }
+            effectNames.forEach((effectName) => {
+                if (typeof PlayerEffects.__testingCards[effectName] !== 'undefined') {
+                    PlayerEffects.__testingCards[effectName]!.forEach((def) => {
+                        if (list.some((a) => a.effect === def.effect)) {
+                            def.lastCall = effectArgs;
+                        }
+                    });
+                }
+            });
         }
         const consumed = {value: false};
         this.inCompat = true;
         while (runFirst.length > 0) {
             const a = runFirst[0];
             if (!a.config.requiresUnconsumed || !consumed.value) {
-                const unsub = genUnsub(a.id, consumed);
+                const unsub = genUnsub(a.id, a.effectName, consumed);
                 unsub.ctx = {
                     duplicateKey: a.duplicateKey
                 };
@@ -168,7 +178,8 @@ export default class PlayerEffects {
             if (!choice || choice === 'No Effect') {
                 break;
             }
-            const unsub = genUnsub(ask.find((b) => b.name === choice)!.id, consumed);
+            const item = ask.find((b) => b.name === choice)!;
+            const unsub = genUnsub(item.id, item.effectName, consumed);
             const index = ask.findIndex((a) => a.name === choice);
             unsub.ctx = {
                 duplicateKey: ask[index].duplicateKey
@@ -177,14 +188,15 @@ export default class PlayerEffects {
             const removeIndex = ask.findIndex(a => a.id === choice);
             if (removeIndex !== -1) ask.splice(index, 1);
         }
-        this.currentEffect = null;
+        this.currentEffects = null;
     }
     setupEffect<T extends Effect, K = undefined>(effectName: T, cardName: string, config: EffectDef<T, K>["config"], effect: EffectFun<T, K>) {
         const item: EffectDef<T, K> = {
             id: v4(),
             name: cardName,
             config,
-            effect: effect
+            effect: effect,
+            effectName
         };
         this.effectTable[effectName].push(item as any);
         if (process.env.IS_TESTING === 'true') {

@@ -77,7 +77,11 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "way of the butterfly",
     "way of the camel",
     "way of the chameleon",
+    "way of the frog",
     "way of the pig"
+  ],
+  "discardFromPlay": [
+    "way of the frog"
   ],
   "cleanupStart": [
     "exploration",

@@ -480,7 +480,8 @@ export default function makeTestGame({
     decks = [[]] as string[][],
     discards = [[]] as string[][],
     activateCards = [] as string[],
-    d = () => {}
+    d = () => {},
+    params = {} as {[name: string]: string}
                                      }): [TestGame, TestPlayer[], (err?) => any] {
     if (typeof globalThis.testGameImpl !== 'undefined') {
         return globalThis.testGameImpl({
@@ -500,17 +501,22 @@ export default function makeTestGame({
             console.log(msg)
         }) as any);
     }
+    game.params = params;
     if (decks.some((a) => a.includes("attack"))) {
         game.injectTestAttack();
     }
     if (discards.some((a) => a.includes("attack"))) {
         game.injectTestAttack();
     }
-    game.setCards(null as any, [
-        ...decks.reduce((full, deck) => [...full, ...deck], []),
-        ...discards.reduce((full, discard) => [...full, ...discard], []),
-        ...activateCards
-    ].filter((a, i, arr) => arr.indexOf(a) === i));
+    game.setCards({emit: () => {}} as any,
+        [
+            ...decks.reduce((full, deck) => [...full, ...deck], []),
+            ...discards.reduce((full, discard) => [...full, ...discard], []),
+            ...activateCards
+        ].filter((a, i, arr) => arr.indexOf(a) === i),
+        params,
+        ''
+    );
     for (let i = 0; i < players; i++) {
         const player = new (typeof globalThis.testPlayerPrototype !== 'undefined' ? globalThis.testPlayerPrototype : TestPlayer)(game);
         let deck = [] as Card[];

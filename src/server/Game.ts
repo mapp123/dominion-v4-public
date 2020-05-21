@@ -8,7 +8,7 @@ import {format} from "util";
 import Supply from "./Supply";
 import CardRegistry from "../cards/CardRegistry";
 import Cost from '../server/Cost';
-import type {default as Card, ValidCardTypes} from "../cards/Card";
+import type {CardImplementation, default as Card, ValidCardTypes} from "../cards/Card";
 import {GameEvents} from "./Events";
 import type {GainRestrictions} from "./GainRestrictions";
 import type Artifact from "../cards/Artifact";
@@ -62,6 +62,7 @@ export default class Game {
         this.registerEvent(socket, 'joinAsNewPlayer', this.registerAsPlayer);
         this.registerEvent(socket, 'joinAsPlayer', this.joinAsPlayer);
         this.registerEvent(socket, 'setAIPlayers', this.setAIPlayers);
+        this.registerEvent(socket, 'randomize', this.requestRandomize);
     }
     private aiPlayersValidator = struct.scalar('number');
     setAIPlayers(socket: Socket, ...args: any[]) {
@@ -71,11 +72,61 @@ export default class Game {
             this.players.push(new (useAiPlayer)(this));
         }
     }
-    private cardsValidator = struct.list(['string']);
+    private randomizationValidator = struct({
+        sets: struct.list(['string']),
+        landscapes: struct.list([struct.enum(['any', 'way', 'event', 'project'] as const)] as const),
+        params: struct.dict(['string', 'string'] as const),
+        prechosen: struct.list(['string'] as const)
+    });
+    private returnToValidator = struct.scalar('string');
+    private randomizationAllArgsValidator = struct.tuple([this.randomizationValidator, this.returnToValidator] as const);
+    requestRandomize(socket: Socket, ...args: any[]) {
+        const [config, returnTo] = this.randomizationAllArgsValidator(args);
+        const cards = Object.entries(CardRegistry.getInstance().cardsBySet()).filter(([key]) => config.sets.includes(key)).reduce((last, set) => [...last, ...Object.values(set[1])], [] as CardImplementation[]);
+        const landscapeTypes = ["way", "event", "project"];
+        const landscapes = cards.filter((a) => a.types.filter((b) => landscapeTypes.includes(b)).length > 0);
+        shuffle(landscapes);
+        const randomizeTargets = cards.filter((a) => a.randomizable && !config.prechosen.includes(a.cardName));
+        shuffle(randomizeTargets);
+        const chosen = [...config.prechosen, ...randomizeTargets.splice(0, 10 - config.prechosen.length).map((a) => a.cardName)];
+        const chosenLandscapes = [] as Array<[string, string]>;
+        config.landscapes.forEach((type) => {
+            // TODO: Report as impossible
+            if (landscapes.length === 0) return;
+            const landscape = landscapes.splice(type === 'any' ? 0 : landscapes.findIndex((a) => a.types.includes(type), 1), 1)[0];
+            chosenLandscapes.push([landscape.types.filter((a) => landscapeTypes.includes(a))[0], landscape.cardName]);
+        });
+        chosenLandscapes.sort((a, b) => a[0].localeCompare(b[0]));
+        const params = {} as {[name: string]: string};
+        [...chosen, ...chosenLandscapes.map((a) => a[1])].forEach((card) => {
+            const parameters = CardRegistry.getInstance().getCard(card).getSetupParameters();
+            Object.entries(parameters).forEach(([key, value]) => {
+                params[card + "_" + key] = randomizeTargets.splice(value == null ? 0 : randomizeTargets.findIndex((a) => value.isCardAllowed(this, a.cardName)), 1)[0].cardName;
+            });
+        });
+        socket.emit(returnTo, {
+            cards: chosen,
+            landscapes: chosenLandscapes,
+            params
+        });
+    }
+    public params = {} as any;
+    private setCardsArgsValidator = struct.tuple([struct.list(['string'] as const), struct.dict(['string', 'string'] as const), struct.scalar('string')] as const);
     randomizedCards: string[] = [];
     setCards(socket: Socket, ...args: any[]) {
-        this.selectedCards = this.cardsValidator(args[0]);
+        const [cards, params, returnTo] = this.setCardsArgsValidator(args);
+        const requiredParams = cards.reduce((last, card) => ({
+            ...last,
+            ...Object.fromEntries(Object.entries(CardRegistry.getInstance().getCard(card).getSetupParameters()).map(([param, value]) => [card + "_" + param, value]))
+        }), {} as {[name: string]: GainRestrictions | null});
+        const satisfied = Object.entries(requiredParams).every(([key, restriction]) => params[key] && (!restriction || restriction.isCardAllowed(this, params[key])));
+        if (!satisfied) {
+            socket.emit(returnTo, 'unsatisfiedParams', Object.entries(requiredParams).filter(([key, restriction]) => !params[key] || !(!restriction || restriction.isCardAllowed(this, params[key]))).map((a) => a[0]));
+            return;
+        }
+        this.selectedCards = cards;
         this.randomizedCards = this.selectedCards.slice(0);
+        this.params = params;
         this.selectedCards = Rules.chooseBasicCards(this.selectedCards);
         this.selectedCards = [...this.selectedCards, ...Rules.getStartingCards(this.randomizedCards).map((a) => a.cardName)].filter((a, i, arr) => arr.indexOf(a) === i);
         for (let i = 0; i < this.selectedCards.length; i++) {
@@ -93,6 +144,7 @@ export default class Game {
         this.checkForCostModifier = [...this.selectedCards];
         this.checkForTypeModifier = [...this.selectedCards];
         this.checkForRestrictionModifier = [...this.selectedCards];
+        socket.emit(returnTo, 'proceedToGame');
     }
     private hasAlerted = false;
     async alertPlayersToProvinceOrColony(card: string) {

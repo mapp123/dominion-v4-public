@@ -51,6 +51,9 @@ sockets.on('connection', (socket) => {
     socket.on('getRandomizable', (returnTo) => {
         socket.emit(returnTo, CardRegistry.getInstance().getRandomizable());
     });
+    socket.on('getSets', (returnTo) => {
+        socket.emit(returnTo, Object.keys(CardRegistry.getInstance().cardsBySet()));
+    });
 });
 app.use((req, res) => res.sendFile(resolve(__dirname, "../..", "dist/index.html")));
 server.listen(process.env.PORT || 3000, () => {

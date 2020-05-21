@@ -1,16 +1,13 @@
 import * as React from 'react';
 import SocketManager from "./SocketManager";
 import type { RouteComponentProps } from 'react-router';
-import shuffle from "../server/util/shuffle";
 interface IState {
     cards: string[];
-    projects: string[];
+    landscapes: Array<[string, string]>;
     shortcut: string;
     ais: string;
-    subsets: {[subset: string]: string[]};
-    randomizable: {[set: string]: string[]};
     randomizerSetsChosen: {[set: string]: boolean};
-    subsetsChosen: {[subset: string]: boolean};
+    params: {[name: string]: string};
 }
 export default class CreateGameView extends React.Component<RouteComponentProps<{gameId: string}>, IState> {
     socket = SocketManager.getSocket(this.props.match.params.gameId);
@@ -19,13 +16,11 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
         super(props);
         this.state = {
             cards: Array(10).fill(""),
-            projects: Array(2).fill(""),
+            landscapes: [],
             shortcut: "",
             ais: "0",
-            randomizable: {},
             randomizerSetsChosen: {},
-            subsetsChosen: {},
-            subsets: {}
+            params: {}
         };
         this.socket.on('error', (e) => {
             if (e === 'Invalid namespace') {
@@ -34,12 +29,10 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
                 });
             }
         });
-        this.globalSocket.emit('getRandomizable', 'randomizable');
-        this.globalSocket.once('randomizable', (randomizable) => {
+        this.globalSocket.emit('getSets', 'sets');
+        this.globalSocket.once('sets', (sets) => {
             this.setState({
-                randomizable,
-                randomizerSetsChosen: Object.keys(randomizable).filter((a) => !a.includes("_SUBSET_")).reduce((sets, key) => ({...sets, [key]: false}), {}),
-                subsetsChosen: Object.keys(randomizable).filter((a) => a.includes("_SUBSET_")).map((a) => /.*?_SUBSET_(.*)/.exec(a)![1]).filter((a, i, arr) => arr.indexOf(a) === i).reduce((sets, key) => ({...sets, [key]: false}), {})
+                randomizerSetsChosen: sets.reduce((sets, key) => ({...sets, [key]: false}), {})
             });
         });
     }
@@ -61,46 +54,68 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
         });
     }
     submit() {
-        this.socket.emit('setCards', [...this.state.cards, ...Object.values(this.state.subsets).reduce((last, a) => [...last, ...a], [] as string[])]);
         if (this.state.shortcut) {
             this.globalSocket.emit('setShortcut', this.props.match.params.gameId, this.state.shortcut);
         }
         if (!isNaN(parseInt(this.state.ais))) {
             this.socket.emit('setAIPlayers', parseInt(this.state.ais));
-            this.props.history.push({
-                pathname: `/game/${this.props.match.params.gameId}`
-            });
         }
+        else return;
+        this.socket.emit('setCards', [...this.state.cards, ...this.state.landscapes.map((a) => a[1])], this.state.params, 'gameReady');
+        this.socket.once('gameReady', (result, reason) => {
+            if (result === 'proceedToGame') {
+                this.props.history.push({
+                    pathname: `/game/${this.props.match.params.gameId}`
+                });
+            }
+            else if (result === 'unsatisfiedParams') {
+                this.setState((state) => ({
+                    params: {...state.params, ...Object.fromEntries(reason.map((a) => [a, ""]))}
+                }));
+            }
+        });
     }
     randomize() {
-        const pool: string[] = [];
-        Object.keys(this.state.randomizerSetsChosen).forEach((set) => {
-            if (this.state.randomizerSetsChosen[set]) {
-                pool.push(...this.state.randomizable[set]);
-            }
-        });
-        shuffle(pool);
-        const subsets: IState['subsets'] = {};
-        Object.keys(this.state.subsetsChosen).forEach((subset) => {
-            if (this.state.subsetsChosen[subset]) {
-                const subsetValues = Object.keys(this.state.randomizerSetsChosen)
-                    .filter((a) => this.state.randomizerSetsChosen[a])
-                    .map((a) => `${a}_SUBSET_${subset}`)
-                    .reduce((last, a) => [...last, ...this.state.randomizable[a]], [] as string[]);
-                shuffle(subsetValues);
-                subsets[subset] = subsetValues.slice(0, 2);
-            }
-        });
-        this.setState({
-            cards: pool.slice(0, 10),
-            subsets
+        this.socket.emit('randomize', {
+            sets: Object.entries(this.state.randomizerSetsChosen).filter(([, value]) => value).map((a) => a[0]),
+            landscapes: this.state.landscapes.map((a) => a[0]),
+            params: this.state.params,
+            prechosen: this.state.cards.every((a) => a != "") ? [] : this.state.cards.filter((a) => a !== "")
+        }, 'randomized');
+        this.socket.once('randomized', ({cards, landscapes, params}) => {
+            this.setState({
+                cards,
+                landscapes,
+                params
+            });
         });
     }
-    createTextInput(friendlyName, path) {
+    addLandscape(type) {
+        this.setState((state) => ({
+            landscapes: ([...state.landscapes, [type, '???']] as Array<[string, string]>).sort((a, b) => a[0].localeCompare(b[0]))
+        }));
+    }
+    removeLandscape(index) {
+        this.setState((state) => ({
+            landscapes: state.landscapes.filter((_,i) => i !== index)
+        }));
+    }
+    createTextInput(friendlyName, path, addRemove = false) {
+        let input = (<input className="form-control" value={path.reduce((top, key) => top[key], this.state)} onChange={this.updateState.bind(this, path)} />);
+        if (addRemove) {
+            input = (
+                <div className="input-group">
+                    {input}
+                    <div className="input-group-append">
+                        <button className="btn btn-danger" type="button" onClick={this.removeLandscape.bind(this, path[1])}>Remove</button>
+                    </div>
+                </div>
+            );
+        }
         return (
             <div className="form-group" key={path.join(".")}>
                 <label>{friendlyName}</label>
-                <input className="form-control" value={path.reduce((top, key) => top[key], this.state)} onChange={this.updateState.bind(this, path)} />
+                {input}
             </div>
         );
     }
@@ -125,8 +140,24 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
                     <div className="card-body">
                         <div className="row">
                             <div className="col-xs-12 col-sm-9">
-                                {this.state.cards.map((card, i) => this.createTextInput(`Card ${i+1}`, ['cards', i]))}
-                                {Object.keys(this.state.subsets).map((subset) => this.state.subsets[subset].map((card, i) => this.createTextInput(`${subset.split(" ").map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join(" ")} ${i + 1}`, ['subsets', subset, i])))}
+                                {this.state.cards.map((card, i) => {
+                                    const ret = [this.createTextInput(`Card ${i+1}`, ['cards', i])];
+                                    if (Object.keys(this.state.params).some((a) => a.startsWith(card))) {
+                                        ret.push(...Object.keys(this.state.params).filter((a) => a.startsWith(card)).map((paramName) => {
+                                            return this.createTextInput(`${paramName.split("_")[1]} (${card})`, ['params', paramName]);
+                                        }));
+                                    }
+                                    return ret;
+                                })}
+                                {this.state.landscapes.map(([type, card], i) => {
+                                    const ret = [this.createTextInput(`${type === 'any' ? 'Any Landscape' : type.slice(0, 1).toUpperCase() + type.slice(1)}`, ['landscapes', i, 1], true)];
+                                    if (Object.keys(this.state.params).some((a) => a.startsWith(card))) {
+                                        ret.push(...Object.keys(this.state.params).filter((a) => a.startsWith(card)).map((paramName) => {
+                                            return this.createTextInput(`${paramName.split("_")[1]} (${card})`, ['params', paramName]);
+                                        }));
+                                    }
+                                    return ret;
+                                })}
                             </div>
                             <div className="col-xs-12 col-sm-3">
                                 <div>
@@ -135,11 +166,19 @@ export default class CreateGameView extends React.Component<RouteComponentProps<
                                 {Object.keys(this.state.randomizerSetsChosen).map((set) =>
                                     this.createCheckboxInput(set.slice(0, 1).toUpperCase() + set.replace(/([A-Z])/g, ' $1').slice(1), ['randomizerSetsChosen', set])
                                 )}
-                                <hr style={{borderTopColor: "#696969"}} />
-                                {Object.keys(this.state.subsetsChosen).map((subset) => {
-                                    return this.createCheckboxInput(`Include ${subset.split(" ").map((a) => a.slice(0, 1).toUpperCase() + a.slice(1)).join(" ")}`, ['subsetsChosen', subset]);
-                                })}
-                                <button className="btn btn-success" onClick={this.randomize.bind(this)}>Randomize</button>
+                                <div>
+                                    <button className="btn btn-success" onClick={this.randomize.bind(this)}>Randomize</button>
+                                </div>
+                                <div style={{paddingTop: "7px"}}>
+                                    <div className="btn-group">
+                                        <button className="btn btn-dark" onClick={this.addLandscape.bind(this, 'any')}>Add Random Landscape</button>
+                                        <button className="btn btn-dark" onClick={this.addLandscape.bind(this, 'event')}>Add Event</button>
+                                    </div>
+                                    <div className="btn-group">
+                                        <button className="btn way-button-override" onClick={this.addLandscape.bind(this, 'way')}>Add Way</button>
+                                        <button className="btn project-button-override" onClick={this.addLandscape.bind(this, 'project')}>Add Project</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -71,8 +71,8 @@ declare module 'superstruct' {
     export interface struct<ExtraTypes> {
         <K extends ValidTypes<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K>>;
         any<K extends ValidTypes<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K>>;
-        dict<K extends ValidTypes<ExtraTypes>>(def: ['string', K]): Struct<{[key: string]: GetType<ExtraTypes, K>}>;
-        dict<K extends ValidTypes<ExtraTypes>>(def: ['number', K]): Struct<{[key: number]: GetType<ExtraTypes, K>}>;
+        dict<K extends ValidTypes<ExtraTypes>>(def: readonly ['string', K]): Struct<{[key: string]: GetType<ExtraTypes, K>}>;
+        dict<K extends ValidTypes<ExtraTypes>>(def: readonly ['number', K]): Struct<{[key: number]: GetType<ExtraTypes, K>}>;
         enum<K extends readonly Literals[]>(def: K): Struct<K[number]>;
         function<T>(test: (value: any) => boolean): Struct<T>;
         instance<K>(constructorType: Function & {prototype: K}): Struct<K>;
@@ -80,7 +80,7 @@ declare module 'superstruct' {
         intersection<K extends ValidTypeArray<ExtraTypes>>(def: K): Struct<UnionToIntersection<GetType<ExtraTypes, K[number]>>>;
         lazy<K extends Struct<any>>(resolver: () => K): Struct<ReturnType<K>>;
         dynamic<K extends Struct<any>>(resolver: (value: any, parent: any) => K): Struct<ReturnType<K>>;
-        list<K extends ReadonlyArray<ValidTypes<ExtraTypes>>>(def: ExtraTypes): Struct<Array<GetType<ExtraTypes, K[0]>>>;
+        list<K extends ReadonlyArray<ValidTypes<ExtraTypes>>>(def: K): Struct<Array<GetType<ExtraTypes, K[0]>>>;
         literal<K extends Literals>(literal: K): Struct<K>;
         object<K extends StructDef<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K>>;
         optional<K extends ValidTypes<ExtraTypes>>(def: K): Struct<GetType<ExtraTypes, K> | undefined>;

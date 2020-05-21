@@ -475,6 +475,7 @@ export default class Player {
         }
         let way;
         if (card.types.includes("action") && this.nextAsWay && this.nextAsWay.id === card.id && (way = this.game.getCard(this.nextAsWay.way)) != null && way.types.includes("way")) {
+            this.nextAsWay = null;
             await (way as unknown as typeof Way).getInstance(this).onWay(this, exemptPlayers, tracker);
         }
         else {

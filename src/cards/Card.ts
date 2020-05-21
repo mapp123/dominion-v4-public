@@ -14,6 +14,9 @@ export type CardImplementation = (typeof Card) & {new (game: Game | null): Card}
 export function original(target: any, key: string) {
     target[key].__original = true;
 }
+export function isOriginal(targetFun: any) {
+    return !!targetFun.__original;
+}
 export default abstract class Card {
     id: string;
     game: Game;
@@ -116,6 +119,14 @@ export default abstract class Card {
             displayCount: true,
             inSupply: this.inSupply
         }];
+    }
+
+    public static getSetupParameters(): {[name: string]: GainRestrictions | null} {
+        return {};
+    }
+
+    protected static getMyParams(game: Game): {[name: string]: string} {
+        return Object.fromEntries(Object.entries(game.params).filter((a) => a[0].startsWith(this.cardName)).map(([key, value]) => [key.split("_")[1], value])) as any;
     }
 
     static getPileIdentifier(): string {

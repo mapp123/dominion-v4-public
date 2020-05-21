@@ -11,11 +11,15 @@ describe('GAME', () => {
         io = FakeIO.currentFake;
         process.env.FORCE_COLONY = 'false';
     });
-    it('responds to select cards', async () => {
+    it('responds to select cards',  (done) => {
         const socket = io.createFakeSocket();
         io.connectFakeSocket(socket);
-        socket.emit('setCards', ['cellar']);
-        expect(game.selectedCards).to.have.members(['copper', 'silver', 'gold', 'estate', 'duchy', 'province', 'curse', 'cellar']);
+        socket.waitFor('setCardsRet').then((result) => {
+            expect(result).to.equal('proceedToGame');
+            expect(game.selectedCards).to.have.members(['copper', 'silver', 'gold', 'estate', 'duchy', 'province', 'curse', 'cellar']);
+            done();
+        });
+        socket.emit('setCards', ['cellar'], {}, 'setCardsRet');
     });
     it('handles bad messages', (done) => {
         const socket = io.createFakeSocket();

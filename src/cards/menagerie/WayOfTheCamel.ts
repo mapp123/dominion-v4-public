@@ -2,6 +2,7 @@ import type Player from "../../server/Player";
 import Way from "../Way";
 
 export default class WayOfTheCamel extends Way {
+    static nameSize = 29;
     features = ["exile"] as const;
     cardArt = "/img/card-img/Way_of_the_CamelArt.jpg";
     cardText = "Exile a Gold from the Supply.";

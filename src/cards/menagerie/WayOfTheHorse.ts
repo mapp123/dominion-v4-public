@@ -4,6 +4,7 @@ import type Tracker from "../../server/Tracker";
 import type Card from "../Card";
 
 export default class WayOfTheHorse extends Way {
+    static nameSize = 29;
     cardArt = "/img/card-img/Way_of_the_HorseArt.jpg";
     cardText = "+2 Cards\n" +
         "+1 Action\n" +

@@ -7,6 +7,7 @@ import Cost from "../../server/Cost";
 import type Game from "../../server/Game";
 
 export default class WayOfTheMouse extends Way {
+    static nameSize = 28;
     cardArt = "/img/card-img/Way_of_the_MouseArt.jpg";
     cardText = "Play the set-aside card, leaving it there.\n" +
         "---\n" +

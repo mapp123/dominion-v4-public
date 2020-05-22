@@ -4,6 +4,7 @@ import {Texts} from "../../server/Texts";
 import type Tracker from "../../server/Tracker";
 
 export default class RoyalCarriage extends Card {
+    static descriptionSize = 57;
     intrinsicTypes = ["action","reserve"] as const;
     name = "royal carriage";
     intrinsicCost = {

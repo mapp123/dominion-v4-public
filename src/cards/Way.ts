@@ -4,6 +4,7 @@ import type Game from "../server/Game";
 import type Tracker from "../server/Tracker";
 
 export default abstract class Way extends Card {
+    static nameSize = 30;
     static descriptionSize = 30;
     intrinsicTypes = ["way"] as const;
     randomizable = false;

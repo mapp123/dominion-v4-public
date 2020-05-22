@@ -4,6 +4,7 @@ import {Texts} from "../../server/Texts";
 import {GainRestrictions} from "../../server/GainRestrictions";
 
 export default class Ferry extends Event {
+    static descriptionSize = 29;
     cardArt = "/img/card-img/FerryArt.jpg";
     cardText = "Move your -$2 cost token to an Action Supply pile. (Cards from that pile cost $2 less on your turns, but not less than $0.)";
     tokens = ["minusTwoCost"] as const;

@@ -15,7 +15,8 @@ const typeClasses = {
     nightDuration:'dark duration-night-button-override',
     project: 'dark project-button-override',
     artifact: 'dark artifact-button-override',
-    way: 'warning way-button-override'
+    way: 'warning way-button-override',
+    event: 'dark event-button-override'
 };
 const noColor = ['attack'];
 export default function getColorForButton(types: readonly string[]) {

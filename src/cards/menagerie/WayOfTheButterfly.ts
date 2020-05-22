@@ -7,6 +7,7 @@ import { GainRestrictions } from "../../server/GainRestrictions";
 import Cost from "../../server/Cost";
 
 export default class WayOfTheButterfly extends Way {
+    static nameSize = 23;
     cardArt = "/img/card-img/Way_of_the_ButterflyArt.jpg";
     cardText = "You may return this to its pile to gain a card costing exactly $1 more than it.";
     name = "way of the butterfly";

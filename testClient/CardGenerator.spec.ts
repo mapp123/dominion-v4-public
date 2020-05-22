@@ -43,19 +43,27 @@ describe('CardGenerator', () => {
                     let typelineResolved = window.renderLandscape || window.typelineResolved;
                     // @ts-ignore
                     let descriptionResolved = window.descriptionResolved;
-                    if (typelineResolved && descriptionResolved) {
+                    // @ts-ignore
+                    let topResolved = window.topResolved;
+                    if (typelineResolved && descriptionResolved && topResolved) {
                         callback(true);
                         return;
                     }
                     window.addEventListener('typelineResolved', (e) => {
                         typelineResolved = true;
-                        if (descriptionResolved) {
+                        if (descriptionResolved && topResolved) {
                             callback(true);
                         }
                     });
                     window.addEventListener('descriptionResolved', (e) => {
                         descriptionResolved = true;
-                        if (typelineResolved) {
+                        if (typelineResolved && topResolved) {
+                            callback(true);
+                        }
+                    });
+                    window.addEventListener('topResolved', (e) => {
+                        topResolved = true;
+                        if (typelineResolved && descriptionResolved) {
                             callback(true);
                         }
                     });

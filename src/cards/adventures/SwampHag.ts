@@ -2,6 +2,7 @@ import Card from "../Card";
 import type Player from "../../server/Player";
 
 export default class SwampHag extends Card {
+    static typelineSize = 43;
     intrinsicTypes = ["action","attack","duration"] as const;
     name = "swamp hag";
     intrinsicCost = {

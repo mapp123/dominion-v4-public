@@ -4,6 +4,7 @@ import {Texts} from "../../server/Texts";
 import Util from "../../Util";
 
 export default class Pilgrimage extends Event {
+    static descriptionSize = 29;
     cardArt = "/img/card-img/PilgrimageArt.jpg";
     cardText = "Once per turn: Turn your Journey token over (it starts face up); then if it's face up, choose up to 3 differently named cards you have in play and gain a copy of each.";
     tokens = ["journeyToken"] as const;

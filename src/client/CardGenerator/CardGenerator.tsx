@@ -107,18 +107,14 @@ export default class CardGenerator extends React.Component<IProps, {}> {
         // @ts-ignore
         sendWindowEvent('renderLandscape');
         return (
-            <svg viewBox={'0 0 1887 730'} style={{display: "flex", flex: 1, height: "100%"}}>
-                <image href={this.props.cardArtUrl} x={455} y={112} width={980} height={382} preserveAspectRatio="xMidYMin slice"/>
+            <svg viewBox={'0 0 1119 730'} style={{display: "flex", flex: 1, height: "75%"}}>
+                <image href={this.props.cardArtUrl} x={69} y={112} width={980} height={382} preserveAspectRatio="xMidYMin slice"/>
                 <RecolorFilter factors={this.props.factorOverrides || colorFactorLists[this.props.cardTypes[0]]} name={'color0'} />
-                <image href="/img/card-resources/EventColorOne.png" x={0} y={0} width={1887} height={730} filter="url(#color0)" />
-                <image href="/img/card-resources/EventBrown.png" x={0} y={0} width={1887} height={730} />
-                <image href="/img/card-resources/EventBrown2.png" x={0} y={0} width={1887} height={730} />
-                <foreignObject x={720} y={55} width={450} height={50} fontSize={42}>
-                    <div style={{height: "100%", width: "100%", textAlign: "center", lineHeight: "1em"}}>
-                        <span style={{fontFamily: "TrajanPro-Bold"}}>{this.props.cardName}</span>
-                    </div>
-                </foreignObject>
-                <foreignObject x={975} y={-902} width={175} height={50} fontSize={35} transform="rotate(45)">
+                <image href="/img/card-resources/EventColorOne.png" x={0} y={0} width={1119} height={730} filter="url(#color0)" />
+                <image href="/img/card-resources/EventBrown.png" x={0} y={0} width={1119} height={730} />
+                <image href="/img/card-resources/EventBrown2.png" x={0} y={0} width={1119} height={730} />
+                <SingleTextLine line={this.props.cardName} x={557} y={92} maxWidth={412} initialSize={this.props.cardNameStart || 30} />
+                <foreignObject x={700} y={-627} width={175} height={50} fontSize={35} transform="rotate(45)">
                     <div style={{height: "100%", width: "100%", textAlign: "center", lineHeight: "1em"}}>
                         <span style={{fontFamily: "TrajanPro-Bold"}}>{this.props.cardTypes[0]}</span>
                     </div>
@@ -128,7 +124,7 @@ export default class CardGenerator extends React.Component<IProps, {}> {
                     smallDescription={this.props.smallDescription}
                     heirloomPresent={!!this.props.heirloomLine}
                     fontStart={this.props.descriptionFontStart}
-                    x={460}
+                    x={76}
                     y={500}
                     width={965}
                     height={155}
@@ -153,7 +149,7 @@ export default class CardGenerator extends React.Component<IProps, {}> {
                 {this.props.heirloomLine && <image href="/img/card-resources/Heirloom.png" x={97} y={1720} />}
                 {this.props.heirloomLine && <SingleTextLine line={this.props.heirloomLine} x={701} y={1835} maxWidth={1040} initialSize={58} family="Times New Roman" style={"italic"}/>}
                 <SingleTextLine line={this.props.cardName} x={701} y={242} maxWidth={1180} initialSize={this.props.cardNameStart || 75} />
-                <ForceWrappingTextLine line={this.props.cardTypes.map((a, i, l) => i === 0 ? a : (l.length < 4 || i % 2 === 1) ? "\u00a0-\u00a0" + a : " - " + a).join("")} x={300} y={1865} maxWidth={890} maxHeight={120} initialSize={this.props.typeFontStart || 64} id="typeline"/>
+                <ForceWrappingTextLine line={this.props.cardTypes.map((a, i, l) => i === 0 ? a : (l.length < 4 || i % 2 === 1) ? "\u00a0-\u00a0" + a : " - " + a).join("")} x={300} y={1865} maxWidth={890} maxHeight={120} initialSize={this.props.typeFontStart || 63} id="typeline"/>
                 <image href="/img/CoinHighRes.png" x={129} y={1850} width={150} height={145} />
                 <text x={205} y={1965} textAnchor="middle" style={{fontSize: "86pt", fontFamily: "TrajanPro-Bold"}}>{this.props.costs.coin}</text>
                 <Description
@@ -265,11 +261,53 @@ class ForceWrappingTextLine extends React.Component<{line: string; x: number; y:
         );
     }
 }
-class SingleTextLine extends React.Component<{line: string; x: number; y: number; maxWidth: number; initialSize?: number; family?: string; style?: string}, {}> {
+class SingleTextLine extends React.Component<{line: string; x: number; y: number; maxWidth: number; initialSize: number; family?: string; style?: string}, {size: number}> {
+    textRef = React.createRef<SVGTextElement>();
+    constructor(props) {
+        super(props);
+        this.state = {
+            size: props.initialSize
+        };
+    }
+    componentDidMount() {
+        const textWidth = this.textRef.current && this.textRef.current.getBBox();
+        if (textWidth == null || textWidth.width > this.props.maxWidth) {
+            window.setTimeout(() => {
+                this.setState({
+                    size: this.state.size - 1
+                });
+            }, 0);
+        }
+        else {
+            sendWindowEvent('topResolved');
+        }
+    }
+    componentDidUpdate(prevProps): void {
+        if (prevProps !== this.props) {
+            this.setState({
+                size: this.props.initialSize
+            });
+            return;
+        }
+        const textWidth = this.textRef.current && this.textRef.current.getBBox();
+        if (textWidth == null || textWidth.width > this.props.maxWidth) {
+            window.setTimeout(() => {
+                this.setState({
+                    size: this.state.size - 1
+                });
+            }, 0);
+        }
+        else {
+            if (this.state.size !== this.props.initialSize) {
+                console.error(`Set nameSize: ${this.state.size}`);
+            }
+            sendWindowEvent('topResolved');
+        }
+    }
     render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
         const family = this.props.family || "TrajanPro-Bold";
-        const size = (this.props.initialSize || 85) + 2;
-        return <text x={this.props.x}
+        const size = this.state.size + 2;
+        return <text ref={this.textRef} x={this.props.x}
             y={this.props.y}
             style={{fontFamily: family, fontSize: size + "pt", fontStyle: this.props.style || "unset"}}
             textAnchor="middle">{this.props.line}</text>;

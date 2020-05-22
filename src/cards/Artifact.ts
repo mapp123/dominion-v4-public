@@ -4,6 +4,7 @@ import type Game from "../server/Game";
 import {UNCOUNTED_EMPTY_SUPPLY_PILE} from "../server/Supply";
 
 export default abstract class Artifact extends Card {
+    static nameSize = 30;
     static descriptionSize = 30;
     intrinsicTypes = ["artifact"] as const;
     randomizable = false;

@@ -24,7 +24,7 @@ export default abstract class Card {
     tokens: ReadonlyArray<'journeyToken' | 'extraCard' | 'extraAction' | 'extraBuy' | 'extraMoney' | 'minusTwoCost' | 'minusOneCoin' | 'minusOneCard' | 'trashing' | 'estate'> = [];
     isCard = true;
     static descriptionSize = 60;
-    static typelineSize = 64;
+    static typelineSize = 63;
     static nameSize = 75;
     static inSupply = true;
     get inSupply(): (typeof Card)['inSupply'] {

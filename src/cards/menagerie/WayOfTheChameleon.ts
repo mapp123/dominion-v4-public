@@ -4,6 +4,8 @@ import type Tracker from "../../server/Tracker";
 import type Card from "../Card";
 
 export default class WayOfTheChameleon extends Way {
+    static descriptionSize = 29;
+    static nameSize = 21;
     cardArt = "/img/card-img/Way_of_the_ChameleonArt.jpg";
     cardText = "Follow this card's instructions; each time that would give you +Cards this turn, you get +$ instead, and vice-versa.";
     name = "way of the chameleon";

@@ -7,6 +7,7 @@ import type CardHolder from "../../server/CardHolder";
 import type {ValidCardTypes} from "../Card";
 
 export default class Inheritance extends Event {
+    static descriptionSize = 24;
     cardArt = "/img/card-img/InheritanceArt.jpg";
     cardText = "Once per game: Set aside a non-Command Action card from the Supply costing up to $4. Move your Estate token to it. (During your turns, Estates are also Actions with \"Play the card with your Estate token, leaving it there.\")";
     tokens = ["estate"] as const;

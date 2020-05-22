@@ -84,6 +84,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "way of the monkey",
     "way of the mouse",
     "way of the mule",
+    "way of the otter",
     "way of the pig"
   ],
   "discardFromPlay": [

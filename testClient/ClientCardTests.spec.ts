@@ -7,13 +7,14 @@ import type {Decision, DecisionResponseType} from "../src/server/Decision";
 import {readdirSync} from "fs";
 import {resolve} from "path";
 import {Interrupt} from "./Interrupt";
+import {Options} from "selenium-webdriver/chrome";
 function decisionIsType<T extends keyof DecisionResponseType>(type: T, response: any): asserts response is DecisionResponseType[T] {}
 function assertNever(a: never) {}
 function supplyButton(name: string) {
     return `//div[@id="supplyGroup"]/button[text()="${name}"]`;
 }
 function handButton(id: string) {
-    return `//div[@id="handGroup"]/button[@id="${id}"]`;
+    return `//div[@id="handGroup"]/descendant::button[@id="${id}"]`;
 }
 describe('CLIENT CARDS', () => {
     let server: Server;
@@ -108,7 +109,7 @@ describe('CLIENT CARDS', () => {
                         break;
                     case "chooseOption":
                         decisionIsType(decision.decision, response);
-                        await driver.findElement(By.xpath(`//div[@id="handGroup"]/button[text()="${response.choice}"]`)).click();
+                        await driver.findElement(By.xpath(`//div[@id="handGroup"]/descendant::button[text()="${response.choice}"]`)).click();
                         break;
                     case "gain":
                         decisionIsType(decision.decision, response);
@@ -143,9 +144,9 @@ describe('CLIENT CARDS', () => {
         server = serve.sockets;
         httpServer = serve.server;
         events = setupClientTestBed(server);
-        driver = await new Builder().forBrowser('chrome').build();
-        driver2 = await new Builder().forBrowser('chrome').build();
-        driver3 = await new Builder().forBrowser('chrome').build();
+        driver = await new Builder().forBrowser('chrome').setChromeOptions(new Options().addArguments('--mute-audio')).build();
+        driver2 = await new Builder().forBrowser('chrome').setChromeOptions(new Options().addArguments('--mute-audio')).build();
+        driver3 = await new Builder().forBrowser('chrome').setChromeOptions(new Options().addArguments('--mute-audio')).build();
         events.on('newGame', async (game: ClientTestGame) => {
             console.log("game created!");
             currentGame = game;

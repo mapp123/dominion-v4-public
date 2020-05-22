@@ -28,8 +28,8 @@ export default class RoyalCarriage extends Card {
                 compatibility: {
                     merchant: true
                 },
-                relevant: (tracker) => tracker.viewCard().types.includes("action"),
-                temporalRelevance: (tracker) => tracker.hasTrack,
+                relevant: (ctx, tracker) => tracker.viewCard().types.includes("action"),
+                temporalRelevance: (ctx, tracker) => tracker.hasTrack,
                 optional: true
             }, async (remove, tracker) => {
                 if (tracker.hasTrack && (!player.effects.inCompat || await player.confirmAction(Texts.doYouWantToCall("royal carriage")))) {

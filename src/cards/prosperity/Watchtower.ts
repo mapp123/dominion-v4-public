@@ -24,7 +24,7 @@ export default class Watchtower extends Card {
         game.players.forEach((player) => {
             player.effects.setupEffect('gain', 'watchtower', {
                 compatibility: {},
-                temporalRelevance: (tracker) => tracker.hasTrack && player.data.hand.some((a) => a.name === 'watchtower')
+                temporalRelevance: (ctx, tracker) => tracker.hasTrack && player.data.hand.some((a) => a.name === 'watchtower')
             }, async (remove, tracker) => {
                 const option = await player.chooseOption(Texts.whatToDoWithTheGainedAForB(tracker.viewCard().name, 'watchtower'), [Texts.trashIt, Texts.putItOnYourDeck, Texts.doNothing] as const);
                 if (option !== 'Do Nothing') {

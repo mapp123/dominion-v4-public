@@ -17,6 +17,7 @@ import {struct} from "superstruct";
 import PlayerEffects from "./PlayerEffects";
 import type CardHolder from "./CardHolder";
 import type Way from "../cards/Way";
+import {isOriginal} from "../cards/Card";
 
 export default class Player {
     id = v4();
@@ -65,7 +66,7 @@ export default class Player {
                     'cargo ship': true,
                     innovation: true
                 },
-                relevant: (card) => this.data.exile.find((a) => a.name === card.viewCard().name) != null
+                relevant: (ctx, card) => this.data.exile.find((a) => a.name === card.viewCard().name) != null
             }, async (remove, cardTracker) => {
                 if (await this.confirmAction(Texts.wantDiscardFromExile(cardTracker.viewCard().name))) {
                     await this.discard(this.data.exile.filter((a) => a.name === cardTracker.viewCard().name), true);
@@ -589,6 +590,7 @@ export default class Player {
     }
     boughtCards: Card[] = [];
     async buy(cardName: string) {
+        this.lm('%p buys %s.', Util.formatCardList([cardName]));
         await this.game.events.emit('buy', this, cardName);
         await this.events.emit('buy', cardName);
         await this.effects.doEffect('buy', Texts.chooseAnXEffectToRunNext('on buy'), [], cardName);
@@ -602,7 +604,6 @@ export default class Player {
         }
         this.data.money -= this.game.getCostOfCard(cardName).coin - cofferAmount;
         this.data.buys--;
-        this.lm('%p buys %s.', Util.formatCardList([cardName]));
         const card = await CardRegistry.getInstance().getCard(cardName).onBuy(this);
         if (card?.isCard) {
             this.boughtCards.push(card);
@@ -644,10 +645,20 @@ export default class Player {
                     });
                     break;
             }
-            await c.onGainSelf(this, tracker);
             await this.events.emit('gain', tracker);
             await this.game.events.emit('gain', this, tracker);
-            await this.effects.doEffect('gain', Texts.chooseAnXEffectToRunNext('on gain'), [], tracker);
+            await this.effects.doEffect('gain', Texts.chooseAnXEffectToRunNext('on gain'), [
+                {
+                    name: c.name,
+                    config: {
+                        compatibility: {},
+                        relevant: () => !isOriginal(c.onGainSelf)
+                    },
+                    effect: async () => c.onGainSelf(this, tracker),
+                    effectName: 'gain',
+                    id: v4()
+                }
+            ], tracker);
             return c;
         }
         return null;

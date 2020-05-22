@@ -20,7 +20,7 @@ export default class Merchant extends Card {
             compatibility: {
                 citadel: true
             },
-            relevant: (card) => card.viewCard().name === "silver"
+            relevant: (ctx, card) => card.viewCard().name === "silver"
         }, async (remove, cardTracker) => {
             if (cardTracker.viewCard().name === "silver") {
                 await player.addMoney(1);

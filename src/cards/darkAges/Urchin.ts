@@ -29,7 +29,7 @@ export default class Urchin extends Card {
             }
         });
         this.sub = player.effects.setupEffect('willPlayCard', 'urchin', {
-            relevant: (card) => tracker.hasTrack && card.types.includes("attack"),
+            relevant: (ctx, card) => tracker.hasTrack && card.types.includes("attack"),
             compatibility: {}
         }, async (remove, card) => {
             if (!tracker.hasTrack) {

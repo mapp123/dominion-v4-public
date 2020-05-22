@@ -16,6 +16,7 @@ import CardHolder from "./CardHolder";
 import Util from "../Util";
 import {chooseAIPlayer} from "./ai/chooseAIPlayer";
 import createGameData from "../createGameData";
+import {GameEffects} from "./PlayerEffects";
 export default class Game {
     players: Player[] = [];
     io: Namespace | null;
@@ -35,6 +36,7 @@ export default class Game {
     selectedCards: string[] = [];
     ended = false;
     events = new GameEvents();
+    effects = new GameEffects(this);
     currentPlayerIndex = 0;
     get currentPlayer() {
         return this.players[this.currentPlayerIndex];
@@ -336,6 +338,7 @@ export default class Game {
         return this.supply.getPile('province')!.length === 0 || this.supply.pilesEmpty >= (this.players.length < 5 ? 3 : 4) || (this.supply.getPile('colony') && this.supply.getPile('colony')!.length === 0);
     }
     async gameLoop() {
+        this.effects.setup();
         this.supply.setup(this.selectedCards, this.players.length, this);
         this.setupAccountability();
         await this.forAllPlayers(async (player) => {

@@ -44,7 +44,7 @@ export default abstract class Way extends Card {
             player.effects.setupEffect('play', this.cardName, {
                 compatibility: isOriginal(instance.compatibility) ? {} : instance.compatibility.bind(instance),
                 requiresUnconsumed: true,
-                relevant: (tracker, natural) => !natural && tracker.viewCard().types.includes("action") && (isOriginal(instance.relevant) || instance.relevant(tracker, natural))
+                relevant: (ctx, tracker, natural) => !natural && tracker.viewCard().types.includes("action") && (isOriginal(instance.relevant) || instance.relevant(tracker, natural))
             }, async (remove, tracker) => {
                 remove.consumed = true;
                 player.lm('...as %s.', this.cardName);

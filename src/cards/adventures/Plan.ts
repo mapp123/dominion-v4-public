@@ -23,7 +23,7 @@ export default class Plan extends Event {
                 compatibility: {
                     mint: true
                 },
-                relevant: (cardName) => player.game.getCard(cardName).getPileIdentifier() === player.data.tokens.trashing
+                relevant: (ctx, cardName) => player.game.getCard(cardName).getPileIdentifier() === player.data.tokens.trashing
             }, async () => {
                 const card = await player.chooseCardFromHand(Texts.chooseCardToTrashFor(this.name), true);
                 if (card) {

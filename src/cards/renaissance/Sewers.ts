@@ -14,7 +14,7 @@ export default class Sewers extends Project {
         let trashingCard: Card | null = null;
         player.effects.setupEffect('trash', 'sewers', {
             compatibility: {},
-            relevant: (tracker) => trashingCard !== tracker.viewCard()
+            relevant: (ctx, tracker) => trashingCard !== tracker.viewCard()
         }, async (remove, tracker) => {
             if (trashingCard !== tracker.viewCard()) {
                 player.lm('The sewers activates for %p.');

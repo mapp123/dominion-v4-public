@@ -28,7 +28,7 @@ export default class Mint extends Card {
                     hovel: true,
                     hoard: true
                 },
-                relevant: (card) => card === 'mint'
+                relevant: (ctx, card) => card === 'mint'
             }, async () => {
                 player.lm('%p trashes all treasures in play.');
                 const cardsToTrash = player.data.playArea.filter((a) => a.types.includes("treasure"));

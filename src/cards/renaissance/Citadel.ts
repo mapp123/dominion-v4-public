@@ -26,7 +26,7 @@ export default class Citadel extends Project {
         });
         player.effects.setupEffect('cardPlayed', 'citadel', {
             compatibility: {},
-            relevant: (tracker) => tracker.viewCard() === cardToReplay
+            relevant: (ctx, tracker) => tracker.viewCard() === cardToReplay
         }, async (remove, tracker) => {
             if (tracker.viewCard() === cardToReplay) {
                 player.lm('The citadel activates for %p.');

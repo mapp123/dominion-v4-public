@@ -30,7 +30,7 @@ export default class Duplicate extends Card {
                     "guildhall": true,
                     "innovation": true
                 },
-                relevant: (gainedCard) => gainedCard.viewCard().cost.compareTo(Cost.create(7)) === CostResult.LESS_THAN
+                relevant: (ctx, gainedCard) => gainedCard.viewCard().cost.compareTo(Cost.create(7)) === CostResult.LESS_THAN
             }, async (remove, gainedCard) => {
                 if (gainedCard.viewCard().cost.compareTo(Cost.create(7)) === CostResult.LESS_THAN
                     && gainedCard.viewCard().inSupply

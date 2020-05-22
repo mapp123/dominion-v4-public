@@ -23,7 +23,7 @@ export default class CoinOfTheRealm extends Card {
             compatibility: {
                 merchant: true
             },
-            relevant: (cardTracker) => cardTracker.viewCard().types.includes("action") && player.data.actions === 0 && player.data.hand.some((a) => a.types.includes("action"))
+            relevant: (ctx, cardTracker) => cardTracker.viewCard().types.includes("action") && player.data.actions === 0 && player.data.hand.some((a) => a.types.includes("action"))
         }, async (remove) => {
             if (!player.data.tavernMat.some((a) => a.card.id === this.id)) {
                 remove();

@@ -20,15 +20,16 @@ export default class Talisman extends Card {
     }
     public static setup(globalCardData: any, game: Game) {
         game.players.forEach((player) => {
-            player.effects.setupEffect('buy', 'talisman', {
+            player.effects.setupMultiEffect('buy', 'talisman', {
                 compatibility: {
                     hovel: true,
                     hoard: true,
                     mint: true
                 },
-                relevant: (card) => player.data.playArea.some((a) => a.name === 'talisman') && !game.getTypesOfCard(card).includes('victory') && game.getCostOfCard(card).compareTo(Cost.create(5)) === CostResult.LESS_THAN,
-                duplicate: () => player.data.playArea.filter((a) => a.name === 'talisman').map((a) => a.id)
+                relevant: (ctx, card) => !game.getTypesOfCard(card).includes('victory') && game.getCostOfCard(card).compareTo(Cost.create(5)) === CostResult.LESS_THAN,
+                getItems: () => player.data.playArea.filter((a) => a.name === 'talisman').map((a) => a.id)
             }, async (remove, cardName) => {
+                remove.additionalCtx.talisman();
                 player.lm('%p gains an extra %s with talisman.', cardName);
                 await player.gain(cardName, undefined, false);
             });

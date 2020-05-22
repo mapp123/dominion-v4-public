@@ -18,20 +18,17 @@ export default class RoyalSeal extends Card {
     }
     public static setup(globalCardData: any, game: Game) {
         game.players.forEach((player) => {
-            player.effects.setupEffect('gain', 'royal seal', {
+            player.effects.setupMultiEffect('gain', 'royal seal', {
                 compatibility: {},
-                relevant: (tracker) => tracker.hasTrack && player.data.playArea.some((a) => a.name === 'royal seal'),
-                duplicate: () => player.data.playArea.filter((a) => a.name === 'royal seal').map((a) => a.id)
+                relevant: (ctx, tracker) => tracker.hasTrack,
+                temporalRelevance: (ctx, tracker) => tracker.hasTrack,
+                getItems: () => player.data.playArea.filter((a) => a.name === 'royal seal').map((a) => a.id),
+                optional: true
             }, async (remove, tracker) => {
-                if (tracker.hasTrack) {
-                    const shouldContinue = await player.chooseOption(Texts.whatToDoWithTheGainedAForB(tracker.viewCard().name, 'royal seal'), [Texts.putItOnYourDeck, Texts.doNothing] as const);
-                    if (shouldContinue === 'Put It On Your Deck') {
-                        player.lm('%p puts the %s on top of their deck.', tracker.viewCard().name);
-                        player.deck.cards.unshift(tracker.exercise()!);
-                    }
-                    else {
-                        remove.skipDuplicates();
-                    }
+                const nextId = remove.additionalCtx['royal seal']();
+                if (nextId != null && tracker.hasTrack && await player.chooseOption(Texts.whatToDoWithTheGainedAForB(tracker.viewCard().name, 'royal seal'), [Texts.putItOnYourDeck, Texts.doNothing] as const) === Texts.putItOnYourDeck) {
+                    player.lm('%p puts the %s on top of their deck.', tracker.viewCard().name);
+                    player.deck.cards.unshift(tracker.exercise()!);
                 }
             });
         });

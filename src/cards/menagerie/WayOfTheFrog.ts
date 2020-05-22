@@ -12,8 +12,8 @@ export default class WayOfTheFrog extends Way {
         player.data.actions++;
         player.effects.setupEffect('discardFromPlay', this.name, {
             compatibility: {},
-            relevant: (tracker) => tracker.viewCard().id === t.viewCard().id,
-            temporalRelevance: (tracker) => tracker.hasTrack
+            relevant: (ctx, tracker) => tracker.viewCard().id === t.viewCard().id,
+            temporalRelevance: (ctx, tracker) => tracker.hasTrack
         }, async (unsub, tracker) => {
             unsub();
             if (tracker.hasTrack) {

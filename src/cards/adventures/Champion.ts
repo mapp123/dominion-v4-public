@@ -20,7 +20,7 @@ export default class Champion extends Card {
         player.data.actions++;
         player.effects.setupEffect('willPlayCard', 'champion', {
             compatibility: () => true,
-            relevant: (card) => card.types.includes("action")
+            relevant: (ctx, card) => card.types.includes("action")
         }, async (remove, card) => {
             if (card.types.includes("action")) player.data.actions++;
         });

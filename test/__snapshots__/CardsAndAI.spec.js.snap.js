@@ -12,6 +12,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "swamp hag",
     "teacher",
     "transmogrify",
+    "way of the turtle (smithy)",
     "barracks",
     "cargo ship",
     "cathedral",
@@ -93,7 +94,8 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "way of the rat",
     "way of the seal",
     "way of the sheep",
-    "way of the squirrel"
+    "way of the squirrel",
+    "way of the turtle"
   ],
   "discardFromPlay": [
     "way of the frog"

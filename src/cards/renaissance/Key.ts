@@ -15,7 +15,7 @@ export default class Key extends Artifact {
             this.lastPlayer.effects.removeEffect('turnStart', 'key', this.cb);
         }
         this.cb = player.effects.setupEffect('turnStart', 'key', {
-            compatibility: () => true
+            compatibility: (other) => !other.startsWith('way of the turtle')
         }, async () => {
             await player.addMoney(1);
         });

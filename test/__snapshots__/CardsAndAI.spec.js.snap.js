@@ -38,6 +38,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "duplicate",
     "travelling fair",
     "exile",
+    "way of the seal",
     "royal seal",
     "watchtower",
     "academy",
@@ -88,7 +89,8 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "way of the owl",
     "way of the ox",
     "way of the pig",
-    "way of the rat"
+    "way of the rat",
+    "way of the seal"
   ],
   "discardFromPlay": [
     "way of the frog"

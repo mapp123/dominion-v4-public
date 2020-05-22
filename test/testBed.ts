@@ -53,6 +53,9 @@ export class TestPlayer extends Player {
     get allCardsTest() {
         return this.allCards.map((a) => a.name);
     }
+    get exile() {
+        return this.data.exile.map((a) => a.name);
+    }
     async makeDecision<T extends Decision>(decision: T): Promise<DecisionResponseType[T["decision"]]> {
         if (playerUnderTest) {
             playerUnderTest.game = this.game;

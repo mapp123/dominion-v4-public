@@ -48,6 +48,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
   ],
   "handDraw": [
     "expedition",
+    "way of the squirrel",
     "flag"
   ],
   "buy": [
@@ -91,7 +92,8 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "way of the pig",
     "way of the rat",
     "way of the seal",
-    "way of the sheep"
+    "way of the sheep",
+    "way of the squirrel"
   ],
   "discardFromPlay": [
     "way of the frog"

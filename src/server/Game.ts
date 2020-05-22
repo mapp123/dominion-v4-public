@@ -36,6 +36,9 @@ export default class Game {
     ended = false;
     events = new GameEvents();
     currentPlayerIndex = 0;
+    get currentPlayer() {
+        return this.players[this.currentPlayerIndex];
+    }
     aiNumber = 1;
     constructor(io: Server, removeShortcut?: (id: string) => any) {
         this.io = io.of('/' + this.id);

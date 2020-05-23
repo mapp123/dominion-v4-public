@@ -214,6 +214,10 @@ export default class GameView extends React.Component<RouteComponentProps<Params
                                     <span>Trash:</span><br />
                                     <TrashView trash={this.state.gameData.trash} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
                                 </div>
+                                {this.playerData.dataViews.includes('exile') && <div style={{width: "500px", flex: "0 0", alignSelf: "flex-end", border: "2px solid blue", borderRadius: "3px", marginBottom: "7px", padding: "7px"}}>
+                                    <span>Exile:</span><br />
+                                    <TrashView trash={this.state.playerData.exile} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>
+                                </div>}
                                 {this.playerData.dataViews.includes('tavernMat') && <div style={{width: "500px", flex: "0 0", alignSelf: "flex-end", border: "2px solid blue", borderRadius: "3px", marginBottom: "7px", padding: "7px"}}>
                                     <span>Tavern Mat:</span><br />
                                     <TavernMat tavern={this.state.playerData.tavernMat} onClick={(cardId) => this.interrupt('reserve', {cardId})} setHoveredCard={(card) => this.setState({hoveredCard: card})}/>

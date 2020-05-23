@@ -207,6 +207,9 @@ export class Texts {
     static chooseCardToGainFor(card: string) {
         return `Please choose a card to gain for ${card}...`;
     }
+    static chooseCardToExileFor(card: string) {
+        return `Please choose a card to exile for ${card}...`;
+    }
     static wouldYouLikeToSetAsideThe(card: string, withCard: string){
         return `Would you like to set aside the ${card} with ${withCard}?`;
     }

@@ -40,6 +40,7 @@ export type EffectDef<T extends Effect, K> = {
         compatibility: CompatFun<T>;
         optional?: boolean;
         relevant?: RelevantFun<T>;
+        startResolve?: RelevantFun<T>;
         temporalRelevance?: RelevantFun<T>;
         duplicate?: DuplicateFun<T, K>;
         requiresUnconsumed?: boolean;
@@ -98,13 +99,24 @@ export default class PlayerEffects {
         remove.additionalCtx = additionalCtx;
         return remove as (typeof remove & {consumed: boolean});
     }
+    protected relevant<T extends Effect>(config: EffectDef<T, any>["config"], additionalCtx: any, effectsArgs: EffectArgs[T], temporal = true): boolean {
+        let rel = true;
+        if (typeof config.relevant !== 'undefined') {
+            rel = rel && config.relevant(additionalCtx, ...effectsArgs);
+        }
+        if (typeof config.temporalRelevance !== 'undefined' && temporal) {
+            rel = rel && config.temporalRelevance(additionalCtx, ...effectsArgs);
+        }
+        return rel;
+    }
     async doMultiEffect<T extends Effect>(effectNames: T[], prompt: string, additionalConfigs: Array<EffectDef<T, any>>, ...effectArgs: EffectArgs[T]) {
         this.currentEffects = effectNames;
         let runFirst: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
         let ask: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = [];
         const baseList: Array<EffectDef<T, any>> = [...effectNames.flatMap((a) => this.effectTable[a]), ...additionalConfigs] as any;
         const additionalCtx = {};
-        const list: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = baseList.filter((a) => typeof a.config.relevant === 'undefined' || a.config.relevant(additionalCtx, ...effectArgs)).flatMap((a) => {
+        baseList.forEach((a) => (typeof a.config.startResolve !== 'undefined' && a.config.startResolve(additionalCtx, ...effectArgs)));
+        const list: Array<EffectDef<T, any> & {duplicateKey: any | undefined}> = baseList.filter((a) => this.relevant(a.config, additionalCtx, effectArgs, false)).flatMap((a) => {
             if (typeof a.config.duplicate === 'undefined') {
                 return a;
             }
@@ -174,17 +186,23 @@ export default class PlayerEffects {
                 await a.effect(unsub, ...effectArgs);
             }
             // noinspection PointlessBooleanExpressionJS
-            if (runFirst.length > 0 && runFirst[0].id === a.id && (runFirst[0].config.runsOnce !== false || !runFirst[0].config.temporalRelevance!(additionalCtx, ...effectArgs))) {
+            if (runFirst.length > 0 && runFirst[0].id === a.id && (runFirst[0].config.runsOnce !== false || !this.relevant(runFirst[0].config, additionalCtx, effectArgs))) {
                 runFirst.splice(0, 1);
             }
         }
         this.inCompat = false;
         while (ask.length > 0) {
-            const options = ask.filter((a) => (typeof a.config.temporalRelevance !== 'function' || a.config.temporalRelevance(additionalCtx, ...effectArgs)) && (!a.config.requiresUnconsumed || !consumed.value));
+            const options = ask.filter((a) => this.relevant(a.config, additionalCtx, effectArgs) && (!a.config.requiresUnconsumed || !consumed.value));
             if (options.length === 0) {
                 break;
             }
-            const choice = await this.player.chooseOption(prompt, [...options.map((a) => a.name), ...(ask.every((a) => a.config.optional) ? ['No Effect'] : [])]);
+            let choice: string;
+            if (options.length === 1 && !options[0].config.optional) {
+                choice = options[0].name;
+            }
+            else {
+                choice = await this.player.chooseOption(prompt, [...options.map((a) => a.name), ...(ask.every((a) => a.config.optional) ? ['No Effect'] : [])]);
+            }
             if (!choice || choice === 'No Effect') {
                 break;
             }
@@ -195,7 +213,7 @@ export default class PlayerEffects {
                 duplicateKey: ask[index].duplicateKey
             };
             await ask[index].effect(unsub, ...effectArgs);
-            const removeIndex = ask.findIndex(a => a.id === choice);
+            const removeIndex = ask.findIndex(a => a.id === item.id);
             // noinspection PointlessBooleanExpressionJS
             if (removeIndex !== -1 && ask[removeIndex].config.runsOnce !== false) ask.splice(index, 1);
         }
@@ -226,9 +244,10 @@ export default class PlayerEffects {
         const intId = v4();
         const newConfig: EffectDef<T, K>["config"] = {
             ...rest,
-            relevant: (ctx, ...args) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            startResolve: (ctx, ..._args) => {
                 (ctx as any)[cardName + intId] = [];
-                return typeof rest.relevant === 'undefined' ? true : rest.relevant(ctx, ...args);
+                return true;
             },
             temporalRelevance: (ctx, ...args) => (typeof rest.temporalRelevance === 'undefined' ? true : rest.temporalRelevance(ctx, ...args)) && getItems(...args).some((a) => !(ctx as any)[cardName + intId].includes(a)),
             runsOnce: false
@@ -339,9 +358,10 @@ export class GameEffects extends PlayerEffects {
         const intId = v4();
         const newConfig: GameEffectDef<T, K>["config"] = {
             ...rest,
-            relevant: (p, ctx, ...args) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            startResolve: (ctx, ..._args) => {
                 (ctx as any)[cardName + intId] = [];
-                return typeof rest.relevant === 'undefined' ? true : rest.relevant(p, ctx, ...args);
+                return true;
             },
             temporalRelevance: (ctx, ...args) => (typeof rest.temporalRelevance === 'undefined' ? true : rest.temporalRelevance(ctx, ...args)) && getItems(...args).some((a) => !(ctx as any)[cardName + intId].includes(a)),
             runsOnce: false

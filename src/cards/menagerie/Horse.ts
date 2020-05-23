@@ -14,6 +14,7 @@ export default class Horse extends Card {
     supplyCount = 30;
     cardArt = "/img/card-img/HorseArt.jpg";
     static inSupply = false;
+    randomizable = false;
     async onPlay(player: Player, ep, tracker): Promise<void> {
         await player.draw(2, true);
         player.data.actions += 1;

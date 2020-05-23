@@ -267,6 +267,15 @@ export default abstract class Card {
             await this.onCall(player, [], player.getTrackerInPlay(realCard) as Tracker<this>);
         }
     }
+    returnToPile(player: Player, log = true): boolean {
+        const pileId = this.getPileIdentifier();
+        if (pileId == null) return false;
+        const pile = player.game.supply.getPile(pileId);
+        if (pile == null) return false;
+        if (log) player.lm('%p returns %l to it\'s pile.', [this]);
+        pile.push(this);
+        return true;
+    }
     protected moveToTavernMat(player: Player, tracker: Tracker<Card>): boolean {
         if (tracker.hasTrack) {
             player.data.tavernMat.push({

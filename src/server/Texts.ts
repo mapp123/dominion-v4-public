@@ -30,6 +30,7 @@ export class Texts {
     static keepThem = "Keep Them";
     static putThemOnYourDeck = "Put Them On Your Deck";
     static putItOnYourDeck = "Put It On Your Deck";
+    static putItInYourHand = "Put It In Your Hand";
     static doNothing = "Do Nothing";
     static replayAction = "Replay an Action Card";
     static putACardFromYourHandOnTopOfYourDeck = "Put a card from your hand to your deck";

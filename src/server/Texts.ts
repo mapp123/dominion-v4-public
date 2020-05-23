@@ -93,6 +93,9 @@ export class Texts {
     static chooseBenefitFor(a: string) {
         return `Choose benefit for ${a}...`;
     }
+    static chooseXBenefitsFor(x: number, a: string) {
+        return `Choose ${x} benefit${x !== 1 ? "s" : ""} for ${a}...`;
+    }
     static wantDiscardFromExile(a: string) {
         return `Do you want to discard ${a} from exile?`;
     }

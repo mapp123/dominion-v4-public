@@ -350,6 +350,7 @@ export default class Player {
         this.data.actions = 1;
         this.boughtCards = [];
         this.gainedCards = [];
+        this.trashedCards = [];
         this.lm(`%p's turn %s%s`, this.turnNumber, logExtra);
         this.data.isMyTurn = true;
         this.game.updateCostModifiers();
@@ -784,8 +785,10 @@ export default class Player {
         }
         return fastStep[0].then(cbNext.bind(null, 0));
     }
+    trashedCards: Card[] = [];
     async trash(card: Card, log = true) {
         if (log) this.lm('%p trashes %s.', Util.formatCardList([card.name]));
+        this.trashedCards.push(card);
         this.game.trash.push(card);
         const tracker = new Tracker(card);
         tracker.onExercise(() => {

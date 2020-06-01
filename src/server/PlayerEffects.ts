@@ -249,14 +249,24 @@ export default class PlayerEffects {
                 (ctx as any)[cardName + intId] = [];
                 return true;
             },
+            relevant: (ctx, ...args) => {
+                return getItems(...args).length > 0 && (typeof config.relevant === 'undefined' ? true : config.relevant(ctx, ...args));
+            },
             temporalRelevance: (ctx, ...args) => (typeof rest.temporalRelevance === 'undefined' ? true : rest.temporalRelevance(ctx, ...args)) && getItems(...args).some((a) => !(ctx as any)[cardName + intId].includes(a)),
             runsOnce: false
         };
         const newEffect: EffectFun<T, K> = async (remove, ...args) => {
             const items = getItems(...args);
             if (items.some((a) => !remove.additionalCtx[cardName + intId].includes(a))) {
-                remove.additionalCtx[cardName] = () => {
+                remove.additionalCtx[cardName] = (repush?: string) => {
                     const items = getItems(...args);
+                    if (repush) {
+                        const index = remove.additionalCtx[cardName + intId].indexOf(repush);
+                        if (index > -1) {
+                            remove.additionalCtx[cardName + intId].splice(index, 1);
+                        }
+                        return undefined;
+                    }
                     if (items.some((a) => !remove.additionalCtx[cardName + intId].includes(a))) {
                         remove.additionalCtx[cardName + intId].push(items.find((a) => !remove.additionalCtx[cardName + intId].includes(a)));
                         return remove.additionalCtx[cardName + intId][remove.additionalCtx[cardName + intId].length - 1];
@@ -363,14 +373,24 @@ export class GameEffects extends PlayerEffects {
                 (ctx as any)[cardName + intId] = [];
                 return true;
             },
+            relevant: (p, ctx, ...args) => {
+                return getItems(...args).length > 0 && (typeof config.relevant === 'undefined' ? true : config.relevant(p, ctx, ...args));
+            },
             temporalRelevance: (ctx, ...args) => (typeof rest.temporalRelevance === 'undefined' ? true : rest.temporalRelevance(ctx, ...args)) && getItems(...args).some((a) => !(ctx as any)[cardName + intId].includes(a)),
             runsOnce: false
         };
         const newEffect: GameEffectFun<T, K> = async (remove, ...args) => {
             const items = getItems(...args);
             if (items.some((a) => !remove.additionalCtx[cardName + intId].includes(a))) {
-                remove.additionalCtx[cardName] = () => {
+                remove.additionalCtx[cardName] = (repush?: string) => {
                     const items = getItems(...args);
+                    if (repush) {
+                        const index = remove.additionalCtx[cardName + intId].indexOf(repush);
+                        if (index > -1) {
+                            remove.additionalCtx[cardName + intId].splice(index, 1);
+                        }
+                        return undefined;
+                    }
                     if (items.some((a) => !remove.additionalCtx[cardName + intId].includes(a))) {
                         remove.additionalCtx[cardName + intId].push(items.find((a) => !remove.additionalCtx[cardName + intId].includes(a)));
                         return remove.additionalCtx[cardName + intId][remove.additionalCtx[cardName + intId].length - 1];

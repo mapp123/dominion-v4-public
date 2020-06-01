@@ -39,6 +39,7 @@ exports[`CARDS : EFFECTS : has no new cards 1`] = {
     "duplicate",
     "travelling fair",
     "exile",
+    "sheepdog",
     "sleigh",
     "way of the seal",
     "royal seal",

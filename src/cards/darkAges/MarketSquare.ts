@@ -40,6 +40,9 @@ export default class MarketSquare extends Card {
                     await player.discard(card, true);
                     await player.gain('gold');
                 }
+                if (nextId != null && !player.effects.inCompat) {
+                    remove.additionalCtx['market square'](nextId);
+                }
             });
         });
     }

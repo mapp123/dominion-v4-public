@@ -40,6 +40,9 @@ export default class Deck {
     }
 
     async shuffle() {
+        this.discard.forEach((card) => {
+            card.loseTrack();
+        });
         this.cards = [...this.cards, ...(this.shouldShuffle ? shuffle(this.discard) : this.discard)];
         this.discard = [];
         await this.player.events.emit('shuffle', this);

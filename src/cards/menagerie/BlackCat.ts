@@ -40,6 +40,9 @@ export default class BlackCat extends Card {
                     player.data.playArea.push(card);
                     await player.playCard(card, null);
                 }
+                if (nextId != null && !player.game.effects.inCompat) {
+                    remove.additionalCtx['black cat'](nextId);
+                }
             });
         });
     }

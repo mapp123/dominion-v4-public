@@ -34,7 +34,7 @@ export default class Sleigh extends Card {
                 optional: true
             }, async (remove, tracker) => {
                 let first = true;
-                let cardId: string;
+                let cardId: string | undefined;
                 while (tracker.hasTrack && (cardId = remove.additionalCtx.sleigh()) != null && (!(player.effects.inCompat && first) || await player.confirmAction(Texts.wantToDiscardAForBenefit('sleigh', `move the gained ${tracker.viewCard().name}`)))) {
                     first = false;
                     const card = player.data.hand.splice(player.data.hand.findIndex((a) => a.id === cardId), 1)[0];
@@ -50,6 +50,9 @@ export default class Sleigh extends Card {
                             player.data.hand.push(tracker.exercise()!);
                             break;
                     }
+                }
+                if (tracker.hasTrack && cardId != null && ! player.effects.inCompat) {
+                    remove.additionalCtx.sleigh(cardId);
                 }
             });
         });

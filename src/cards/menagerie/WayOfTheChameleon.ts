@@ -15,8 +15,13 @@ export default class WayOfTheChameleon extends Way {
             get(target: Player, p: PropertyKey): any {
                 if (p === "addMoney" && hookedOnTurn === target.turnNumber) {
                     return async (amount) => {
-                        target.lm('%p would get +$%s, but gets +%s Card%s instead.', amount, amount, amount === 1 ? "" : "s");
-                        await target.draw(amount, false);
+                        if (amount > 0) {
+                            target.lm('%p would get +$%s, but gets +%s Card%s instead.', amount, amount, amount === 1 ? "" : "s");
+                            await target.draw(amount, false);
+                        }
+                        else {
+                            await target.addMoney(amount);
+                        }
                     };
                 }
                 if (p === "draw" && hookedOnTurn === target.turnNumber) {

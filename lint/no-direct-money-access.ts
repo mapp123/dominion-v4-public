@@ -1,5 +1,6 @@
-import {ESLintUtils, TSESTree} from '@typescript-eslint/experimental-utils';
+import {AST_NODE_TYPES, ESLintUtils, TSESTree} from '@typescript-eslint/experimental-utils';
 import {relative, resolve} from "path";
+
 const creator = ESLintUtils.RuleCreator((name) => `http://github.com/${name}`);
 function getFullPropertyPath(node: TSESTree.MemberExpression | TSESTree.Identifier): string {
     if (node.type === 'MemberExpression') {
@@ -22,6 +23,11 @@ function getTopNode(node: TSESTree.MemberExpression | TSESTree.Identifier): TSES
     }
     return node.parent;
 }
+function getExpressionStatement(node: TSESTree.Node): TSESTree.ExpressionStatement | null {
+    if (!node.parent) return null;
+    if (node.parent.type === 'ExpressionStatement') return node.parent;
+    return getExpressionStatement(node.parent);
+}
 const allowedOperators = ["<=", ">=", "<", ">"];
 module.exports = creator({
     name: 'no-direct-money-access',
@@ -34,6 +40,7 @@ module.exports = creator({
         messages: {
             'direct-money-access': 'Don\'t modify data.money, use player.addMoney instead'
         },
+        fixable: "code",
         type: "problem",
         schema: {}
     },
@@ -56,7 +63,25 @@ module.exports = creator({
                             }
                             context.report({
                                 messageId: 'direct-money-access',
-                                loc: node.property.loc
+                                loc: node.property.loc,
+                                fix: fixer => {
+                                    if (parent) {
+                                        const statement = getExpressionStatement(parent);
+                                        if ((parent.type === 'BinaryExpression' || parent.type === 'AssignmentExpression') && statement) {
+                                            return [
+                                                fixer.insertTextBefore(statement, `await ${getFullPropertyPath(parent.left as any).split(".")[0]}.addMoney(${context.getSourceCode().getText(parent.right)});`),
+                                                fixer.remove(statement)
+                                            ];
+                                        }
+                                        if (parent.type === 'UpdateExpression' && statement) {
+                                            return [
+                                                fixer.insertTextBefore(statement, `await ${getFullPropertyPath(parent.argument as any).split(".")[0]}.addMoney(${parent.operator === "++" ? "1" : parent.operator === "--" ? "-1": ""});`),
+                                                fixer.remove(statement)
+                                            ];
+                                        }
+                                    }
+                                    return null;
+                                }
                             });
                         }
                     }

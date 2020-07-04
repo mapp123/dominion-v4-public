@@ -12,8 +12,8 @@
     "buildServer": "tsc",
     "heroku-postbuild": "npm run buildClient && npm run buildServer",
     "genCard": "node tools/genCard.js",
-    "lint": "eslint --rulesdir lint \"src/**/*.ts\" \"src/**/*.tsx\"",
-    "lintFix": "eslint --rulesdir lint --fix \"src/**/*.ts\" \"src/**/*.tsx\"",
+    "lint": "eslint \"src/**/*.ts\" \"src/**/*.tsx\"",
+    "lintFix": "eslint --fix \"src/**/*.ts\" \"src/**/*.tsx\"",
     "test-azure": "c8 --reporter=cobertura mocha --reporter mocha-junit-reporter"
   },
   "keywords": [],

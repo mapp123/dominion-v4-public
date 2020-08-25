@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": false,
+    "target": "es2020",
+    "sourceMap": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "importsNotUsedAsValues": "error",
+    "experimentalDecorators": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

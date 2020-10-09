@@ -1,6 +1,6 @@
 dominion-v4
 =====
-###Directory Meanings
+### Directory Meanings
 
 You can find definitions for each card in the game located under the `src/cards` directory, and most of the game logic
 is located in `src/cards/{Game,Player}.ts`.

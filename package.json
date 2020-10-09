@@ -6,6 +6,7 @@
   "scripts": {
     "main": "src/server/app.js",
     "test": "npm run buildServer && c8 mocha && npm run lint",
+    "test-client": "npm run buildServer && npm run buildClientCoverage && nyc mocha --opts ./testClient/client.opts ./testClient",
     "buildClientW": "webpack --mode=development --watch --env=development",
     "buildClientCoverage": "webpack --mode=development --env=coverage",
     "buildClient": "webpack --mode=production --env=production",
